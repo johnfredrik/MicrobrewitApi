@@ -16,6 +16,7 @@ namespace MicrobrewitApi.Controllers
     public class FermentableController : ApiController
     {
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // GET api/Fermentable
         public IQueryable<Fermentable> GetFermentables()
