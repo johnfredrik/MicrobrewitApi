@@ -14,18 +14,21 @@ using log4net;
 
 namespace MicrobrewitApi.Controllers
 {
+    [RoutePrefix("api/fermentables")]
     public class FermentableController : ApiController
     {
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // GET api/Fermentable
+        [Route("")]
         public IQueryable<Fermentable> GetFermentables()
         {
             return db.Fermentables;
         }
 
         // GET api/Fermentable/5
+        [Route("{id:int}")]
         [ResponseType(typeof(Fermentable))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
@@ -34,8 +37,15 @@ namespace MicrobrewitApi.Controllers
             {
                 return NotFound();
             }
-
+            Log.Debug(fermentable.GetType());
             return Ok(fermentable);
+        }
+
+        [Route("grains")]
+        public IQueryable<Grain> GetGrains()
+        {
+            return db.Grains;
+            
         }
 
         // PUT api/Fermentable/5
@@ -84,7 +94,7 @@ namespace MicrobrewitApi.Controllers
             db.Fermentables.Add(fermentable);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = fermentable.FermentableId }, fermentable);
+            return CreatedAtRoute("DefaultApi", new { id = fermentable.FermentableId}, fermentable);
         }
 
         // DELETE api/Fermentable/5

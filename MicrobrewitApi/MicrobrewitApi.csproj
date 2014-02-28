@@ -93,14 +93,23 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201402271254031_Initial.cs" />
-    <Compile Include="Migrations\201402271254031_Initial.Designer.cs">
-      <DependentUpon>201402271254031_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201402281147204_Initial.cs" />
+    <Compile Include="Migrations\201402281147204_Initial.Designer.cs">
+      <DependentUpon>201402281147204_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201402281237528_Initial1.cs" />
+    <Compile Include="Migrations\201402281237528_Initial1.Designer.cs">
+      <DependentUpon>201402281237528_Initial1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Fermentable.cs" />
+    <Compile Include="Models\Grain.cs" />
     <Compile Include="Models\Hop.cs" />
+    <Compile Include="Models\LiquidExtract.cs" />
     <Compile Include="Models\MicrobrewitApiContext.cs" />
+    <Compile Include="Models\ModelBuilder\FermentableConfiguration.cs" />
+    <Compile Include="Models\ModelBuilder\HopsConfiguration.cs" />
+    <Compile Include="Models\ModelBuilder\OriginConfiguration.cs" />
     <Compile Include="Models\Origin.cs" />
     <Compile Include="Models\Recipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -119,8 +128,11 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201402271254031_Initial.resx">
-      <DependentUpon>201402271254031_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201402281147204_Initial.resx">
+      <DependentUpon>201402281147204_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201402281237528_Initial1.resx">
+      <DependentUpon>201402281237528_Initial1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

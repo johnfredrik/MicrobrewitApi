@@ -8,9 +8,9 @@ using System.Web;
 namespace MicrobrewitApi.Models
 {
     public class Hop
-    {     
-        public int HopId { get; set; }   
-        [Required]
+    {
+    
+        public int HopId { get; set; }        
         public string Name { get; set; }
         public double AALow { get; set; }
         public double AAHigh { get; set; }

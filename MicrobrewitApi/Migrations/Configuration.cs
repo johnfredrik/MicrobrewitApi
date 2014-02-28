@@ -4,7 +4,7 @@ namespace MicrobrewitApi.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
-    using MicrobrewitApi.Models;
+    using Models;
 
     internal sealed class Configuration : DbMigrationsConfiguration<MicrobrewitApi.Models.MicrobrewitApiContext>
     {
@@ -36,6 +36,12 @@ namespace MicrobrewitApi.Migrations
             context.Hops.AddOrUpdate(new Hop[] {
                new Hop() { HopId = 1, Name="Admiral", AAHigh = 15, AALow = 9 , OriginId = 2},
                new Hop() { HopId = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2},
+            });
+
+            context.Fermentables.AddOrUpdate(new Fermentable[] {
+                new Grain() {FermentableId = 1, Name = "Malt", Colour = 20, PPG = 34},
+                new Grain() {FermentableId = 2, Name = "Pale Ale Malt" , Colour = 2, PPG = 37},
+                new LiquidExtract() {FermentableId = 3, Name = "Plain Light DME" , Colour = 4, PPG = 43}
             });
         }
     }
