@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MicrobrewitApi.Models;
+using log4net;
 
 namespace MicrobrewitApi.Controllers
 {
