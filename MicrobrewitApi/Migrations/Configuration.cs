@@ -4,16 +4,16 @@ namespace MicrobrewitApi.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
-    using Models;
+    using MicrobrewitModel;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<MicrobrewitApi.Models.MicrobrewitApiContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<MicrobrewitApiContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(MicrobrewitApi.Models.MicrobrewitApiContext context)
+        protected override void Seed(MicrobrewitApiContext context)
         {
             //  This method will be called after migrating to the latest version.
 

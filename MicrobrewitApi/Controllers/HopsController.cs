@@ -9,10 +9,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using MicrobrewitApi.Models;
+using MicrobrewitModel;
 using MicrobrewitApi.DTOs;
 using System.Linq.Expressions;
 using log4net;
+using Newtonsoft.Json;
 
 namespace MicrobrewitApi.Controllers
 {
@@ -22,6 +23,7 @@ namespace MicrobrewitApi.Controllers
     {
 
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
+
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly Expression<Func<Hop,HopDto>> AsBookDto =
             x => new HopDto
@@ -32,19 +34,19 @@ namespace MicrobrewitApi.Controllers
 
         // GET api/Hops
         [Route("")]
-        public IQueryable<HopDto> GetHops()
+        public IQueryable<Hop> GetHops()
         {
-            return db.Hops.Include(h => h.Origin).Select(AsBookDto);
+            return db.Hops.Include(h => h.Origin);
         }
 
         // GET api/Hops/5
         [Route("{id:int}")]
-        [ResponseType(typeof(HopDto))]
+        [ResponseType(typeof(Hop))]
         public async Task<IHttpActionResult> GetHop(int id)
         {
-            HopDto hop = await db.Hops.Include(h => h.Origin)
+            Log.Debug("Get Hops by id: " + id);
+            Hop hop = await db.Hops.Include(h => h.Origin)
                 .Where(h => h.HopId == id)
-                .Select(AsBookDto)
                 .FirstOrDefaultAsync();
             if (hop == null)
             {
@@ -117,20 +119,25 @@ namespace MicrobrewitApi.Controllers
         //    return StatusCode(HttpStatusCode.NoContent);
         //}
 
-        //// POST api/Hopd
-        //[ResponseType(typeof(Hop))]
-        //public async Task<IHttpActionResult> PostHop(Hop hop)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // POST api/Hops
+        [Route("")]
+        [ResponseType(typeof(Hop))]
+        public async Task<IHttpActionResult> PostHop(Hop hop)
+        {
+            Log.Debug("Hops Post");
+            if (!ModelState.IsValid)
+            {
+                Log.Debug("Invalid ModelState");
 
-        //    db.Hops.Add(hop);
-        //    await db.SaveChangesAsync();
+                return BadRequest(ModelState);
+            }
 
-        //    return CreatedAtRoute("DefaultApi", new { id = hop.HopId}, hop);
-        //}
+            db.Hops.Add(hop);
+            await db.SaveChangesAsync();
+
+            Log.DebugFormat("Hop name:{0}, AAHigh: {1}, AALow: {2}, id: {3}", hop.Name, hop.AAHigh, hop.AALow,hop.HopId);
+            return CreatedAtRoute("api/hops/",new {id = hop.HopId},hop);
+        }
 
         //// DELETE api/Hopd/5
         //[ResponseType(typeof(Hop))]

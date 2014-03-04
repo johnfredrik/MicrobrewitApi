@@ -1,3 +1,153 @@
 2014-02-27 14:22:46,379 [9] DEBUG MicrobrewitApi.Controllers.HopsController - Origin: united kingdoms
 2014-02-27 14:22:55,141 [8] DEBUG MicrobrewitApi.Controllers.HopsController - Origin: united kingdom
 2014-02-28 13:48:23,851 [7] DEBUG MicrobrewitApi.Controllers.FermentableController - MicrobrewitApi.Models.Grain
+2014-03-04 11:15:41,759 [7] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 11:18:19,821 [7] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 11:18:31,904 [13] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 11:18:31,917 [13] DEBUG DataAccessLayer.GenericDataRepository`1 - MicrobrewitModel.Hop
+2014-03-04 11:18:31,928 [13] DEBUG DataAccessLayer.GenericDataRepository`1 - MicrobrewitModel.Hop
+2014-03-04 11:20:31,343 [7] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 11:21:17,540 [7] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 11:22:04,908 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 11:22:04,933 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - System.Linq.Expressions.Expression`1[System.Func`2[MicrobrewitModel.Hop,System.Object]][]
+2014-03-04 11:23:47,303 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 11:23:47,323 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 11:26:13,581 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 11:26:13,605 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:08:43,580 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:08:43,622 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:09:58,946 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:09:58,959 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:22:56,429 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:22:56,446 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:25:11,715 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:25:11,736 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:26:55,172 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:26:55,191 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:27:49,624 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:27:49,636 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:28:46,380 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:28:46,398 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:29:52,889 [11] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:29:52,902 [11] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:32:56,830 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:32:56,864 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:34:09,784 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:34:09,798 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:35:47,337 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:35:47,358 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:38:51,213 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:38:51,232 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:40:12,830 [7] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:40:12,848 [7] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:40:53,851 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:40:53,865 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:41:09,639 [12] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:41:09,643 [12] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:43:29,652 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:43:29,670 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:48:18,312 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:48:18,337 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:48:51,970 [13] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 12:49:00,732 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:49:00,745 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:50:01,617 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:50:01,636 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:56:45,567 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:56:45,587 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 12:57:16,874 [12] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 12:57:18,139 [11] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 12:57:59,132 [6] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 12:58:50,861 [6] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 12:59:50,533 [10] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 12:59:50,544 [10] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:00:21,008 [9] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 13:00:21,028 [9] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:01:03,772 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 13:01:03,787 [8] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:01:36,627 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 13:01:36,643 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:02:12,966 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 13:02:12,982 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:18:40,170 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 13:18:40,188 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:19:59,402 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - GetAll
+2014-03-04 13:19:59,420 [6] DEBUG DataAccessLayer.GenericDataRepository`1 - 0
+2014-03-04 13:21:59,623 [6] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 13:22:57,603 [6] DEBUG MicrobrewitApi.Controllers.HopsController - ID:1
+2014-03-04 14:38:48,242 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:02:59,629 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:02:59,653 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:03:22,101 [10] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:03:22,124 [10] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:03:37,835 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:03:37,841 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:03:59,902 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:03:59,920 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:04:11,724 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:04:11,745 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:05:24,799 [17] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:05:24,809 [17] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:09:09,239 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:09:09,261 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:09:24,489 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:09:24,495 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:10:13,932 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:10:13,942 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:10:40,986 [22] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:10:40,991 [22] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:11:21,422 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:13:26,945 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:13:26,964 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:, AAHigh: 0, AALow: 0
+2014-03-04 15:13:39,645 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:13:39,651 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:13:52,562 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:13:52,575 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:, AAHigh: 0, AALow: 0
+2014-03-04 15:15:56,844 [14] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:15:56,854 [14] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:16:10,204 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:16:10,213 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:16:40,191 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:16:40,204 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:16:49,505 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:16:49,513 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:, AAHigh: 0, AALow: 0
+2014-03-04 15:16:58,454 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:16:58,459 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:, AAHigh: 0, AALow: 0
+2014-03-04 15:17:43,976 [23] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:17:43,985 [23] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:, AAHigh: 0, AALow: 0
+2014-03-04 15:18:17,960 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:18:18,012 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:18:31,242 [23] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:18:31,249 [23] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:18:58,027 [14] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:18:58,081 [14] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:19:23,852 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:19:23,861 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:19:31,337 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:19:31,349 [18] DEBUG MicrobrewitApi.Controllers.HopsController - Invalid ModelState
+2014-03-04 15:19:40,549 [14] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:19:40,579 [14] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13
+2014-03-04 15:19:57,999 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:19:58,008 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13
+2014-03-04 15:20:33,001 [37] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:20:33,008 [37] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13
+2014-03-04 15:22:29,579 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:22:33,724 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13
+2014-03-04 15:28:29,784 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:28:47,223 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13
+2014-03-04 15:30:27,064 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:30:30,998 [11] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 8
+2014-03-04 15:33:24,282 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:33:28,201 [5] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 9
+2014-03-04 15:35:39,125 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:35:43,554 [13] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 10
+2014-03-04 15:38:03,734 [8] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:38:07,581 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 11
+2014-03-04 15:38:40,747 [7] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:38:44,713 [8] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 12
+2014-03-04 15:39:11,775 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:39:15,661 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 13
+2014-03-04 15:41:01,322 [9] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:41:05,380 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 14
+2014-03-04 15:44:53,574 [6] DEBUG MicrobrewitApi.Controllers.HopsController - Hops Post
+2014-03-04 15:44:57,534 [12] DEBUG MicrobrewitApi.Controllers.HopsController - Hop name:Target, AAHigh: 16, AALow: 13, id: 15
