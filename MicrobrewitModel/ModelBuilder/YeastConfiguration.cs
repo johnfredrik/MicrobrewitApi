@@ -13,9 +13,23 @@ namespace MicrobrewitModel.ModelBuilder
         public YeastConfiguration()
         {
             Property(y => y.Id).IsRequired().HasColumnName("YeastId");
-            Property(y => y.Name).IsRequired().HasMaxLength(255);
+            Property(y => y.Name).IsRequired().HasMaxLength(255);        
 
             this.HasRequired(y => y.Supplier).WithMany().HasForeignKey(y => y.SupplierId);
+
+            Map(m =>
+            {
+                m.ToTable("Yeast");
+                m.Requires("Type").HasValue("");
+            })
+            .Map<LiquidYeast>(m =>
+            {
+                m.Requires("Type").HasValue("Liquid Yeast");
+            })
+            .Map<DryYeast>(m =>
+            {
+                m.Requires("Type").HasValue("Dry Yeast");
+            });
         }
     }
 }

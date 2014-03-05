@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MicrobrewitModel;
 
 namespace MicrobrewitModel
 {
@@ -16,6 +18,8 @@ namespace MicrobrewitModel
         public string AlcoholTolerance { get; set; }
         public string ProductCode { get; set; }
         public string Comment { get; set; }
+        [NotMapped]
+        public string Type { get { return this.GetType().Name; } }
 
         public Nullable<int> SupplierId { get; set; }
         public Supplier Supplier { get; set; }

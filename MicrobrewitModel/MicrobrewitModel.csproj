@@ -49,10 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModelBuilder\EntityTypeConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentableTypeConfiguration.cs" />
     <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
     <Compile Include="ModelBuilder\YeastConfiguration.cs" />
+    <Compile Include="Model\DryYeast.cs" />
     <Compile Include="Model\Fermentable.cs" />
     <Compile Include="Model\FermentableType.cs" />
     <Compile Include="Model\Hop.cs" />
@@ -66,6 +66,7 @@
     <Compile Include="Model\Recipe.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="Model\Yeast.cs" />
+    <Compile Include="Model\LiquidYeast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
