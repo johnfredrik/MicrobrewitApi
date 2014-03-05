@@ -95,15 +95,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201402281147204_Initial.cs" />
-    <Compile Include="Migrations\201402281147204_Initial.Designer.cs">
-      <DependentUpon>201402281147204_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201402281237528_Initial1.cs" />
-    <Compile Include="Migrations\201402281237528_Initial1.Designer.cs">
-      <DependentUpon>201402281237528_Initial1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -118,14 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201402281147204_Initial.resx">
-      <DependentUpon>201402281147204_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201402281237528_Initial1.resx">
-      <DependentUpon>201402281237528_Initial1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicrobrewitModel\MicrobrewitModel.csproj">
