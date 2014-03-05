@@ -216,3 +216,5 @@ pip-log.txt
 MicrobrewitApi/mylogfile.txt
 MicrobrewitApi/mylogfile.txt
 MicrobrewitApi/mylogfile.txt
+MicrobrewitApi/App_Data/MicrobrewitApiContext-20140227125742_log.ldf
+MicrobrewitApi/App_Data/MicrobrewitApiContext-20140227125742.mdf
