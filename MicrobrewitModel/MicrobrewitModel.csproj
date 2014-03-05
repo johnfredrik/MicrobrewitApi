@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModelBuilder\FermentableTypeConfiguration.cs" />
+    <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
     <Compile Include="Model\Fermentable.cs" />
     <Compile Include="Model\FermentableType.cs" />
     <Compile Include="Model\Hop.cs" />
@@ -58,8 +59,10 @@
     <Compile Include="ModelBuilder\FermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\HopsConfiguration.cs" />
     <Compile Include="ModelBuilder\OriginConfiguration.cs" />
+    <Compile Include="Model\Ingredient.cs" />
     <Compile Include="Model\Origin.cs" />
     <Compile Include="Model\Recipe.cs" />
+    <Compile Include="Model\Supplier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

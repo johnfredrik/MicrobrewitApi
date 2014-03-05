@@ -14,7 +14,9 @@ namespace MicrobrewitModel.ModelBuilder
             Property(f => f.Name).IsRequired().HasMaxLength(200);
             Property(f => f.TypeId).IsRequired().HasColumnName("FermentableTypeId");
 
-            this.HasRequired(f => f.Type).WithMany().HasForeignKey( o => o.TypeId);
+            this.HasRequired(f => f.Type).WithMany().HasForeignKey( f => f.TypeId);
+            this.HasOptional(f => f.Supplier).WithMany().HasForeignKey(f => f.SupplierId);
+            
             
         }
     }
