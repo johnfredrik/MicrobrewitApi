@@ -23,7 +23,6 @@ namespace MicrobrewitApi.Controllers
     {
 
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
-
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly Expression<Func<Hop,HopDto>> AsBookDto =
             x => new HopDto
@@ -46,7 +45,7 @@ namespace MicrobrewitApi.Controllers
         {
             Log.Debug("Get Hops by id: " + id);
             Hop hop = await db.Hops.Include(h => h.Origin)
-                .Where(h => h.HopId == id)
+                .Where(h => h.Id == id)
                 .FirstOrDefaultAsync();
             if (hop == null)
             {
@@ -61,7 +60,7 @@ namespace MicrobrewitApi.Controllers
         public async Task<IHttpActionResult> GetHopDetail(int id)
         {
             var hop = await (from h in db.Hops.Include(h => h.Origin)
-                             where h.HopId == id
+                             where h.Id == id
                              select new HopDetailDto
                              {
                                  Name = h.Name,
@@ -94,7 +93,7 @@ namespace MicrobrewitApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != hop.HopId)
+            if (id != hop.Id)
             {
                 return BadRequest();
             }
@@ -135,9 +134,9 @@ namespace MicrobrewitApi.Controllers
 
             db.Hops.Add(hop);
             await db.SaveChangesAsync();
-            hop = db.Hops.Include(h => h.Origin).Where(h => h.HopId == hop.HopId).SingleOrDefault();
+            hop = db.Hops.Include(h => h.Origin).Where(h => h.Id == hop.Id).SingleOrDefault();
            
-            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hop.HopId},hop);
+            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hop.Id},hop);
         }
 
         // DELETE api/Hopd/5
@@ -168,7 +167,7 @@ namespace MicrobrewitApi.Controllers
 
         private bool HopExists(int id)
         {
-            return db.Hops.Count(e => e.HopId == id) > 0;
+            return db.Hops.Count(e => e.Id == id) > 0;
         }
     }
 }

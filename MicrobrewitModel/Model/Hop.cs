@@ -10,7 +10,7 @@ namespace MicrobrewitModel
     public class Hop
     {
     
-        public int HopId { get; set; }        
+        public int Id { get; set; }        
         public string Name { get; set; }
         public double AALow { get; set; }
         public double AAHigh { get; set; }
