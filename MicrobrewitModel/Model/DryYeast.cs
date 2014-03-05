@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MicrobrewitModel
 {
-    class DryYeast : Yeast
+    public class DryYeast : Yeast
     {
     }
 }
