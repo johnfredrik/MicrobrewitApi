@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MicrobrewitModel;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 
@@ -9,6 +11,7 @@ namespace MicrobrewitApi
     {
         public static void Register(HttpConfiguration config)
         {
+            Database.SetInitializer(new InitializeDatabaseWithSeedData());
             // Web API configuration and services
 
             // Web API routes
