@@ -10,20 +10,25 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MicrobrewitModel;
+using log4net;
 
 namespace MicrobrewitApi.Controllers
 {
+    [RoutePrefix("api/origins")]
     public class OriginController : ApiController
     {
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // GET api/Origin
+        [Route("")]
         public IQueryable<Origin> GetOrigins()
         {
             return db.Origins;
         }
 
         // GET api/Origin/5
+        [Route("{id:int}")]
         [ResponseType(typeof(Origin))]
         public async Task<IHttpActionResult> GetOrigin(int id)
         {
@@ -37,6 +42,7 @@ namespace MicrobrewitApi.Controllers
         }
 
         // PUT api/Origin/5
+        [Route("{id:int}")]
         public async Task<IHttpActionResult> PutOrigin(int id, Origin origin)
         {
             if (!ModelState.IsValid)
@@ -71,6 +77,7 @@ namespace MicrobrewitApi.Controllers
         }
 
         // POST api/Origin
+        [Route("")]
         [ResponseType(typeof(Origin))]
         public async Task<IHttpActionResult> PostOrigin(Origin origin)
         {
@@ -82,10 +89,11 @@ namespace MicrobrewitApi.Controllers
             db.Origins.Add(origin);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = origin.OriginId }, origin);
+            return CreatedAtRoute("DefaultApi", new { controller= "origins",id = origin.OriginId }, origin);
         }
 
         // DELETE api/Origin/5
+        [Route("{id:int}")]
         [ResponseType(typeof(Origin))]
         public async Task<IHttpActionResult> DeleteOrigin(int id)
         {
