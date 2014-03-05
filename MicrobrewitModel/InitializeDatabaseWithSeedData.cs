@@ -22,6 +22,7 @@ namespace MicrobrewitModel
             context.Fermentables.Add(new Grain() {FermentableId = 1, Name = "Malt", Colour = 20, PPG = 34});
             context.Fermentables.Add(new Grain() {FermentableId = 2, Name = "Pale Ale Malt" , Colour = 2, PPG = 37});
             context.Fermentables.Add(new LiquidExtract() {FermentableId = 3, Name = "Plain Light DME" , Colour = 4, PPG = 43});
+            context.Fermentables.Add(new DryExtract() {FermentableId = 4, Name = "Plain Light DME", Colour= 4, PPG = 43 })
             
         }
     }
