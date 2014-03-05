@@ -15,6 +15,7 @@ namespace MicrobrewitModel
         public DbSet<FermentableType> FermentableTypes { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Yeast> Yeasts { get; set; }
+        public DbSet<Other> Others { get; set; }
  
         public MicrobrewitApiContext()
             : base("name=MicrobrewitApiContext")
@@ -29,7 +30,9 @@ namespace MicrobrewitModel
             modelBuilder.Configurations.Add(new OriginConfiguration());
             modelBuilder.Configurations.Add(new FermentableTypeConfiguration());
             modelBuilder.Configurations.Add(new SupplierConfiguration());
-            modelBuilder.Configurations.Add(new YeastConfiguration());        }
+            modelBuilder.Configurations.Add(new YeastConfiguration());
+            modelBuilder.Configurations.Add(new OtherConfiguration());
+        }
 
         
     
