@@ -19,17 +19,12 @@ namespace MicrobrewitApi.Controllers
     {
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public FermentableController()
-        {
-            Database.SetInitializer(new InitializeDatabaseWithSeedData());
-        }
-
+      
         // GET api/Fermentable
         [Route("")]
         public IQueryable<Fermentable> GetFermentables()
         {
-            return db.Fermentables.Include(f => f.Type);
+            return db.Fermentables.Include(f => f.Type).Include(f => f.Supplier).Include(f => f.Supplier.Origin);
         }
 
         // GET api/Fermentable/5
@@ -37,7 +32,7 @@ namespace MicrobrewitApi.Controllers
         [ResponseType(typeof(Fermentable))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            Fermentable fermentable  = await db.Fermentables.Include(f => f.Type)
+            Fermentable fermentable  = await db.Fermentables.Include(f => f.Type).Include(f => f.Supplier).Include(f => f.Supplier.Origin)
                 .Where(f => f.Id == id)
                 .FirstOrDefaultAsync();
             if (fermentable == null)
