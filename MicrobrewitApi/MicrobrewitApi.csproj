@@ -90,6 +90,8 @@
     <Compile Include="Controllers\FermentableController.cs" />
     <Compile Include="Controllers\HopsController.cs" />
     <Compile Include="Controllers\OriginController.cs" />
+    <Compile Include="Controllers\SuppliersController.cs" />
+    <Compile Include="Controllers\YeastsController.cs" />
     <Compile Include="DTOs\HopDetailDto.cs" />
     <Compile Include="DTOs\HopDto.cs" />
     <Compile Include="Global.asax.cs">
