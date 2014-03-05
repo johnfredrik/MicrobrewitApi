@@ -10,6 +10,7 @@ namespace MicrobrewitModel.ModelBuilder
     {
         public HopsConfiguration()
         {
+            Property(h => h.Id).IsRequired().HasColumnName("HopsId");
             Property(h => h.Name).IsRequired().HasMaxLength(200);    
         
             // relationships
