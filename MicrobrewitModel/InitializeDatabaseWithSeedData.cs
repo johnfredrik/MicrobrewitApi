@@ -53,11 +53,11 @@ namespace MicrobrewitModel
                 SupplierId = 3,
             });
 
-            context.Fermentables.Add(new Fermentable() {Id = 1, Name = "Malt", Colour = 20, PPG = 34, TypeId = 1});
-            context.Fermentables.Add(new Fermentable() {Id = 2, Name = "Amber Malt", Colour = 20, PPG = 34, TypeId = 1, SupplierId = 1 });
-            context.Fermentables.Add(new Fermentable() {Id = 3, Name = "Pale Ale Malt" , Colour = 2, PPG = 37, TypeId = 1});
-            context.Fermentables.Add(new Fermentable() {Id = 4, Name = "Plain Light DME" , Colour = 4, PPG = 43, TypeId = 2});
-            context.Fermentables.Add(new Fermentable() {Id = 5, Name = "Plain Light DME", Colour = 4, PPG = 43, TypeId = 3});
+            context.Fermentables.Add(new Grain() {Id = 1, Name = "Malt", Colour = 20, PPG = 34, });
+            context.Fermentables.Add(new Grain() {Id = 2, Name = "Amber Malt", Colour = 20, PPG = 34, SupplierId = 1 });
+            context.Fermentables.Add(new Grain() {Id = 3, Name = "Pale Ale Malt" , Colour = 2, PPG = 37, });
+            context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , Colour = 4, PPG = 43,});
+            context.Fermentables.Add(new LiquidExtract() {Id = 5, Name = "Plain Light DME", Colour = 4, PPG = 43,});
             
         }
     }

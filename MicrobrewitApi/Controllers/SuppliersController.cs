@@ -83,7 +83,10 @@ namespace MicrobrewitApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            if (supplier.OriginId > 0)
+            {
+                supplier.Origin = null;
+            }
             db.Suppliers.Add(supplier);
             await db.SaveChangesAsync();
 

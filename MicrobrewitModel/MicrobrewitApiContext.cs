@@ -20,7 +20,7 @@ namespace MicrobrewitModel
         public MicrobrewitApiContext()
             : base("name=MicrobrewitApiContext")
         {
-          // Configuration.LazyLoadingEnabled = false;
+           Configuration.LazyLoadingEnabled = false;
            Configuration.ProxyCreationEnabled = false;
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

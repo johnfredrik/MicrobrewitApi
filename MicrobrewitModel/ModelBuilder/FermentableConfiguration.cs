@@ -12,9 +12,30 @@ namespace MicrobrewitModel.ModelBuilder
         {
             Property(f => f.Id).IsRequired().HasColumnName("FermentableId");
             Property(f => f.Name).IsRequired().HasMaxLength(200);
-            Property(f => f.TypeId).IsRequired().HasColumnName("FermentableTypeId");
+           
 
-            this.HasRequired(f => f.Type).WithMany().HasForeignKey( f => f.TypeId);
+            Map(m =>
+            {
+                m.ToTable("Fermentable");
+                m.Requires("Type").HasValue("");
+            })
+              .Map<Grain>(m =>
+              {
+                  m.Requires("Type").HasValue("Grain");
+              })
+              .Map<Sugar>(m =>
+              {
+                  m.Requires("Type").HasValue("Sugar");
+              })
+              .Map<LiquidExtract>(m =>
+              {
+                  m.Requires("Type").HasValue("Liquid Extract");
+              })
+              .Map<DryExtract>(m =>
+              {
+                  m.Requires("Type").HasValue("Dry Extract");
+              });
+         
             this.HasOptional(f => f.Supplier).WithMany().HasForeignKey(f => f.SupplierId);
             
             

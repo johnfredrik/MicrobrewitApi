@@ -24,7 +24,7 @@ namespace MicrobrewitApi.Controllers
         [Route("")]
         public IQueryable<Fermentable> GetFermentables()
         {
-            return db.Fermentables.Include(f => f.Type).Include(f => f.Supplier).Include(f => f.Supplier.Origin);
+            return db.Fermentables.Include(f => f.Supplier).Include(f => f.Supplier.Origin);
         }
 
         // GET api/Fermentable/5
@@ -32,7 +32,7 @@ namespace MicrobrewitApi.Controllers
         [ResponseType(typeof(Fermentable))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            Fermentable fermentable  = await db.Fermentables.Include(f => f.Type).Include(f => f.Supplier).Include(f => f.Supplier.Origin)
+            Fermentable fermentable  = await db.Fermentables.Include(f => f.Supplier).Include(f => f.Supplier.Origin)
                 .Where(f => f.Id == id)
                 .FirstOrDefaultAsync();
             if (fermentable == null)
@@ -44,10 +44,29 @@ namespace MicrobrewitApi.Controllers
         }
 
         [Route("grains")]
-        public IQueryable<Fermentable> GetGrains()
+        public IQueryable<Grain> GetGrains()
         {
-            return db.Fermentables;           
+            return db.Fermentables.OfType<Grain>();           
         }
+
+        [Route("sugars")]
+        public IQueryable<Sugar> GetSugars()
+        {
+            return db.Fermentables.OfType<Sugar>();
+        }
+
+        [Route("dryextracts")]
+        public IQueryable<DryExtract> GetDryExtracts()
+        {
+            return db.Fermentables.OfType<DryExtract>();
+        }
+
+        [Route("liquidextracts")]
+        public IQueryable<LiquidExtract> GetLiquidExtracts()
+        {
+            return db.Fermentables.OfType<LiquidExtract>();
+        }
+
 
         [Route("extracts")]
         public IQueryable<Fermentable> GetExtracts()

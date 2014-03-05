@@ -75,23 +75,45 @@ namespace MicrobrewitApi.Controllers
         }
 
         // POST api/Yeasts
-        [Route("")]
-        [ResponseType(typeof(Yeast))]
-        public async Task<IHttpActionResult> PostYeast(Yeast yeast)
+        [Route("dryyeasts")]
+        [ResponseType(typeof(DryYeast))]
+        public async Task<IHttpActionResult> PostYeast(DryYeast yeast)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            if (yeast.SupplierId > 0)
+            {
+                yeast.Supplier = null;
+            }
             db.Yeasts.Add(yeast);
             await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = yeast.Id }, yeast);
         }
 
+        // POST api/Yeasts
+        [Route("liquidyeasts")]
+        [ResponseType(typeof(LiquidYeast))]
+        public async Task<IHttpActionResult> PostYeast(LiquidYeast yeast)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (yeast.SupplierId > 0)
+            {
+                yeast.Supplier = null;
+            }
+            db.Yeasts.Add(yeast);
+            await db.SaveChangesAsync();
+
+            return CreatedAtRoute("DefaultApi", new { controller="yeasts", id = yeast.Id }, yeast);
+        }
+
         // DELETE api/Yeasts/5
-        [Route("")]
+        [Route("{id:int}")]
         [ResponseType(typeof(Yeast))]
         public async Task<IHttpActionResult> DeleteYeast(int id)
         {

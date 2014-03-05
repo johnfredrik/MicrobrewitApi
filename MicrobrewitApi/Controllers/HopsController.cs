@@ -131,7 +131,10 @@ namespace MicrobrewitApi.Controllers
 
                 return BadRequest(ModelState);
             }
-
+            if (hop.OriginId > 0)
+            {
+                hop.Origin = null;
+            }
             db.Hops.Add(hop);
             await db.SaveChangesAsync();
             hop = db.Hops.Include(h => h.Origin).Where(h => h.Id == hop.Id).SingleOrDefault();
