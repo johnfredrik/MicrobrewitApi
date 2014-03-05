@@ -20,11 +20,16 @@ namespace MicrobrewitApi.Controllers
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public FermentableController()
+        {
+            Database.SetInitializer(new InitializeDatabaseWithSeedData());
+        }
+
         // GET api/Fermentable
         [Route("")]
         public IQueryable<Fermentable> GetFermentables()
         {
-            return db.Fermentables;
+            return db.Fermentables.Include(f => f.Type);
         }
 
         // GET api/Fermentable/5
@@ -32,7 +37,9 @@ namespace MicrobrewitApi.Controllers
         [ResponseType(typeof(Fermentable))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            Fermentable fermentable = await db.Fermentables.FindAsync(id);
+            Fermentable fermentable  = await db.Fermentables.Include(f => f.Type)
+                .Where(f => f.Id == id)
+                .FirstOrDefaultAsync();
             if (fermentable == null)
             {
                 return NotFound();
@@ -42,10 +49,15 @@ namespace MicrobrewitApi.Controllers
         }
 
         [Route("grains")]
-        public IQueryable<Grain> GetGrains()
+        public IQueryable<Fermentable> GetGrains()
         {
-            return db.Grains;
-            
+            return db.Fermentables;           
+        }
+
+        [Route("extracts")]
+        public IQueryable<Fermentable> GetExtracts()
+        {
+            return db.Fermentables.Where(f => f.GetType().Equals("Liquid Extract") || f.GetType().Equals("Dry Extract"));
         }
 
         // PUT api/Fermentable/5
@@ -56,7 +68,7 @@ namespace MicrobrewitApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != fermentable.FermentableId)
+            if (id != fermentable.Id)
             {
                 return BadRequest();
             }
@@ -94,7 +106,7 @@ namespace MicrobrewitApi.Controllers
             db.Fermentables.Add(fermentable);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = fermentable.FermentableId}, fermentable);
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetable", id = fermentable.Id}, fermentable);
         }
 
         // DELETE api/Fermentable/5
@@ -124,7 +136,7 @@ namespace MicrobrewitApi.Controllers
 
         private bool FermentableExists(int id)
         {
-            return db.Fermentables.Count(e => e.FermentableId == id) > 0;
+            return db.Fermentables.Count(e => e.Id == id) > 0;
         }
     }
 }
