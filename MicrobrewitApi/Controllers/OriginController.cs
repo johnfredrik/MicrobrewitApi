@@ -50,7 +50,7 @@ namespace MicrobrewitApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != origin.OriginId)
+            if (id != origin.Id)
             {
                 return BadRequest();
             }
@@ -89,7 +89,7 @@ namespace MicrobrewitApi.Controllers
             db.Origins.Add(origin);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { controller= "origins",id = origin.OriginId }, origin);
+            return CreatedAtRoute("DefaultApi", new { controller= "origins",id = origin.Id }, origin);
         }
 
         // DELETE api/Origin/5
@@ -120,7 +120,7 @@ namespace MicrobrewitApi.Controllers
 
         private bool OriginExists(int id)
         {
-            return db.Origins.Count(e => e.OriginId == id) > 0;
+            return db.Origins.Count(e => e.Id == id) > 0;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MicrobrewitModel.ModelBuilder
     {
         public OriginConfiguration()
         {
-            this.HasKey(o => o.OriginId);
+            Property(o => o.Id).IsRequired().HasColumnName("OriginId");
             Property(o => o.Name).IsRequired().HasMaxLength(255);
         }
     }
