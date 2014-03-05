@@ -85,39 +85,40 @@ namespace MicrobrewitApi.Controllers
                 .Select(AsBookDto);
         }
 
-        //// PUT api/Hopd/5
-        //public async Task<IHttpActionResult> PutHop(int id, Hop hop)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // PUT api/Hops/5
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> PutHop(int id, Hop hop)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    if (id != hop.HopId)
-        //    {
-        //        return BadRequest();
-        //    }
+            if (id != hop.HopId)
+            {
+                return BadRequest();
+            }
 
-        //    db.Entry(hop).State = EntityState.Modified;
+            db.Entry(hop).State = EntityState.Modified;
 
-        //    try
-        //    {
-        //        await db.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!HopExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!HopExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-        //    return StatusCode(HttpStatusCode.NoContent);
-        //}
+            return StatusCode(HttpStatusCode.NoContent);
+        }
 
         // POST api/Hops
         [Route("")]
@@ -134,26 +135,27 @@ namespace MicrobrewitApi.Controllers
 
             db.Hops.Add(hop);
             await db.SaveChangesAsync();
-
-            Log.DebugFormat("Hop name:{0}, AAHigh: {1}, AALow: {2}, id: {3}", hop.Name, hop.AAHigh, hop.AALow,hop.HopId);
-            return CreatedAtRoute("api/hops/",new {id = hop.HopId},hop);
+            hop = db.Hops.Include(h => h.Origin).Where(h => h.HopId == hop.HopId).SingleOrDefault();
+           
+            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hop.HopId},hop);
         }
 
-        //// DELETE api/Hopd/5
-        //[ResponseType(typeof(Hop))]
-        //public async Task<IHttpActionResult> DeleteHop(int id)
-        //{
-        //    Hop hop = await db.Hops.FindAsync(id);
-        //    if (hop == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // DELETE api/Hopd/5
+        [Route("{id:int}")]
+        [ResponseType(typeof(Hop))]
+        public async Task<IHttpActionResult> DeleteHop(int id)
+        {
+            Hop hop = await db.Hops.FindAsync(id);
+            if (hop == null)
+            {
+                return NotFound();
+            }
 
-        //    db.Hops.Remove(hop);
-        //    await db.SaveChangesAsync();
+            db.Hops.Remove(hop);
+            await db.SaveChangesAsync();
 
-        //    return Ok(hop);
-        //}
+            return Ok(hop);
+        }
 
         protected override void Dispose(bool disposing)
         {
