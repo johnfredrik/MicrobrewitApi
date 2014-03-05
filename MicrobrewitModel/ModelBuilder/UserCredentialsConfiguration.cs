@@ -13,7 +13,7 @@ namespace MicrobrewitModel.ModelBuilder
         {
             Property(u => u.Id).IsRequired().HasColumnName("UserCredentialsId");
             Property(u => u.Password).IsRequired();
-            Property(u => u.PasswordSalt).IsRequired();
+            Property(u => u.PasswordSalt).IsRequired();            
         }
     }
 }

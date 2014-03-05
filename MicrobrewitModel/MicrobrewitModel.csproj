@@ -52,6 +52,8 @@
     <Compile Include="ModelBuilder\FermentableTypeConfiguration.cs" />
     <Compile Include="ModelBuilder\OtherConfiguration.cs" />
     <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
+    <Compile Include="ModelBuilder\UserConfiguration.cs" />
+    <Compile Include="ModelBuilder\UserCredentialsConfiguration.cs" />
     <Compile Include="ModelBuilder\YeastConfiguration.cs" />
     <Compile Include="Model\DryExtract.cs" />
     <Compile Include="Model\DryYeast.cs" />
@@ -73,6 +75,8 @@
     <Compile Include="Model\Spice.cs" />
     <Compile Include="Model\Sugar.cs" />
     <Compile Include="Model\Supplier.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserCredentials.cs" />
     <Compile Include="Model\Yeast.cs" />
     <Compile Include="Model\LiquidYeast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
