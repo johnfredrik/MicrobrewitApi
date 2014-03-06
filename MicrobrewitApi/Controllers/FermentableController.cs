@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MicrobrewitModel;
+using MicrobrewitApi.Util;
 using log4net;
 
 namespace MicrobrewitApi.Controllers
@@ -20,7 +21,8 @@ namespace MicrobrewitApi.Controllers
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
-        // GET api/Fermentable
+        // GET api/Fermentable 
+        [BasicAuthenticationAttibute]
         [Route("")]
         public IQueryable<Fermentable> GetFermentables()
         {

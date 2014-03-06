@@ -9,13 +9,14 @@ namespace MicrobrewitModel.ModelBuilder
 {
     public class UserConfiguration : EntityTypeConfiguration<User>
     {
-        UserConfiguration()
+        public UserConfiguration()
         {
-            Property(u => u.Id).IsRequired().HasColumnName("UserId");
+            //Property(u => u.Id).IsRequired().HasColumnName("UserId");
             Property(u => u.Username).IsRequired();
             Property(u => u.Email).IsRequired();
 
-            this.HasRequired(u => u.UserCredentials).WithMany().HasForeignKey(u => u.UserCredentialsId);
+            //this.HasKey(u => u.Id);
+            this.HasKey(u => u.Username);
         }
     }
 }

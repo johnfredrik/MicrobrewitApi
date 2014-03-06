@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace MicrobrewitModel.ModelBuilder
 {
-    class UserCredentialsConfiguration : EntityTypeConfiguration<UserCredentials>
+    public class UserCredentialsConfiguration : EntityTypeConfiguration<UserCredentials>
     {
-        UserCredentialsConfiguration()
+        public UserCredentialsConfiguration()
         {
             Property(u => u.Id).IsRequired().HasColumnName("UserCredentialsId");
             Property(u => u.Password).IsRequired();
-            Property(u => u.PasswordSalt).IsRequired();            
+            Property(u => u.SharedSecret).IsRequired();
+            Property(u => u.Username).IsRequired().HasMaxLength(255);
+          
+            this.HasRequired(u => u.User).WithMany().HasForeignKey(u => u.Username);
         }
     }
 }

@@ -58,6 +58,14 @@ namespace MicrobrewitModel
             context.Fermentables.Add(new Grain() {Id = 3, Name = "Pale Ale Malt" , Colour = 2, PPG = 37, });
             context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , Colour = 4, PPG = 43,});
             context.Fermentables.Add(new LiquidExtract() {Id = 5, Name = "Plain Light DME", Colour = 4, PPG = 43,});
+
+            context.Users.Add(new User() {Username = "johnfredrik", Email = "john-f@online.no"});
+            context.UserCredentials.Add(new UserCredentials() 
+            { Id = 1, 
+              Password = "EAAAAJ4gbz/QQuF8MrtuRwfKmFWJnZNH9bhQCU1c08FQigks", 
+              SharedSecret = "test", 
+              Username = "johnfredrik", 
+              Token = "test" });
             
         }
     }

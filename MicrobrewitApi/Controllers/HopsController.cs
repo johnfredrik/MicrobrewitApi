@@ -24,7 +24,7 @@ namespace MicrobrewitApi.Controllers
 
         private MicrobrewitApiContext db = new MicrobrewitApiContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly Expression<Func<Hop,HopDto>> AsBookDto =
+        private static readonly Expression<Func<Hop,HopDto>> AsHopDto =
             x => new HopDto
             {
                 Name = x.Name,
@@ -81,7 +81,7 @@ namespace MicrobrewitApi.Controllers
             Log.Debug("Origin: " + origin);
             return db.Hops.Include(h => h.Origin)
                 .Where(h => h.Origin.Name.Equals(origin, StringComparison.OrdinalIgnoreCase))
-                .Select(AsBookDto);
+                .Select(AsHopDto);
         }
 
         // PUT api/Hops/5

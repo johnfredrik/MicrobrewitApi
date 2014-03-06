@@ -1,9 +1,12 @@
-﻿using MicrobrewitModel;
+﻿using MicrobrewitApi.Controllers;
+using MicrobrewitModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Web.Routing;
 using System.Web.Http;
+using MicrobrewitApi.Util;
 
 namespace MicrobrewitApi
 {
@@ -14,6 +17,12 @@ namespace MicrobrewitApi
             Database.SetInitializer(new InitializeDatabaseWithSeedData());
             // Web API configuration and services
 
+            //config.Filters.Add(new TokenValidationAttribute());
+            //config.Filters.Add(new CustomHttpsAttribute());         
+            //config.Filters.Add(new BasicAuthenticationAttibute());
+           // config.EnableCors();
+
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 
@@ -22,6 +31,7 @@ namespace MicrobrewitApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+           
         }
     }
 }

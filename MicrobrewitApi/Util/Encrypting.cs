@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,79 +12,8 @@ namespace MicrobrewitApi.Util
     {
 
         private static readonly byte[] Salt = Encoding.ASCII.GetBytes("05464545kM56Yc2");
-        private static string _secretString;
-        private const string Encrypted = "EAAAACZbrZRZ6i5ZzVbb8Ytu2RfFjvrXGmu6nwfUdNglwtN0";
-
-        static void Main(string[] args)
-        {
-        
-            Console.WriteLine("About to " + args[0]);
-            Thread th;
-            if (args[1] != null)
-            {
-                _secretString = args[1];
-            }
-            if(args[0] == "Login" )
-            {
-                th = new Thread(Login);
-                th.SetApartmentState(ApartmentState.STA);
-                th.Start();
-                th.Join();
-            } else if (args[0] == "Logout")
-            {
-                th = new Thread(Logout);
-                th.SetApartmentState(ApartmentState.STA);
-                th.Start();
-                th.Join();
-            } else
-            {
-                var encryptedPassword = Encrypt(args[0], args[1]);
-                Console.WriteLine(encryptedPassword);
-                Console.ReadLine();
-            }
-
-
-
-
-        }
-
-        private static void Login()
-        {
-            var browser = new IE("https://gatsoft-hds.ihelse.net/mingat/frmLogin.aspx");
-            
-                LoginToMingat(browser);
-                browser.Button(Find.ByName("btnIn")).Click();
-            
-        }
-
-        private static void LoginToMingat(IE browser)
-        {
-            browser.Link(Find.ByName("overridelink")).Click();
-            browser.TextField(Find.ByName("eUsername")).TypeText("jfa");
-            try
-            {
-                browser.TextField(Find.ByName("ePassword")).TypeText(Decrypt(Encrypted,_secretString));
-                browser.Button(Find.ByName("btLogin")).Click();
-                browser.GoTo("https://gatsoft-hds.ihelse.net/MinGat/Flextime.aspx");
-            }
-            catch (CryptographicException cryptographicException)
-            {
-                Console.WriteLine("Wrong secret, try again");
-                browser.Dispose();
-            }
-        }
-
-        private static void Logout()
-        {
-            var browser = new IE("https://gatsoft-hds.ihelse.net/mingat/frmLogin.aspx");
-            
-            LoginToMingat(browser);
-            browser.Button(Find.ByName("btnOut")).Click();
-                
-            
-        }
-
-        private static string Encrypt(string plainText, string sharedSecret)
+       
+        public static string Encrypt(string plainText, string sharedSecret)
         {
 
             string outString = null;
@@ -128,7 +56,7 @@ namespace MicrobrewitApi.Util
 
         }
 
-        private static string Decrypt(string cipherText, string sharedSecret)
+        public static string Decrypt(string cipherText, string sharedSecret)
         {
 
             Rijndael aesAlg = null;

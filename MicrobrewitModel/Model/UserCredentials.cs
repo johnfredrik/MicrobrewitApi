@@ -10,7 +10,9 @@ namespace MicrobrewitModel
     {
         public int Id { get; set; }
         public string Password { get; set; }
-        public string PasswordSalt { get; set; }
+        public string SharedSecret { get; set; }
+        public string Token { get; set; }
+        public string Username { get; set; }
         public User User { get; set; }       
     }
 }
