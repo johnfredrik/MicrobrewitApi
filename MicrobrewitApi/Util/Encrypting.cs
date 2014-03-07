@@ -6,12 +6,20 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.IdentityModel.Tokens;
+using System.Security.Claims;
+using log4net;
+using System.ServiceModel.Security.Tokens;
+using MicrobrewitModel;
+using System.IdentityModel.Protocols.WSTrust;
+
 namespace MicrobrewitApi.Util
 {
     public class Encrypting
     {
-
-        private static readonly byte[] Salt = Encoding.ASCII.GetBytes("05464545kM56Yc2");
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly byte[] Salt = Encoding.ASCII.GetBytes(@"Èõó¬7SýÉ•wäÚx:þÞ]^ì¶—~9a§");
+        private static readonly JwtSecurityTokenHandler tokenhandler = new JwtSecurityTokenHandler();
        
         public static string Encrypt(string plainText, string sharedSecret)
         {
@@ -109,6 +117,76 @@ namespace MicrobrewitApi.Util
 
         return buffer;
     }
+
+        public static byte[] GenerateRandomBytes(int length)
+        {
+            // Create a buffer
+            byte[] randBytes;
+
+            if (length >= 1)
+            {
+                randBytes = new byte[length];
+            }
+            else
+            {
+                randBytes = new byte[1];
+            }
+
+            // Create a new RNGCryptoServiceProvider.
+            System.Security.Cryptography.RNGCryptoServiceProvider rand =
+                 new System.Security.Cryptography.RNGCryptoServiceProvider();
+
+            // Fill the buffer with random bytes.
+            rand.GetBytes(randBytes);
+
+            // return the bytes.
+            return randBytes;
+        }
+
+        public static string JWTDecrypt(User user)
+        {
+            Log.Debug("Username:" + user.Username);
+            //var symmetricKey = GenerateRandomBytes(256 / 8);
+          
+            var now = DateTime.UtcNow;
+            var signingCred = new SigningCredentials(new InMemorySymmetricSecurityKey(Salt),
+                                    "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256",
+                                    "http://www.w3.org/2001/04/xmlenc#sha256");
+
+            var jwtHeader = new JwtHeader(signingCred);
+                                           
+                         
+            JwtSecurityToken jwtToken = new JwtSecurityToken
+            (issuer: "http://issuer.com", audience: "http://localhost"
+            , claims: new List<Claim>() { new Claim("username", user.Username) }
+            , lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(10))
+            , signingCredentials: signingCred);
+
+            var life = new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(10));
+            Log.DebugFormat("npf: {0} exp: {1}",life.Created,life.Expires);
+            string tokenString = tokenhandler.WriteToken(jwtToken);
+
+            
+            Log.Debug("jwtToken: " + tokenString);
+           
+            return tokenString;
+        }
+       
+        public static void JWTValidation(string tokenString)
+        {
+            
+            var validationParameters = new TokenValidationParameters()
+            {
+                AllowedAudience = "http://localhost",
+                SigningToken = new BinarySecretSecurityToken(Salt),
+                ValidIssuer = "http://issuer.com",                                
+            };
+            Log.Debug("Now time: " + DateTime.UtcNow.ToString());
+            var principal = tokenhandler.ValidateToken(tokenString, validationParameters);
+           
+        }
+
+
     }
 }
 

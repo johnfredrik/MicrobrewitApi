@@ -5,7 +5,12 @@ using System.Web.Http.Filters;
 using System.Web.Http.Controllers;
 using MicrobrewitApi.Util;
 using log4net;
+using Newtonsoft.Json;
 
+
+
+using MicrobrewitModel;
+using System.IdentityModel.Tokens;
 namespace MicrobrewitApi.Controllers
 {
     public class TokenValidationAttribute : ActionFilterAttribute
@@ -15,11 +20,11 @@ namespace MicrobrewitApi.Controllers
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             string token;
-
-            try
+           try
             {
-                token = actionContext.Request.Headers.GetValues("Authorization-Token").First();
-                Log.Debug("token: " + token);
+                token = actionContext.Request.Headers.GetValues("Authorization-Token").First();                               
+                
+                Log.Debug("token: " + token);               
             }
             catch (Exception)
             {
@@ -32,17 +37,30 @@ namespace MicrobrewitApi.Controllers
 
             try
             {                
-                AuthorizedUserRepository.GetUsers().First(x => x.Token.Equals(Encrypting.Decrypt(token,x.SharedSecret)));
+                Encrypting.JWTValidation(token);               
                 base.OnActionExecuting(actionContext);
             }
-            catch (Exception ex)
+            catch (SecurityTokenValidationException ex)
             {
-                Log.Debug(ex);
-                actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden)
+                //Log.Debug(ex);
+                if (ex.Message.ToString().Contains("Jwt10305"))
                 {
-                    Content = new StringContent("Unauthorized User")
+                    actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden)
+                    {
+                        Content = new StringContent("Authorization-Token Expired")
+
+                    };
+
+                }
+                else
+                {
+
+                    actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden)
+                    {
+                        Content = new StringContent("Unauthorized User")
                     
-                };
+                    };
+                }
                 return;
             }
         }
