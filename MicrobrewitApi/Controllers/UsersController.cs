@@ -79,28 +79,11 @@ namespace MicrobrewitApi.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
-
+        [LoginValidation]
         [Route("login")]
-        [AntiForgeryValidate]
-        public async Task<IHttpActionResult> PostLogin(Login login)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var userCredentials = await db.UserCredentials.Include(u => u.User).Where(u => u.User.Username.Equals(login.UserName)).FirstOrDefaultAsync();
-
-            if (!Encrypting.Decrypt(userCredentials.Password, userCredentials.SharedSecret).Equals(login.Password))
-            {
-                return BadRequest();
-            }
-            else
-            {
-                HttpContext.Current.User = new GenericPrincipal(new ApiIdentity(userCredentials.User), new string[] { });
-            }
-
-            return Ok(HttpContext.Current.User);
+        public async Task<IHttpActionResult> PostLogin()
+        {                 
+            return Ok();
         }
 
 
@@ -116,7 +99,8 @@ namespace MicrobrewitApi.Controllers
             }
 
             var encryptedPassword = Encrypting.Encrypt(userDto.Password, userDto.SharedSecret);
-            var token = "test";
+            var salt = Encrypting.GenerateRandomBytes(256 / 8);
+           
 
             var user = new User()
             {
@@ -125,7 +109,7 @@ namespace MicrobrewitApi.Controllers
                 BreweryName = userDto.BreweryName,
                 Settings = userDto.Settings,
             };
-            UserCredentials userCredential = new UserCredentials() { Password = encryptedPassword, SharedSecret = userDto.SharedSecret, Token = token, Username = user.Username };
+            UserCredentials userCredential = new UserCredentials() { Password = encryptedPassword, SharedSecret = userDto.SharedSecret, Username = user.Username };
 
 
             db.UserCredentials.Add(userCredential);

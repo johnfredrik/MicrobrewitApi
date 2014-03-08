@@ -15,6 +15,7 @@ using log4net;
 
 namespace MicrobrewitApi.Controllers
 {
+    [TokenValidationAttribute]
     [RoutePrefix("api/fermentables")]
     public class FermentableController : ApiController
     {
@@ -22,7 +23,6 @@ namespace MicrobrewitApi.Controllers
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
         // GET api/Fermentable 
-        [BasicAuthenticationAttibute]
         [Route("")]
         public IQueryable<Fermentable> GetFermentables()
         {
