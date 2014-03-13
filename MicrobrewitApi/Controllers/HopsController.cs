@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MicrobrewitModel;
-using MicrobrewitApi.DTOs;
 using System.Linq.Expressions;
 using log4net;
 using Newtonsoft.Json;
+using MicrobrewitApi.DTOs;
+using AutoMapper;
 
 namespace MicrobrewitApi.Controllers
 {
@@ -34,7 +35,11 @@ namespace MicrobrewitApi.Controllers
         // GET api/Hops
         [Route("")]
         public IQueryable<Hop> GetHops()
-        {           
+        {
+         
+        
+
+
             return db.Hops.Include(h => h.Origin);
         }
 
@@ -56,18 +61,10 @@ namespace MicrobrewitApi.Controllers
         }
 
         [Route("{id:int}/details")]
-        [ResponseType(typeof(HopDetailDto))]
+        [ResponseType(typeof(Hop))]
         public async Task<IHttpActionResult> GetHopDetail(int id)
         {
-            var hop = await (from h in db.Hops.Include(h => h.Origin)
-                             where h.Id == id
-                             select new HopDetailDto
-                             {
-                                 Name = h.Name,
-                                 AALow = h.AALow,
-                                 AAHigh = h.AAHigh,
-                                 Origin = h.Origin.Name
-                             }).FirstOrDefaultAsync();
+            var hop = await db.Hops.Include(h => h.Origin).Where(h => h.Id == id).FirstOrDefaultAsync();
             if (hop == null)
             {
                 return NotFound();

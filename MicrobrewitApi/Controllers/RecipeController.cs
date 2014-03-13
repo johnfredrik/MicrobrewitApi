@@ -11,6 +11,10 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using MicrobrewitModel;
 using log4net;
+using System.Linq.Expressions;
+using MicrobrewitApi.DTOs;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace MicrobrewitApi.Controllers
 {
@@ -22,9 +26,18 @@ namespace MicrobrewitApi.Controllers
 
         // GET api/Recipe
         [Route("")]
-        public IQueryable<Recipe> GetRecipes()
+        public IQueryable<RecipeDto> GetRecipes()
         {
-            return db.Recipes.Include("RecipeHops.Hop");
+            Mapper.CreateMap<Recipe, RecipeDto>().ForMember(dto => dto.Hops, conf => conf.MapFrom(rec => rec.RecipeHops));
+            Mapper.CreateMap<RecipeHop, RecipeHopDto>()
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Hop.Name))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.HopId));
+            Mapper.AssertConfigurationIsValid();
+
+            var recipes = db.Recipes.Include("RecipeHops.Hop.Origin").Project().To<RecipeDto>();
+            return recipes;
+
+           
         }
 
         // GET api/Recipe/5
@@ -32,7 +45,7 @@ namespace MicrobrewitApi.Controllers
         [ResponseType(typeof(Recipe))]
         public async Task<IHttpActionResult> GetRecipe(int id)
         {
-            Recipe recipe = await db.Recipes.FindAsync(id);
+            Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
             if (recipe == null)
             {
                 return NotFound();
