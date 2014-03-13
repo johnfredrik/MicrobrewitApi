@@ -42,6 +42,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,6 +53,8 @@
   <ItemGroup>
     <Compile Include="ModelBuilder\FermentableTypeConfiguration.cs" />
     <Compile Include="ModelBuilder\OtherConfiguration.cs" />
+    <Compile Include="ModelBuilder\RecipeConfiguration.cs" />
+    <Compile Include="ModelBuilder\RecipeHopConfiguration.cs" />
     <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
     <Compile Include="ModelBuilder\UserConfiguration.cs" />
     <Compile Include="ModelBuilder\UserCredentialsConfiguration.cs" />
@@ -63,7 +67,7 @@
     <Compile Include="Model\Grain.cs" />
     <Compile Include="Model\Hop.cs" />
     <Compile Include="InitializeDatabaseWithSeedData.cs" />
-    <Compile Include="MicrobrewitApiContext.cs" />
+    <Compile Include="MicrobrewitContext.cs" />
     <Compile Include="ModelBuilder\FermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\HopsConfiguration.cs" />
     <Compile Include="ModelBuilder\OriginConfiguration.cs" />
@@ -72,6 +76,7 @@
     <Compile Include="Model\Origin.cs" />
     <Compile Include="Model\Other.cs" />
     <Compile Include="Model\Recipe.cs" />
+    <Compile Include="Model\RecipeHop.cs" />
     <Compile Include="Model\Spice.cs" />
     <Compile Include="Model\Sugar.cs" />
     <Compile Include="Model\Supplier.cs" />
@@ -85,6 +90,9 @@
     <None Include="App.config" />
     <Content Include="log4net.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

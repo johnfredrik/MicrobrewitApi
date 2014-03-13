@@ -14,7 +14,7 @@ namespace MicrobrewitApi
     {
         public static void Register(HttpConfiguration config)
         {
-            Database.SetInitializer(new InitializeDatabaseWithSeedData());
+           
             // Web API configuration and services
 
             //config.Filters.Add(new TokenValidationAttribute());
@@ -22,6 +22,7 @@ namespace MicrobrewitApi
             //config.Filters.Add(new BasicAuthenticationAttibute());
            // config.EnableCors();
 
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
             // Web API routes
             config.MapHttpAttributeRoutes();

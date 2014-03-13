@@ -16,7 +16,7 @@ namespace MicrobrewitApi.Controllers
     [RoutePrefix("api/yeasts")]
     public class YeastsController : ApiController
     {
-        private MicrobrewitApiContext db = new MicrobrewitApiContext();
+        private MicrobrewitContext db = new MicrobrewitContext();
 
         // GET api/Yeasts
         [Route("")]

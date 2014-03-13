@@ -14,7 +14,9 @@ namespace MicrobrewitModel
         public string Name { get; set; }
         public double AALow { get; set; }
         public double AAHigh { get; set; }
-        public int OriginId { get; set; } 
-        public virtual Origin Origin { get; set; }        
+        public Nullable<int> OriginId { get; set; } 
+        public virtual Origin Origin { get; set; }
+
+        public virtual ICollection<RecipeHop> RecipeHops { get; set; }
     }
 }

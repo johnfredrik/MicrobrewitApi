@@ -10,7 +10,16 @@ namespace MicrobrewitModel
     public class Recipe
     {
        
-        public int RecipeId { get; set; }
-        public string Name { get; set; }      
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        //public ICollection<Fermentable> Fermentables { get; set; }
+        public virtual ICollection<RecipeHop> RecipeHops { get; set; }
+        //public ICollection<Other> Others { get; set; }
+        //public ICollection<Yeast> Yeasts { get; set; }
+
+
+
+
     }
 }

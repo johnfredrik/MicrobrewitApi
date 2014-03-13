@@ -22,7 +22,7 @@ namespace MicrobrewitApi.Controllers
     public class HopsController : ApiController
     {
 
-        private MicrobrewitApiContext db = new MicrobrewitApiContext();
+        private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly Expression<Func<Hop,HopDto>> AsHopDto =
             x => new HopDto
@@ -34,7 +34,7 @@ namespace MicrobrewitApi.Controllers
         // GET api/Hops
         [Route("")]
         public IQueryable<Hop> GetHops()
-        {
+        {           
             return db.Hops.Include(h => h.Origin);
         }
 

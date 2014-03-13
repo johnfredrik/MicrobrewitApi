@@ -103,6 +103,7 @@
     <Compile Include="Controllers\HopsController.cs" />
     <Compile Include="Controllers\OriginController.cs" />
     <Compile Include="Controllers\OthersController.cs" />
+    <Compile Include="Controllers\RecipeController.cs" />
     <Compile Include="Controllers\SuppliersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\YeastsController.cs" />

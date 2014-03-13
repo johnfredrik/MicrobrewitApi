@@ -19,7 +19,7 @@ namespace MicrobrewitApi.Controllers
     [RoutePrefix("api/fermentables")]
     public class FermentableController : ApiController
     {
-        private MicrobrewitApiContext db = new MicrobrewitApiContext();
+        private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
         // GET api/Fermentable 

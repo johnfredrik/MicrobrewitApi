@@ -21,7 +21,7 @@ namespace MicrobrewitApi.Controllers
     [RoutePrefix("api/users")]
     public class UsersController : ApiController
     {
-        private MicrobrewitApiContext db = new MicrobrewitApiContext();
+        private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);            
 
         // GET api/User

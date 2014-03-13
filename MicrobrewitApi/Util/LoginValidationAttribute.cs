@@ -26,7 +26,7 @@ namespace MicrobrewitApi.Util
             string password = decodedToken.Substring(decodedToken.IndexOf(":") + 1);
 
             UserCredentials userCredentials = null;
-            using (var context = new MicrobrewitApiContext())
+            using (var context = new MicrobrewitContext())
             {
                 userCredentials = context.UserCredentials.Include("User").Where(u => u.Username.Equals(username)).FirstOrDefault();
 

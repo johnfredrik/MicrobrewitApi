@@ -8,11 +8,11 @@ using log4net;
 
 namespace MicrobrewitModel
 {
-    public class InitializeDatabaseWithSeedData : DropCreateDatabaseAlways<MicrobrewitApiContext>
+    public class InitializeDatabaseWithSeedData : DropCreateDatabaseAlways<MicrobrewitContext>
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected override void Seed(MicrobrewitApiContext context)
+        protected override void Seed(MicrobrewitContext context)
         {
             Log.Debug("Initilizing DataBase with Seed Data");
 
@@ -67,6 +67,9 @@ namespace MicrobrewitModel
                 SharedSecret = "test",
                 Username = "johnfredrik",
             });
+
+            //context.Recipes.Add(new Recipe() { Id = 1, Name = "Beer Good", Hops = new List<Hop>() { new Hop() {Id = 1, Name = "Malt"}} });
+
             
         }
     }
