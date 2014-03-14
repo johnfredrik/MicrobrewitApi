@@ -1,14 +1,14 @@
-﻿using MicrobrewitApi.Controllers;
-using MicrobrewitModel;
+﻿using Microbrewit.Api.Controllers;
+using Microbrewit.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Routing;
 using System.Web.Http;
-using MicrobrewitApi.Util;
+using Microbrewit.Api.Util;
 
-namespace MicrobrewitApi
+namespace Microbrewit.Api
 {
     public static class WebApiConfig
     {

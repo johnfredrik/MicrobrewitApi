@@ -5,7 +5,7 @@ using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Web;
 
-namespace MicrobrewitModel.ModelBuilder
+namespace Microbrewit.Model.ModelBuilder
 {
     public class HopsConfiguration : EntityTypeConfiguration<Hop>
     {
@@ -15,6 +15,7 @@ namespace MicrobrewitModel.ModelBuilder
             Property(hop => hop.Id).IsRequired().HasColumnName("HopId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(hop => hop.Name).IsRequired().HasMaxLength(200);
             this.HasMany(hop => hop.RecipeHops).WithRequired(recipeHop => recipeHop.Hop).HasForeignKey(recipeHop => recipeHop.HopId);
+            this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
             //    .Map(m =>
             //{
 

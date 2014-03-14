@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace MicrobrewitModel
+namespace Microbrewit.Model
 {
     public class Fermentable
     {

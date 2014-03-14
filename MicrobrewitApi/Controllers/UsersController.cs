@@ -9,14 +9,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using MicrobrewitModel;
-using MicrobrewitApi.DTOs;
-using MicrobrewitApi.Util;
+using Microbrewit.Model;
+using Microbrewit.Api.DTOs;
+using Microbrewit.Api.Util;
 using log4net;
 using System.Web;
 using System.Security.Principal;
 
-namespace MicrobrewitApi.Controllers
+namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("api/users")]
     public class UsersController : ApiController

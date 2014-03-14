@@ -3,15 +3,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Filters;
 using System.Web.Http.Controllers;
-using MicrobrewitApi.Util;
+using Microbrewit.Api.Util;
 using log4net;
 using Newtonsoft.Json;
-
-
-
-using MicrobrewitModel;
+using Microbrewit.Model;
 using System.IdentityModel.Tokens;
-namespace MicrobrewitApi.Controllers
+namespace Microbrewit.Api.Controllers
 {
     public class TokenValidationAttribute : ActionFilterAttribute
     {

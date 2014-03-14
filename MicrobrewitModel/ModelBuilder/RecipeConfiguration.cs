@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicrobrewitModel.ModelBuilder
+namespace Microbrewit.Model.ModelBuilder
 {
     public class RecipeConfiguration : EntityTypeConfiguration<Recipe>
     {

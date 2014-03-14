@@ -4,15 +4,12 @@ using System.Linq;
 using System.Web;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using MicrobrewitModel;
+using Microbrewit.Model;
 
-namespace MicrobrewitApi.DTOs
+namespace Microbrewit.Api.DTOs
 {
     //public class CustomResolver : ValueResolver<RecipeHop, RecipeHopDto>
     //{
-    //    protected override RecipeHopDto ResolveCore(RecipeHop source)
-    //    {
-    //        return new RecipeHopDto() {  };
-    //    }
+         
     //}
 }

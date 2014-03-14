@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace MicrobrewitApi.DTOs
+namespace Microbrewit.Api.DTOs
 {
     public class Login
     {

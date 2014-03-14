@@ -9,11 +9,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using MicrobrewitModel;
-using MicrobrewitApi.Util;
+using Microbrewit.Model;
+using Microbrewit.Api;
 using log4net;
 
-namespace MicrobrewitApi.Controllers
+namespace Microbrewit.Api.Controllers
 {
     [TokenValidationAttribute]
     [RoutePrefix("api/fermentables")]

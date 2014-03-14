@@ -9,43 +9,49 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using MicrobrewitModel;
+using Microbrewit.Model;
+using Microbrewit.Repository;
 using log4net;
 using System.Linq.Expressions;
-using MicrobrewitApi.DTOs;
+using Microbrewit.Api.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
-namespace MicrobrewitApi.Controllers
+namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("api/recipes")]
     public class RecipeController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private IRecipeRepositoy recipeRepository = new RecipeRepository();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        
 
         // GET api/Recipe
         [Route("")]
-        public IQueryable<RecipeDto> GetRecipes()
+        public IList<RecipeDto> GetRecipes()
         {
-            Mapper.CreateMap<Recipe, RecipeDto>().ForMember(dto => dto.Hops, conf => conf.MapFrom(rec => rec.RecipeHops));
-            Mapper.CreateMap<RecipeHop, RecipeHopDto>()
-                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Hop.Name))
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.HopId));
-            Mapper.AssertConfigurationIsValid();
+            
 
-            var recipes = db.Recipes.Include("RecipeHops.Hop.Origin").Project().To<RecipeDto>();
-            return recipes;
+            //var recipes = db.Recipes.Include("RecipeHops.Hop").Project().To<RecipeDto>();
+            var recipes = recipeRepository.GetRecipes();
+            var recipesDto =  Mapper.Map<IList<Recipe>, IList<RecipeDto>>(recipes);
+            return recipesDto;
 
            
         }
 
         // GET api/Recipe/5
-        [Route("id:int")]
-        [ResponseType(typeof(Recipe))]
+        [Route("{id:int}")]
+        [ResponseType(typeof(RecipeDto))]
         public async Task<IHttpActionResult> GetRecipe(int id)
         {
-            Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
+            
+
+            //Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
+            RecipeDto recipe =  Mapper.Map<Recipe,RecipeDto>(recipeRepository.GetRecipe(id));
+
             if (recipe == null)
             {
                 return NotFound();

@@ -7,7 +7,7 @@
     <ProjectGuid>{A7BE6B77-35E4-4164-8F31-DB0F21451D3D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MicrobrewitModel</RootNamespace>
+    <RootNamespace>Microbrewit.Model</RootNamespace>
     <AssemblyName>MicrobrewitModel</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModelBuilder\FermentableTypeConfiguration.cs" />
+    <Compile Include="ModelBuilder\FlavourConfiguration.cs" />
+    <Compile Include="ModelBuilder\HopFlavourConfiguration.cs" />
     <Compile Include="ModelBuilder\OtherConfiguration.cs" />
     <Compile Include="ModelBuilder\RecipeConfiguration.cs" />
     <Compile Include="ModelBuilder\RecipeHopConfiguration.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="Model\DryYeast.cs" />
     <Compile Include="Model\Fermentable.cs" />
     <Compile Include="Model\FermentableType.cs" />
+    <Compile Include="Model\Flavour.cs" />
     <Compile Include="Model\Fruit.cs" />
     <Compile Include="Model\Grain.cs" />
     <Compile Include="Model\Hop.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="ModelBuilder\FermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\HopsConfiguration.cs" />
     <Compile Include="ModelBuilder\OriginConfiguration.cs" />
+    <Compile Include="Model\HopFlavour.cs" />
     <Compile Include="Model\LiquidExtract.cs" />
     <Compile Include="Model\NoneFermentableSugar.cs" />
     <Compile Include="Model\Origin.cs" />

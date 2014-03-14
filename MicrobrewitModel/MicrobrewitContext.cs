@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
-using MicrobrewitModel.ModelBuilder;
+using Microbrewit.Model.ModelBuilder;
 
-namespace MicrobrewitModel
+namespace Microbrewit.Model
 {
     public class MicrobrewitContext : DbContext
     {
@@ -20,6 +20,8 @@ namespace MicrobrewitModel
         public DbSet<UserCredentials> UserCredentials { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipeHop> RecipeHops { get; set; }
+        public DbSet<Flavour> Flavours { get; set; }
+        public DbSet<HopFlavour> HopFlavours { get; set; }
 
  
         public MicrobrewitContext()
@@ -40,7 +42,9 @@ namespace MicrobrewitModel
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new UserCredentialsConfiguration());
             modelBuilder.Configurations.Add(new RecipeConfiguration());
-            modelBuilder.Configurations.Add(new RecipeHopConfiguration());          
+            modelBuilder.Configurations.Add(new RecipeHopConfiguration());
+            modelBuilder.Configurations.Add(new FlavourConfiguration());
+            modelBuilder.Configurations.Add(new HopFlavourConfiguration());
         }
    
     }

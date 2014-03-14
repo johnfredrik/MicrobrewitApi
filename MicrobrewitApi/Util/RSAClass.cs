@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MicrobrewitApi.Util
+namespace Microbrewit.Api.Util
 {
     public class RSAClass
     {

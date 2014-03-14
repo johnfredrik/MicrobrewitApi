@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using MicrobrewitModel;
+using Microbrewit.Model;
 using System.Linq.Expressions;
 
-namespace MicrobrewitApi.DTOs
+namespace Microbrewit.Api.DTOs
 {
     public class RecipeDto
     {

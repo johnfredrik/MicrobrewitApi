@@ -10,10 +10,10 @@ using System.IdentityModel.Tokens;
 using System.Security.Claims;
 using log4net;
 using System.ServiceModel.Security.Tokens;
-using MicrobrewitModel;
+using Microbrewit.Model;
 using System.IdentityModel.Protocols.WSTrust;
 
-namespace MicrobrewitApi.Util
+namespace Microbrewit.Api.Util
 {
     public class Encrypting
     {

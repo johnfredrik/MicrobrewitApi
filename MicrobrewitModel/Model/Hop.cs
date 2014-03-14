@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace MicrobrewitModel
+namespace Microbrewit.Model
 {
     public class Hop
     {
@@ -14,9 +14,11 @@ namespace MicrobrewitModel
         public string Name { get; set; }
         public double AALow { get; set; }
         public double AAHigh { get; set; }
+        public string FlavourDescription { get; set; }
         public Nullable<int> OriginId { get; set; } 
         public virtual Origin Origin { get; set; }
 
+        public virtual ICollection<HopFlavour> HopFlavours { get; set; }
         public virtual ICollection<RecipeHop> RecipeHops { get; set; }
     }
 }

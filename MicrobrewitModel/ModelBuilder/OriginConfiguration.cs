@@ -5,7 +5,7 @@ using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Web;
 
-namespace MicrobrewitModel.ModelBuilder
+namespace Microbrewit.Model.ModelBuilder
 {
     public class OriginConfiguration : EntityTypeConfiguration<Origin>
     {

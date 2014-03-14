@@ -9,14 +9,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using MicrobrewitModel;
+using Microbrewit.Model;
 using System.Linq.Expressions;
 using log4net;
 using Newtonsoft.Json;
-using MicrobrewitApi.DTOs;
+using Microbrewit.Api.DTOs;
 using AutoMapper;
+using Microbrewit.Repository;
 
-namespace MicrobrewitApi.Controllers
+namespace Microbrewit.Api.Controllers
 {
 
     [RoutePrefix("api/hops")]
@@ -24,6 +25,7 @@ namespace MicrobrewitApi.Controllers
     {
 
         private MicrobrewitContext db = new MicrobrewitContext();
+        private IHopRepository hopRepository = new HopRepository();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly Expression<Func<Hop,HopDto>> AsHopDto =
             x => new HopDto
@@ -34,30 +36,28 @@ namespace MicrobrewitApi.Controllers
 
         // GET api/Hops
         [Route("")]
-        public IQueryable<Hop> GetHops()
+        public IList<Hop> GetHops()
         {
-         
-        
-
-
-            return db.Hops.Include(h => h.Origin);
+            return hopRepository.GetHops();
         }
 
         // GET api/Hops/5
         [Route("{id:int}")]
-        [ResponseType(typeof(Hop))]
+        [ResponseType(typeof(HopDto))]
         public async Task<IHttpActionResult> GetHop(int id)
         {
-            Log.Debug("Get Hops by id: " + id);
-            Hop hop = await db.Hops.Include(h => h.Origin)
-                .Where(h => h.Id == id)
-                .FirstOrDefaultAsync();
+            //Log.Debug("Get Hops by id: " + id);
+            //Hop hop = await db.Hops.Include(h => h.Origin)
+            //    .Where(h => h.Id == id)
+            //    .FirstOrDefaultAsync();
+            var hop = hopRepository.GetHop(id);
+
             if (hop == null)
             {
                 return NotFound();
             }
 
-            return Ok(hop);
+            return Ok(Mapper.Map<Hop,HopDto>(hop));
         }
 
         [Route("{id:int}/details")]

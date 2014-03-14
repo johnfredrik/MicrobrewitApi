@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicrobrewitModel
+namespace Microbrewit.Model
 {
     public class DryExtract : Fermentable
     {

@@ -6,11 +6,11 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using log4net;
 using System.Text;
-using MicrobrewitModel;
+using Microbrewit.Model;
 using System.Net.Http;
 using System.IdentityModel.Tokens;
 
-namespace MicrobrewitApi.Util
+namespace Microbrewit.Api.Util
 {
     public class LoginValidationAttribute : ActionFilterAttribute
     {

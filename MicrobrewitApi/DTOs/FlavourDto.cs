@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace MicrobrewitApi.DTOs
+namespace Microbrewit.Api.DTOs
 {
-    public class HopDto
+    public class FlavourDto
     {
         public string Name { get; set; }
-        public double AAValue { get; set; }
-        public string Origin { get; set; }
-
     }
 }
