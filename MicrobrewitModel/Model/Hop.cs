@@ -20,5 +20,6 @@ namespace Microbrewit.Model
 
         public virtual ICollection<HopFlavour> HopFlavours { get; set; }
         public virtual ICollection<RecipeHop> RecipeHops { get; set; }
+        public virtual ICollection<Hop> Substituts { get; set; }
     }
 }

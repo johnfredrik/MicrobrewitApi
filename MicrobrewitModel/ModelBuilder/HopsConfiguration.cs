@@ -16,6 +16,10 @@ namespace Microbrewit.Model.ModelBuilder
             Property(hop => hop.Name).IsRequired().HasMaxLength(200);
             this.HasMany(hop => hop.RecipeHops).WithRequired(recipeHop => recipeHop.Hop).HasForeignKey(recipeHop => recipeHop.HopId);
             this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
+            this.HasMany(hop => hop.Substituts).WithMany();
+            
+            //this.HasMany(hop => hop.SubstituteHop).WithRequired(subHop => subHop.Hop).HasForeignKey(subHop => subHop.HopId);
+            //this.HasMany(hop => hop.SubstituteHop).WithRequired(subHop => subHop.Substitute).HasForeignKey(subHop => subHop.SubstituteId);
             //    .Map(m =>
             //{
 
