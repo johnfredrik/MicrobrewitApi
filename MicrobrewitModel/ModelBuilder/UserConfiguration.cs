@@ -17,6 +17,9 @@ namespace Microbrewit.Model.ModelBuilder
 
             //this.HasKey(u => u.Id);
             this.HasKey(u => u.Username);
+
+            //relation
+            this.HasMany(user => user.Recipes).WithRequired(recipe => recipe.Brewer).HasForeignKey(recipe => recipe.BrewerId);
         }
     }
 }

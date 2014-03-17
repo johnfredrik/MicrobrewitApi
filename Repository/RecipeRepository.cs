@@ -13,7 +13,12 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Recipes.Include("RecipeHops.Hop").ToList();
+                return context.Recipes
+                    .Include("MashSteps.Hops")
+                    .Include("MashSteps.Fermentables")
+                    .Include("BeerStyle")
+                    .Include("Brewer")
+                    .ToList();
             }
         }
 
@@ -21,7 +26,16 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Recipes.Include("RecipeHops.Hop.Origin").Where(r => r.Id == recipeId).SingleOrDefault();
+                return context.Recipes
+                    .Include("MashSteps.Hops.Hop.Origin")
+                    .Include("MashSteps.Fermentables.Fermentable.Supplier.Origin")
+                    .Include("MashSteps.Others.Other")
+                    .Include("BoilSteps.Hops.Hop.Origin")
+                    .Include("BoilSteps.Fermentables.Fermentable.Supplier.Origin")
+                    .Include("BoilSteps.Others.Other")
+                    .Include("BeerStyle")
+                    .Include("Brewer")
+                    .Where(r => r.Id == recipeId).SingleOrDefault();
             }
         }
     }

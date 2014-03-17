@@ -12,6 +12,8 @@ namespace Microbrewit.Model
         public string Username { get; set; }        
         public string Email { get; set; }
         public string BreweryName { get; set; }
-        public string Settings { get; set; }      
+        public string Settings { get; set; }
+
+        public ICollection<Recipe> Recipes { get; set; }
     }
 }

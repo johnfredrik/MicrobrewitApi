@@ -13,6 +13,8 @@ namespace Microbrewit.Model.ModelBuilder
         {
             Property(o => o.Id).IsRequired().HasColumnName("OtherId");
             Property(o => o.Name).IsRequired().HasMaxLength(255);
+            this.HasKey(o => o.Id);
+
 
             Map(m =>
             {
@@ -30,6 +32,12 @@ namespace Microbrewit.Model.ModelBuilder
               .Map<NoneFermentableSugar>(m => {
                   m.Requires("Type").HasValue("NoneFermentableSugar");
               });
+        
+            this.HasMany(other => other.MashSteps).WithRequired(mashStepOther => mashStepOther.Other).HasForeignKey(mashStepOther => mashStepOther.OtherId);
+            this.HasMany(other => other.BoilSteps).WithRequired(boilStepOther => boilStepOther.Other).HasForeignKey(boilStepOther => boilStepOther.OtherId);
+            this.HasMany(other => other.FermentationSteps).WithRequired(fermentationStepOther => fermentationStepOther.Other).HasForeignKey(fermentationStepOther => fermentationStepOther.OtherId);
+
+
         }
     }
 }

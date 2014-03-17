@@ -44,14 +44,14 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/Recipe/5
         [Route("{id:int}")]
-        [ResponseType(typeof(RecipeDto))]
+        [ResponseType(typeof(Recipe))]
         public async Task<IHttpActionResult> GetRecipe(int id)
         {
             
 
-            //Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
-            RecipeDto recipe =  Mapper.Map<Recipe,RecipeDto>(recipeRepository.GetRecipe(id));
-
+           //Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
+           RecipeDto recipe =  Mapper.Map<Recipe,RecipeDto>(recipeRepository.GetRecipe(id));
+            //Recipe recipe = recipeRepository.GetRecipe(id);
             if (recipe == null)
             {
                 return NotFound();
@@ -109,10 +109,6 @@ namespace Microbrewit.Api.Controllers
             }
          
             db.Recipes.Add(recipe);
-            foreach (var item in recipe.RecipeHops)
-            {
-                Console.WriteLine(item.HopId);
-            }
             await db.SaveChangesAsync();
             
             return CreatedAtRoute("DefaultApi", new { controller = "recipes",id = recipe.Id }, recipe);
