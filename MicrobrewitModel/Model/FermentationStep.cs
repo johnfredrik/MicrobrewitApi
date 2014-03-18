@@ -17,6 +17,8 @@ namespace Microbrewit.Model
         public ICollection<FermentationStepHop> Hops { get; set; }
         public ICollection<FermentationStepFermentable> Fermentables { get; set; }
         public ICollection<FermentationStepOther> Others { get; set; }
+        public ICollection<FermentationStepYeast> Yeasts { get; set; }
+
         public ICollection<Recipe> Recipes { get; set; }
     }
 }

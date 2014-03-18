@@ -24,5 +24,7 @@ namespace Microbrewit.Model
         public Nullable<int> SupplierId { get; set; }
         public Supplier Supplier { get; set; }
 
+        public ICollection<FermentationStepYeast> FermentationSteps { get; set; }
+
     }
 }

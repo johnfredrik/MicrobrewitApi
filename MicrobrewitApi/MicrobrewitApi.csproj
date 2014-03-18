@@ -122,10 +122,14 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Automapper\BoilStepProfile.cs" />
+    <Compile Include="Automapper\BrewerProfile.cs" />
+    <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="DTOs\BoilStepDto.cs" />
+    <Compile Include="DTOs\BrewerDto.cs" />
     <Compile Include="DTOs\FermentableStepDto.cs" />
+    <Compile Include="DTOs\FermentationStepDto.cs" />
     <Compile Include="DTOs\FlavourDto.cs" />
     <Compile Include="Automapper\HopProfile.cs" />
     <Compile Include="Automapper\RecipeProfile.cs" />

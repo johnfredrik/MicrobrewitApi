@@ -16,11 +16,15 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasKey(r => r.Id);
 
             
-
-
             // relations
-            this.HasRequired(r => r.Brewer).WithMany(user => user.Recipes).HasForeignKey(recipe => recipe.BrewerId);
             this.HasRequired(r => r.BeerStyle).WithMany().HasForeignKey(r => r.BeerStyleId);
+            this.HasMany(r => r.Brewers).WithMany(b => b.Recipes).Map(m =>
+            {
+                m.MapLeftKey("RecipeId");
+                m.MapRightKey("Username");
+                m.ToTable("BrewerRecipe");
+            });
+
             this.HasMany(r => r.MashSteps).WithMany(mashStep => mashStep.Recipes).Map(m =>
             {
 

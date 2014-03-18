@@ -11,22 +11,24 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
 using Microbrewit.Api;
+using Microbrewit.Repository;
 using log4net;
 
 namespace Microbrewit.Api.Controllers
 {
-    [TokenValidationAttribute]
+   // [TokenValidationAttribute]
     [RoutePrefix("api/fermentables")]
     public class FermentableController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private IFermentableRepository fermentableRepository = new FermentableRepository();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
         // GET api/Fermentable 
         [Route("")]
-        public IQueryable<Fermentable> GetFermentables()
+        public IList<Fermentable> GetFermentables()
         {
-            return db.Fermentables.Include(f => f.Supplier).Include(f => f.Supplier.Origin);
+            return fermentableRepository.GetFermentables();
         }
 
         // GET api/Fermentable/5
@@ -46,35 +48,29 @@ namespace Microbrewit.Api.Controllers
         }
 
         [Route("grains")]
-        public IQueryable<Grain> GetGrains()
+        public IList<Grain> GetGrains()
         {
-            return db.Fermentables.OfType<Grain>();           
+            return fermentableRepository.GetGrains();      
         }
 
         [Route("sugars")]
-        public IQueryable<Sugar> GetSugars()
+        public IList<Sugar> GetSugars()
         {
-            return db.Fermentables.OfType<Sugar>();
+            return fermentableRepository.GetSugars();
         }
 
         [Route("dryextracts")]
-        public IQueryable<DryExtract> GetDryExtracts()
+        public IList<DryExtract> GetDryExtracts()
         {
-            return db.Fermentables.OfType<DryExtract>();
+            return fermentableRepository.GetDryExtracts();
         }
 
         [Route("liquidextracts")]
-        public IQueryable<LiquidExtract> GetLiquidExtracts()
+        public IList<LiquidExtract> GetLiquidExtracts()
         {
-            return db.Fermentables.OfType<LiquidExtract>();
+            return fermentableRepository.GetLiquidExtracts();
         }
 
-
-        [Route("extracts")]
-        public IQueryable<Fermentable> GetExtracts()
-        {
-            return db.Fermentables.Where(f => f.GetType().Equals("Liquid Extract") || f.GetType().Equals("Dry Extract"));
-        }
 
         // PUT api/Fermentable/5
         public async Task<IHttpActionResult> PutFermentable(int id, Fermentable fermentable)

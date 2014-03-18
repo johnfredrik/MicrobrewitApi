@@ -18,6 +18,7 @@ namespace Microbrewit.Model.ModelBuilder
             // relationships
             this.HasMany(hop => hop.FermentationSteps).WithRequired(fermentationStepHop => fermentationStepHop.Hop).HasForeignKey(fermentationStepHop => fermentationStepHop.HopId);
             this.HasMany(hop => hop.MashSteps).WithRequired(mashStepHop => mashStepHop.Hop).HasForeignKey(mashStepHop => mashStepHop.HopId);
+            this.HasMany(hop => hop.BoilSteps).WithRequired(boilStepHop => boilStepHop.Hop).HasForeignKey(boilStepHop => boilStepHop.HopId);
             this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
             this.HasMany(hop => hop.Substituts).WithMany();
             this.HasOptional(h => h.Origin).WithMany().HasForeignKey(o => o.OriginId);

@@ -14,11 +14,13 @@ namespace Microbrewit.Model
         public string Name { get; set; }
         public int Volume { get; set; }
         public int BeerStyleId { get; set; }
-        public string BrewerId { get; set; }
+        public string Notes { get; set; }
 
-
-        public User Brewer { get; set; }
+        // Single relations.
         public BeerStyle BeerStyle { get; set; }
+
+        //Multi relations
+        public ICollection<User> Brewers { get; set; }
         public ICollection<MashStep> MashSteps { get; set; }
         public ICollection<BoilStep> BoilSteps { get; set; }
         public ICollection<FermentationStep> FermentationSteps { get; set; }
