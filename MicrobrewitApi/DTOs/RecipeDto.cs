@@ -9,8 +9,13 @@ namespace Microbrewit.Api.DTOs
 {
     public class RecipeDto
     {
-        public virtual int Id { get; set; }
-        public virtual string Name { get; set; }
-        public virtual ICollection<RecipeHopDto> Hops { get; set; }
+        public int Id { get; set; }
+        public string RecipeName { get; set; }
+        public string  Notes { get; set; }
+
+        public IList<BrewerDto> Brewers { get; set; }
+        public IList<MashStepDto> MashSteps { get; set; }
+        public IList<BoilStepDto> BoilSteps { get; set; }
+        public IList<FermentationStepDto> FermentationSteps { get; set; }
     }
 }

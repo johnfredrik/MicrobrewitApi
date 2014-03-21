@@ -12,13 +12,12 @@ namespace Microbrewit.Api.Automapper
     {
         protected override void Configure()
         {
-            Mapper.CreateMap<Recipe, RecipeDto>().ForMember(dto => dto.Hops, conf => conf.MapFrom(rec => rec.RecipeHops));
-            Mapper.CreateMap<RecipeHop, RecipeHopDto>()
-                    .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Hop.Name))
-                    .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.HopId))
-                    .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Hop.Origin.Name));
-                    
-           // Mapper.AssertConfigurationIsValid();
+            Mapper.CreateMap<Recipe, RecipeDto>()
+                .ForMember(dto => dto.RecipeName, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.MashSteps, conf => conf.MapFrom(rec => rec.MashSteps))
+                .ForMember(dto => dto.BoilSteps, conf => conf.MapFrom(rec => rec.BoilSteps))
+                .ForMember(dto => dto.FermentationSteps, conf => conf.MapFrom(rec => rec.FermentationSteps))
+                .ForMember(dto => dto.Brewers, conf => conf.MapFrom(rec => rec.Brewers));
         }
     }
 }

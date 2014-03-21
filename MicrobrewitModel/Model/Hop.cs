@@ -18,8 +18,10 @@ namespace Microbrewit.Model
         public Nullable<int> OriginId { get; set; } 
         public virtual Origin Origin { get; set; }
 
-        public virtual ICollection<HopFlavour> HopFlavours { get; set; }
-        public virtual ICollection<RecipeHop> RecipeHops { get; set; }
-        public virtual ICollection<Hop> Substituts { get; set; }
+        public ICollection<HopFlavour> HopFlavours { get; set; }
+        public ICollection<FermentationStepHop> FermentationSteps { get; set; }
+        public ICollection<MashStepHop> MashSteps { get; set; }
+        public ICollection<BoilStepHop> BoilSteps { get; set; }
+        public ICollection<Hop> Substituts { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using log4net;
 
 namespace Microbrewit.Model
 {
-    public class InitializeDatabaseWithSeedData : DropCreateDatabaseAlways<MicrobrewitContext>
+    public class InitializeDatabaseWithSeedData : DropCreateDatabaseIfModelChanges<MicrobrewitContext>
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -36,8 +36,6 @@ namespace Microbrewit.Model
 
             context.HopFlavours.Add(new HopFlavour() { FlavourId = 1, HopId = 2 });
             context.HopFlavours.Add(new HopFlavour() { FlavourId = 2, HopId = 2 });
-
-            
 
             context.Others.Add(new Fruit() { Id = 1, Name = "Strawberry" });
             context.Others.Add(new NoneFermentableSugar() { Id = 2, Name = "Honey" });
@@ -75,6 +73,9 @@ namespace Microbrewit.Model
                 SharedSecret = "test",
                 Username = "johnfredrik",
             });
+
+            context.BeerStyles.Add(new BeerStyle() { Id = 1, Name = "Ale" });
+            context.BeerStyles.Add(new BeerStyle() { Id = 2, Name = "Golden Ale", SuperStyleId = 1 });
 
             //context.Recipes.Add(new Recipe() { Id = 1, Name = "Beer Good", Hops = new List<Hop>() { new Hop() {Id = 1, Name = "Malt"}} });
 

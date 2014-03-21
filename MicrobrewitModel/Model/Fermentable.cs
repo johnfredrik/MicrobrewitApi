@@ -16,7 +16,12 @@ namespace Microbrewit.Model
         public int Colour { get; set; }      
         public int PPG { get; set; }
         public Nullable<int> SupplierId { get; set; }
+        [NotMapped]
+        public string Type { get { return this.GetType().Name; } }
 
-        public virtual Supplier Supplier { get; set; }
+        public Supplier Supplier { get; set; }
+        public ICollection<MashStepFermentable> MashSteps { get; set; }
+        public ICollection<BoilStepFermentable> BoilSteps { get; set; }
+        public ICollection<FermentationStepFermentable> FermentationSteps { get; set; }
     }
 }

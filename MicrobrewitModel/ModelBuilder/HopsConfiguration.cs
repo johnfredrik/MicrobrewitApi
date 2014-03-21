@@ -14,21 +14,13 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasKey(hop => hop.Id);
             Property(hop => hop.Id).IsRequired().HasColumnName("HopId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(hop => hop.Name).IsRequired().HasMaxLength(200);
-            this.HasMany(hop => hop.RecipeHops).WithRequired(recipeHop => recipeHop.Hop).HasForeignKey(recipeHop => recipeHop.HopId);
-            this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
-            this.HasMany(hop => hop.Substituts).WithMany();
-            
-            //this.HasMany(hop => hop.SubstituteHop).WithRequired(subHop => subHop.Hop).HasForeignKey(subHop => subHop.HopId);
-            //this.HasMany(hop => hop.SubstituteHop).WithRequired(subHop => subHop.Substitute).HasForeignKey(subHop => subHop.SubstituteId);
-            //    .Map(m =>
-            //{
-
-            //    m.MapLeftKey("HopId");
-            //    m.MapRightKey("RecipeId");
-            //    m.ToTable("HopsRecipe");
-            //});
 
             // relationships
+            this.HasMany(hop => hop.FermentationSteps).WithRequired(fermentationStepHop => fermentationStepHop.Hop).HasForeignKey(fermentationStepHop => fermentationStepHop.HopId);
+            this.HasMany(hop => hop.MashSteps).WithRequired(mashStepHop => mashStepHop.Hop).HasForeignKey(mashStepHop => mashStepHop.HopId);
+            this.HasMany(hop => hop.BoilSteps).WithRequired(boilStepHop => boilStepHop.Hop).HasForeignKey(boilStepHop => boilStepHop.HopId);
+            this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
+            this.HasMany(hop => hop.Substituts).WithMany();
             this.HasOptional(h => h.Origin).WithMany().HasForeignKey(o => o.OriginId);
         }
     }

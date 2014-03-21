@@ -13,18 +13,38 @@ namespace Microbrewit.Model.ModelBuilder
         {
             Property(p => p.Id).IsRequired().HasColumnName("RecipeId");
             Property(p => p.Name).IsRequired();
-
-
             this.HasKey(r => r.Id);
-            this.HasMany(recipe => recipe.RecipeHops).WithRequired(recipeHop => recipeHop.Recipe).HasForeignKey(recipeHop => recipeHop.RecipeId);
 
-            //this.HasMany(r => r.Hops).WithMany(h => h.Recipes).Map(m =>
-            //{
+            
+            // relations
+            this.HasRequired(r => r.BeerStyle).WithMany().HasForeignKey(r => r.BeerStyleId);
+            this.HasMany(r => r.Brewers).WithMany(b => b.Recipes).Map(m =>
+            {
+                m.MapLeftKey("RecipeId");
+                m.MapRightKey("Username");
+                m.ToTable("BrewerRecipe");
+            });
 
-            //    m.MapLeftKey("RecipeId");
-            //    m.MapRightKey("HopId");
-            //    m.ToTable("HopsRecipe");
-            //});
+            this.HasMany(r => r.MashSteps).WithMany(mashStep => mashStep.Recipes).Map(m =>
+            {
+
+                m.MapLeftKey("RecipeId");
+                m.MapRightKey("MashStepId");
+                m.ToTable("RecipeMashStep");
+            });
+            this.HasMany(r => r.BoilSteps).WithMany(boilStep => boilStep.Recipes).Map(m =>
+            {
+
+                m.MapLeftKey("RecipeId");
+                m.MapRightKey("BoilStepId");
+                m.ToTable("RecipeBoilStep");
+            });
+            this.HasMany(r => r.FermentationSteps).WithMany(fermentationStep => fermentationStep.Recipes).Map(m =>
+                {
+                    m.MapLeftKey("RecipeId");
+                    m.MapRightKey("FermentationStepId");
+                    m.ToTable("RecipeFermentationStep");
+                });
         }
     }
 }

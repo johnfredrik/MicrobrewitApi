@@ -19,9 +19,19 @@ namespace Microbrewit.Model
         public DbSet<User> Users { get; set; }
         public DbSet<UserCredentials> UserCredentials { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<RecipeHop> RecipeHops { get; set; }
         public DbSet<Flavour> Flavours { get; set; }
         public DbSet<HopFlavour> HopFlavours { get; set; }
+        public DbSet<MashStep> MashSteps { get; set; }
+        public DbSet<MashStepHop> MashStepHops { get; set; }
+        public DbSet<BoilStepHop> BoilStepHops { get; set; }
+        public DbSet<FermentationStepHop> FermentationStepHop { get; set; }
+        public DbSet<MashStepFermentable> MashStepFermentables { get; set; }
+        public DbSet<BoilStepFermentable> BoilStepFermentables { get; set; }
+        public DbSet<FermentationStepFermentable> FermentationStepFermentables { get; set; }
+        public DbSet<MashStepOther> MashStepOthers { get; set; }
+        public DbSet<BoilStepOther> BoilStepOthers { get; set; }
+        public DbSet<FermentationStepYeast> FermentationStepYeasts { get; set; }
+        public DbSet<BeerStyle> BeerStyles { get; set; }
 
  
         public MicrobrewitContext()
@@ -42,9 +52,23 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new UserCredentialsConfiguration());
             modelBuilder.Configurations.Add(new RecipeConfiguration());
-            modelBuilder.Configurations.Add(new RecipeHopConfiguration());
             modelBuilder.Configurations.Add(new FlavourConfiguration());
             modelBuilder.Configurations.Add(new HopFlavourConfiguration());
+            modelBuilder.Configurations.Add(new MashStepConfiguration());
+            modelBuilder.Configurations.Add(new FermentationStepConfiguration());
+            modelBuilder.Configurations.Add(new BoilStepConfiguration());
+            modelBuilder.Configurations.Add(new MashStepHopConfiguration());
+            modelBuilder.Configurations.Add(new BoilStepHopConfiguration());
+            modelBuilder.Configurations.Add(new FermentationStepHopConfiguration());
+            modelBuilder.Configurations.Add(new MashStepFermentableConfiguration());
+            modelBuilder.Configurations.Add(new BoilStepFermentableConfiguration());
+            modelBuilder.Configurations.Add(new FermentationStepFermentableConfiguration());
+            modelBuilder.Configurations.Add(new MashStepOtherConfiguration());
+            modelBuilder.Configurations.Add(new BoilStepOtherConfiguration());
+            modelBuilder.Configurations.Add(new FermentationStepYeastConfiguration());
+            modelBuilder.Configurations.Add(new BeerStyleConfiguration());
+           
+           
         }
    
     }

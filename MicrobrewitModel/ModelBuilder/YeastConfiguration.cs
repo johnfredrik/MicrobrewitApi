@@ -16,6 +16,7 @@ namespace Microbrewit.Model.ModelBuilder
             Property(y => y.Name).IsRequired().HasMaxLength(255);        
 
             this.HasRequired(y => y.Supplier).WithMany().HasForeignKey(y => y.SupplierId);
+            this.HasMany(yeast => yeast.FermentationSteps).WithRequired(FermentationStepYeast => FermentationStepYeast.Yeast).HasForeignKey(FermentationStepYeast => FermentationStepYeast.YeastId);
 
             Map(m =>
             {

@@ -15,6 +15,11 @@ namespace Microbrewit.Api.Automapper
            {
                conf.AddProfile(new RecipeProfile());
                conf.AddProfile(new HopProfile());
+               conf.AddProfile(new MashStepProfile());
+               conf.AddProfile(new BoilStepProfile());
+               conf.AddProfile(new FermentationStepProfile());
+               conf.AddProfile(new BrewerProfile());
+               conf.AddProfile(new FermentableProfile());
            });
         }
 
