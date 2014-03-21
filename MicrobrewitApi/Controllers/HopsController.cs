@@ -27,18 +27,15 @@ namespace Microbrewit.Api.Controllers
         private MicrobrewitContext db = new MicrobrewitContext();
         private IHopRepository hopRepository = new HopRepository();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly Expression<Func<Hop,HopStepDto>> AsHopDto =
-            x => new HopStepDto
-            {
-                Name = x.Name,
-                Origin = x.Origin.Name
-            };
+        
 
         // GET api/Hops
         [Route("")]
-        public IList<Hop> GetHops()
+        public HopCompleteDto GetHops()
         {
-            return hopRepository.GetHops();
+            var hops = Mapper.Map<IList<Hop>,IList<HopDto>>(hopRepository.GetHops()); 
+            var result = new HopCompleteDto(){ Hops = hops};
+            return result;
         }
 
         // GET api/Hops/5
@@ -73,12 +70,11 @@ namespace Microbrewit.Api.Controllers
         }
 
         [Route("{origin}")]
-        public IQueryable<HopStepDto> GetHopByOrigin(string origin)
+        public IQueryable<Hop> GetHopByOrigin(string origin)
         {
             Log.Debug("Origin: " + origin);
             return db.Hops.Include(h => h.Origin)
-                .Where(h => h.Origin.Name.Equals(origin, StringComparison.OrdinalIgnoreCase))
-                .Select(AsHopDto);
+                .Where(h => h.Origin.Name.Equals(origin, StringComparison.OrdinalIgnoreCase));
         }
 
         // PUT api/Hops/5

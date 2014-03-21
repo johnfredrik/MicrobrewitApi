@@ -8,7 +8,7 @@ using log4net;
 
 namespace Microbrewit.Model
 {
-    public class InitializeDatabaseWithSeedData : DropCreateDatabaseAlways<MicrobrewitContext>
+    public class InitializeDatabaseWithSeedData : DropCreateDatabaseIfModelChanges<MicrobrewitContext>
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

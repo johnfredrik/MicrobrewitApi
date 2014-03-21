@@ -15,7 +15,7 @@ namespace Microbrewit.Repository
             using (var context = new MicrobrewitContext())
             {
                 return context.Fermentables
-                    .Include("Supplier.Origin")
+                    .Include("Supplier")
                     .ToList();
             }
         }

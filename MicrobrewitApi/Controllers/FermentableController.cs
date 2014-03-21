@@ -12,7 +12,9 @@ using System.Web.Http.Description;
 using Microbrewit.Model;
 using Microbrewit.Api;
 using Microbrewit.Repository;
+using AutoMapper;
 using log4net;
+using Microbrewit.Api.DTOs;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -26,9 +28,13 @@ namespace Microbrewit.Api.Controllers
       
         // GET api/Fermentable 
         [Route("")]
-        public IList<Fermentable> GetFermentables()
+        public FermentablesCompleteDto GetFermentables()
         {
-            return fermentableRepository.GetFermentables();
+            var fermentables = fermentableRepository.GetFermentables();
+            var fermDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
+            var result = new FermentablesCompleteDto();
+            result.Fermentables = fermDto;
+            return result;
         }
 
         // GET api/Fermentable/5
