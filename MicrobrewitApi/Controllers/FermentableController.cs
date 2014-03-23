@@ -39,18 +39,17 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/Fermentable/5
         [Route("{id:int}")]
-        [ResponseType(typeof(Fermentable))]
+        [ResponseType(typeof(FermentablesCompleteDto))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            Fermentable fermentable  = await db.Fermentables.Include(f => f.Supplier).Include(f => f.Supplier.Origin)
-                .Where(f => f.Id == id)
-                .FirstOrDefaultAsync();
+            var fermentable = Mapper.Map<Fermentable, FermentableDto>(fermentableRepository.GetFermentable(id)); 
             if (fermentable == null)
             {
                 return NotFound();
             }
-            Log.Debug(fermentable.GetType());
-            return Ok(fermentable);
+            var result = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
+            result.Fermentables.Add(fermentable);
+            return Ok(result);
         }
 
         [Route("grains")]

@@ -128,6 +128,8 @@
     <Compile Include="Automapper\FermentableProfile.cs" />
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
+    <Compile Include="Automapper\OtherProfile.cs" />
+    <Compile Include="Automapper\YeastsProfile.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="DTOs\BoilStepDto.cs" />
     <Compile Include="DTOs\BrewerDto.cs" />
@@ -156,12 +158,20 @@
     <Compile Include="DTOs\HopStepDto.cs" />
     <Compile Include="DTOs\LinksFermentable.cs" />
     <Compile Include="DTOs\LinksHop.cs" />
+    <Compile Include="DTOs\LinksOther.cs" />
+    <Compile Include="DTOs\LinksYeast.cs" />
     <Compile Include="DTOs\Login.cs" />
     <Compile Include="DTOs\MashStepDto.cs" />
+    <Compile Include="DTOs\OtherCompleteDto.cs" />
+    <Compile Include="DTOs\OtherDto.cs" />
+    <Compile Include="DTOs\OtherLinks.cs" />
     <Compile Include="DTOs\OtherStepDto.cs" />
     <Compile Include="DTOs\RecipeDto.cs" />
     <Compile Include="DTOs\RecipeHopDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />
+    <Compile Include="DTOs\YeastCompleteDto.cs" />
+    <Compile Include="DTOs\YeastDto.cs" />
+    <Compile Include="DTOs\YeastLinks.cs" />
     <Compile Include="DTOs\YeastStepDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

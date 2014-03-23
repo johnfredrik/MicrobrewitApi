@@ -20,6 +20,8 @@ namespace Microbrewit.Api.Automapper
                conf.AddProfile(new FermentationStepProfile());
                conf.AddProfile(new BrewerProfile());
                conf.AddProfile(new FermentableProfile());
+               conf.AddProfile(new YeastsProfile());
+               conf.AddProfile(new OtherProfile());
            });
         }
 

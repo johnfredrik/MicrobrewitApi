@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
+using Microbrewit.Api.DTOs;
+using Microbrewit.Repository;
+using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -17,26 +20,31 @@ namespace Microbrewit.Api.Controllers
     public class YeastsController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private IYeastRepository yeastRespository = new YeastRepository();
 
         // GET api/Yeasts
         [Route("")]
-        public IQueryable<Yeast> GetYeasts()
+        public YeastCompleteDto GetYeasts()
         {
-            return db.Yeasts.Include(y => y.Supplier).Include(y => y.Supplier.Origin);
+            var yeasts = Mapper.Map<IList<Yeast>,IList<YeastDto>>(yeastRespository.GetYeasts());
+            var result = new YeastCompleteDto();
+            result.Yeasts = yeasts;
+            return result;
         }
 
         // GET api/Yeasts/5
         [Route("{id:int}")]
-        [ResponseType(typeof(Yeast))]
+        [ResponseType(typeof(YeastCompleteDto))]
         public async Task<IHttpActionResult> GetYeast(int id)
         {
-            Yeast yeast = await db.Yeasts.Include(y => y.Supplier).Where(y => y.Id == id).Include(y => y.Supplier.Origin).FirstOrDefaultAsync();
+            var yeast = Mapper.Map<Yeast,YeastDto>(yeastRespository.GetYeast(id));
             if (yeast == null)
             {
                 return NotFound();
             }
-
-            return Ok(yeast);
+            var result = new YeastCompleteDto(){Yeasts = new List<YeastDto>()};
+            result.Yeasts.Add(yeast);
+            return Ok(result);
         }
 
         // PUT api/Yeasts/5

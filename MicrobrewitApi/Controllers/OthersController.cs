@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
+using Microbrewit.Api.DTOs;
+using AutoMapper;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -17,12 +20,16 @@ namespace Microbrewit.Api.Controllers
     public class OthersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private IOtherRepository otherRepository = new OtherRepository();
 
         // GET api/Others
         [Route("")]
-        public IQueryable<Other> GetOthers()
+        public OtherCompleteDto GetOthers()
         {
-            return db.Others;
+            var others = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetOthers());
+            var result = new OtherCompleteDto();
+            result.Others = others;
+            return result;
         }
 
         [Route("spices")]
@@ -48,13 +55,15 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Other))]
         public async Task<IHttpActionResult> GetOther(int id)
         {
-            Other other = await db.Others.FindAsync(id);
+            var other = Mapper.Map<Other, OtherDto>(otherRepository.GetOther(id));
             if (other == null)
             {
                 return NotFound();
             }
+            var result = new OtherCompleteDto(){Others = new List<OtherDto>};
+            result.Others.Add(other);
 
-            return Ok(other);
+            return Ok(result);
         }
 
         // PUT api/Others/5

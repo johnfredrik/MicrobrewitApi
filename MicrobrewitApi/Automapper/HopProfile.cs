@@ -18,6 +18,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.AALow, conf => conf.MapFrom(rec => rec.AALow))
                 .ForMember(dto => dto.AAHigh, conf => conf.MapFrom(rec => rec.AAHigh))
+                .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Origin.Name))
                 .ForMember(dto => dto.Flavours, conf => conf.ResolveUsing<FlavorResolver>())
                 .ForMember(dto => dto.Substitutions, conf => conf.ResolveUsing<SubstituteResolver>())
                  .ForMember(dto => dto.Links, conf => conf.ResolveUsing<HopLinksResolver>());

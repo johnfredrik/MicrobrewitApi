@@ -40,21 +40,20 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/Hops/5
         [Route("{id:int}")]
-        [ResponseType(typeof(HopStepDto))]
+        [ResponseType(typeof(HopCompleteDto))]
         public async Task<IHttpActionResult> GetHop(int id)
         {
-            //Log.Debug("Get Hops by id: " + id);
-            //Hop hop = await db.Hops.Include(h => h.Origin)
-            //    .Where(h => h.Id == id)
-            //    .FirstOrDefaultAsync();
-            var hop = hopRepository.GetHop(id);
+          
+            var hop = Mapper.Map<Hop,HopDto>(hopRepository.GetHop(id));
 
             if (hop == null)
             {
                 return NotFound();
             }
+            var result = new HopCompleteDto() { Hops = new List<HopDto>() };
+            result.Hops.Add(hop);
 
-            return Ok(Mapper.Map<Hop,HopStepDto>(hop));
+            return Ok(result);
         }
 
         [Route("{id:int}/details")]

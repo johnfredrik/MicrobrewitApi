@@ -12,6 +12,7 @@ namespace Microbrewit.Api.DTOs
         public string Name { get; set; }
         public int AALow { get; set; }
         public int AAHigh { get; set; }
+        public string Origin { get; set; }
         public IList<string> Flavours { get; set; }
         public IList<String> Substitutions { get; set; }
         public HopLinks Links { get; set; }
