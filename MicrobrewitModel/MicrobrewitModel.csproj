@@ -56,6 +56,8 @@
     <Compile Include="ModelBuilder\BoilStepFermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepHopConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepOtherConfiguration.cs" />
+    <Compile Include="ModelBuilder\BreweryConfiguration.cs" />
+    <Compile Include="ModelBuilder\BreweryMemberConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentableTypeConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepFermentableConfiguration.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="ModelBuilder\FermentationStepYeastConfiguration.cs" />
     <Compile Include="ModelBuilder\FlavourConfiguration.cs" />
     <Compile Include="ModelBuilder\HopFlavourConfiguration.cs" />
+    <Compile Include="ModelBuilder\HopFormConfiguration.cs" />
     <Compile Include="ModelBuilder\MashStepConfiguration.cs" />
     <Compile Include="ModelBuilder\MashStepFermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\MashStepHopConfiguration.cs" />
@@ -80,6 +83,8 @@
     <Compile Include="Model\BoilStepFermentable.cs" />
     <Compile Include="Model\BoilStepHop.cs" />
     <Compile Include="Model\BoilStepOther.cs" />
+    <Compile Include="Model\Brewery.cs" />
+    <Compile Include="Model\BreweryMember.cs" />
     <Compile Include="Model\DryExtract.cs" />
     <Compile Include="Model\DryYeast.cs" />
     <Compile Include="Model\Fermentable.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="ModelBuilder\HopsConfiguration.cs" />
     <Compile Include="ModelBuilder\OriginConfiguration.cs" />
     <Compile Include="Model\HopFlavour.cs" />
+    <Compile Include="Model\HopForm.cs" />
     <Compile Include="Model\LiquidExtract.cs" />
     <Compile Include="Model\MashStep.cs" />
     <Compile Include="Model\MashStepFermentable.cs" />

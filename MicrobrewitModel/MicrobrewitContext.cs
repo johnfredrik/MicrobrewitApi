@@ -32,6 +32,8 @@ namespace Microbrewit.Model
         public DbSet<BoilStepOther> BoilStepOthers { get; set; }
         public DbSet<FermentationStepYeast> FermentationStepYeasts { get; set; }
         public DbSet<BeerStyle> BeerStyles { get; set; }
+        public DbSet<HopForm> HopForms { get; set; }
+        public DbSet<Brewery> Breweries { get; set; }
 
  
         public MicrobrewitContext()
@@ -67,6 +69,10 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new BoilStepOtherConfiguration());
             modelBuilder.Configurations.Add(new FermentationStepYeastConfiguration());
             modelBuilder.Configurations.Add(new BeerStyleConfiguration());
+            modelBuilder.Configurations.Add(new HopFormConfiguration());
+            modelBuilder.Configurations.Add(new BreweryConfiguration());
+            modelBuilder.Configurations.Add(new BreweryMemberConfiguration());
+
            
            
         }

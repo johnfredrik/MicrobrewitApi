@@ -60,7 +60,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-            var result = new OtherCompleteDto(){Others = new List<OtherDto>};
+            var result = new OtherCompleteDto(){Others = new List<OtherDto>()};
             result.Others.Add(other);
 
             return Ok(result);

@@ -25,6 +25,8 @@ namespace Microbrewit.Model.ModelBuilder
                 m.MapRightKey("RecipeId");
                 m.ToTable("BrewerRecipe");
             });
+
+            this.HasMany(user => user.Breweries).WithRequired(breweryMember => breweryMember.Member).HasForeignKey(BreweryMember => BreweryMember.MemberId);
         }
     }
 }

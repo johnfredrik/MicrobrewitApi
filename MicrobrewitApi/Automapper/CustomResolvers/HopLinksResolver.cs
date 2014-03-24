@@ -12,7 +12,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
     {
         protected override HopLinks ResolveCore(Hop hop)
             {
- 	            var hopLinks = new HopLinks(){ FlavorIds = new List<int>(), SubstituesIds = new List<int>()};
+ 	            var hopLinks = new HopLinks(){ FlavourIds = new List<int>(), SubstitutesIds = new List<int>()};
                 if(hop.OriginId != null)
                 {
                     hopLinks.OriginId = hop.OriginId; 
@@ -21,14 +21,14 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                 {
                     foreach (var flavor in hop.HopFlavours)
                     {
-                        hopLinks.FlavorIds.Add(flavor.FlavourId);
+                        hopLinks.FlavourIds.Add(flavor.FlavourId);
                     }
                 }
                 if (hop.Substituts != null)
                 {
                     foreach (var sub in hop.Substituts)
                     {
-                        hopLinks.SubstituesIds.Add(sub.Id);
+                        hopLinks.SubstitutesIds.Add(sub.Id);
                     }
                 }
                 return hopLinks;

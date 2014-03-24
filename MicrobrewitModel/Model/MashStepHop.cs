@@ -13,7 +13,9 @@ namespace Microbrewit.Model
         public int MashStepId { get; set; }
         public int AAValue { get; set; }
         public int AAAmount { get; set; }
+        public int HopFormId { get; set; }
 
+        public HopForm HopForm { get; set; }
         public MashStep MashStep { get; set; }
         public Hop Hop { get; set; }
     }

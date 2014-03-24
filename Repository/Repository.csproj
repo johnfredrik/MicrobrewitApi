@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Interface\IFermentableRepository.cs" />
     <Compile Include="Interface\IOtherRepository.cs" />
+    <Compile Include="Interface\IUserRepository.cs" />
     <Compile Include="Interface\IYeastRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\OtherRepository.cs" />
     <Compile Include="Repository\RecipeRepository.cs" />
+    <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Repository\YeastRepository.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,7 +8,11 @@ namespace Microbrewit.Api.DTOs
 {
     public class HopCompleteDto
     {
+        [JsonProperty(PropertyName = "meta")]
+        public Meta Meta { get; set; }
+        [JsonProperty(PropertyName = "links")]
         public LinksHop Links { get; set; }
+        [JsonProperty(PropertyName = "hops")]
         public IList<HopDto> Hops { get; set; }
 
         public HopCompleteDto()

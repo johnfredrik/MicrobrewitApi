@@ -8,7 +8,7 @@ using log4net;
 
 namespace Microbrewit.Model
 {
-    public class InitializeDatabaseWithSeedData : DropCreateDatabaseIfModelChanges<MicrobrewitContext>
+    public class InitializeDatabaseWithSeedData : DropCreateDatabaseAlways<MicrobrewitContext>
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -36,6 +36,10 @@ namespace Microbrewit.Model
 
             context.HopFlavours.Add(new HopFlavour() { FlavourId = 1, HopId = 2 });
             context.HopFlavours.Add(new HopFlavour() { FlavourId = 2, HopId = 2 });
+
+            context.HopForms.Add(new HopForm() { Id = 1, Name = "Pellet" });
+            context.HopForms.Add(new HopForm() { Id = 2, Name = "Leaf" });
+            context.HopForms.Add(new HopForm() { Id = 4, Name = "Plug" });
 
             context.Others.Add(new Fruit() { Id = 1, Name = "Strawberry" });
             context.Others.Add(new NoneFermentableSugar() { Id = 2, Name = "Honey" });
@@ -65,7 +69,8 @@ namespace Microbrewit.Model
             context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , Colour = 4, PPG = 43,});
             context.Fermentables.Add(new LiquidExtract() {Id = 5, Name = "Plain Light DME", Colour = 4, PPG = 43,});
 
-            context.Users.Add(new User() { Username = "johnfredrik", Email = "john-f@online.no" });
+            var user = new User() { Username = "johnfredrik", Email = "john-f@online.no" };
+            context.Users.Add(user);
             context.UserCredentials.Add(new UserCredentials()
             {
                 Id = 1,
@@ -77,9 +82,98 @@ namespace Microbrewit.Model
             context.BeerStyles.Add(new BeerStyle() { Id = 1, Name = "Ale" });
             context.BeerStyles.Add(new BeerStyle() { Id = 2, Name = "Golden Ale", SuperStyleId = 1 });
 
-            //context.Recipes.Add(new Recipe() { Id = 1, Name = "Beer Good", Hops = new List<Hop>() { new Hop() {Id = 1, Name = "Malt"}} });
+           
+            var recipe = new Recipe()
+            {
+                Name = "Beer Good",
+                BeerStyleId = 1,
+                Brewers = new List<User>{user},
+                MashSteps = new List<MashStep>()
+                    {
+                        new MashStep()
+                        {
+                            Number = 1,
+                            Temperature = 68,
+                            Type = "Infusion",
+                            Length = 68,
+                            Volume = 28,
+                            Fermentables = new List<MashStepFermentable>()
+                            {
+                               new MashStepFermentable()
+                               {
+                                   FermentableId = 1,
+                                   Amount = 12
 
-            
+                               },
+                               new MashStepFermentable()
+                               {
+                                   FermentableId = 2,
+                                   Amount = 20
+                               }
+
+                            },
+                            Others = new List<MashStepOther>()
+                            {
+                               new MashStepOther()
+                               {
+                                   OtherId = 1,
+                                   Amount = 12
+                               }
+
+                            }
+                        },
+                        new MashStep()
+                        {
+                            Number = 2,
+                            Temperature = 68,
+                            Type = "Infusion",
+                            Length = 60,
+                            Volume = 28,
+                        }
+
+                    },
+                BoilSteps = new List<BoilStep>()
+                {
+                    new BoilStep()
+                    {
+                        Number = 1,
+                        Length = 60,
+                        Volume = 28,
+                        Hops = new List<BoilStepHop>()
+                        {
+                            new BoilStepHop()
+                            {
+                                HopId = 1,
+                                HopFormId = 1,
+                                AAValue = 13,
+                                AAAmount = 70
+                            }
+                        }
+                    }
+                    
+                },
+
+                FermentationSteps = new List<FermentationStep>()
+                {
+                    new FermentationStep()
+                    {
+                        Number = 1,
+                        Length = 14,
+                        Temperature = 19,
+                        Notes = "Something Cool",
+                        Yeasts = new List<FermentationStepYeast>()
+                        {
+                            new FermentationStepYeast()
+                            {
+                                YeastId = 1,
+                                Amount = 1
+                            }
+                        }                       
+                    }
+                }
+            };
+
+            context.Recipes.Add(recipe);
         }
     }
 }

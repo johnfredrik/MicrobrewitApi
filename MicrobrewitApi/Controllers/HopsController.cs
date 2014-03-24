@@ -34,7 +34,8 @@ namespace Microbrewit.Api.Controllers
         public HopCompleteDto GetHops()
         {
             var hops = Mapper.Map<IList<Hop>,IList<HopDto>>(hopRepository.GetHops()); 
-            var result = new HopCompleteDto(){ Hops = hops};
+            var meta = new Meta() { Returned = hops.Count() };
+            var result = new HopCompleteDto(){ Meta = meta, Hops = hops};
             return result;
         }
 

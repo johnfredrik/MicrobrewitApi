@@ -7,11 +7,11 @@ namespace Microbrewit.Api.DTOs
 {
     public class UserDto
     {
-        public string UserName { get; set; }
+        public string Id { get; set; }
+        public string Href { get { return "http://api.microbrew.it/users/:username";} }
+        public string Username { get; set; }
         public string Email { get; set; }
         public string BreweryName { get; set; }
         public string Settings { get; set; }
-        public string Password { get; set; }
-        public string SharedSecret { get; set; }
     }
 }

@@ -12,9 +12,11 @@ using System.Web.Http.Description;
 using Microbrewit.Model;
 using Microbrewit.Api.DTOs;
 using Microbrewit.Api.Util;
+using Microbrewit.Repository;
 using log4net;
 using System.Web;
 using System.Security.Principal;
+using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -22,13 +24,21 @@ namespace Microbrewit.Api.Controllers
     public class UsersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private IUserRepository userRepository = new UserRepository();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);            
 
         // GET api/User
         [Route("")]
-        public IQueryable<User> GetUsers()
+        public UserCompleteDto GetUsers()
         {
-            return db.Users;
+            var users = Mapper.Map<IList<User>, IList<UserDto>>(userRepository.GetUsers());
+            var meta = new Meta();
+            var result = new UserCompleteDto();
+            
+            meta.Returned = users.Count();
+            result.Users = users;
+            result.Meta = meta;
+            return result;
         }
 
         // GET api/User/5
@@ -36,17 +46,20 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> GetUser(string username)
         {
-            User user = await db.Users.FindAsync(username);
+            var user = Mapper.Map<User, UserDto>(userRepository.GetUser(username));
             if (user == null)
             {
                 return NotFound();
             }
-
-            return Ok(user);
+            var result = new UserCompleteDto() { Users = new List<UserDto>() };
+            var meta = new Meta() { Returned = 1 };
+            result.Users.Add(user);
+            result.Meta = meta;
+            return Ok(result);
         }
 
         // PUT api/User/5
-        [Route("{id}")]
+        [Route("")]
         public async Task<IHttpActionResult> PutUser(string id, User user)
         {
             if (!ModelState.IsValid)
@@ -79,6 +92,7 @@ namespace Microbrewit.Api.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
+
         [LoginValidation]
         [Route("login")]
         public async Task<IHttpActionResult> PostLogin()
@@ -89,8 +103,8 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/User
         [Route("")]
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> PostUser(UserDto userDto)
+        [ResponseType(typeof(UserCompleteDto))]
+        public async Task<IHttpActionResult> PostUser(UserPostDto userPostDto)
         {
 
             if (!ModelState.IsValid)
@@ -98,24 +112,29 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var encryptedPassword = Encrypting.Encrypt(userDto.Password, userDto.SharedSecret);
+            var encryptedPassword = Encrypting.Encrypt(userPostDto.Password, userPostDto.Email);
             var salt = Encrypting.GenerateRandomBytes(256 / 8);
            
 
             var user = new User()
             {
-                Username = userDto.UserName,
-                Email = userDto.Email,
-                BreweryName = userDto.BreweryName,
-                Settings = userDto.Settings,
+                Username = userPostDto.UserName,
+                Email = userPostDto.Email,
+                Settings = userPostDto.Settings,
             };
-            UserCredentials userCredential = new UserCredentials() { Password = encryptedPassword, SharedSecret = userDto.SharedSecret, Username = user.Username };
-
+            
+            UserCredentials userCredential = new UserCredentials() { Password = encryptedPassword, SharedSecret = userPostDto.Email, Username = user.Username };
 
             db.UserCredentials.Add(userCredential);
             db.Users.Add(user);
             await db.SaveChangesAsync();
-            return CreatedAtRoute("DefaultApi", new { controller = "users", id = user.Username }, user);
+
+            var result = new UserCompleteDto() { Users = new List<UserDto>()};
+            var meta = new Meta() { Message = "The user was successfully added", Returned = 1 };
+            result.Users.Add(Mapper.Map<User,UserDto>(user));
+            result.Meta = meta;
+
+            return CreatedAtRoute("DefaultApi", new { controller = "users", id = user.Username }, result);
         }
 
         // DELETE api/User/5

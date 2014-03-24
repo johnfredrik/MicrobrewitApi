@@ -44,6 +44,12 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="DotNetOpenAuth.Core">
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -69,10 +75,17 @@
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.3.0.2\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.1.1\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Spatial">
       <HintPath>..\packages\System.Spatial.5.6.0\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
@@ -129,6 +142,7 @@
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
     <Compile Include="Automapper\OtherProfile.cs" />
+    <Compile Include="Automapper\UserProfile.cs" />
     <Compile Include="Automapper\YeastsProfile.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="DTOs\BoilStepDto.cs" />
@@ -162,13 +176,16 @@
     <Compile Include="DTOs\LinksYeast.cs" />
     <Compile Include="DTOs\Login.cs" />
     <Compile Include="DTOs\MashStepDto.cs" />
+    <Compile Include="DTOs\Meta.cs" />
     <Compile Include="DTOs\OtherCompleteDto.cs" />
     <Compile Include="DTOs\OtherDto.cs" />
     <Compile Include="DTOs\OtherLinks.cs" />
     <Compile Include="DTOs\OtherStepDto.cs" />
     <Compile Include="DTOs\RecipeDto.cs" />
     <Compile Include="DTOs\RecipeHopDto.cs" />
+    <Compile Include="DTOs\UserCompleteDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />
+    <Compile Include="DTOs\UserPostDto.cs" />
     <Compile Include="DTOs\YeastCompleteDto.cs" />
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />
@@ -230,6 +247,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
