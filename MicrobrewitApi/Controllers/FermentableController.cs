@@ -30,7 +30,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public FermentablesCompleteDto GetFermentables()
         {
-            var fermentables = fermentableRepository.GetFermentables();
+            var fermentables = fermentableRepository.GetAll("Supplier");
             var fermDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
             var result = new FermentablesCompleteDto();
             result.Fermentables = fermDto;
@@ -42,7 +42,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(FermentablesCompleteDto))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            var fermentable = Mapper.Map<Fermentable, FermentableDto>(fermentableRepository.GetFermentable(id)); 
+            var fermentable = Mapper.Map<Fermentable, FermentableDto>(fermentableRepository.GetSingle(f => f.Id == id, "Supplier")); 
             if (fermentable == null)
             {
                 return NotFound();
@@ -52,29 +52,29 @@ namespace Microbrewit.Api.Controllers
             return Ok(result);
         }
 
-        [Route("grains")]
-        public IList<Grain> GetGrains()
-        {
-            return fermentableRepository.GetGrains();      
-        }
+        //[Route("grains")]
+        //public IList<Grain> GetGrains()
+        //{
+        //    return fermentableRepository.GetGrains();      
+        //}
 
-        [Route("sugars")]
-        public IList<Sugar> GetSugars()
-        {
-            return fermentableRepository.GetSugars();
-        }
+        //[Route("sugars")]
+        //public IList<Sugar> GetSugars()
+        //{
+        //    return fermentableRepository.GetSugars();
+        //}
 
-        [Route("dryextracts")]
-        public IList<DryExtract> GetDryExtracts()
-        {
-            return fermentableRepository.GetDryExtracts();
-        }
+        //[Route("dryextracts")]
+        //public IList<DryExtract> GetDryExtracts()
+        //{
+        //    return fermentableRepository.GetDryExtracts();
+        //}
 
-        [Route("liquidextracts")]
-        public IList<LiquidExtract> GetLiquidExtracts()
-        {
-            return fermentableRepository.GetLiquidExtracts();
-        }
+        //[Route("liquidextracts")]
+        //public IList<LiquidExtract> GetLiquidExtracts()
+        //{
+        //    return fermentableRepository.GetLiquidExtracts();
+        //}
 
 
         // PUT api/Fermentable/5

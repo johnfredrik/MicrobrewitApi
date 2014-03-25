@@ -47,10 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interface\IFermentableRepository.cs" />
+    <Compile Include="Interface\IGenericDataRepository.cs" />
     <Compile Include="Interface\IOtherRepository.cs" />
     <Compile Include="Interface\IUserRepository.cs" />
     <Compile Include="Interface\IYeastRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
+    <Compile Include="Repository\GenericDataRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
     <Compile Include="Interface\IHopRepository.cs" />
     <Compile Include="Interface\IRecipeRepositoy.cs" />

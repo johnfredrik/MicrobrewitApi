@@ -7,14 +7,14 @@ using Microbrewit.Model;
 
 namespace Microbrewit.Repository
 {
-    public interface IFermentableRepository
+    public interface IFermentableRepository : IGenericDataRepository<Fermentable> 
     {
-        IList<Fermentable> GetFermentables();
-        Fermentable GetFermentable(int fermentableId);
+        //IList<Fermentable> GetFermentables();
+        //Fermentable GetFermentable(int fermentableId);
 
-        IList<Grain> GetGrains();
-        IList<Sugar> GetSugars();
-        IList<DryExtract> GetDryExtracts();
-        IList<LiquidExtract> GetLiquidExtracts();
+        //IList<Grain> GetGrains();
+        //IList<Sugar> GetSugars();
+        //IList<DryExtract> GetDryExtracts();
+        //IList<LiquidExtract> GetLiquidExtracts();
     }
 }

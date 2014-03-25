@@ -145,6 +145,7 @@
     <Compile Include="Automapper\UserProfile.cs" />
     <Compile Include="Automapper\YeastsProfile.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
+    <Compile Include="Controllers\BreweryController.cs" />
     <Compile Include="DTOs\BoilStepDto.cs" />
     <Compile Include="DTOs\BrewerDto.cs" />
     <Compile Include="DTOs\FermentableDto.cs" />

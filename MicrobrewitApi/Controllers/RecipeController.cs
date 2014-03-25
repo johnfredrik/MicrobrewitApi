@@ -35,12 +35,13 @@ namespace Microbrewit.Api.Controllers
             
 
             //var recipes = db.Recipes.Include("RecipeHops.Hop").Project().To<RecipeDto>();
-            var recipes = recipeRepository.GetRecipes();
+            var recipes = recipeRepository.GetAll("Mashsteps.Hops.Hop.Origin", "Mashsteps.Fermentables.Fermentable", "MashSteps.Others.Other", "BoilSteps.Hops.Hop.Origin");
             var recipesDto =  Mapper.Map<IList<Recipe>, IList<RecipeDto>>(recipes);
             return recipesDto;
 
            
         }
+
 
         // GET api/Recipe/5
         [Route("{id:int}")]
@@ -50,7 +51,7 @@ namespace Microbrewit.Api.Controllers
             
 
            //Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
-           RecipeDto recipe =  Mapper.Map<Recipe,RecipeDto>(recipeRepository.GetRecipe(id));
+            RecipeDto recipe = Mapper.Map<Recipe, RecipeDto>(recipeRepository.GetSingle(r => r.Id == id, "Mashsteps.Fermentables.Fermentable", "MashSteps.Others.Other", "BoilSteps.Hops.Hop.Origin"));
             //Recipe recipe = recipeRepository.GetRecipe(id);
             if (recipe == null)
             {
@@ -129,6 +130,19 @@ namespace Microbrewit.Api.Controllers
             await db.SaveChangesAsync();
 
             return Ok(recipe);
+        }
+
+        [Route("test")]
+        public IList<Recipe> GetRecipesTest()
+        {
+
+
+            //var recipes = db.Recipes.Include("RecipeHops.Hop").Project().To<RecipeDto>();
+
+
+            return recipeRepository.GetAll("Mashsteps.Hops.Hop.Origin", "Mashsteps.Fermentables.Fermentable", "MashSteps.Others.Other", "BoilSteps.Hops.Hop.Origin");
+
+
         }
 
         protected override void Dispose(bool disposing)

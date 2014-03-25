@@ -20,10 +20,6 @@ namespace Microbrewit.Model
             context.Origins.Add(new Origin() { Id = 2, Name = "United Kingdom" });
             context.Origins.Add(new Origin() { Id = 3, Name = "Belgium" });
 
-            context.FermentableTypes.Add(new FermentableType { Id = 1, Name = "Grain" });
-            context.FermentableTypes.Add(new FermentableType { Id = 2, Name = "Liquid Extract"});
-            context.FermentableTypes.Add(new FermentableType { Id = 3, Name = "Dry Extract"});
-
             context.Suppliers.Add(new Supplier { Id = 1, Name = "Boortmalt", OriginId = 3, });
             context.Suppliers.Add(new Supplier { Id = 2, Name = "White Labs", OriginId = 1, });
             context.Suppliers.Add(new Supplier { Id = 3, Name = "Fermentis", OriginId = 1, });
@@ -31,8 +27,13 @@ namespace Microbrewit.Model
             context.Flavours.Add(new Flavour { Id = 1, Name = "Mild to moderate" });
             context.Flavours.Add(new Flavour { Id = 2, Name = "Quite spicy" });
             
-            context.Hops.Add(new Hop() { Id = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2});
-            context.Hops.Add(new Hop() { Id = 1, Name="Admiral", AAHigh = 15, AALow = 9 , OriginId = 2});
+            var target = new Hop() { Id = 3, Name ="Target", AALow = 9.5, AAHigh = 12.5, OriginId = 2, FlavourDescription = "Pleasant English hop aroma, quite intense." };
+            var challanger = new Hop() { Id = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2};
+            var admiral = new Hop() { Id = 1, Name = "Admiral", AAHigh = 15, AALow = 9, OriginId = 2, Substituts = new List<Hop> { target, challanger } };
+
+            context.Hops.Add(target);
+            context.Hops.Add(challanger);
+            context.Hops.Add(admiral);
 
             context.HopFlavours.Add(new HopFlavour() { FlavourId = 1, HopId = 2 });
             context.HopFlavours.Add(new HopFlavour() { FlavourId = 2, HopId = 2 });
@@ -78,6 +79,8 @@ namespace Microbrewit.Model
                 SharedSecret = "test",
                 Username = "johnfredrik",
             });
+
+            context.Breweries.Add(new Brewery() { Name = "Asphaugs Hjemmebryggeri", Members = new List<BreweryMember>() { new BreweryMember() { MemberId = "johnfredrik"} } });
 
             context.BeerStyles.Add(new BeerStyle() { Id = 1, Name = "Ale" });
             context.BeerStyles.Add(new BeerStyle() { Id = 2, Name = "Golden Ale", SuperStyleId = 1 });
@@ -174,6 +177,8 @@ namespace Microbrewit.Model
             };
 
             context.Recipes.Add(recipe);
+
+
         }
     }
 }

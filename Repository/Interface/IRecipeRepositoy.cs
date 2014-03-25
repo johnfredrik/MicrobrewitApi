@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Repository
 {
-    public interface IRecipeRepositoy
+    public interface IRecipeRepositoy : IGenericDataRepository<Recipe>
     {
-        IList<Recipe> GetRecipes();
+        //IList<Recipe> GetRecipes();
 
-        Recipe GetRecipe(int recipeId);
+        //Recipe GetRecipe(int recipeId);
     }
 }
