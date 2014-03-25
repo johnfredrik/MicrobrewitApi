@@ -45,6 +45,18 @@ namespace Microbrewit.Model.ModelBuilder
                     m.MapRightKey("FermentationStepId");
                     m.ToTable("RecipeFermentationStep");
                 });
+
+            this.HasMany(recipe => recipe.Forks)
+                .WithOptional(recipe => recipe.ForkeOf)
+                .HasForeignKey(recipe => recipe.ForkeOfId)
+                .WillCascadeOnDelete(false);
+
+            this.HasMany(recipe => recipe.Forks).WithMany().Map(map =>
+                {
+                    map.MapLeftKey("RecipeId");
+                    map.MapRightKey("ForkedRecipeId");
+                    map.ToTable("ForkedRecipe");
+                });
         }
     }
 }

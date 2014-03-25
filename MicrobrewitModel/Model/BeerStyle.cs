@@ -11,7 +11,7 @@ namespace Microbrewit.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Nullable<int> SuperStyleId { get; set; }
+        public int? SuperStyleId { get; set; }
         public BeerStyle SuperStyle { get; set; }
         public ICollection<BeerStyle> SubStyles { get; set; }
 

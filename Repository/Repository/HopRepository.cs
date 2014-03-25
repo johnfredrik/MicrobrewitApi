@@ -13,7 +13,12 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Hops.Include("Origin").Include("HopFlavours.Flavour").Include("MashSteps").Include("FermentationSteps").ToList();
+                return context.Hops
+                    .Include("Origin")
+                    .Include("HopFlavours.Flavour")
+                    .Include("MashSteps")
+                    .Include("FermentationSteps")
+                    .Include("Substituts").ToList();
             }
         }
 
