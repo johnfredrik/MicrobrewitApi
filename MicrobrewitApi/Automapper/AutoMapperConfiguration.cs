@@ -23,6 +23,7 @@ namespace Microbrewit.Api.Automapper
                conf.AddProfile(new YeastsProfile());
                conf.AddProfile(new OtherProfile());
                conf.AddProfile(new UserProfile());
+               conf.AddProfile(new BeerStyleProfile());
            });
         }
 

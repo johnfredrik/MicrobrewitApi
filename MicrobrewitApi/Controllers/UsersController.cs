@@ -166,5 +166,6 @@ namespace Microbrewit.Api.Controllers
         {
             return db.Users.Count(e => e.Username.Equals(id)) > 0;
         }
+
     }
 }

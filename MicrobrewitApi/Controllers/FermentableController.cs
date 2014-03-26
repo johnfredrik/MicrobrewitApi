@@ -53,9 +53,9 @@ namespace Microbrewit.Api.Controllers
         }
 
         //[Route("grains")]
-        //public IList<Grain> GetGrains()
+        //public FermentablesCompleteDto GetGrains()
         //{
-        //    return fermentableRepository.GetGrains();      
+        //    return fermentableRepository.GetGrains();
         //}
 
         //[Route("sugars")]

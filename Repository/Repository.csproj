@@ -46,11 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interface\IBeerStyleRepository.cs" />
     <Compile Include="Interface\IFermentableRepository.cs" />
     <Compile Include="Interface\IGenericDataRepository.cs" />
     <Compile Include="Interface\IOtherRepository.cs" />
     <Compile Include="Interface\IUserRepository.cs" />
     <Compile Include="Interface\IYeastRepository.cs" />
+    <Compile Include="Repository\BeerStyleRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\GenericDataRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
