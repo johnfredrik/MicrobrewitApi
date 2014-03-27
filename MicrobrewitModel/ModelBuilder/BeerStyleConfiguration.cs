@@ -11,7 +11,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BeerStyleConfiguration()
         {
-            Property(b => b.Id).IsRequired().HasColumnName("BeerStyleId");
+            Property(b => b.Id).IsRequired();
             Property(b => b.Name).IsRequired().HasMaxLength(255);
             this.HasKey(beerStyle => beerStyle.Id);
 
@@ -21,8 +21,7 @@ namespace Microbrewit.Model.ModelBuilder
             .HasForeignKey(beerStyle => beerStyle.SuperStyleId)
             .WillCascadeOnDelete(false);
 
-            this.HasMany(beerStyle => beerStyle.Recipes).WithRequired(recipe => recipe.BeerStyle).HasForeignKey(recipe => recipe.BeerStyleId);
-           
+            this.HasMany(beerStyle => beerStyle.Beers).WithRequired(beer => beer.BeerStyle).HasForeignKey(beer => beer.BeerStyleId).WillCascadeOnDelete(false);
 
         }
     }

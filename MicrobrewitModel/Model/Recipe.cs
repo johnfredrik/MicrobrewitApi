@@ -11,22 +11,20 @@ namespace Microbrewit.Model
     {
        
         public int Id { get; set; }
-        public string Name { get; set; }
         public int Volume { get; set; }
         public string Notes { get; set; }
         public int BeerStyleId { get; set; }
         public int? ForkeOfId { get; set; }
-
         // Single relations.
-        public BeerStyle BeerStyle { get; set; }
         public Recipe ForkeOf { get; set; }
+        public Beer Beer { get; set; }
 
         //Multi relations
         public ICollection<Recipe> Forks { get; set; }
-        public ICollection<User> Brewers { get; set; }
         public ICollection<MashStep> MashSteps { get; set; }
         public ICollection<BoilStep> BoilSteps { get; set; }
         public ICollection<FermentationStep> FermentationSteps { get; set; }
+        
 
        
     }

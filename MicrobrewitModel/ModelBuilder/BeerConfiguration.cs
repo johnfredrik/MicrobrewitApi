@@ -7,7 +7,28 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Model.ModelBuilder
 {
-    class BeerConfiguration : EntityTypeConfiguration<Beer>
+    public class BeerConfiguration : EntityTypeConfiguration<Beer>
     {
+        public BeerConfiguration()
+        {
+            Property(beer => beer.Id).IsRequired().HasColumnName("BeerId");
+            Property(beer => beer.Name).IsRequired().HasMaxLength(255);
+            this.HasKey(beer => beer.Id);
+            this.HasOptional(beer => beer.BeerStyle).WithMany().HasForeignKey(beer => beer.BeerStyleId).WillCascadeOnDelete(false);
+          
+            this.HasMany(beer => beer.Brewers).WithMany(brewer => brewer.Beers).Map(map =>
+            {
+                map.MapLeftKey("BeerId");
+                map.MapRightKey("BrewerId");
+                map.ToTable("BrewerBeer");
+            });
+            this.HasMany(beer => beer.Breweries).WithMany(brewery => brewery.Beers).Map(map =>
+            {
+                map.MapLeftKey("BeerId");
+                map.MapRightKey("BreweryId");
+                map.ToTable("BreweryBeer");
+            });
+
+        }
     }
 }

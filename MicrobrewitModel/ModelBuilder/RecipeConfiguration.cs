@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Text;
@@ -11,20 +12,12 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public RecipeConfiguration()
         {
-            Property(p => p.Id).IsRequired().HasColumnName("RecipeId");
-            Property(p => p.Name).IsRequired();
-            this.HasKey(r => r.Id);
+            Property(p => p.Id).IsRequired().HasColumnName("RecipeId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            this.HasRequired(r => r.Beer).WithRequiredDependent(r => r.Recipe);
 
+            this.HasKey(r => r.Id);
             
             // relations
-            this.HasRequired(r => r.BeerStyle).WithMany().HasForeignKey(r => r.BeerStyleId);
-            this.HasMany(r => r.Brewers).WithMany(b => b.Recipes).Map(m =>
-            {
-                m.MapLeftKey("RecipeId");
-                m.MapRightKey("Username");
-                m.ToTable("BrewerRecipe");
-            });
-
             this.HasMany(r => r.MashSteps).WithMany(mashStep => mashStep.Recipes).Map(m =>
             {
 
