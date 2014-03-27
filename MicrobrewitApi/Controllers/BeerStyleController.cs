@@ -35,7 +35,8 @@ namespace Microbrewit.Api.Controllers
         [Route("{id:int}")]
         // GET api/BeerStyle/5
         [ResponseType(typeof(BeerStyle))]
-        public async Task<IHttpActionResult> GetBeerStyle(int id)
+        [HttpGet]
+        public IHttpActionResult GetBeerStyle(int id)
         {
             var beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(repository.GetSingle(b => b.Id == id, "SubStyles", "SuperStyle"));
             if (beerStyle == null)

@@ -53,7 +53,8 @@ namespace Microbrewit.Api.Controllers
         // GET api/Others/5
         [Route("{id:int}")]
         [ResponseType(typeof(Other))]
-        public async Task<IHttpActionResult> GetOther(int id)
+        [HttpGet]
+        public IHttpActionResult GetOther(int id)
         {
             var other = Mapper.Map<Other, OtherDto>(otherRepository.GetOther(id));
             if (other == null)

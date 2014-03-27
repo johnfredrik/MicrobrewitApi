@@ -42,7 +42,8 @@ namespace Microbrewit.Api.Controllers
         // GET api/Hops/5
         [Route("{id:int}")]
         [ResponseType(typeof(HopCompleteDto))]
-        public async Task<IHttpActionResult> GetHop(int id)
+        [HttpGet]
+        public IHttpActionResult GetHop(int id)
         {
           
             var hop = Mapper.Map<Hop,HopDto>(hopRepository.GetHop(id));

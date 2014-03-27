@@ -44,9 +44,10 @@ namespace Microbrewit.Api.Controllers
 
 
         // GET api/Recipe/5
+        [HttpGet]
         [Route("{id:int}")]
         [ResponseType(typeof(Recipe))]
-        public async Task<IHttpActionResult> GetRecipe(int id)
+        public IHttpActionResult GetRecipe(int id)
         {
             
 

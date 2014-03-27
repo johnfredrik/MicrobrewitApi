@@ -35,7 +35,8 @@ namespace Microbrewit.Api.Controllers
         // GET api/Yeasts/5
         [Route("{id:int}")]
         [ResponseType(typeof(YeastCompleteDto))]
-        public async Task<IHttpActionResult> GetYeast(int id)
+        [HttpGet]
+        public IHttpActionResult GetYeast(int id)
         {
             var yeast = Mapper.Map<Yeast,YeastDto>(yeastRespository.GetYeast(id));
             if (yeast == null)

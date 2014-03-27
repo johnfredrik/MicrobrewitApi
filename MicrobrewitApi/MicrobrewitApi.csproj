@@ -64,6 +64,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Common">
+      <HintPath>..\packages\ServiceStack.Common.4.0.15\lib\net40\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>..\packages\ServiceStack.Interfaces.4.0.15\lib\net40\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis">
+      <HintPath>..\packages\ServiceStack.Redis.4.0.15\lib\net40\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\packages\ServiceStack.Text.4.0.15\lib\net40\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IdentityModel.Tokens.Jwt">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.3.0.2\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
@@ -181,6 +193,7 @@
     <Compile Include="DTOs\UserCompleteDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />
     <Compile Include="DTOs\UserPostDto.cs" />
+    <Compile Include="DTOs\UserToken.cs" />
     <Compile Include="DTOs\YeastCompleteDto.cs" />
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />
@@ -192,6 +205,7 @@
     <Compile Include="Util\Encrypting.cs" />
     <Compile Include="Util\LoginValidationAttribute.cs" />
     <Compile Include="Util\RSAClass.cs" />
+    <Compile Include="Util\TokenInvalidationAttribute.cs" />
     <Compile Include="Util\TokenValidationAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

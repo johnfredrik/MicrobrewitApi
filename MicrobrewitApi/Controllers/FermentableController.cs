@@ -38,9 +38,10 @@ namespace Microbrewit.Api.Controllers
         }
 
         // GET api/Fermentable/5
+        [HttpGet]
         [Route("{id:int}")]
         [ResponseType(typeof(FermentablesCompleteDto))]
-        public async Task<IHttpActionResult> GetFermentable(int id)
+        public IHttpActionResult GetFermentable(int id)
         {
             var fermentable = Mapper.Map<Fermentable, FermentableDto>(fermentableRepository.GetSingle(f => f.Id == id, "Supplier")); 
             if (fermentable == null)
