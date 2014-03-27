@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Automapper\BeerProfile.cs" />
     <Compile Include="Automapper\BeerStyleProfile.cs" />
     <Compile Include="Automapper\BoilStepProfile.cs" />
     <Compile Include="Automapper\BrewerProfile.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Controllers\BeerController.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="Controllers\BreweryController.cs" />
+    <Compile Include="DTOs\BeerSimpleDto.cs" />
     <Compile Include="DTOs\BeerStyleCompleteDto.cs" />
     <Compile Include="DTOs\BeerStyleDto.cs" />
     <Compile Include="DTOs\BeerStyleLinks.cs" />
