@@ -9,6 +9,11 @@ using System.Text;
 using Microbrewit.Model;
 using System.Net.Http;
 using System.IdentityModel.Tokens;
+using ServiceStack.Redis.Generic;
+using ServiceStack.Text;
+using Microbrewit.Api.DTOs;
+using ServiceStack.Redis;
+
 
 namespace Microbrewit.Api.Util
 {
@@ -38,11 +43,18 @@ namespace Microbrewit.Api.Util
                
                 //JwtHeader jwtHeader = new JwtHeader{{typ, JWT})
                 var jwtString = Encrypting.JWTDecrypt(userCredentials.User);
+
+                using (var redisClient = new RedisClient("localhost:6379"))
+                    {
+                         var timespan = TimeSpan.FromMinutes(1);
+                         redisClient.SetEntry(jwtString, userCredentials.Username, timespan);
+                    }
+                // seting token to header
                 HttpContext.Current.Response.AddHeader("Authorization-Token", jwtString);
             }
             else
             {
-                Log.Debug("Unauthorized");
+               // returns unauthorised if not password maches.
                 actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
         }

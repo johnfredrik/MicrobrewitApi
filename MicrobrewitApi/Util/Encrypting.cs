@@ -12,6 +12,7 @@ using log4net;
 using System.ServiceModel.Security.Tokens;
 using Microbrewit.Model;
 using System.IdentityModel.Protocols.WSTrust;
+using ServiceStack.Redis;
 
 namespace Microbrewit.Api.Util
 {
@@ -159,7 +160,7 @@ namespace Microbrewit.Api.Util
             JwtSecurityToken jwtToken = new JwtSecurityToken
             (issuer: "http://issuer.com", audience: "http://localhost"
             , claims: new List<Claim>() { new Claim("username", user.Username) }
-            , lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(10))
+            , lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(20))
             , signingCredentials: signingCred);
 
             var life = new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(10));
@@ -183,7 +184,22 @@ namespace Microbrewit.Api.Util
             };
             Log.Debug("Now time: " + DateTime.UtcNow.ToString());
             var principal = tokenhandler.ValidateToken(tokenString, validationParameters);
-           
+            using (var redisClient = new RedisClient())
+            {
+                if (!principal.Identities.First().Claims.Any(c => c.Type == "username" && c.Value == redisClient.GetValue(tokenString)))
+                {
+                    throw new SecurityTokenValidationException("No token found in redis store");
+                }
+               
+            }
+        }
+
+        public static void JWTInvalidateToken(string tokenString)
+        {
+            using (var redisClient = new RedisClient("localhost:6379"))
+            {
+                redisClient.Del(tokenString);
+            } 
         }
 
 

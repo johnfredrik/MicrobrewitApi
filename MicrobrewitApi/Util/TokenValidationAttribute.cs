@@ -8,6 +8,10 @@ using log4net;
 using Newtonsoft.Json;
 using Microbrewit.Model;
 using System.IdentityModel.Tokens;
+using ServiceStack.Redis;
+using Microbrewit.Api.DTOs;
+using ServiceStack.Redis.Generic;
+
 namespace Microbrewit.Api.Controllers
 {
     public class TokenValidationAttribute : ActionFilterAttribute
@@ -40,14 +44,13 @@ namespace Microbrewit.Api.Controllers
             catch (SecurityTokenValidationException ex)
             {
                 //Log.Debug(ex);
-                if (ex.Message.ToString().Contains("Jwt10305"))
+                if (ex.Message.ToString().Contains("Jwt10305") || ex.Message.ToString().Contains("No token found in redis store"))
                 {
                     actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden)
                     {
                         Content = new StringContent("Authorization-Token Expired")
-
                     };
-
+                   
                 }
                 else
                 {

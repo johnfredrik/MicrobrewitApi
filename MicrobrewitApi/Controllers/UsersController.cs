@@ -28,6 +28,7 @@ namespace Microbrewit.Api.Controllers
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);            
 
         // GET api/User
+        [TokenValidation]
         [Route("")]
         public UserCompleteDto GetUsers()
         {
@@ -42,9 +43,10 @@ namespace Microbrewit.Api.Controllers
         }
 
         // GET api/User/5
+        [HttpGet]
         [Route("{username}")]
         [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> GetUser(string username)
+        public IHttpActionResult GetUser(string username)
         {
             var user = Mapper.Map<User, UserDto>(userRepository.GetUser(username));
             if (user == null)
@@ -95,11 +97,19 @@ namespace Microbrewit.Api.Controllers
 
         [LoginValidation]
         [Route("login")]
-        public async Task<IHttpActionResult> PostLogin()
+        [HttpPost]
+        public IHttpActionResult PostLogin()
         {                 
             return Ok();
         }
 
+        [TokenInvalidation]
+        [Route("logout")]
+        [HttpPost]
+        public IHttpActionResult PostLogout()
+        {
+            return Ok();
+        }
 
         // POST api/User
         [Route("")]
