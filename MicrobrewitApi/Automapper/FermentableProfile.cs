@@ -19,11 +19,12 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Colour, conf => conf.MapFrom(rec => rec.Colour))
                 .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
-                .ForMember(dto => dto.Maltster, conf => conf.MapFrom(rec => rec.Supplier.Name))
-                .ForMember(dto => dto.Links, conf => conf.MapFrom(rec => rec.Supplier));
+                .ForMember(dto => dto.Maltster, conf => conf.MapFrom(rec => rec.Supplier));
+               
             
-            Mapper.CreateMap<Supplier,FermentableLinks>()
-                .ForMember(dto => dto.MaltsterId, conf => conf.MapFrom(rec => rec.Id));
+            Mapper.CreateMap<Supplier,DTO>()
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             Mapper.CreateMap<FermentableDto,FermentablesCompleteDto>();
                 
