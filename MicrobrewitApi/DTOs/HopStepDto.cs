@@ -16,7 +16,7 @@ namespace Microbrewit.Api.DTOs
         public string Origin { get; set; }
         public string HopForm { get; set; }
         public string FlavourDescription { get; set; }
-        public IList<FlavourDto> Flavours { get; set; }
+        public IList<DTO> Flavours { get; set; }
 
 
     }

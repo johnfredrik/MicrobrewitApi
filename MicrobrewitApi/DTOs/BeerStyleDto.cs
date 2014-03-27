@@ -10,8 +10,8 @@ namespace Microbrewit.Api.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string SuperBeerStyle { get; set; }
-        public IList<string> SubBeerStyles { get; set; }
-        public BeerStyleLinks Links { get; set; }
+        public DTO SuperBeerStyle { get; set; }
+        public IList<DTO> SubBeerStyles { get; set; }
+       
     }
 }

@@ -16,9 +16,13 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<BeerStyle, BeerStyleDto>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                .ForMember(dto => dto.SuperBeerStyle, conf => conf.MapFrom(rec => rec.SuperStyle.Name))
-                .ForMember(dto => dto.SubBeerStyles, conf => conf.ResolveUsing<SubBeerStyleResolver>())
-                .ForMember(dto => dto.Links, conf => conf.ResolveUsing<BeerStyleLinksResolver>());
+                .ForMember(dto => dto.SuperBeerStyle, conf => conf.MapFrom(rec => rec.SuperStyle))
+                .ForMember(dto => dto.SubBeerStyles, conf => conf.MapFrom(rec => rec.SubStyles));
+           
+            Mapper.CreateMap<BeerStyle, DTO>()
+               .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+    
         }
     }
 }

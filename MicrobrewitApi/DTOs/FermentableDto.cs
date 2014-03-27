@@ -10,10 +10,10 @@ namespace Microbrewit.Api.DTOs
     {
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
-        [JsonProperty(PropertyName = "href")]
-        public string Href { get; set; }
+        //[JsonProperty(PropertyName = "href")]
+        //public string Href { get; set; }
         [JsonProperty(PropertyName = "maltster")]
-        public string Maltster { get; set; }
+        public DTO Maltster { get; set; }
         [JsonProperty(PropertyName = "fermentablename")]
         public string FermentableName { get; set; }
         [JsonProperty(PropertyName = "colour")]
@@ -22,7 +22,5 @@ namespace Microbrewit.Api.DTOs
         public int PPG { get; set; }
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
-        [JsonProperty(PropertyName = "links")]
-        public FermentableLinks Links { get; set; }
-    }
+      }
 }

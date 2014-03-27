@@ -28,9 +28,7 @@ namespace Microbrewit.Api.DTOs
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
         [JsonProperty(PropertyName = "supplier")]
-        public string Supplier { get; set; }
-        [JsonProperty(PropertyName = "links")]
-        public YeastLinks Links { get; set; }
+        public DTO Supplier { get; set; }
        
     }
 }

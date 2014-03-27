@@ -10,8 +10,6 @@ namespace Microbrewit.Api.DTOs
     {
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
-        [JsonProperty(PropertyName = "href")]
-        public string Href { get { return "http://api.microbrew.it/hops/:id"; }}
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "aalow")]
@@ -19,14 +17,10 @@ namespace Microbrewit.Api.DTOs
         [JsonProperty(PropertyName = "aahigh")]
         public int AAHigh { get; set; }
         [JsonProperty(PropertyName = "origin")]
-        public string Origin { get; set; }
+        public DTO Origin { get; set; }
         [JsonProperty(PropertyName = "flavours")]
-        public IList<string> Flavours { get; set; }
+        public IList<DTO> Flavours { get; set; }
         [JsonProperty(PropertyName = "substitutions")]
-        public IList<String> Substitutions { get; set; }
-        [JsonProperty(PropertyName = "links")]
-        public HopLinks Links { get; set; }
-
-        
+        public IList<DTO> Substitutions { get; set; }
     }
 }

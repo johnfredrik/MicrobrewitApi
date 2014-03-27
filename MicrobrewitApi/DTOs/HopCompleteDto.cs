@@ -8,8 +8,6 @@ namespace Microbrewit.Api.DTOs
 {
     public class HopCompleteDto
     {
-        [JsonProperty(PropertyName = "meta")]
-        public Meta Meta { get; set; }
         [JsonProperty(PropertyName = "links")]
         public LinksHop Links { get; set; }
         [JsonProperty(PropertyName = "hops")]
@@ -33,7 +31,7 @@ namespace Microbrewit.Api.DTOs
                 HopSubstitutions = new Links()
                 {
                     Href = "http://api.microbrew.it/hop/:id",
-                    Type = "origin"
+                    Type = "hop"
                 }
 
             };
