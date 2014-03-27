@@ -193,7 +193,6 @@
     <Compile Include="DTOs\UserCompleteDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />
     <Compile Include="DTOs\UserPostDto.cs" />
-    <Compile Include="DTOs\UserToken.cs" />
     <Compile Include="DTOs\YeastCompleteDto.cs" />
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />

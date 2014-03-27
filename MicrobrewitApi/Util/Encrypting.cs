@@ -13,15 +13,20 @@ using System.ServiceModel.Security.Tokens;
 using Microbrewit.Model;
 using System.IdentityModel.Protocols.WSTrust;
 using ServiceStack.Redis;
+using System.Configuration;
 
 namespace Microbrewit.Api.Util
 {
     public class Encrypting
     {
+        #region Private Fields
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly byte[] Salt = Encoding.ASCII.GetBytes(@"Èõó¬7SýÉ•wäÚx:þÞ]^ì¶—~9a§");
         private static readonly JwtSecurityTokenHandler tokenhandler = new JwtSecurityTokenHandler();
-       
+        private static readonly int expire = int.Parse(ConfigurationManager.AppSettings["expire"]);
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+        #endregion
+
         public static string Encrypt(string plainText, string sharedSecret)
         {
 
@@ -160,16 +165,10 @@ namespace Microbrewit.Api.Util
             JwtSecurityToken jwtToken = new JwtSecurityToken
             (issuer: "http://issuer.com", audience: "http://localhost"
             , claims: new List<Claim>() { new Claim("username", user.Username) }
-            , lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(20))
+            , lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(expire))
             , signingCredentials: signingCred);
-
-            var life = new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(10));
-            Log.DebugFormat("npf: {0} exp: {1}",life.Created,life.Expires);
+          
             string tokenString = tokenhandler.WriteToken(jwtToken);
-
-            
-            Log.Debug("jwtToken: " + tokenString);
-           
             return tokenString;
         }
        
@@ -196,7 +195,7 @@ namespace Microbrewit.Api.Util
 
         public static void JWTInvalidateToken(string tokenString)
         {
-            using (var redisClient = new RedisClient("localhost:6379"))
+            using (var redisClient = new RedisClient(redisStore))
             {
                 redisClient.Del(tokenString);
             } 

@@ -13,13 +13,18 @@ using ServiceStack.Redis.Generic;
 using ServiceStack.Text;
 using Microbrewit.Api.DTOs;
 using ServiceStack.Redis;
+using System.Configuration;
 
 
 namespace Microbrewit.Api.Util
 {
     public class LoginValidationAttribute : ActionFilterAttribute
     {
+        #region Private Fields
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly int expire = int.Parse(ConfigurationManager.AppSettings["expire"]);
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+	    #endregion
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
@@ -44,9 +49,9 @@ namespace Microbrewit.Api.Util
                 //JwtHeader jwtHeader = new JwtHeader{{typ, JWT})
                 var jwtString = Encrypting.JWTDecrypt(userCredentials.User);
 
-                using (var redisClient = new RedisClient("localhost:6379"))
+                using (var redisClient = new RedisClient(redisStore))
                     {
-                         var timespan = TimeSpan.FromMinutes(1);
+                         var timespan = TimeSpan.FromMinutes(expire);
                          redisClient.SetEntry(jwtString, userCredentials.Username, timespan);
                     }
                 // seting token to header
