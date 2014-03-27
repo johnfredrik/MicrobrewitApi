@@ -137,8 +137,6 @@
     <Compile Include="Automapper\BeerStyleProfile.cs" />
     <Compile Include="Automapper\BoilStepProfile.cs" />
     <Compile Include="Automapper\BrewerProfile.cs" />
-    <Compile Include="Automapper\CustomResolvers\FlavorResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopLinksResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\SubBeerStyleResolver.cs" />
     <Compile Include="Automapper\FermentableProfile.cs" />
@@ -147,6 +145,7 @@
     <Compile Include="Automapper\OtherProfile.cs" />
     <Compile Include="Automapper\UserProfile.cs" />
     <Compile Include="Automapper\YeastsProfile.cs" />
+    <Compile Include="Controllers\BeerController.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="Controllers\BreweryController.cs" />
     <Compile Include="DTOs\BeerStyleCompleteDto.cs" />
@@ -154,13 +153,13 @@
     <Compile Include="DTOs\BeerStyleLinks.cs" />
     <Compile Include="DTOs\BoilStepDto.cs" />
     <Compile Include="DTOs\BrewerDto.cs" />
+    <Compile Include="DTOs\DTO.cs" />
     <Compile Include="DTOs\FermentableDto.cs" />
     <Compile Include="DTOs\Links.cs" />
     <Compile Include="DTOs\FermentablesCompleteDto.cs" />
     <Compile Include="DTOs\FermentableLinks.cs" />
     <Compile Include="DTOs\FermentableStepDto.cs" />
     <Compile Include="DTOs\FermentationStepDto.cs" />
-    <Compile Include="DTOs\FlavourDto.cs" />
     <Compile Include="Automapper\HopProfile.cs" />
     <Compile Include="Automapper\RecipeProfile.cs" />
     <Compile Include="Controllers\FermentableController.cs" />
@@ -172,7 +171,6 @@
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\YeastsController.cs" />
     <Compile Include="Automapper\AutoMapperConfiguration.cs" />
-    <Compile Include="Automapper\CustomResolvers\SubstituteResolver.cs" />
     <Compile Include="DTOs\HopCompleteDto.cs" />
     <Compile Include="DTOs\HopDto.cs" />
     <Compile Include="DTOs\HopLinks.cs" />

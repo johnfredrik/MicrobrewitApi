@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModelBuilder\ABVConfiguration.cs" />
+    <Compile Include="ModelBuilder\BeerConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerStyleConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepFermentableConfiguration.cs" />
@@ -65,6 +67,7 @@
     <Compile Include="ModelBuilder\FlavourConfiguration.cs" />
     <Compile Include="ModelBuilder\HopFlavourConfiguration.cs" />
     <Compile Include="ModelBuilder\HopFormConfiguration.cs" />
+    <Compile Include="ModelBuilder\IBUConfiguration.cs" />
     <Compile Include="ModelBuilder\MashStepConfiguration.cs" />
     <Compile Include="ModelBuilder\MashStepFermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\MashStepHopConfiguration.cs" />
@@ -72,10 +75,12 @@
     <Compile Include="ModelBuilder\OtherConfiguration.cs" />
     <Compile Include="ModelBuilder\RecipeConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepHopConfiguration.cs" />
+    <Compile Include="ModelBuilder\SRMConfiguration.cs" />
     <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
     <Compile Include="ModelBuilder\UserConfiguration.cs" />
     <Compile Include="ModelBuilder\UserCredentialsConfiguration.cs" />
     <Compile Include="ModelBuilder\YeastConfiguration.cs" />
+    <Compile Include="Model\ABV.cs" />
     <Compile Include="Model\Beer.cs" />
     <Compile Include="Model\BeerStyle.cs" />
     <Compile Include="Model\BoilStep.cs" />
@@ -102,6 +107,7 @@
     <Compile Include="ModelBuilder\OriginConfiguration.cs" />
     <Compile Include="Model\HopFlavour.cs" />
     <Compile Include="Model\HopForm.cs" />
+    <Compile Include="Model\IBU.cs" />
     <Compile Include="Model\LiquidExtract.cs" />
     <Compile Include="Model\MashStep.cs" />
     <Compile Include="Model\MashStepFermentable.cs" />
@@ -113,6 +119,7 @@
     <Compile Include="Model\Recipe.cs" />
     <Compile Include="Model\FermentationStepHop.cs" />
     <Compile Include="Model\Spice.cs" />
+    <Compile Include="Model\SRM.cs" />
     <Compile Include="Model\Sugar.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="Model\User.cs" />

@@ -88,9 +88,8 @@ namespace Microbrewit.Model
            
             var recipe = new Recipe()
             {
-                Name = "Beer Good",
+                Id = 1,
                 BeerStyleId = 1,
-                Brewers = new List<User>{user},
                 MashSteps = new List<MashStep>()
                     {
                         new MashStep()
@@ -175,8 +174,14 @@ namespace Microbrewit.Model
                     }
                 }
             };
-
+            var brewers = new List<User>();
+            brewers.Add(user);
+            var beer = new Beer() { Id = 1, Name = "Good Beer", Recipe = recipe, Brewers = brewers, BeerStyleId = 1 };
+            beer.ABV = new ABV() { Id = beer.Id, Standard = 5 };
+            beer.IBU = new IBU() { Id = beer.Id, Standard = 16};
+            beer.SRM = new SRM() { Id = beer.Id, Standard = 20};
             context.Recipes.Add(recipe);
+            context.Beers.Add(beer);
 
 
         }
