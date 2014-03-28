@@ -21,6 +21,6 @@ namespace Microbrewit.Api.DTOs
         [JsonProperty(PropertyName = "flavours")]
         public IList<DTO> Flavours { get; set; }
         [JsonProperty(PropertyName = "substitutions")]
-        public IList<DTO> Substitutions { get; set; }
+        public IList<DTO> Substituts { get; set; }
     }
 }

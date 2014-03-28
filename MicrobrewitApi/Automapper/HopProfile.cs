@@ -20,7 +20,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.AAHigh, conf => conf.MapFrom(rec => rec.AAHigh))
                 .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Origin))
                 .ForMember(dto => dto.Flavours, conf => conf.MapFrom(rec => rec.Flavours))
-                .ForMember(dto => dto.Substitutions, conf => conf.MapFrom(rec => rec.Substituts));
+                .ForMember(dto => dto.Substituts, conf => conf.MapFrom(rec => rec.Substituts));
                
 
            

@@ -44,8 +44,8 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetHop(int id)
         {
-          
-            var hop = Mapper.Map<Hop,HopDto>(hopRepository.GetSingle(h => h.Id == id, "Origin"));
+
+            var hop = Mapper.Map<Hop, HopDto>(hopRepository.GetSingle(h => h.Id == id, "Origin", "Flavours", "Substituts"));
 
             if (hop == null)
             {
