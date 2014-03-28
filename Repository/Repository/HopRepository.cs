@@ -7,27 +7,8 @@ using Microbrewit.Model;
 
 namespace Microbrewit.Repository
 {
-    public class HopRepository : IHopRepository
+    public class HopRepository : GenericDataRepository<Hop>,IHopRepository
     {
-        public IList<Model.Hop> GetHops()
-        {
-            using (var context = new MicrobrewitContext())
-            {
-                return context.Hops
-                    .Include("Origin")
-                    .Include("HopFlavours.Flavour")
-                    .Include("MashSteps")
-                    .Include("FermentationSteps")
-                    .Include("Substituts").ToList();
-            }
-        }
-
-        public Model.Hop GetHop(int hopId)
-        {
-            using (var context = new MicrobrewitContext())
-            {
-                return context.Hops.Include("Origin").Include("HopFlavours.Flavour").Where(h => h.Id == hopId).SingleOrDefault();
-            }
-        }
+        
     }
 }

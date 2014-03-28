@@ -30,14 +30,16 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/Recipe
         [Route("")]
-        public IList<RecipeDto> GetRecipes()
+        public RecipeSimpleCompleteDto GetRecipes()
         {
             
 
             //var recipes = db.Recipes.Include("RecipeHops.Hop").Project().To<RecipeDto>();
-            var recipes = recipeRepository.GetAll("Mashsteps.Hops.Hop.Origin", "Mashsteps.Fermentables.Fermentable", "MashSteps.Others.Other", "BoilSteps.Hops.Hop.Origin");
-            var recipesDto =  Mapper.Map<IList<Recipe>, IList<RecipeDto>>(recipes);
-            return recipesDto;
+            var recipes = recipeRepository.GetAll("Beer.BeerStyle");
+            var recipesDto =  Mapper.Map<IList<Recipe>, IList<RecipeSimpleDto>>(recipes);
+            var result = new RecipeSimpleCompleteDto();
+            result.Recipes = recipesDto;
+            return result;
 
            
         }
@@ -46,20 +48,24 @@ namespace Microbrewit.Api.Controllers
         // GET api/Recipe/5
         [HttpGet]
         [Route("{id:int}")]
-        [ResponseType(typeof(Recipe))]
+        [ResponseType(typeof(RecipeCompleteDto))]
         public IHttpActionResult GetRecipe(int id)
         {
             
 
            //Recipe recipe = await db.Recipes.Where(r => r.Id == id).FirstOrDefaultAsync();
-            RecipeDto recipe = Mapper.Map<Recipe, RecipeDto>(recipeRepository.GetSingle(r => r.Id == id, "Mashsteps.Fermentables.Fermentable", "MashSteps.Others.Other", "BoilSteps.Hops.Hop.Origin"));
+            RecipeDto recipe = Mapper.Map<Recipe, RecipeDto>(recipeRepository.GetSingle(r => r.Id == id,
+                "Beer.BeerStyle", "Mashsteps.Fermentables.Fermentable", "MashSteps.Others.Other", "Mashsteps.Hops.Hop", "BoilSteps.Hops.Hop.Origin",
+                "BoilSteps.Fermentables.Fermentable", "BoilSteps.Others.Other", "FermentationSteps.Fermentables.Fermentable", "FermentationSteps.Hops.Hop", "FermentationSteps.Others.Other",
+                "FermentationSteps.Yeasts.Yeast.Supplier"));
             //Recipe recipe = recipeRepository.GetRecipe(id);
             if (recipe == null)
             {
                 return NotFound();
             }
-
-            return Ok(recipe);
+            var result = new RecipeCompleteDto() { Recipes = new List<RecipeDto>() };
+            result.Recipes.Add(recipe);
+            return Ok(result);
         }
 
         // PUT api/Recipe/5

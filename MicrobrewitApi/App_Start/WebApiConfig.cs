@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web.Routing;
 using System.Web.Http;
 using Microbrewit.Api.Util;
+using WebApiContrib.Formatting.Jsonp;
 
 namespace Microbrewit.Api
 {
@@ -22,7 +23,7 @@ namespace Microbrewit.Api
             //config.Filters.Add(new BasicAuthenticationAttibute());
            // config.EnableCors();
 
-            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            //config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
             // Web API routes
             config.MapHttpAttributeRoutes();

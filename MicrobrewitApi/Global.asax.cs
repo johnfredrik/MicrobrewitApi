@@ -8,6 +8,8 @@ using System.Web.Http;
 using System.Web.Routing;
 using AutoMapper;
 using Microbrewit.Api.Automapper;
+using System.Net.Http.Formatting;
+using WebApiContrib.Formatting.Jsonp;
 
 namespace Microbrewit.Api
 {
@@ -16,6 +18,8 @@ namespace Microbrewit.Api
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configuration.AddJsonpFormatter();
+
             AutoMapperConfiguration.Configure();
             Database.SetInitializer(new InitializeDatabaseWithSeedData());
         }

@@ -19,14 +19,14 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.AALow, conf => conf.MapFrom(rec => rec.AALow))
                 .ForMember(dto => dto.AAHigh, conf => conf.MapFrom(rec => rec.AAHigh))
                 .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Origin))
-                .ForMember(dto => dto.Flavours, conf => conf.MapFrom(rec => rec.HopFlavours))
+                .ForMember(dto => dto.Flavours, conf => conf.MapFrom(rec => rec.Flavours))
                 .ForMember(dto => dto.Substitutions, conf => conf.MapFrom(rec => rec.Substituts));
                
 
            
-            Mapper.CreateMap<HopFlavour, DTO>()
-                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Flavour.Name))
-                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Flavour.Id));
+            Mapper.CreateMap<Flavour, DTO>()
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
 
             Mapper.CreateMap<Hop, DTO>()
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
@@ -35,6 +35,17 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<Origin, DTO>()
               .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+
+            Mapper.CreateMap<HopPostDto,Hop>()
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.AALow, conf => conf.MapFrom(rec => rec.AALow))
+                .ForMember(dto => dto.AAHigh, conf => conf.MapFrom(rec => rec.AAHigh))
+                .ForMember(dto => dto.Origin, conf => conf.ResolveUsing<HopOriginResolver>())
+                .ForMember(dto => dto.Flavours, conf => conf.ResolveUsing<HopFlavoursResolver>())
+                .ForMember(dto => dto.Substituts, conf => conf.ResolveUsing<SubstitutResolver>());
+              
+                
         }
     }
 }

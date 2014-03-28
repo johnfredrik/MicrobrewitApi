@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Model.ModelBuilder
 {
-    class HopFlavourConfiguration : EntityTypeConfiguration<HopFlavour>
-    {
-        public HopFlavourConfiguration()
-        {
-            this.HasKey(hopFlavour => new { hopFlavour.FlavourId, hopFlavour.HopId });
+    //class HopFlavourConfiguration : EntityTypeConfiguration<HopFlavour>
+    //{
+    //    public HopFlavourConfiguration()
+    //    {
+    //        this.HasKey(hopFlavour => new { hopFlavour.FlavourId, hopFlavour.HopId });
 
-        }
-    }
+    //    }
+    //}
 }

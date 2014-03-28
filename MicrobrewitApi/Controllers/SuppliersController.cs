@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
+using Microbrewit.Api.DTOs;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -17,26 +19,31 @@ namespace Microbrewit.Api.Controllers
     public class SuppliersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private readonly ISupplierRepository repository = new SupplierRepository();
 
         // GET api/Supplier
         [Route("")]
-        public IQueryable<Supplier> GetSuppliers()
+        public SupplierCompleteDTO GetSuppliers()
         {
-            return db.Suppliers.Include(s => s.Origin);
+            var suppliers = repository.GetAll("Origin");
+            var result = new SupplierCompleteDTO();
+            result.Suppliers = suppliers;
+            return result;
         }
 
         // GET api/Supplier/5
         [Route("{id:int}")]
         [ResponseType(typeof(Supplier))]
-        public async Task<IHttpActionResult> GetSupplier(int id)
+        public IHttpActionResult GetSupplier(int id)
         {
-            Supplier supplier = await db.Suppliers.Include(s => s.Origin).Where(s => s.Id == id).FirstOrDefaultAsync();
+            var supplier = repository.GetSingle(s => s.Id == id,"Origin");
             if (supplier == null)
             {
                 return NotFound();
             }
-
-            return Ok(supplier);
+            var result = new SupplierCompleteDTO() { Suppliers = new List<Supplier>() };
+            result.Suppliers.Add(supplier);
+            return Ok(result);
         }
 
         // PUT api/Supplier/5

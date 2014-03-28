@@ -20,12 +20,18 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasMany(hop => hop.FermentationSteps).WithRequired(fermentationStepHop => fermentationStepHop.Hop).HasForeignKey(fermentationStepHop => fermentationStepHop.HopId);
             this.HasMany(hop => hop.MashSteps).WithRequired(mashStepHop => mashStepHop.Hop).HasForeignKey(mashStepHop => mashStepHop.HopId);
             this.HasMany(hop => hop.BoilSteps).WithRequired(boilStepHop => boilStepHop.Hop).HasForeignKey(boilStepHop => boilStepHop.HopId);
-            this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
+           // this.HasMany(hop => hop.HopFlavours).WithRequired(flavourHop => flavourHop.Hop).HasForeignKey(flavourHop => flavourHop.HopId);
             this.HasMany(hop => hop.Substituts).WithMany().Map(map =>
             {
                 map.MapLeftKey("HopId");
                 map.MapRightKey("SubstitutHopId");
                 map.ToTable("Substitute");
+            });
+            this.HasMany(hop => hop.Substituts).WithMany().Map(map =>
+            {
+                map.MapLeftKey("HopId");
+                map.MapRightKey("FlavourId");
+                map.ToTable("HopFlavour");
             });
             this.HasOptional(h => h.Origin).WithMany().HasForeignKey(o => o.OriginId);
         }

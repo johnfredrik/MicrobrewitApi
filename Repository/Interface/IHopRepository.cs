@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Repository
 {
-    public interface IHopRepository
+    public interface IHopRepository : IGenericDataRepository<Hop>
     {
-        IList<Hop> GetHops();
-        Hop GetHop(int hopId);
+       
     }
 }

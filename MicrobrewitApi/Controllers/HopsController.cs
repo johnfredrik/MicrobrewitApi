@@ -33,7 +33,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public HopCompleteDto GetHops()
         {
-            var hops = Mapper.Map<IList<Hop>,IList<HopDto>>(hopRepository.GetHops()); 
+            var hops = Mapper.Map<IList<Hop>,IList<HopDto>>(hopRepository.GetAll("Origin")); 
             var result = new HopCompleteDto(){Hops = hops};
             return result;
         }
@@ -45,7 +45,7 @@ namespace Microbrewit.Api.Controllers
         public IHttpActionResult GetHop(int id)
         {
           
-            var hop = Mapper.Map<Hop,HopDto>(hopRepository.GetHop(id));
+            var hop = Mapper.Map<Hop,HopDto>(hopRepository.GetSingle(h => h.Id == id, "Origin"));
 
             if (hop == null)
             {
@@ -114,8 +114,8 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Hops
         [Route("")]
-        [ResponseType(typeof(Hop))]
-        public async Task<IHttpActionResult> PostHop(Hop hop)
+        [ResponseType(typeof(HopPostDto))]
+        public async Task<IHttpActionResult> PostHop(HopPostDto hopPostDto)
         {
             Log.Debug("Hops Post");
             if (!ModelState.IsValid)
@@ -124,15 +124,13 @@ namespace Microbrewit.Api.Controllers
 
                 return BadRequest(ModelState);
             }
-            if (hop.OriginId > 0)
-            {
-                hop.Origin = null;
-            }
+            var hop = Mapper.Map<HopPostDto, Hop>(hopPostDto);
+
             db.Hops.Add(hop);
             await db.SaveChangesAsync();
-            hop = db.Hops.Include(h => h.Origin).Where(h => h.Id == hop.Id).SingleOrDefault();
+            hop = db.Hops.Include(h => h.Origin).Where(h => h.Id == hopPostDto.Id).SingleOrDefault();
            
-            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hop.Id},hop);
+            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hopPostDto.Id},hopPostDto);
         }
 
         // DELETE api/Hopd/5

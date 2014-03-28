@@ -14,7 +14,7 @@ namespace Microbrewit.Model.ModelBuilder
             Property(f => f.Id).HasColumnName("FlavourId").IsRequired();
             Property(f => f.Name).IsRequired().HasMaxLength(255);
 
-            this.HasMany(flavour => flavour.Hops).WithRequired(flavourHop => flavourHop.Flavour).HasForeignKey(flavourHop => flavourHop.FlavourId);
+            //this.HasMany(flavour => flavour.Hops).WithRequired(flavourHop => flavourHop.Flavour).HasForeignKey(flavourHop => flavourHop.FlavourId);
                 
 
         }
