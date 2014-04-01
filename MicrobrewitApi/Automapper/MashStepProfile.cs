@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using AutoMapper;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Api.Automapper
 {
@@ -29,7 +29,7 @@ namespace Microbrewit.Api.Automapper
              Mapper.CreateMap<MashStepFermentable, FermentableStepDto>()
                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.FermentableId))
                  .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Fermentable.Name))
-                 .ForMember(dto => dto.Colour, conf => conf.MapFrom(rec => rec.Fermentable.Colour))
+                 .ForMember(dto => dto.Colour, conf => conf.MapFrom(rec => rec.Fermentable.EBC))
                  .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.Fermentable.PPG))
                  .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Fermentable.Supplier.Origin.Name))
                  .ForMember(dto => dto.SuppliedById, conf => conf.MapFrom(rec => rec.Fermentable.SupplierId))
