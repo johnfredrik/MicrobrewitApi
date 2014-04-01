@@ -14,7 +14,7 @@ using log4net;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/origins")]
+    [RoutePrefix("origins")]
     public class OriginController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();

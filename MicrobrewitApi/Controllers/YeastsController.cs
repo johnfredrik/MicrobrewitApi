@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/yeasts")]
+    [RoutePrefix("yeasts")]
     public class YeastsController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
@@ -26,7 +26,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public YeastCompleteDto GetYeasts()
         {
-            var yeasts = Mapper.Map<IList<Yeast>,IList<YeastDto>>(yeastRespository.GetYeasts());
+            var yeasts = Mapper.Map<IList<Yeast>,IList<YeastDto>>(yeastRespository.GetAll("Supplier"));
             var result = new YeastCompleteDto();
             result.Yeasts = yeasts;
             return result;
@@ -38,7 +38,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetYeast(int id)
         {
-            var yeast = Mapper.Map<Yeast,YeastDto>(yeastRespository.GetYeast(id));
+            var yeast = Mapper.Map<Yeast,YeastDto>(yeastRespository.GetSingle(y => y.Id == id,"Supplier"));
             if (yeast == null)
             {
                 return NotFound();
@@ -84,42 +84,37 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Yeasts
-        [Route("dryyeasts")]
-        [ResponseType(typeof(DryYeast))]
-        public async Task<IHttpActionResult> PostYeast(DryYeast yeast)
+        [Route("")]
+        [ResponseType(typeof(YeastPostDto))]
+        public IHttpActionResult PostYeast(YeastPostDto yeastPost)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (yeast.SupplierId > 0)
-            {
-                yeast.Supplier = null;
-            }
-            db.Yeasts.Add(yeast);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = yeast.Id }, yeast);
+            var yeast = yeastRespository.AddYeast(yeastPost);
+            var result = Mapper.Map<Yeast, YeastDto>(yeast);
+            return CreatedAtRoute("DefaultApi", new {controller = "yeasts", id = result.Id }, result);
         }
 
-        // POST api/Yeasts
-        [Route("liquidyeasts")]
-        [ResponseType(typeof(LiquidYeast))]
-        public async Task<IHttpActionResult> PostYeast(LiquidYeast yeast)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (yeast.SupplierId > 0)
-            {
-                yeast.Supplier = null;
-            }
-            db.Yeasts.Add(yeast);
-            await db.SaveChangesAsync();
+        //// POST api/Yeasts
+        //[Route("liquidyeasts")]
+        //[ResponseType(typeof(LiquidYeast))]
+        //public async Task<IHttpActionResult> PostYeast(LiquidYeast yeast)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    if (yeast.SupplierId > 0)
+        //    {
+        //        yeast.Supplier = null;
+        //    }
+        //    db.Yeasts.Add(yeast);
+        //    await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { controller="yeasts", id = yeast.Id }, yeast);
-        }
+        //    return CreatedAtRoute("DefaultApi", new { controller="yeasts", id = yeast.Id }, yeast);
+        //}
 
         // DELETE api/Yeasts/5
         [Route("{id:int}")]

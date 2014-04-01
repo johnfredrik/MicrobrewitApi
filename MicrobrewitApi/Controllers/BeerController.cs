@@ -9,13 +9,13 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/beers")]
+    [RoutePrefix("beers")]
     public class BeerController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();

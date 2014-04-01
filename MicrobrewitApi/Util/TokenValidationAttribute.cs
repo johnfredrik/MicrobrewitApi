@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using Microbrewit.Model;
 using System.IdentityModel.Tokens;
 using ServiceStack.Redis;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using ServiceStack.Redis.Generic;
 
 namespace Microbrewit.Api.Controllers

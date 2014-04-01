@@ -8,22 +8,150 @@ using Microbrewit.Model;
 
 namespace Microbrewit.Repository
 {
-    public class YeastRepository : IYeastRepository
+    public class YeastRepository : GenericDataRepository<Yeast>, IYeastRepository 
     {
-        public IList<Model.Yeast> GetYeasts()
+
+        public Yeast AddYeast(Model.DTOs.YeastPostDto yeastPost)
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Yeasts.Include("Supplier").ToList();
+                int yeastId;
+                if(yeastPost.Type.Equals("Liquid Yeast"))
+                {
+                    var yeast = new LiquidYeast();
+                    yeast.Name = yeastPost.Name;
+                    if (yeastPost.ProductCode != null)
+                    {
+                        yeast.ProductCode = yeastPost.ProductCode;
+                    }
+                    if (yeastPost.TemperatureLow > 0)
+                    {
+                        yeast.TemperatureLow = yeastPost.TemperatureLow;
+                    }
+                    if (yeastPost.TemperatureHigh > 0)
+                    {
+                        yeast.TemperatureHigh = yeastPost.TemperatureHigh;
+                    }
+                    if (yeastPost.AlcoholTolerance != null)
+                    {
+                        yeast.AlcoholTolerance = yeastPost.AlcoholTolerance;
+                    }
+                    if (yeastPost.Comment != null)
+                    {
+                        yeast.Comment = yeastPost.Comment;
+                    }
+                    if(yeastPost.Flocculation != null)
+                    {
+                        yeast.Flocculation = yeastPost.Flocculation;
+                    }
+                    if (yeastPost.Supplier.Id > 0)
+                    {
+                        var supplier = context.Suppliers.SingleOrDefault(s => s.Id == yeastPost.Supplier.Id);
+                        if (supplier != null)
+                        {
+                            yeast.SupplierId = supplier.Id;
+                        }
+                    }
+                    else if (yeastPost.Supplier.Name != null)
+                    {
+                        var supplier = context.Suppliers.SingleOrDefault(s => s.Name.Equals(yeastPost.Supplier.Name));
+                        if (supplier != null)
+                        {
+                            yeast.SupplierId = supplier.Id;
+                        }
+
+                    }
+                    context.Yeasts.Add(yeast);
+                    context.SaveChanges();
+                    yeastId = yeast.Id;
+                }
+                else if (yeastPost.Type.Equals("Dry Yeast"))
+                {
+                    var yeast = new DryYeast();
+                    yeast.Name = yeastPost.Name;
+                    if (yeastPost.ProductCode != null)
+                    {
+                        yeast.ProductCode = yeastPost.ProductCode;
+                    }
+                    if (yeastPost.TemperatureLow > 0)
+                    {
+                        yeast.TemperatureLow = yeastPost.TemperatureLow;
+                    }
+                    if (yeastPost.TemperatureHigh > 0)
+                    {
+                        yeast.TemperatureHigh = yeastPost.TemperatureHigh;
+                    }
+                    if (yeastPost.AlcoholTolerance != null)
+                    {
+                        yeast.AlcoholTolerance = yeastPost.AlcoholTolerance;
+                    }
+                    if (yeastPost.Comment != null)
+                    {
+                        yeast.Comment = yeastPost.Comment;
+                    }
+                    if (yeastPost.Flocculation != null)
+                    {
+                        yeast.Flocculation = yeastPost.Flocculation;
+                    }
+                    if (yeastPost.Supplier.Id > 0)
+                    {
+                        var supplier = context.Suppliers.SingleOrDefault(s => s.Id == yeastPost.Supplier.Id);
+                        if (supplier != null)
+                        {
+                            yeast.SupplierId = supplier.Id;
+                        }
+                    }
+                    else if (yeastPost.Supplier.Name != null)
+                    {
+                        var supplier = context.Suppliers.SingleOrDefault(s => s.Name.Equals(yeastPost.Supplier.Name));
+                        if (supplier != null)
+                        {
+                            yeast.SupplierId = supplier.Id;
+                        }
+
+                    }
+
+                    context.Yeasts.Add(yeast);
+                    context.SaveChanges();
+                    yeastId = yeast.Id;
+                }
+                else
+                {
+                    var yeast = new Yeast();
+                    yeast.Name = yeastPost.Name;
+                    if (yeastPost.ProductCode != null)
+                    {
+                        yeast.ProductCode = yeastPost.ProductCode;
+                    }
+                    if (yeastPost.TemperatureLow > 0)
+                    {
+                        yeast.TemperatureLow = yeastPost.TemperatureLow;
+                    }
+                    if (yeastPost.TemperatureHigh > 0)
+                    {
+                        yeast.TemperatureHigh = yeastPost.TemperatureHigh;
+                    }
+                    if (yeastPost.AlcoholTolerance != null)
+                    {
+                        yeast.AlcoholTolerance = yeastPost.AlcoholTolerance;
+                    }
+                    if (yeastPost.Comment != null)
+                    {
+                        yeast.Comment = yeastPost.Comment;
+                    }
+                    if (yeastPost.Flocculation != null)
+                    {
+                        yeast.Flocculation = yeastPost.Flocculation;
+                    }
+
+                    context.Yeasts.Add(yeast);
+                    context.SaveChanges();
+                    yeastId = yeast.Id;
+                }
+                return context.Yeasts.Find(yeastId);
             }
         }
 
-        public Model.Yeast GetYeast(int id)
-        {
-            using (var context = new MicrobrewitContext())
-            {
-                return context.Yeasts.Include("Supplier").Where(y => y.Id == id).SingleOrDefault();
-            }
-        }
+      
     }
 }

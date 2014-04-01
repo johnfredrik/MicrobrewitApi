@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AutoMapper;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Model;
 
 namespace Microbrewit.Api.Automapper

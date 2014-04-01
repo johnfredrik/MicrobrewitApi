@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Api.Util;
 using Microbrewit.Repository;
 using log4net;
@@ -20,7 +20,7 @@ using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/users")]
+    [RoutePrefix("users")]
     public class UsersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();

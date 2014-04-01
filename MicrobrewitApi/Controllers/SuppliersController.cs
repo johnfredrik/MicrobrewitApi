@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/suppliers")]
+    [RoutePrefix("suppliers")]
     public class SuppliersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();

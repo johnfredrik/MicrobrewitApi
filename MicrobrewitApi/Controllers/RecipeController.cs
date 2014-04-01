@@ -13,13 +13,13 @@ using Microbrewit.Model;
 using Microbrewit.Repository;
 using log4net;
 using System.Linq.Expressions;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/recipes")]
+    [RoutePrefix("recipes")]
     public class RecipeController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();

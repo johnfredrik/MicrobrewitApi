@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Model;
 using System;
 using System.Collections.Generic;
@@ -8,25 +8,37 @@ using System.Web;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class SubstitutResolver : ValueResolver<DTO,Hop>
+    public class SubstitutResolver : ValueResolver<HopPostDto, IList<Hop>>
     {
-        protected override Hop ResolveCore(DTO dto)
+        protected override IList<Hop> ResolveCore(HopPostDto dto)
         {
             using (var context = new MicrobrewitContext())
             {
-                Hop hop = null;
-                if(dto != null)
+                List<Hop> hops = new List<Hop>();
+                if (dto != null)
+                {
+                    foreach (var sub in dto.Substituts)
                     {
-                    if (dto.Id > 0)
-                    {
-                        hop = context.Hops.SingleOrDefault(h => h.Id == dto.Id);
-                    }
-                    else
-                    {
-                        hop = context.Hops.SingleOrDefault(h => h.Name.Equals(dto.Name));
+
+                        if (sub.Id > 0)
+                        {
+                            var hop = context.Hops.SingleOrDefault(h => h.Id == sub.Id);
+                            if (hop != null)
+                            {
+                                hops.Add(hop);
+                            }
+                        }
+                        else
+                        {
+                            var hop = context.Hops.SingleOrDefault(h => h.Name.Equals(sub.Name));
+                            if (hop != null)
+                            {
+                                hops.Add(hop);
+                            }
+                        }
                     }
                 }
-                return hop;
+                return hops;
             }
         }
     }
