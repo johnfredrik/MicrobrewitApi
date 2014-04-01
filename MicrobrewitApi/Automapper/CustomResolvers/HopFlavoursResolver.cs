@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Model;
+using Microbrewit.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,30 +9,42 @@ using System.Web;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class HopFlavoursResolver : ValueResolver<DTO, Flavour>
+    public class HopFlavoursResolver : ValueResolver<HopPostDto, IList<HopFlavour>>
     {
-        protected override Flavour ResolveCore(DTO dto)
+        private IHopRepository repository = new HopRepository();
+
+        protected override IList<HopFlavour> ResolveCore(HopPostDto dto)
         {
+
             using (var context = new MicrobrewitContext())
             {
-                Flavour flavour = null;
-                if (dto != null)
+                var flavours = new List<HopFlavour>();
+                if (dto.Flavours != null)
                 {
-                    if (dto.Id > 0)
+                    foreach (var item in dto.Flavours)
                     {
-                        flavour = context.Flavours.SingleOrDefault(f => f.Id == dto.Id);
-                    }
-                    else
-                    {
-                        flavour = context.Flavours.SingleOrDefault(f => f.Name.Equals(dto.Name));
-                    }
-                    if (flavour == null)
-                    {
-                        flavour = new Flavour() { Name = dto.Name };
-                        context.Flavours.Add(flavour);
+                        var hopFlavor = new HopFlavour();
+                        if (item.Id > 0)
+                        {
+                            hopFlavor.FlavourId = item.Id;
+                            flavours.Add(hopFlavor);
+                        }
+                        else
+                        {
+                            var flavour = repository.AddFlavour(item.Name);
+                            if (flavour == null)
+                            {
+                                flavour = 
+                                context.Flavours.Add(flavour);
+                                context.SaveChanges();
+                            }
+                            hopFlavor.FlavourId = flavour.Id;
+                            flavours.Add(hopFlavor);
+                        }
+                    
                     }
                 }
-                return flavour;
+                return flavours;
             }
 
         }

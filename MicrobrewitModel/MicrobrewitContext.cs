@@ -19,7 +19,7 @@ namespace Microbrewit.Model
         public DbSet<UserCredentials> UserCredentials { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Flavour> Flavours { get; set; }
-     //   public DbSet<HopFlavour> HopFlavours { get; set; }
+        public DbSet<HopFlavour> HopFlavours { get; set; }
         public DbSet<MashStep> MashSteps { get; set; }
         public DbSet<MashStepHop> MashStepHops { get; set; }
         public DbSet<BoilStepHop> BoilStepHops { get; set; }
@@ -37,6 +37,7 @@ namespace Microbrewit.Model
         public DbSet<IBU> IBUs { get; set; }
         public DbSet<SRM> SRMs { get; set; }
         public DbSet<Beer> Beers { get; set; }
+      //  public DbSet<Substitut> Substituts { get; set; }
 
  
         public MicrobrewitContext()
@@ -57,7 +58,7 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new UserCredentialsConfiguration());
             modelBuilder.Configurations.Add(new RecipeConfiguration());
             modelBuilder.Configurations.Add(new FlavourConfiguration());
-            //modelBuilder.Configurations.Add(new HopFlavourConfiguration());
+            modelBuilder.Configurations.Add(new HopFlavourConfiguration());
             modelBuilder.Configurations.Add(new MashStepConfiguration());
             modelBuilder.Configurations.Add(new FermentationStepConfiguration());
             modelBuilder.Configurations.Add(new BoilStepConfiguration());

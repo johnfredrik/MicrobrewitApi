@@ -21,7 +21,7 @@ namespace Microbrewit.Model
         public Nullable<int> OriginId { get; set; } 
         public Origin Origin { get; set; }
 
-        public ICollection<Flavour> Flavours { get; set; }
+        public ICollection<HopFlavour> Flavours { get; set; }
         public ICollection<FermentationStepHop> FermentationSteps { get; set; }
         public ICollection<MashStepHop> MashSteps { get; set; }
         public ICollection<BoilStepHop> BoilSteps { get; set; }

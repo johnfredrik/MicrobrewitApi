@@ -9,6 +9,6 @@ namespace Microbrewit.Repository
 {
     public interface IHopRepository : IGenericDataRepository<Hop>
     {
-       
+        Flavour AddFlavour(string name);
     }
 }

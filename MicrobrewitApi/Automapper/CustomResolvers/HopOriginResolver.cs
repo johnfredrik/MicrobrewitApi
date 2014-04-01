@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Model;
 using System;
 using System.Collections.Generic;
@@ -8,25 +8,26 @@ using System.Web;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class HopOriginResolver : ValueResolver<DTO, Origin>
+    public class HopOriginResolver : ValueResolver<HopPostDto, int>
     {
-        protected override Origin ResolveCore(DTO dto)
+        protected override int ResolveCore(HopPostDto dto)
         {
             using (var context = new MicrobrewitContext())
             {
                 Origin origin = null;
-                if (dto != null)
+                if (dto.Origin != null)
                 {
-                    if (dto.Id != null)
+                    origin = context.Origins.SingleOrDefault(o => o.Id == dto.Origin.Id || o.Name.Equals(dto.Origin.Name));
+
+                    if (origin == null)
                     {
-                        origin = context.Origins.SingleOrDefault(o => o.Id == dto.Id);
-                    }
-                    else
-                    {
-                        origin = context.Origins.SingleOrDefault(o => o.Name == dto.Name);
+                        origin = new Origin() { Name = dto.Origin.Name };
+                        context.Origins.Add(origin);
+                        context.SaveChanges();
+
                     }
                 }
-               return origin;
+               return origin.Id;
             }
 
         }

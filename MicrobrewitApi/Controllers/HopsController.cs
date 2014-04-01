@@ -13,14 +13,14 @@ using Microbrewit.Model;
 using System.Linq.Expressions;
 using log4net;
 using Newtonsoft.Json;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
 
-    [RoutePrefix("api/hops")]
+    [RoutePrefix("hops")]
     public class HopsController : ApiController
     {
 
@@ -33,7 +33,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public HopCompleteDto GetHops()
         {
-            var hops = Mapper.Map<IList<Hop>,IList<HopDto>>(hopRepository.GetAll("Origin")); 
+            var hops = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts")); 
             var result = new HopCompleteDto(){Hops = hops};
             return result;
         }
@@ -45,7 +45,7 @@ namespace Microbrewit.Api.Controllers
         public IHttpActionResult GetHop(int id)
         {
 
-            var hop = Mapper.Map<Hop, HopDto>(hopRepository.GetSingle(h => h.Id == id, "Origin", "Flavours", "Substituts"));
+            var hop = Mapper.Map<Hop, HopDto>(hopRepository.GetSingle(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts"));
 
             if (hop == null)
             {
@@ -124,13 +124,12 @@ namespace Microbrewit.Api.Controllers
 
                 return BadRequest(ModelState);
             }
-            var hop = Mapper.Map<HopPostDto, Hop>(hopPostDto);
+            var hop = Mapper.Map<HopPostDto,Hop>(hopPostDto);
 
-            db.Hops.Add(hop);
-            await db.SaveChangesAsync();
-            hop = db.Hops.Include(h => h.Origin).Where(h => h.Id == hopPostDto.Id).SingleOrDefault();
-           
-            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hopPostDto.Id},hopPostDto);
+            hopRepository.Add(hop);
+
+            var result = Mapper.Map<Hop, HopDto>(hopRepository.GetSingle(h => h.Id == hop.Id, "Flavours.Flavour", "Origin", "Substituts"));
+            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = result.Id},result);
         }
 
         // DELETE api/Hopd/5
