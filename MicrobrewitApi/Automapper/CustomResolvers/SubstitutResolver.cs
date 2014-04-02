@@ -15,7 +15,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
             using (var context = new MicrobrewitContext())
             {
                 List<Hop> hops = new List<Hop>();
-                if (dto != null)
+                if (dto.Substituts != null)
                 {
                     foreach (var sub in dto.Substituts)
                     {

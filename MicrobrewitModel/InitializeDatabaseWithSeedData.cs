@@ -24,6 +24,7 @@ namespace Microbrewit.Model
             context.Suppliers.Add(new Supplier { Id = 2, Name = "White Labs", OriginId = 1, });
             context.Suppliers.Add(new Supplier { Id = 3, Name = "Fermentis", OriginId = 1, });
             context.Suppliers.Add(new Supplier { Id = 4, Name = "Thomas Fawcett", OriginId = 2 });
+            context.Suppliers.Add(new Supplier { Id = 5, Name = " De Wolf-Cosyns", OriginId = 3 });
 
             var mild = new Flavour { Id = 1, Name = "Mild to moderate" };
             var spicy = new Flavour { Id = 2, Name = "Quite spicy" };
@@ -33,11 +34,13 @@ namespace Microbrewit.Model
             var target = new Hop() { Id = 1, Name ="Target", AALow = 9.5, AAHigh = 12.5, OriginId = 2, FlavourDescription = "Pleasant English hop aroma, quite intense." };
             var challanger = new Hop() { Id = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2, Flavours = new List<HopFlavour>(){new HopFlavour(){HopId = 1, FlavourId = mild.Id},
                 new HopFlavour(){HopId = 1, FlavourId = spicy.Id}}};
-            var admiral = new Hop() { Id = 2, Name = "Admiral", AAHigh = 15, AALow = 9, OriginId = 2, Substituts = new List<Hop> { target, challanger } };
+            var admiral = new Hop() { Id = 3, Name = "Admiral", AAHigh = 15, AALow = 9, OriginId = 2, Substituts = new List<Hop> { target, challanger } };
+            var ekg = new Hop() { Id = 4,Name = "East Kent Goldings", AAHigh = 7, AALow = 4, OriginId = 2, BetaLow = 1.9, BetaHigh = 2.8 };
 
             context.Hops.Add(target);
             context.Hops.Add(challanger);
             context.Hops.Add(admiral);
+            context.Hops.Add(ekg);
 
            // context.HopFlavours.Add(new HopFlavour() { FlavourId = 1, HopId = 2 });
            /// context.HopFlavours.Add(new HopFlavour() { FlavourId = 2, HopId = 2 });
@@ -69,6 +72,10 @@ namespace Microbrewit.Model
             });
 
             context.Fermentables.Add(new Grain() {Id = 1, Name = "Malt", EBC = 20, PPG = 34, });
+            context.Fermentables.Add(new Grain() { Name = "Maris Otter Pale Malt", EBC = 7, PPG = 36, SupplierId = 4});
+            context.Fermentables.Add(new Grain() { Name = "Pale Crystal", EBC = 75, SupplierId = 4 });
+            context.Fermentables.Add(new Grain() { Name = "Biscute Malt", EBC = 50, SupplierId = 5 });
+            context.Fermentables.Add(new Grain() { Name = "Chocolate Malt", EBC = 1175, SupplierId = 4 });
             context.Fermentables.Add(new Grain() {Id = 2, Name = "Amber Malt", EBC = 20, PPG = 34, SupplierId = 1 });
             context.Fermentables.Add(new Grain() {Id = 3, Name = "Pale Ale Malt" , EBC = 2, PPG = 37, });
             context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , EBC = 4, PPG = 43,});

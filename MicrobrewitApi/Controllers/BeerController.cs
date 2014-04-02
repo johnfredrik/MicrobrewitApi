@@ -80,17 +80,18 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Beer
-        [ResponseType(typeof(Beer))]
-        public IHttpActionResult PostBeer(Beer beer)
+        [Route("")]
+        [ResponseType(typeof(BeerPostDto))]
+        public IHttpActionResult PostBeer(BeerPostDto beerPost)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            db.Beers.Add(beer);
-            db.SaveChanges();
-
+            var beer = Mapper.Map<BeerPostDto, Beer>(beerPost);
+            repository.Add(beer);
+            
+           
             return CreatedAtRoute("DefaultApi", new { id = beer.Id }, beer);
         }
 

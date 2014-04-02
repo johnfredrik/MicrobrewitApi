@@ -106,8 +106,8 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Recipe
         [Route("")]
-        [ResponseType(typeof(Recipe))]
-        public async Task<IHttpActionResult> PostRecipe(Recipe recipe)
+        [ResponseType(typeof(RecipePostDto))]
+        public IHttpActionResult PostRecipe(RecipePostDto recipePost)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (!ModelState.IsValid)
@@ -115,11 +115,9 @@ namespace Microbrewit.Api.Controllers
                 Log.Debug("Modelstate failed");
                 return BadRequest(ModelState);
             }
-         
-            db.Recipes.Add(recipe);
-            await db.SaveChangesAsync();
             
-            return CreatedAtRoute("DefaultApi", new { controller = "recipes",id = recipe.Id }, recipe);
+
+            return CreatedAtRoute("DefaultApi", new { controller = "recipes",id = recipePost.Id }, recipePost);
         }
 
         // DELETE api/Recipe/5
