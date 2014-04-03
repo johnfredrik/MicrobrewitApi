@@ -113,9 +113,10 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Hops
+    
         [Route("")]
-        [ResponseType(typeof(HopPostDto))]
-        public async Task<IHttpActionResult> PostHop(HopPostDto hopPostDto)
+        [ResponseType(typeof(IList<HopPostDto>))]
+        public IHttpActionResult PostHop(IList<HopPostDto> hopPosts)
         {
             Log.Debug("Hops Post");
             if (!ModelState.IsValid)
@@ -124,12 +125,12 @@ namespace Microbrewit.Api.Controllers
 
                 return BadRequest(ModelState);
             }
-            var hop = Mapper.Map<HopPostDto,Hop>(hopPostDto);
+           var hops = Mapper.Map<IList<HopPostDto>,Hop[]>(hopPosts);
 
-            hopRepository.Add(hop);
+            hopRepository.Add(hops);
 
-            var result = Mapper.Map<Hop, HopDto>(hopRepository.GetSingle(h => h.Id == hop.Id, "Flavours.Flavour", "Origin", "Substituts"));
-            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = result.Id},result);
+            var results = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts"));
+            return CreatedAtRoute("DefaultApi",new {controller = "hops",},results);
         }
 
         // DELETE api/Hopd/5

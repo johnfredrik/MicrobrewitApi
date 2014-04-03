@@ -18,7 +18,7 @@ namespace Microbrewit.Model
         public double BetaHigh { get; set; }
         public string Notes { get; set; }
         public string FlavourDescription { get; set; }
-        public Nullable<int> OriginId { get; set; } 
+        public int? OriginId { get; set; } 
         public Origin Origin { get; set; }
 
         public ICollection<HopFlavour> Flavours { get; set; }

@@ -43,13 +43,15 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.AALow, conf => conf.MapFrom(rec => rec.AALow))
                 .ForMember(dto => dto.AAHigh, conf => conf.MapFrom(rec => rec.AAHigh))
-                .ForMember(dto => dto.OriginId, conf => conf.MapFrom(rec => rec.Origin.Id))
+                .ForMember(dto => dto.OriginId, conf => conf.ResolveUsing<HopOriginResolver>())
                 .ForMember(dto => dto.Flavours, conf => conf.ResolveUsing<HopFlavoursResolver>())
                 .ForMember(dto => dto.Substituts, conf => conf.ResolveUsing<SubstitutResolver>());
               
            Mapper.CreateMap<DTO,Origin>()
                   .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                   .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+
+          
 
            //Mapper.CreateMap<DTO,HopFlavour>()
            //     .ForMember(dto => dto.FlavourId, conf => conf.MapFrom(rec => rec.Id));

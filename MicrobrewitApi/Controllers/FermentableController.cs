@@ -115,7 +115,7 @@ namespace Microbrewit.Api.Controllers
         // POST api/Fermentable
         [Route("")]
         [ResponseType(typeof(FermentablePostDto))]
-        public async Task<IHttpActionResult> PostFermentable(FermentablePostDto fermentablePostDto)
+        public IHttpActionResult PostFermentable(FermentablePostDto fermentablePostDto)
         {
             if (!ModelState.IsValid)
             {

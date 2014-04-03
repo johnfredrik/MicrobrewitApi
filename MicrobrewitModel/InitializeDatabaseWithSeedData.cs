@@ -31,16 +31,16 @@ namespace Microbrewit.Model
             context.Flavours.Add(mild);
             context.Flavours.Add(spicy);
             
-            var target = new Hop() { Id = 1, Name ="Target", AALow = 9.5, AAHigh = 12.5, OriginId = 2, FlavourDescription = "Pleasant English hop aroma, quite intense." };
-            var challanger = new Hop() { Id = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2, Flavours = new List<HopFlavour>(){new HopFlavour(){HopId = 1, FlavourId = mild.Id},
-                new HopFlavour(){HopId = 1, FlavourId = spicy.Id}}};
-            var admiral = new Hop() { Id = 3, Name = "Admiral", AAHigh = 15, AALow = 9, OriginId = 2, Substituts = new List<Hop> { target, challanger } };
-            var ekg = new Hop() { Id = 4,Name = "East Kent Goldings", AAHigh = 7, AALow = 4, OriginId = 2, BetaLow = 1.9, BetaHigh = 2.8 };
+           // var target = new Hop() { Id = 1, Name ="Target", AALow = 9.5, AAHigh = 12.5, OriginId = 2, FlavourDescription = "Pleasant English hop aroma, quite intense." };
+           // var challanger = new Hop() { Id = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2, Flavours = new List<HopFlavour>(){new HopFlavour(){HopId = 1, FlavourId = mild.Id},
+           //     new HopFlavour(){HopId = 1, FlavourId = spicy.Id}}};
+           // var admiral = new Hop() { Id = 3, Name = "Admiral", AAHigh = 15, AALow = 9, OriginId = 2, Substituts = new List<Hop> { target, challanger } };
+           // var ekg = new Hop() { Id = 4,Name = "East Kent Goldings", AAHigh = 7, AALow = 4, OriginId = 2, BetaLow = 1.9, BetaHigh = 2.8 };
 
-            context.Hops.Add(target);
-            context.Hops.Add(challanger);
-            context.Hops.Add(admiral);
-            context.Hops.Add(ekg);
+           // context.Hops.Add(target);
+           // context.Hops.Add(challanger);
+           // context.Hops.Add(admiral);
+           // context.Hops.Add(ekg);
 
            // context.HopFlavours.Add(new HopFlavour() { FlavourId = 1, HopId = 2 });
            /// context.HopFlavours.Add(new HopFlavour() { FlavourId = 2, HopId = 2 });
@@ -97,102 +97,102 @@ namespace Microbrewit.Model
             context.BeerStyles.Add(new BeerStyle() { Id = 2, Name = "Golden Ale", SuperStyleId = 1 });
 
            
-            var recipe = new Recipe()
-            {
-                Id = 1,
-                BeerStyleId = 1,
-                MashSteps = new List<MashStep>()
-                    {
-                        new MashStep()
-                        {
-                            Number = 1,
-                            Temperature = 68,
-                            Type = "Infusion",
-                            Length = 68,
-                            Volume = 28,
-                            Fermentables = new List<MashStepFermentable>()
-                            {
-                               new MashStepFermentable()
-                               {
-                                   FermentableId = 1,
-                                   Amount = 12
+            //var recipe = new Recipe()
+            //{
+            //    Id = 1,
+            //    BeerStyleId = 1,
+            //    MashSteps = new List<MashStep>()
+            //        {
+            //            new MashStep()
+            //            {
+            //                Number = 1,
+            //                Temperature = 68,
+            //                Type = "Infusion",
+            //                Length = 68,
+            //                Volume = 28,
+            //                Fermentables = new List<MashStepFermentable>()
+            //                {
+            //                   new MashStepFermentable()
+            //                   {
+            //                       FermentableId = 1,
+            //                       Amount = 12
 
-                               },
-                               new MashStepFermentable()
-                               {
-                                   FermentableId = 2,
-                                   Amount = 20
-                               }
+            //                   },
+            //                   new MashStepFermentable()
+            //                   {
+            //                       FermentableId = 2,
+            //                       Amount = 20
+            //                   }
 
-                            },
-                            Others = new List<MashStepOther>()
-                            {
-                               new MashStepOther()
-                               {
-                                   OtherId = 1,
-                                   Amount = 12
-                               }
+            //                },
+            //                Others = new List<MashStepOther>()
+            //                {
+            //                   new MashStepOther()
+            //                   {
+            //                       OtherId = 1,
+            //                       Amount = 12
+            //                   }
 
-                            }
-                        },
-                        new MashStep()
-                        {
-                            Number = 2,
-                            Temperature = 68,
-                            Type = "Infusion",
-                            Length = 60,
-                            Volume = 28,
-                        }
+            //                }
+            //            },
+            //            new MashStep()
+            //            {
+            //                Number = 2,
+            //                Temperature = 68,
+            //                Type = "Infusion",
+            //                Length = 60,
+            //                Volume = 28,
+            //            }
 
-                    },
-                BoilSteps = new List<BoilStep>()
-                {
-                    new BoilStep()
-                    {
-                        Number = 1,
-                        Length = 60,
-                        Volume = 28,
-                        Hops = new List<BoilStepHop>()
-                        {
-                            new BoilStepHop()
-                            {
-                                HopId = 1,
-                                HopFormId = 1,
-                                AAValue = 13,
-                                AAAmount = 70
-                            }
-                        }
-                    }
+            //        },
+            //    BoilSteps = new List<BoilStep>()
+            //    {
+            //        new BoilStep()
+            //        {
+            //            Number = 1,
+            //            Length = 60,
+            //            Volume = 28,
+            //            Hops = new List<BoilStepHop>()
+            //            {
+            //                new BoilStepHop()
+            //                {
+            //                    HopId = 1,
+            //                    HopFormId = 1,
+            //                    AAValue = 13,
+            //                    AAAmount = 70
+            //                }
+            //            }
+            //        }
                     
-                },
+            //    },
 
-                FermentationSteps = new List<FermentationStep>()
-                {
-                    new FermentationStep()
-                    {
-                        Number = 1,
-                        Length = 14,
-                        Temperature = 19,
-                        Notes = "Something Cool",
-                        Yeasts = new List<FermentationStepYeast>()
-                        {
-                            new FermentationStepYeast()
-                            {
-                                YeastId = 1,
-                                Amount = 1
-                            }
-                        }                       
-                    }
-                }
-            };
-            var brewers = new List<User>();
-            brewers.Add(user);
-            var beer = new Beer() { Id = 1, Name = "Good Beer", Recipe = recipe, Brewers = brewers, BeerStyleId = 1 };
-            beer.ABV = new ABV() { Id = beer.Id, Standard = 5 };
-            beer.IBU = new IBU() { Id = beer.Id, Standard = 16};
-            beer.SRM = new SRM() { Id = beer.Id, Standard = 20};
-            context.Recipes.Add(recipe);
-            context.Beers.Add(beer);
+            //    FermentationSteps = new List<FermentationStep>()
+            //    {
+            //        new FermentationStep()
+            //        {
+            //            Number = 1,
+            //            Length = 14,
+            //            Temperature = 19,
+            //            Notes = "Something Cool",
+            //            Yeasts = new List<FermentationStepYeast>()
+            //            {
+            //                new FermentationStepYeast()
+            //                {
+            //                    YeastId = 1,
+            //                    Amount = 1
+            //                }
+            //            }                       
+            //        }
+            //    }
+            //};
+            //var brewers = new List<User>();
+            //brewers.Add(user);
+            //var beer = new Beer() { Id = 1, Name = "Good Beer", Recipe = recipe, Brewers = brewers, BeerStyleId = 1 };
+            //beer.ABV = new ABV() { Id = beer.Id, Standard = 5 };
+            //beer.IBU = new IBU() { Id = beer.Id, Standard = 16};
+            //beer.SRM = new SRM() { Id = beer.Id, Standard = 20};
+          //  context.Recipes.Add(recipe);
+          //  context.Beers.Add(beer);
 
 
         }

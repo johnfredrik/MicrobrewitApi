@@ -24,13 +24,13 @@ namespace Microbrewit.Repository
                     {
                         context.Entry(subs).State = EntityState.Unchanged;
                     }
-                    context.Entry(hop).State = EntityState.Added;
+                    //context.Entry(hop).State = EntityState.Added;
 
                 }
-                context.SaveChanges();
+                base.Add(hops);
+                //context.SaveChanges();
             }
         }
-
 
         public Flavour AddFlavour(string name)
         {

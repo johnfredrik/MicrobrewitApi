@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="DTOs\ABVDto.cs" />
     <Compile Include="DTOs\BeerPostDto.cs" />
+    <Compile Include="DTOs\HopPostComplete.cs" />
     <Compile Include="DTOs\RecipePostDto.cs" />
     <Compile Include="DTOs\BeerSimpleCompleteDto.cs" />
     <Compile Include="DTOs\BeerSimpleDto.cs" />
