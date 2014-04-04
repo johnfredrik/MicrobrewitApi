@@ -16,15 +16,15 @@ namespace Microbrewit.Model
         {
             Log.Debug("Initilizing DataBase with Seed Data");
 
-            context.Origins.Add(new Origin() { Id = 1, Name ="United States"});
-            context.Origins.Add(new Origin() { Id = 2, Name = "United Kingdom" });
-            context.Origins.Add(new Origin() { Id = 3, Name = "Belgium" });
+            //context.Origins.Add(new Origin() { Id = 1, Name = "United States" });
+            //context.Origins.Add(new Origin() { Id = 2, Name = "United Kingdom" });
+            //context.Origins.Add(new Origin() { Id = 3, Name = "Belgium" });
 
-            context.Suppliers.Add(new Supplier { Id = 1, Name = "Boortmalt", OriginId = 3, });
-            context.Suppliers.Add(new Supplier { Id = 2, Name = "White Labs", OriginId = 1, });
-            context.Suppliers.Add(new Supplier { Id = 3, Name = "Fermentis", OriginId = 1, });
-            context.Suppliers.Add(new Supplier { Id = 4, Name = "Thomas Fawcett", OriginId = 2 });
-            context.Suppliers.Add(new Supplier { Id = 5, Name = " De Wolf-Cosyns", OriginId = 3 });
+            //context.Suppliers.Add(new Supplier { Id = 1, Name = "Boortmalt", OriginId = 3, });
+            //context.Suppliers.Add(new Supplier { Id = 2, Name = "White Labs", OriginId = 1, });
+            //context.Suppliers.Add(new Supplier { Id = 3, Name = "Fermentis", OriginId = 1, });
+            //context.Suppliers.Add(new Supplier { Id = 4, Name = "Thomas Fawcett", OriginId = 2 });
+            //context.Suppliers.Add(new Supplier { Id = 5, Name = " De Wolf-Cosyns", OriginId = 3 });
 
             var mild = new Flavour { Id = 1, Name = "Mild to moderate" };
             var spicy = new Flavour { Id = 2, Name = "Quite spicy" };
@@ -49,37 +49,37 @@ namespace Microbrewit.Model
             context.HopForms.Add(new HopForm() { Id = 2, Name = "Leaf" });
             context.HopForms.Add(new HopForm() { Id = 4, Name = "Plug" });
 
-            context.Others.Add(new Fruit() { Id = 1, Name = "Strawberry" });
-            context.Others.Add(new NoneFermentableSugar() { Id = 2, Name = "Honey" });
-            context.Others.Add(new Spice() { Id = 3, Name = "Koriander" });
+            //context.Others.Add(new Fruit() { Id = 1, Name = "Strawberry" });
+            //context.Others.Add(new NoneFermentableSugar() { Id = 2, Name = "Honey" });
+            //context.Others.Add(new Spice() { Id = 3, Name = "Koriander" });
 
-            context.Yeasts.Add(new LiquidYeast()
-            {
-                Id = 1,
-                Name = "California Ale Yeast",
-                TemperatureLow = 73,
-                TemperatureHigh = 80,
-                Comment = "This yeast is famous for its clean flavors, balance and ability to be used in almost any style ale. It accentuates the hop flavors and is extremely versatile",
-                ProductCode = "WLP001",             
-                SupplierId = 2,
-            });
-            context.Yeasts.Add(new LiquidYeast()
-            {
-                Id = 2,
-                Name = "Safale US 05",                
-                Comment = "Ready-to-pitch American ale yeast for well balanced beers with low diacetyl and a very crisp end palate.",                
-                SupplierId = 3,
-            });
+            //context.Yeasts.Add(new LiquidYeast()
+            //{
+            //    Id = 1,
+            //    Name = "California Ale Yeast",
+            //    TemperatureLow = 73,
+            //    TemperatureHigh = 80,
+            //    Comment = "This yeast is famous for its clean flavors, balance and ability to be used in almost any style ale. It accentuates the hop flavors and is extremely versatile",
+            //    ProductCode = "WLP001",             
+            //    SupplierId = 2,
+            //});
+            //context.Yeasts.Add(new LiquidYeast()
+            //{
+            //    Id = 2,
+            //    Name = "Safale US 05",                
+            //    Comment = "Ready-to-pitch American ale yeast for well balanced beers with low diacetyl and a very crisp end palate.",                
+            //    SupplierId = 3,
+            //});
 
-            context.Fermentables.Add(new Grain() {Id = 1, Name = "Malt", EBC = 20, PPG = 34, });
-            context.Fermentables.Add(new Grain() { Name = "Maris Otter Pale Malt", EBC = 7, PPG = 36, SupplierId = 4});
-            context.Fermentables.Add(new Grain() { Name = "Pale Crystal", EBC = 75, SupplierId = 4 });
-            context.Fermentables.Add(new Grain() { Name = "Biscute Malt", EBC = 50, SupplierId = 5 });
-            context.Fermentables.Add(new Grain() { Name = "Chocolate Malt", EBC = 1175, SupplierId = 4 });
-            context.Fermentables.Add(new Grain() {Id = 2, Name = "Amber Malt", EBC = 20, PPG = 34, SupplierId = 1 });
-            context.Fermentables.Add(new Grain() {Id = 3, Name = "Pale Ale Malt" , EBC = 2, PPG = 37, });
-            context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , EBC = 4, PPG = 43,});
-            context.Fermentables.Add(new LiquidExtract() {Id = 5, Name = "Plain Light DME", EBC = 4, PPG = 43,});
+            //context.Fermentables.Add(new Grain() {Id = 1, Name = "Malt", EBC = 20, PPG = 34, });
+            //context.Fermentables.Add(new Grain() { Name = "Maris Otter Pale Malt", EBC = 7, PPG = 36, SupplierId = 4});
+            //context.Fermentables.Add(new Grain() { Name = "Pale Crystal", EBC = 75, SupplierId = 4 });
+            //context.Fermentables.Add(new Grain() { Name = "Biscute Malt", EBC = 50, SupplierId = 5 });
+            //context.Fermentables.Add(new Grain() { Name = "Chocolate Malt", EBC = 1175, SupplierId = 4 });
+            //context.Fermentables.Add(new Grain() {Id = 2, Name = "Amber Malt", EBC = 20, PPG = 34, SupplierId = 1 });
+            //context.Fermentables.Add(new Grain() {Id = 3, Name = "Pale Ale Malt" , EBC = 2, PPG = 37, });
+            //context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , EBC = 4, PPG = 43,});
+            //context.Fermentables.Add(new LiquidExtract() {Id = 5, Name = "Plain Light DME", EBC = 4, PPG = 43,});
 
             var user = new User() { Username = "johnfredrik", Email = "john-f@online.no" };
             context.Users.Add(user);

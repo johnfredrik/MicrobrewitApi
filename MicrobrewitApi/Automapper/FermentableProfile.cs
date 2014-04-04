@@ -5,6 +5,7 @@ using System.Web;
 using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Api.Automapper.CustomResolvers;
 
 namespace Microbrewit.Api.Automapper
 {
@@ -34,9 +35,12 @@ namespace Microbrewit.Api.Automapper
                .ForMember(dto => dto.EBC, conf => conf.MapFrom(rec => rec.EBC))
                .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
-               .ForMember(dto => dto.SupplierId, conf => conf.MapFrom(rec => rec.Supplier.Id))
+               .ForMember(dto => dto.SupplierId, conf => conf.ResolveUsing<FermentableSupplierResolver>())
                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
           
+            Mapper.CreateMap<DTO,Supplier>()
+                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Microbrewit.Repository
 {
     public interface IFermentableRepository : IGenericDataRepository<Fermentable> 
     {
-        Fermentable AddFermentable(FermentablePostDto fermentablePostDto);
+        //Fermentable AddFermentable(FermentablePostDto fermentablePostDto);
         //IList<Fermentable> GetFermentables();
         //Fermentable GetFermentable(int fermentableId);
 

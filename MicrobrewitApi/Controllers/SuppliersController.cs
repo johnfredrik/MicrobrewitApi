@@ -12,6 +12,7 @@ using System.Web.Http.Description;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -19,13 +20,13 @@ namespace Microbrewit.Api.Controllers
     public class SuppliersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
-        private readonly ISupplierRepository repository = new SupplierRepository();
+        private readonly ISupplierRepository supplierRepository = new SupplierRepository();
 
         // GET api/Supplier
         [Route("")]
         public SupplierCompleteDTO GetSuppliers()
         {
-            var suppliers = repository.GetAll("Origin");
+            var suppliers = supplierRepository.GetAll("Origin");
             var result = new SupplierCompleteDTO();
             result.Suppliers = suppliers;
             return result;
@@ -36,7 +37,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Supplier))]
         public IHttpActionResult GetSupplier(int id)
         {
-            var supplier = repository.GetSingle(s => s.Id == id,"Origin");
+            var supplier = supplierRepository.GetSingle(s => s.Id == id,"Origin");
             if (supplier == null)
             {
                 return NotFound();
@@ -83,21 +84,18 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Supplier
         [Route("")]
-        [ResponseType(typeof(Supplier))]
-        public async Task<IHttpActionResult> PostSupplier(Supplier supplier)
+        [ResponseType(typeof(IList<SupplierDto>))]
+        public IHttpActionResult PostSupplier(IList<SupplierDto> supplierPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (supplier.OriginId > 0)
-            {
-                supplier.Origin = null;
-            }
-            db.Suppliers.Add(supplier);
-            await db.SaveChangesAsync();
+            var suppliers = Mapper.Map<IList<SupplierDto>, Supplier[]>(supplierPosts);
+            supplierRepository.Add(suppliers);
+           
 
-            return CreatedAtRoute("DefaultApi", new { id = supplier.Id }, supplier);
+            return CreatedAtRoute("DefaultApi", new {controller = "others"}, supplierPosts);
         }
 
         // DELETE api/Supplier/5

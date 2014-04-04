@@ -85,16 +85,16 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Yeasts
         [Route("")]
-        [ResponseType(typeof(YeastPostDto))]
-        public IHttpActionResult PostYeast(YeastPostDto yeastPost)
+        [ResponseType(typeof(IList<YeastPostDto>))]
+        public IHttpActionResult PostYeast(IList<YeastPostDto> yeastPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var yeast = yeastRespository.AddYeast(yeastPost);
-            var result = Mapper.Map<Yeast, YeastDto>(yeast);
-            return CreatedAtRoute("DefaultApi", new {controller = "yeasts", id = result.Id }, result);
+            var yeasts = Mapper.Map<IList<YeastPostDto>,Yeast[]>(yeastPosts);
+            yeastRespository.Add(yeasts);
+            return CreatedAtRoute("DefaultApi", new {controller = "yeasts",}, yeastPosts);
         }
 
         //// POST api/Yeasts

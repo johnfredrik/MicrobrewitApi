@@ -7,25 +7,9 @@ using Microbrewit.Model;
 
 namespace Microbrewit.Repository
 {
-    public class OtherRepository : IOtherRepository
+    public class OtherRepository : GenericDataRepository<Other>, IOtherRepository
     {
 
-        public IList<Other> GetOthers()
-        {
-            using (var context = new MicrobrewitContext())   
-            {
-                return context.Others.ToList();
-            }
-        }
-
-        public Other GetOther(int id)
-        {
-            using (var context = new MicrobrewitContext())
-            {
-                return context.Others.Where(o => o.Id == id).SingleOrDefault();
-            }
-        }
-
-
+  
     }
 }

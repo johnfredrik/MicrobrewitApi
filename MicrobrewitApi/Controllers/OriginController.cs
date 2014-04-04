@@ -11,6 +11,8 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
 using log4net;
+using Microbrewit.Repository;
+using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -19,20 +21,21 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly IOriginRespository originRepsository = new OriginRepository();
 
         // GET api/Origin
         [Route("")]
-        public IQueryable<Origin> GetOrigins()
+        public IList<Origin> GetOrigins()
         {
-            return db.Origins;
+            return originRepsository.GetAll();
         }
 
         // GET api/Origin/5
         [Route("{id:int}")]
         [ResponseType(typeof(Origin))]
-        public async Task<IHttpActionResult> GetOrigin(int id)
+        public IHttpActionResult GetOrigin(int id)
         {
-            Origin origin = await db.Origins.FindAsync(id);
+            Origin origin = originRepsository.GetSingle(o => o.Id == id);
             if (origin == null)
             {
                 return NotFound();
@@ -78,18 +81,18 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Origin
         [Route("")]
-        [ResponseType(typeof(Origin))]
-        public async Task<IHttpActionResult> PostOrigin(Origin origin)
+        [ResponseType(typeof(IList<Origin>))]
+        public IHttpActionResult PostOrigin(IList<Origin> originPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            var origins = originPosts.ToArray();
+            originRepsository.Add(origins);
 
-            db.Origins.Add(origin);
-            await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { controller= "origins",id = origin.Id }, origin);
+            return CreatedAtRoute("DefaultApi", new { controller= "origins", }, origins);
         }
 
         // DELETE api/Origin/5

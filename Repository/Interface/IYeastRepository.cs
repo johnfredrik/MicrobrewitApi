@@ -10,6 +10,6 @@ namespace Microbrewit.Repository
 {
     public interface IYeastRepository : IGenericDataRepository<Yeast>
     {
-        Yeast AddYeast(YeastPostDto yeastPost);
+      
     }
 }

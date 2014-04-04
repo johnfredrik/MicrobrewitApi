@@ -16,8 +16,7 @@ namespace Microbrewit.Model
         public double? EBC { get; set; }      
         public int? PPG { get; set; }
         public int? SupplierId { get; set; }
-        [NotMapped]
-        public string Type { get { return this.GetType().Name; } }
+        public string Type { get; set; }
 
         public Supplier Supplier { get; set; }
         public ICollection<MashStepFermentable> MashSteps { get; set; }

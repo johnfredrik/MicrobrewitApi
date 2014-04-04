@@ -114,17 +114,18 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Fermentable
         [Route("")]
-        [ResponseType(typeof(FermentablePostDto))]
-        public IHttpActionResult PostFermentable(FermentablePostDto fermentablePostDto)
+        [ResponseType(typeof(IList<FermentablePostDto>))]
+        public IHttpActionResult PostFermentable(IList<FermentablePostDto> fermentablePostDtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var fermentable = fermentableRepository.AddFermentable(fermentablePostDto);
-            var result = Mapper.Map<Fermentable, FermentableDto>(fermentable); 
-            return CreatedAtRoute("DefaultApi", new { controller = "fermetable", id = result.Id}, result);
+            var fermentablePost = Mapper.Map<IList<FermentablePostDto>, Fermentable[]>(fermentablePostDtos);
+            fermentableRepository.Add(fermentablePost);
+         //   var result = Mapper.Map<Fermentable, FermentableDto>(fermentable); 
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, fermentablePostDtos);
         }
 
         // DELETE api/Fermentable/5

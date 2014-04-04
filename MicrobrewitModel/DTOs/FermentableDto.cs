@@ -16,7 +16,7 @@ namespace Microbrewit.Model.DTOs
         public DTO Supplier { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-        [JsonProperty(PropertyName = "colour")]
+        [JsonProperty(PropertyName = "ebc")]
         public double EBC { get; set; }
         [JsonProperty(PropertyName = "ppg")]
         public int PPG { get; set; }

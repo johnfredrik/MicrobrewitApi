@@ -9,6 +9,19 @@ namespace Microbrewit.Repository
 {
     public class SupplierRepository : GenericDataRepository<Supplier>, ISupplierRepository
     {
-       
+        public override void Add(params Supplier[] suppliers)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                foreach (var supplier in suppliers)
+                {
+                    if (supplier.Origin != null)
+                    {
+                        supplier.Origin = null;
+                    }
+                }
+                base.Add(suppliers);
+            }
+        }
     }
 }
