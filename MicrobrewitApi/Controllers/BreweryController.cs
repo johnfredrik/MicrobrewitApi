@@ -82,18 +82,19 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Brewery
-        [ResponseType(typeof(Brewery))]
-        public async Task<IHttpActionResult> PostBrewery(Brewery brewery)
+        [Route("")]
+        [ResponseType(typeof(IList<Brewery>))]
+        public IHttpActionResult PostBrewery(IList<Brewery> breweryPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Breweries.Add(brewery);
-            await db.SaveChangesAsync();
+            var breweries = breweryPosts.ToArray();
+            breweryRepository.Add(breweries);
 
-            return CreatedAtRoute("DefaultApi", new { id = brewery.Id }, brewery);
+            return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
         }
 
         // DELETE api/Brewery/5
