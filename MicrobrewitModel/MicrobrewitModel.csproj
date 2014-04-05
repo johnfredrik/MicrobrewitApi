@@ -58,6 +58,7 @@
     <Compile Include="DTOs\BeerPostDto.cs" />
     <Compile Include="DTOs\BreweryCompleteDto.cs" />
     <Compile Include="DTOs\BreweryDto.cs" />
+    <Compile Include="DTOs\DTOUser.cs" />
     <Compile Include="DTOs\HopPostComplete.cs" />
     <Compile Include="DTOs\LinksBrewery.cs" />
     <Compile Include="DTOs\RecipePostDto.cs" />

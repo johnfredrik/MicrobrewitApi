@@ -26,7 +26,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public BreweryCompleteDto GetBreweries()
         {
-            var breweries = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweryRepository.GetAll());
+            var breweries = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweryRepository.GetAll("Members.Member","Beers"));
             var result = new BreweryCompleteDto();
             result.Breweries = breweries;
             return result;
@@ -37,7 +37,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BreweryCompleteDto))]
         public IHttpActionResult GetBrewery(int id)
         {
-            var brewery = breweryRepository.GetSingle(b => b.Id == id);
+            var brewery = breweryRepository.GetSingle(b => b.Id == id, "Members.Member", "Beers");
             if (brewery == null)
             {
                 return NotFound();

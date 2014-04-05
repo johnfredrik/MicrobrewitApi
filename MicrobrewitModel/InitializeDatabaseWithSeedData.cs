@@ -91,6 +91,8 @@ namespace Microbrewit.Model
                 Username = "johnfredrik",
             });
 
+
+
             context.Breweries.Add(new Brewery() { Name = "Asphaugs Hjemmebryggeri", Members = new List<BreweryMember>() { new BreweryMember() { MemberId = "johnfredrik"} } });
 
             context.BeerStyles.Add(new BeerStyle() { Id = 1, Name = "Ale" });
