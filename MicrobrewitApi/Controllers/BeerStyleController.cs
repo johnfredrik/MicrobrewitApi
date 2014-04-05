@@ -20,13 +20,13 @@ namespace Microbrewit.Api.Controllers
     public class BeerStyleController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
-        private readonly IBeerStyleRepository repository = new BeerStyleRepository();
+        private readonly IBeerStyleRepository beerStyleRepository = new BeerStyleRepository();
 
         [Route("")]
         // GET api/BeerStyle
         public BeerStyleCompleteDto GetBeerStyles()
         {
-            var beerStyles = Mapper.Map<IList<BeerStyle>,IList<BeerStyleDto>>(repository.GetAll("SubStyles","SuperStyle"));
+            var beerStyles = Mapper.Map<IList<BeerStyle>,IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles","SuperStyle"));
             var result = new BeerStyleCompleteDto();
             result.BeerStyles = beerStyles;
             return result;
@@ -38,7 +38,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetBeerStyle(int id)
         {
-            var beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(repository.GetSingle(b => b.Id == id, "SubStyles", "SuperStyle"));
+            var beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(beerStyleRepository.GetSingle(b => b.Id == id, "SubStyles", "SuperStyle"));
             if (beerStyle == null)
             {
                 return NotFound();
@@ -84,18 +84,17 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/BeerStyle
-        [ResponseType(typeof(BeerStyle))]
-        public async Task<IHttpActionResult> PostBeerStyle(BeerStyle beerstyle)
+        [ResponseType(typeof(IList<BeerStyle>))]
+        public IHttpActionResult PostBeerStyle(IList<BeerStyle> beerstyles)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.BeerStyles.Add(beerstyle);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = beerstyle.Id }, beerstyle);
+            beerStyleRepository.Add(beerstyles.ToArray());
+            
+            return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, beerstyles);
         }
 
         // DELETE api/BeerStyle/5
