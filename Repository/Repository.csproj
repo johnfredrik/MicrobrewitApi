@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="Interface\IBeerRepository.cs" />
     <Compile Include="Interface\IBeerStyleRepository.cs" />
-    <Compile Include="Interface\IBeweryRepository.cs" />
+    <Compile Include="Interface\IBreweryRepository.cs" />
     <Compile Include="Interface\IFermentableRepository.cs" />
     <Compile Include="Interface\IGenericDataRepository.cs" />
     <Compile Include="Interface\IOriginRespository.cs" />
