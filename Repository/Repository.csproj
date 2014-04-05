@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Interface\IBeerRepository.cs" />
     <Compile Include="Interface\IBeerStyleRepository.cs" />
+    <Compile Include="Interface\IBeweryRepository.cs" />
     <Compile Include="Interface\IFermentableRepository.cs" />
     <Compile Include="Interface\IGenericDataRepository.cs" />
     <Compile Include="Interface\IOriginRespository.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Interface\IYeastRepository.cs" />
     <Compile Include="Repository\BeerRepository.cs" />
     <Compile Include="Repository\BeerStyleRepository.cs" />
+    <Compile Include="Repository\BreweryRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\GenericDataRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
