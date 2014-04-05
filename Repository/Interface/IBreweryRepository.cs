@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Repository
 {
-    public interface IBeweryRepository : IGenericDataRepository<Brewery>
+    public interface IBreweryRepository : IGenericDataRepository<Brewery>
     {
     }
 }
