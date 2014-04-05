@@ -10,30 +10,41 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
+using Microbrewit.Repository;
+using AutoMapper;
+using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Api.Controllers
 {
+    [RoutePrefix("breweries")]
     public class BreweryController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private readonly IBreweryRepository breweryRepository = new BreweryRepository();
 
         // GET api/Brewery
-        public IQueryable<Brewery> GetBreweries()
+        [Route("")]
+        public BreweryCompleteDto GetBreweries()
         {
-            return db.Breweries.Include(b => b.Members);
+            var breweries = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweryRepository.GetAll());
+            var result = new BreweryCompleteDto();
+            result.Breweries = breweries;
+            return result;
         }
 
         // GET api/Brewery/5
-        [ResponseType(typeof(Brewery))]
-        public async Task<IHttpActionResult> GetBrewery(int id)
+        [Route("{id}")]
+        [ResponseType(typeof(BreweryCompleteDto))]
+        public IHttpActionResult GetBrewery(int id)
         {
-            Brewery brewery = await db.Breweries.Include("Members.Member").Where(b => b.Id == id).SingleOrDefaultAsync();
+            var brewery = breweryRepository.GetSingle(b => b.Id == id);
             if (brewery == null)
             {
                 return NotFound();
             }
-
-            return Ok(brewery);
+            var result = new BreweryCompleteDto() { Breweries = new List<BreweryDto>() };
+            result.Breweries.Add(Mapper.Map<Brewery, BreweryDto>(brewery));
+            return Ok(result);
         }
 
         // PUT api/Brewery/5
