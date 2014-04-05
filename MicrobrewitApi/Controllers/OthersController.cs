@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/others")]
+    [RoutePrefix("others")]
     public class OthersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
@@ -26,7 +26,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public OtherCompleteDto GetOthers()
         {
-            var others = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetOthers());
+            var others = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetAll());
             var result = new OtherCompleteDto();
             result.Others = others;
             return result;
@@ -56,7 +56,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetOther(int id)
         {
-            var other = Mapper.Map<Other, OtherDto>(otherRepository.GetOther(id));
+            var other = Mapper.Map<Other, OtherDto>(otherRepository.GetSingle(o => o.Id == id));
             if (other == null)
             {
                 return NotFound();
@@ -103,51 +103,20 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/others/spices
-        [Route("spices")]
-        [ResponseType(typeof(Spice))]
-        public async Task<IHttpActionResult> PostOther(Spice spice)
+        [Route("")]
+        [ResponseType(typeof(IList<Other>))]
+        public IHttpActionResult PostOther(IList<Other> otherPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            db.Others.Add(spice);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { controller="others", id = spice.Id }, spice);
+            var others = Mapper.Map<IList<Other>, Other[]>(otherPosts);
+            otherRepository.Add(others);
+          
+            return CreatedAtRoute("DefaultApi", new { controller="others", }, otherPosts);
         }
-        // POST api/others/fruits
-        [Route("fruits")]
-        [ResponseType(typeof(Fruit))]
-        public async Task<IHttpActionResult> PostOther(Fruit fruit)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Others.Add(fruit);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { controller = "others", id = fruit.Id }, fruit);
-        }
-
-        // POST api/others/fruits
-        [Route("nonefermentablesugars")]
-        [ResponseType(typeof(NoneFermentableSugar))]
-        public async Task<IHttpActionResult> PostOther(NoneFermentableSugar nonefermentablesugar)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Others.Add(nonefermentablesugar);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { controller = "others", id = nonefermentablesugar.Id }, nonefermentablesugar);
-        }
+   
 
         // DELETE api/Others/5
         [Route("{id:int}")]

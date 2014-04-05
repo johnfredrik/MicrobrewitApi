@@ -118,6 +118,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebApiContrib.Formatting.Jsonp, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebApiContrib.Formatting.Jsonp.3.0.0.0\lib\net45\WebApiContrib.Formatting.Jsonp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web.Http.WebHost">
@@ -130,7 +134,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -139,29 +145,22 @@
     <Compile Include="Automapper\BoilStepProfile.cs" />
     <Compile Include="Automapper\BrewerProfile.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\FermentableSupplierResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopFlavoursResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopOriginResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\SubBeerStyleResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\SubstitutResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\YeastSupplierResolver.cs" />
     <Compile Include="Automapper\FermentableProfile.cs" />
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
     <Compile Include="Automapper\OtherProfile.cs" />
+    <Compile Include="Automapper\SupplierProfile.cs" />
     <Compile Include="Automapper\UserProfile.cs" />
     <Compile Include="Automapper\YeastsProfile.cs" />
     <Compile Include="Controllers\BeerController.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="Controllers\BreweryController.cs" />
-    <Compile Include="DTOs\BeerSimpleDto.cs" />
-    <Compile Include="DTOs\BeerStyleCompleteDto.cs" />
-    <Compile Include="DTOs\BeerStyleDto.cs" />
-    <Compile Include="DTOs\BeerStyleLinks.cs" />
-    <Compile Include="DTOs\BoilStepDto.cs" />
-    <Compile Include="DTOs\BrewerDto.cs" />
-    <Compile Include="DTOs\DTO.cs" />
-    <Compile Include="DTOs\FermentableDto.cs" />
-    <Compile Include="DTOs\Links.cs" />
-    <Compile Include="DTOs\FermentablesCompleteDto.cs" />
-    <Compile Include="DTOs\FermentableLinks.cs" />
-    <Compile Include="DTOs\FermentableStepDto.cs" />
-    <Compile Include="DTOs\FermentationStepDto.cs" />
     <Compile Include="Automapper\HopProfile.cs" />
     <Compile Include="Automapper\RecipeProfile.cs" />
     <Compile Include="Controllers\FermentableController.cs" />
@@ -173,30 +172,6 @@
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\YeastsController.cs" />
     <Compile Include="Automapper\AutoMapperConfiguration.cs" />
-    <Compile Include="DTOs\HopCompleteDto.cs" />
-    <Compile Include="DTOs\HopDto.cs" />
-    <Compile Include="DTOs\HopLinks.cs" />
-    <Compile Include="DTOs\HopStepDto.cs" />
-    <Compile Include="DTOs\LinksFermentable.cs" />
-    <Compile Include="DTOs\LinksHop.cs" />
-    <Compile Include="DTOs\LinksOther.cs" />
-    <Compile Include="DTOs\LinksYeast.cs" />
-    <Compile Include="DTOs\Login.cs" />
-    <Compile Include="DTOs\MashStepDto.cs" />
-    <Compile Include="DTOs\Meta.cs" />
-    <Compile Include="DTOs\OtherCompleteDto.cs" />
-    <Compile Include="DTOs\OtherDto.cs" />
-    <Compile Include="DTOs\OtherLinks.cs" />
-    <Compile Include="DTOs\OtherStepDto.cs" />
-    <Compile Include="DTOs\RecipeDto.cs" />
-    <Compile Include="DTOs\RecipeHopDto.cs" />
-    <Compile Include="DTOs\UserCompleteDto.cs" />
-    <Compile Include="DTOs\UserDto.cs" />
-    <Compile Include="DTOs\UserPostDto.cs" />
-    <Compile Include="DTOs\YeastCompleteDto.cs" />
-    <Compile Include="DTOs\YeastDto.cs" />
-    <Compile Include="DTOs\YeastLinks.cs" />
-    <Compile Include="DTOs\YeastStepDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -209,7 +184,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="log4net.config" />
+    <Content Include="log4net.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Properties\PublishProfiles\To file.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -241,7 +219,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54663</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

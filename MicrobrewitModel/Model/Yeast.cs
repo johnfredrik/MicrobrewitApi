@@ -12,8 +12,8 @@ namespace Microbrewit.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int TemperatureHigh { get; set; }
-        public int TemperatureLow { get; set; }
+        public double? TemperatureHigh { get; set; }
+        public double? TemperatureLow { get; set; }
         public string Flocculation { get; set; }
         public string AlcoholTolerance { get; set; }
         public string ProductCode { get; set; }
@@ -21,7 +21,7 @@ namespace Microbrewit.Model
         [NotMapped]
         public string Type { get { return this.GetType().Name; } }
 
-        public Nullable<int> SupplierId { get; set; }
+        public int? SupplierId { get; set; }
         public Supplier Supplier { get; set; }
 
         public ICollection<FermentationStepYeast> FermentationSteps { get; set; }

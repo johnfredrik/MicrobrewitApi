@@ -4,30 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
+using System.Data.Entity;
 
 namespace Microbrewit.Repository
 {
-    public class HopRepository : IHopRepository
+    public class HopRepository : GenericDataRepository<Hop>,IHopRepository
     {
-        public IList<Model.Hop> GetHops()
+        public override void Add(params Hop[] hops)
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Hops
-                    .Include("Origin")
-                    .Include("HopFlavours.Flavour")
-                    .Include("MashSteps")
-                    .Include("FermentationSteps")
-                    .Include("Substituts").ToList();
+                foreach (Hop hop in hops)
+                {
+                    if (hop.OriginId > 0)
+                    {
+                        hop.Origin = null;
+                    }
+                    foreach (var subs in hop.Substituts)
+                    {
+                        context.Entry(subs).State = EntityState.Unchanged;
+                    }
+                    //context.Entry(hop).State = EntityState.Added;
+
+                }
+                base.Add(hops);
+                //context.SaveChanges();
             }
         }
 
-        public Model.Hop GetHop(int hopId)
+        public Flavour AddFlavour(string name)
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Hops.Include("Origin").Include("HopFlavours.Flavour").Where(h => h.Id == hopId).SingleOrDefault();
+                var flavourId = context.Flavours.Max(f => f.Id) + 1;
+                var flavour = new Flavour() { 
+                    Id = flavourId, 
+                    Name = name
+                };
+                context.Flavours.Add(flavour);
+                context.SaveChanges();
+
+                return flavour;
             }
+
         }
+
     }
 }

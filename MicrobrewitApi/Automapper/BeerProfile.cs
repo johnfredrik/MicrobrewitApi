@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using AutoMapper;
 using Microbrewit.Model;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Api.Automapper
 {
@@ -31,8 +31,23 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
 
             Mapper.CreateMap<User, DTO>()
-               .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Username));
+               .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Username))
+               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec  => 0));
 
+            Mapper.CreateMap<ABV, ABVDto>()
+                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
+                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
+                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
+
+            Mapper.CreateMap<IBU, IBUDto>()
+                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
+                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
+                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
+
+            Mapper.CreateMap<SRM, SRMDto>()
+                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
+                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
+                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
         }
     }
 }

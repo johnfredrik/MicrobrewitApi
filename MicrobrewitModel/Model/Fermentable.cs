@@ -13,11 +13,10 @@ namespace Microbrewit.Model
         
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Colour { get; set; }      
-        public int PPG { get; set; }
-        public Nullable<int> SupplierId { get; set; }
-        [NotMapped]
-        public string Type { get { return this.GetType().Name; } }
+        public double? EBC { get; set; }      
+        public int? PPG { get; set; }
+        public int? SupplierId { get; set; }
+        public string Type { get; set; }
 
         public Supplier Supplier { get; set; }
         public ICollection<MashStepFermentable> MashSteps { get; set; }

@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.IdentityModel.Tokens;
 using ServiceStack.Redis.Generic;
 using ServiceStack.Text;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using ServiceStack.Redis;
 using System.Configuration;
 

@@ -9,23 +9,26 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
+using Microbrewit.Repository;
+using AutoMapper;
 
 namespace Microbrewit.Api.Controllers
 {
-    [RoutePrefix("api/beers")]
+    [RoutePrefix("beers")]
     public class BeerController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private readonly IBeerRepository repository = new BeerRepository();
 
         // GET api/Beer
         [Route("")]
-        public IQueryable<Beer> GetBeers()
+        public BeerSimpleCompleteDto GetBeers()
         {
-            return db.Beers.Include("Recipe")
-                           .Include("Brewers")
-                           .Include("ABV")
-                           .Include("IBU")
-                           .Include("SRM");
+            var beers = Mapper.Map<IList<Beer>,IList<BeerSimpleDto>>(repository.GetAll("Recipe","Brewers", "ABV", "IBU", "SRM"));
+            var result = new BeerSimpleCompleteDto();
+            result.Beers = beers;
+            return result;
         }
 
         // GET api/Beer/5
@@ -77,17 +80,18 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Beer
-        [ResponseType(typeof(Beer))]
-        public IHttpActionResult PostBeer(Beer beer)
+        [Route("")]
+        [ResponseType(typeof(BeerPostDto))]
+        public IHttpActionResult PostBeer(BeerPostDto beerPost)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            db.Beers.Add(beer);
-            db.SaveChanges();
-
+            var beer = Mapper.Map<BeerPostDto, Beer>(beerPost);
+            repository.Add(beer);
+            
+           
             return CreatedAtRoute("DefaultApi", new { id = beer.Id }, beer);
         }
 

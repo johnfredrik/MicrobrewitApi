@@ -13,14 +13,14 @@ using Microbrewit.Model;
 using System.Linq.Expressions;
 using log4net;
 using Newtonsoft.Json;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
 
-    [RoutePrefix("api/hops")]
+    [RoutePrefix("hops")]
     public class HopsController : ApiController
     {
 
@@ -33,7 +33,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public HopCompleteDto GetHops()
         {
-            var hops = Mapper.Map<IList<Hop>,IList<HopDto>>(hopRepository.GetHops()); 
+            var hops = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts")); 
             var result = new HopCompleteDto(){Hops = hops};
             return result;
         }
@@ -44,8 +44,8 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetHop(int id)
         {
-          
-            var hop = Mapper.Map<Hop,HopDto>(hopRepository.GetHop(id));
+
+            var hop = Mapper.Map<Hop, HopDto>(hopRepository.GetSingle(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts"));
 
             if (hop == null)
             {
@@ -113,9 +113,10 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Hops
+    
         [Route("")]
-        [ResponseType(typeof(Hop))]
-        public async Task<IHttpActionResult> PostHop(Hop hop)
+        [ResponseType(typeof(IList<HopPostDto>))]
+        public IHttpActionResult PostHop(IList<HopPostDto> hopPosts)
         {
             Log.Debug("Hops Post");
             if (!ModelState.IsValid)
@@ -124,15 +125,12 @@ namespace Microbrewit.Api.Controllers
 
                 return BadRequest(ModelState);
             }
-            if (hop.OriginId > 0)
-            {
-                hop.Origin = null;
-            }
-            db.Hops.Add(hop);
-            await db.SaveChangesAsync();
-            hop = db.Hops.Include(h => h.Origin).Where(h => h.Id == hop.Id).SingleOrDefault();
-           
-            return CreatedAtRoute("DefaultApi",new {controller = "hops",id = hop.Id},hop);
+           var hops = Mapper.Map<IList<HopPostDto>,Hop[]>(hopPosts);
+
+            hopRepository.Add(hops);
+
+            var results = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts"));
+            return CreatedAtRoute("DefaultApi",new {controller = "hops",},results);
         }
 
         // DELETE api/Hopd/5

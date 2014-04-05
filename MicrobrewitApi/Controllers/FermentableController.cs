@@ -14,12 +14,12 @@ using Microbrewit.Api;
 using Microbrewit.Repository;
 using AutoMapper;
 using log4net;
-using Microbrewit.Api.DTOs;
+using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Api.Controllers
 {
    // [TokenValidationAttribute]
-    [RoutePrefix("api/fermentables")]
+    [RoutePrefix("fermentables")]
     public class FermentableController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
@@ -113,18 +113,19 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/Fermentable
-        [ResponseType(typeof(Fermentable))]
-        public async Task<IHttpActionResult> PostFermentable(Fermentable fermentable)
+        [Route("")]
+        [ResponseType(typeof(IList<FermentablePostDto>))]
+        public IHttpActionResult PostFermentable(IList<FermentablePostDto> fermentablePostDtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Fermentables.Add(fermentable);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { controller = "fermetable", id = fermentable.Id}, fermentable);
+            var fermentablePost = Mapper.Map<IList<FermentablePostDto>, Fermentable[]>(fermentablePostDtos);
+            fermentableRepository.Add(fermentablePost);
+         //   var result = Mapper.Map<Fermentable, FermentableDto>(fermentable); 
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, fermentablePostDtos);
         }
 
         // DELETE api/Fermentable/5

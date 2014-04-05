@@ -39,6 +39,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -51,6 +54,58 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTOs\ABVDto.cs" />
+    <Compile Include="DTOs\BeerPostDto.cs" />
+    <Compile Include="DTOs\HopPostComplete.cs" />
+    <Compile Include="DTOs\RecipePostDto.cs" />
+    <Compile Include="DTOs\BeerSimpleCompleteDto.cs" />
+    <Compile Include="DTOs\BeerSimpleDto.cs" />
+    <Compile Include="DTOs\BeerStyleCompleteDto.cs" />
+    <Compile Include="DTOs\BeerStyleDto.cs" />
+    <Compile Include="DTOs\BeerStyleLinks.cs" />
+    <Compile Include="DTOs\BoilStepDto.cs" />
+    <Compile Include="DTOs\BrewerDto.cs" />
+    <Compile Include="DTOs\DTO.cs" />
+    <Compile Include="DTOs\FermentableDto.cs" />
+    <Compile Include="DTOs\FermentableLinks.cs" />
+    <Compile Include="DTOs\FermentablePostDto.cs" />
+    <Compile Include="DTOs\FermentablesCompleteDto.cs" />
+    <Compile Include="DTOs\FermentableStepDto.cs" />
+    <Compile Include="DTOs\FermentationStepDto.cs" />
+    <Compile Include="DTOs\HopCompleteDto.cs" />
+    <Compile Include="DTOs\HopDto.cs" />
+    <Compile Include="DTOs\HopLinks.cs" />
+    <Compile Include="DTOs\HopPostDto.cs" />
+    <Compile Include="DTOs\HopStepDto.cs" />
+    <Compile Include="DTOs\IBUDto.cs" />
+    <Compile Include="DTOs\Links.cs" />
+    <Compile Include="DTOs\LinksFermentable.cs" />
+    <Compile Include="DTOs\LinksHop.cs" />
+    <Compile Include="DTOs\LinksOther.cs" />
+    <Compile Include="DTOs\LinksYeast.cs" />
+    <Compile Include="DTOs\Login.cs" />
+    <Compile Include="DTOs\MashStepDto.cs" />
+    <Compile Include="DTOs\Meta.cs" />
+    <Compile Include="DTOs\OtherCompleteDto.cs" />
+    <Compile Include="DTOs\OtherDto.cs" />
+    <Compile Include="DTOs\OtherLinks.cs" />
+    <Compile Include="DTOs\OtherStepDto.cs" />
+    <Compile Include="DTOs\RecipeCompleteDTO.cs" />
+    <Compile Include="DTOs\RecipeDto.cs" />
+    <Compile Include="DTOs\RecipeHopDto.cs" />
+    <Compile Include="DTOs\RecipeSimpleCompleteDto.cs" />
+    <Compile Include="DTOs\RecipeSimpleDto.cs" />
+    <Compile Include="DTOs\SRMDto.cs" />
+    <Compile Include="DTOs\SupplierCompleteDTO.cs" />
+    <Compile Include="DTOs\SupplierDto.cs" />
+    <Compile Include="DTOs\UserCompleteDto.cs" />
+    <Compile Include="DTOs\UserDto.cs" />
+    <Compile Include="DTOs\UserPostDto.cs" />
+    <Compile Include="DTOs\YeastCompleteDto.cs" />
+    <Compile Include="DTOs\YeastDto.cs" />
+    <Compile Include="DTOs\YeastLinks.cs" />
+    <Compile Include="DTOs\YeastPostDto.cs" />
+    <Compile Include="DTOs\YeastStepDto.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerStyleConfiguration.cs" />
@@ -76,7 +131,9 @@
     <Compile Include="ModelBuilder\RecipeConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepHopConfiguration.cs" />
     <Compile Include="ModelBuilder\SRMConfiguration.cs" />
+    <Compile Include="ModelBuilder\SubstitutConfiguration.cs" />
     <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
+    <Compile Include="ModelBuilder\UserBeerConfiguration.cs" />
     <Compile Include="ModelBuilder\UserConfiguration.cs" />
     <Compile Include="ModelBuilder\UserCredentialsConfiguration.cs" />
     <Compile Include="ModelBuilder\YeastConfiguration.cs" />
@@ -120,9 +177,11 @@
     <Compile Include="Model\FermentationStepHop.cs" />
     <Compile Include="Model\Spice.cs" />
     <Compile Include="Model\SRM.cs" />
+    <Compile Include="Model\Substitut.cs" />
     <Compile Include="Model\Sugar.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserBeer.cs" />
     <Compile Include="Model\UserCredentials.cs" />
     <Compile Include="Model\Yeast.cs" />
     <Compile Include="Model\LiquidYeast.cs" />

@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
         public OriginConfiguration()
         {
             
-            Property(o => o.Id).IsRequired().HasColumnName("OriginId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(o => o.Id).IsRequired().HasColumnName("OriginId");
             Property(o => o.Name).IsRequired().HasMaxLength(255);
 
             

@@ -1,4 +1,5 @@
 ﻿using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Repository
 {
-    public interface IYeastRepository
+    public interface IYeastRepository : IGenericDataRepository<Yeast>
     {
-        IList<Yeast> GetYeasts();
-        Yeast GetYeast(int id);
-
+      
     }
 }

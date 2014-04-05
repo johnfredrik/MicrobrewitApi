@@ -20,7 +20,7 @@ namespace Microbrewit.Model
 
         
         public ICollection<Brewery> Breweries { get; set; }
-        public ICollection<User> Brewers { get; set; }
+        public ICollection<UserBeer> Brewers { get; set; }
 
     }
 }

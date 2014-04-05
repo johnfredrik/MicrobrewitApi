@@ -9,8 +9,6 @@ namespace Microbrewit.Repository
 {
     public interface IRecipeRepositoy : IGenericDataRepository<Recipe>
     {
-        //IList<Recipe> GetRecipes();
-
-        //Recipe GetRecipe(int recipeId);
+     
     }
 }

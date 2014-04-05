@@ -8,22 +8,22 @@ using Microbrewit.Model;
 
 namespace Microbrewit.Repository
 {
-    public class YeastRepository : IYeastRepository
+    public class YeastRepository : GenericDataRepository<Yeast>, IYeastRepository 
     {
-        public IList<Model.Yeast> GetYeasts()
+        public override void Add(params Yeast[] yeasts)
         {
             using (var context = new MicrobrewitContext())
             {
-                return context.Yeasts.Include("Supplier").ToList();
+                foreach (var yeast in yeasts)
+                {
+                    if (yeast.Supplier != null)
+                    {
+                        yeast.Supplier = null;
+                    }
+                }
+                base.Add(yeasts);
             }
         }
-
-        public Model.Yeast GetYeast(int id)
-        {
-            using (var context = new MicrobrewitContext())
-            {
-                return context.Yeasts.Include("Supplier").Where(y => y.Id == id).SingleOrDefault();
-            }
-        }
+      
     }
 }

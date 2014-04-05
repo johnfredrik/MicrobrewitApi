@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,10 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public FlavourConfiguration()
         {
-            Property(f => f.Id).HasColumnName("FlavourId").IsRequired();
+            Property(f => f.Id).HasColumnName("FlavourId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(f => f.Name).IsRequired().HasMaxLength(255);
 
-            this.HasMany(flavour => flavour.Hops).WithRequired(flavourHop => flavourHop.Flavour).HasForeignKey(flavourHop => flavourHop.FlavourId);
+            //this.HasMany(flavour => flavour.Hops).WithRequired(flavourHop => flavourHop.Flavour).HasForeignKey(flavourHop => flavourHop.FlavourId);
                 
 
         }

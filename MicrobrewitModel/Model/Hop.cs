@@ -14,11 +14,14 @@ namespace Microbrewit.Model
         public string Name { get; set; }
         public double AALow { get; set; }
         public double AAHigh { get; set; }
+        public double BetaLow { get; set; }
+        public double BetaHigh { get; set; }
+        public string Notes { get; set; }
         public string FlavourDescription { get; set; }
-        public Nullable<int> OriginId { get; set; } 
-        public virtual Origin Origin { get; set; }
+        public int? OriginId { get; set; } 
+        public Origin Origin { get; set; }
 
-        public ICollection<HopFlavour> HopFlavours { get; set; }
+        public ICollection<HopFlavour> Flavours { get; set; }
         public ICollection<FermentationStepHop> FermentationSteps { get; set; }
         public ICollection<MashStepHop> MashSteps { get; set; }
         public ICollection<BoilStepHop> BoilSteps { get; set; }

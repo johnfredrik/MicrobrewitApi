@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
 using Microbrewit.Model;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 
 namespace Microbrewit.Repository
 {
@@ -76,7 +78,21 @@ namespace Microbrewit.Repository
                 {
                     context.Entry(item).State = EntityState.Added;
                 }
-                context.SaveChanges();
+
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                    }
+                }
             }
         }
 

@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Repository
 {
-    public interface IOtherRepository
+    public interface IOtherRepository : IGenericDataRepository<Other>
     {
-        IList<Other> GetOthers();
-        Other GetOther(int id);
+      
     }
 }
