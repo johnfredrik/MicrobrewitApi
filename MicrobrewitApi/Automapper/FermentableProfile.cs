@@ -17,7 +17,7 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<Fermentable, FermentableDto>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                .ForMember(dto => dto.EBC, conf => conf.MapFrom(rec => rec.EBC))
+                .ForMember(dto => dto.Lovibond, conf => conf.MapFrom(rec => rec.Lovibond))
                 .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
                 .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
@@ -32,7 +32,6 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<FermentablePostDto, Fermentable>()
                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-               .ForMember(dto => dto.EBC, conf => conf.MapFrom(rec => rec.EBC))
                .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
                .ForMember(dto => dto.SupplierId, conf => conf.ResolveUsing<FermentableSupplierResolver>())

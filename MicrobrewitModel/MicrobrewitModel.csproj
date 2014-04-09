@@ -54,7 +54,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calculations.cs" />
     <Compile Include="DTOs\ABVDto.cs" />
+    <Compile Include="DTOs\BeerCompleteDto.cs" />
+    <Compile Include="DTOs\BeerDto.cs" />
     <Compile Include="DTOs\BeerPostDto.cs" />
     <Compile Include="DTOs\BreweryCompleteDto.cs" />
     <Compile Include="DTOs\BreweryDto.cs" />

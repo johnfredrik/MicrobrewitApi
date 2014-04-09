@@ -13,6 +13,9 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
+using System.Configuration;
+using ServiceStack.Redis;
+using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -20,6 +23,7 @@ namespace Microbrewit.Api.Controllers
     public class OthersController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private IOtherRepository otherRepository = new OtherRepository();
 
         // GET api/Others
@@ -114,6 +118,15 @@ namespace Microbrewit.Api.Controllers
             var others = Mapper.Map<IList<Other>, Other[]>(otherPosts);
             otherRepository.Add(others);
           
+            var result = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetAll());
+            using (var redisClient = new RedisClient())
+            {
+                foreach (var item in result)
+                {
+                    redisClient.SetEntryInHash("others", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                }
+            }
+
             return CreatedAtRoute("DefaultApi", new { controller="others", }, otherPosts);
         }
    

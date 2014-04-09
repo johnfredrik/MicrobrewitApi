@@ -146,9 +146,19 @@
     <Compile Include="Automapper\BrewerProfile.cs" />
     <Compile Include="Automapper\BreweryProfile.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\FermentableBoilStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableSupplierResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopFermentationStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\OtherFermentationStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\OtherBoilStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\OtherMashStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopFlavoursResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopOriginResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopPostOriginResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopBoilStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\SetHopFromNullResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\SubBeerStyleResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\SubstitutResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\YeastSupplierResolver.cs" />
@@ -177,6 +187,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Calculation.cs" />
+    <Compile Include="Util\Formulas.cs" />
     <Compile Include="Util\Encrypting.cs" />
     <Compile Include="Util\LoginValidationAttribute.cs" />
     <Compile Include="Util\RSAClass.cs" />

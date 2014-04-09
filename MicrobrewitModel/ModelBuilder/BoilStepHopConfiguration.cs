@@ -11,10 +11,9 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BoilStepHopConfiguration()
         {
-            Property(bsh => bsh.Id).IsRequired().HasColumnName("BoilStepHopId");
             Property(bsh => bsh.HopId).IsRequired();
-            Property(bsh => bsh.BoilStepId).IsRequired();
-            this.HasKey(bsh => bsh.Id);
+            Property(bsh => bsh.StepId).IsRequired();
+            this.HasKey(bsh => new {bsh.StepId,bsh.HopId});
 
             this.HasRequired(h => h.HopForm).WithMany().HasForeignKey(hopForm => hopForm.HopFormId);
         }

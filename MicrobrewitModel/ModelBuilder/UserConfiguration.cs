@@ -20,7 +20,7 @@ namespace Microbrewit.Model.ModelBuilder
 
                         
             this.HasMany(user => user.Breweries).WithRequired(breweryMember => breweryMember.Member).HasForeignKey(BreweryMember => BreweryMember.MemberId);
-            this.HasMany(user => user.Beers).WithRequired(userBeer => userBeer.User).HasForeignKey(userBeer => userBeer.UserId);
+            this.HasMany(user => user.Beers).WithRequired(userBeer => userBeer.User).HasForeignKey(userBeer => userBeer.Username);
         }
     }
 }

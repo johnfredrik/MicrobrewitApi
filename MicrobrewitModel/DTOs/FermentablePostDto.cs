@@ -11,7 +11,7 @@ namespace Microbrewit.Model.DTOs
         public int Id { get; set; }
         public DTO Supplier { get; set; }
         public string Name { get; set; }
-        public double? EBC { get; set; }
+        public double Lovibond { get; set; }
         public int? PPG { get; set; }
         public string Type { get; set; }
     }

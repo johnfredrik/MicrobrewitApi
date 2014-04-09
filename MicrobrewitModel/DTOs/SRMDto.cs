@@ -7,8 +7,10 @@ namespace Microbrewit.Model.DTOs
 {
     public class SRMDto
     {
+        // Malt Calculate Units
         public int Standard { get; set; }
-        public int Formula1 { get; set; }
-        public int Formula2 { get; set; }
+        public double Mosher { get; set; }
+        public double Daniels { get; set; }
+        public double Morey { get; set; }
     }
 }

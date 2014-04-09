@@ -13,8 +13,9 @@ namespace Microbrewit.Model
         public int Length { get; set; }
         public int Volume { get; set; }
         public int Notes { get; set; }
+        public int RecipeId { get; set; }
 
-        public ICollection<Recipe> Recipes { get; set; }
+        public Recipe Recipe { get; set; }
         public ICollection<BoilStepHop> Hops { get; set; }
         public ICollection<BoilStepFermentable> Fermentables { get; set; }
         public ICollection<BoilStepOther> Others { get; set; }

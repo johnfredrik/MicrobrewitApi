@@ -9,7 +9,7 @@ namespace Microbrewit.Model
 
     public class UserBeer
     {
-        public string UserId { get; set; }
+        public string Username { get; set; }
         public int BeerId { get; set; }
 
         public User User { get; set; }
