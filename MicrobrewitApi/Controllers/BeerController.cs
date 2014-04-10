@@ -130,9 +130,22 @@ namespace Microbrewit.Api.Controllers
             
 
             beerRepository.Add(beer);
+            var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
             
+            result.Beers.Add(Mapper.Map<Beer,BeerDto>(beerRepository.GetSingle(b => b.Id == beer.Id,
+                "Recipe.MashSteps.Hops",
+                "Recipe.MashSteps.Fermentables",
+                "Recipe.MashSteps.Others",
+                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.Fermentables",
+                "Recipe.BoilSteps.Others",
+                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.Fermentables",
+                "Recipe.FermentationSteps.Others",
+                "Recipe.FermentationSteps.Yeasts",
+                 "ABV", "IBU", "SRM", "Brewers", "Breweries"))); 
            
-            return CreatedAtRoute("DefaultApi", new { controller = "beers" }, beer);
+            return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
         }
 
         // DELETE api/Beer/5
