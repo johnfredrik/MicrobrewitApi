@@ -152,6 +152,7 @@
     <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableSupplierResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopFermentationStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\YeastFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\OtherFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\OtherBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\OtherMashStepResolver.cs" />
