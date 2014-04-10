@@ -75,14 +75,12 @@
     <Compile Include="DTOs\DTO.cs" />
     <Compile Include="DTOs\FermentableDto.cs" />
     <Compile Include="DTOs\FermentableLinks.cs" />
-    <Compile Include="DTOs\FermentablePostDto.cs" />
     <Compile Include="DTOs\FermentablesCompleteDto.cs" />
     <Compile Include="DTOs\FermentableStepDto.cs" />
     <Compile Include="DTOs\FermentationStepDto.cs" />
     <Compile Include="DTOs\HopCompleteDto.cs" />
     <Compile Include="DTOs\HopDto.cs" />
     <Compile Include="DTOs\HopLinks.cs" />
-    <Compile Include="DTOs\HopPostDto.cs" />
     <Compile Include="DTOs\HopStepDto.cs" />
     <Compile Include="DTOs\IBUDto.cs" />
     <Compile Include="DTOs\Links.cs" />

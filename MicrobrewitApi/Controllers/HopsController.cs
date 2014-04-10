@@ -82,35 +82,21 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Hops/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutHop(int id, Hop hop)
+        public IHttpActionResult PutHop(int id, HopDto hopDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != hop.Id)
+            if (id != hopDto.Id)
             {
                 return BadRequest();
             }
-
-            db.Entry(hop).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!HopExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var hop = Mapper.Map<HopDto,Hop>(hopDto);
+            
+            hopRepository.Update(hop);
+            
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -118,8 +104,8 @@ namespace Microbrewit.Api.Controllers
         // POST api/Hops
     
         [Route("")]
-        [ResponseType(typeof(IList<HopPostDto>))]
-        public IHttpActionResult PostHop(IList<HopPostDto> hopPosts)
+        [ResponseType(typeof(IList<HopDto>))]
+        public IHttpActionResult PostHop(IList<HopDto> HopDtos)
         {
             Log.Debug("Hops Post");
             if (!ModelState.IsValid)
@@ -128,7 +114,7 @@ namespace Microbrewit.Api.Controllers
 
                 return BadRequest(ModelState);
             }
-           var hops = Mapper.Map<IList<HopPostDto>,Hop[]>(hopPosts);
+           var hops = Mapper.Map<IList<HopDto>,Hop[]>(HopDtos);
 
             hopRepository.Add(hops);
             

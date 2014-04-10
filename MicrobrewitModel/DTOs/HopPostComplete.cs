@@ -8,6 +8,6 @@ namespace Microbrewit.Model.DTOs
 {
     public class HopPostComplete
     {
-        public IList<HopPostDto> Hops { get; set; }
+        public IList<HopDto> Hops { get; set; }
     }
 }

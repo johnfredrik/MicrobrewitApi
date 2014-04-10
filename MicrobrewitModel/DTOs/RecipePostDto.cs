@@ -11,6 +11,10 @@ namespace Microbrewit.Model.DTOs
         public int Id { get; set; }
         public string Name { get; set; }
         public string Notes { get; set; }
+        public int Volume { get; set; }
+        public double OG { get; set; }
+        public double FG { get; set; }
+        public double Efficiency { get; set; }
         public DTO BeerStyle { get; set; }
 
         public IList<MashStepDto> MashSteps { get; set; }

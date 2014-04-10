@@ -58,50 +58,36 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/Fermentable/5
-        public async Task<IHttpActionResult> PutFermentable(int id, Fermentable fermentable)
+        [Route("{id}")]
+        public async Task<IHttpActionResult> PutFermentable(int id, FermentableDto fermentableDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != fermentable.Id)
+            if (id != fermentableDto.Id)
             {
                 return BadRequest();
             }
 
-            db.Entry(fermentable).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FermentableExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
+            fermentableRepository.Update(fermentable);
+            
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/Fermentable
         [Route("")]
-        [ResponseType(typeof(IList<FermentablePostDto>))]
-        public IHttpActionResult PostFermentable(IList<FermentablePostDto> fermentablePostDtos)
+        [ResponseType(typeof(IList<FermentableDto>))]
+        public IHttpActionResult PostFermentable(IList<FermentableDto> FermentableDtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var fermentablePost = Mapper.Map<IList<FermentablePostDto>, Fermentable[]>(fermentablePostDtos);
+            var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(FermentableDtos);
             fermentableRepository.Add(fermentablePost);
             var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentableRepository.GetAll("Supplier.Origin"));
            
@@ -112,7 +98,7 @@ namespace Microbrewit.Api.Controllers
                     redisClient.SetEntryInHash("fermentables", fermentable.Id.ToString(), JsonConvert.SerializeObject(fermentable));
                 }
             }
-            return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, fermentablePostDtos);
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, FermentableDtos);
         }
 
         // DELETE api/Fermentable/5

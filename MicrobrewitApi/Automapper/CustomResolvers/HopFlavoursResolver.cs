@@ -9,11 +9,11 @@ using System.Web;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class HopFlavoursResolver : ValueResolver<HopPostDto, IList<HopFlavour>>
+    public class HopFlavoursResolver : ValueResolver<HopDto, IList<HopFlavour>>
     {
         private IHopRepository repository = new HopRepository();
 
-        protected override IList<HopFlavour> ResolveCore(HopPostDto dto)
+        protected override IList<HopFlavour> ResolveCore(HopDto dto)
         {
 
             using (var context = new MicrobrewitContext())
@@ -27,6 +27,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         if (item.Id > 0)
                         {
                             hopFlavor.FlavourId = item.Id;
+                            hopFlavor.HopId = dto.Id;
                             flavours.Add(hopFlavor);
                         }
                         else

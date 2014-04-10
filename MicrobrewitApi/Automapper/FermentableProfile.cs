@@ -29,7 +29,7 @@ namespace Microbrewit.Api.Automapper
 
             Mapper.CreateMap<FermentableDto,FermentablesCompleteDto>();
 
-            Mapper.CreateMap<FermentablePostDto, Fermentable>()
+            Mapper.CreateMap<FermentableDto, Fermentable>()
                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
