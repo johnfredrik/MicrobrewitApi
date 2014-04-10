@@ -50,7 +50,8 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Hops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
-                "Brewers", "ABV", "IBU", "SRM", "Brewers", "Breweries");
+                "Recipe.FermentationSteps.Yeasts",
+                "ABV", "IBU", "SRM", "Brewers", "Breweries");
             if (beer == null)
             {
                 return NotFound();
