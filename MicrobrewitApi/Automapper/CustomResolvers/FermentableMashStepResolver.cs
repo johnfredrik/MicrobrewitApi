@@ -19,7 +19,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
         protected override IList<FermentableStepDto> ResolveCore(MashStep step)
         {
             var fermentableStepDtoList = new List<FermentableStepDto>();
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
 
                 foreach (var item in step.Fermentables)

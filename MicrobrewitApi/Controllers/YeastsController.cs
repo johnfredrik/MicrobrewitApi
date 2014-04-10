@@ -54,49 +54,34 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Yeasts/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutYeast(int id, Yeast yeast)
+        public async Task<IHttpActionResult> PutYeast(int id, YeastDto yeastDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != yeast.Id)
+            if (id != yeastDto.Id)
             {
                 return BadRequest();
             }
 
-            db.Entry(yeast).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!YeastExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
+            yeastRespository.Update(yeast);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/Yeasts
         [Route("")]
-        [ResponseType(typeof(IList<YeastPostDto>))]
-        public IHttpActionResult PostYeast(IList<YeastPostDto> yeastPosts)
+        [ResponseType(typeof(IList<YeastDto>))]
+        public IHttpActionResult PostYeast(IList<YeastDto> yeastPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var yeasts = Mapper.Map<IList<YeastPostDto>,Yeast[]>(yeastPosts);
+            var yeasts = Mapper.Map<IList<YeastDto>,Yeast[]>(yeastPosts);
             yeastRespository.Add(yeasts);
 
             var y = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastRespository.GetAll("Supplier.Origin"));
@@ -110,25 +95,6 @@ namespace Microbrewit.Api.Controllers
             }
             return CreatedAtRoute("DefaultApi", new {controller = "yeasts",}, yeastPosts);
         }
-
-        //// POST api/Yeasts
-        //[Route("liquidyeasts")]
-        //[ResponseType(typeof(LiquidYeast))]
-        //public async Task<IHttpActionResult> PostYeast(LiquidYeast yeast)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    if (yeast.SupplierId > 0)
-        //    {
-        //        yeast.Supplier = null;
-        //    }
-        //    db.Yeasts.Add(yeast);
-        //    await db.SaveChangesAsync();
-
-        //    return CreatedAtRoute("DefaultApi", new { controller="yeasts", id = yeast.Id }, yeast);
-        //}
 
         // DELETE api/Yeasts/5
         [Route("{id:int}")]

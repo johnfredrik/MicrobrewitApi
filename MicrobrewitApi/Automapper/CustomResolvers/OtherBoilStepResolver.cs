@@ -18,7 +18,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         protected override IList<OtherStepDto> ResolveCore(BoilStep step)
         {
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
                 var otherStepDtoList = new List<OtherStepDto>();
                 foreach (var item in step.Others)

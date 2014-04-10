@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public ABVConfiguration()
         {
-            Property(a => a.Id).IsRequired().HasColumnName("AbvId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(a => a.Id).IsRequired().HasColumnName("AbvId");
             this.HasKey(a => a.Id);
             this.HasOptional(a => a.Beer).WithOptionalDependent(b => b.ABV);
         }

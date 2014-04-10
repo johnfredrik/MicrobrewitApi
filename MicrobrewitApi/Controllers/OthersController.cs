@@ -102,7 +102,7 @@ namespace Microbrewit.Api.Controllers
             otherRepository.Add(others);
           
             var result = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetAll());
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
                 foreach (var item in result)
                 {

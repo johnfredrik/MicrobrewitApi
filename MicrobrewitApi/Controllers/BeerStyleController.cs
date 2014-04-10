@@ -123,7 +123,7 @@ namespace Microbrewit.Api.Controllers
 
             beerStyleRepository.Add(beerstyles.ToArray());
             var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
                 foreach (var item in bs)
                 {

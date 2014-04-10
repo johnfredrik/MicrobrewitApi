@@ -109,7 +109,6 @@
     <Compile Include="DTOs\YeastCompleteDto.cs" />
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />
-    <Compile Include="DTOs\YeastPostDto.cs" />
     <Compile Include="DTOs\YeastStepDto.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />

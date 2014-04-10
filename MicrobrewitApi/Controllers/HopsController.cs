@@ -150,7 +150,7 @@ namespace Microbrewit.Api.Controllers
         public IList<HopForm> GetHopForm()
         {
             var hopforms = db.HopForms.ToList();
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
                 foreach (var item in hopforms)
                 {

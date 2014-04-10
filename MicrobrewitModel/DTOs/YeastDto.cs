@@ -14,9 +14,9 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "temperaturehigh")]
-        public int? TemperatureHigh { get; set; }
+        public double? TemperatureHigh { get; set; }
         [JsonProperty(PropertyName = "temperaturelow")]
-        public int? TemperatureLow { get; set; }
+        public double? TemperatureLow { get; set; }
         [JsonProperty(PropertyName = "flocculation")]
         public string Flocculation { get; set; }
         [JsonProperty(PropertyName = "alcoholtolerance")]
@@ -29,6 +29,5 @@ namespace Microbrewit.Model.DTOs
         public string Type { get; set; }
         [JsonProperty(PropertyName = "supplier")]
         public DTO Supplier { get; set; }
-       
     }
 }

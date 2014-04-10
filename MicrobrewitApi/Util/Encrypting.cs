@@ -183,7 +183,7 @@ namespace Microbrewit.Api.Util
             };
             Log.Debug("Now time: " + DateTime.UtcNow.ToString());
             var principal = tokenhandler.ValidateToken(tokenString, validationParameters);
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
                 if (!principal.Identities.First().Claims.Any(c => c.Type == "username" && c.Value == redisClient.GetValue(tokenString)))
                 {

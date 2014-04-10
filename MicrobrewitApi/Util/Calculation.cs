@@ -7,11 +7,14 @@ using System.Web;
 using ServiceStack.Redis;
 using Newtonsoft.Json;
 using Microbrewit.Model.DTOs;
+using System.Configuration;
 
 namespace Microbrewit.Api.Util
 {
     public static class Calculation
     {
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+
         public static SRM CalculateSRM(Recipe recipe)
         {
             var srm = new SRM();
@@ -60,7 +63,7 @@ namespace Microbrewit.Api.Util
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                    using(var redisClient = new RedisClient())
+                    using(var redisClient = new RedisClient(redisStore))
 	                {
                         var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.GetValueFromHash("fermentables",fermentable.FermentableId.ToString()));
 

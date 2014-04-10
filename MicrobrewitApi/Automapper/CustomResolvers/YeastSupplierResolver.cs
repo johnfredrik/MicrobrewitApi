@@ -8,9 +8,9 @@ using Microbrewit.Model;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class YeastSupplierResolver : ValueResolver<YeastPostDto, int>
+    public class YeastSupplierResolver : ValueResolver<YeastDto, int>
     {
-        protected override int ResolveCore(YeastPostDto source)
+        protected override int ResolveCore(YeastDto source)
         {
             using (var context = new MicrobrewitContext())
             {

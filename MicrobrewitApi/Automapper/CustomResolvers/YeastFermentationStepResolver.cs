@@ -17,7 +17,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         protected override IList<YeastStepDto> ResolveCore(FermentationStep step)
         {
-            using (var redisClient = new RedisClient())
+            using (var redisClient = new RedisClient(redisStore))
             {
                 var yeastStepDtoList = new List<YeastStepDto>();
                 foreach (var item in step.Yeasts)
