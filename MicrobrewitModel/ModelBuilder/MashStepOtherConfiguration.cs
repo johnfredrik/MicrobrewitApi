@@ -11,10 +11,9 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public MashStepOtherConfiguration()
         {
-            Property(mso => mso.Id).IsRequired().HasColumnName("MashStepOtherId");
             Property(mso => mso.MashStepId).IsRequired();
             Property(mso => mso.OtherId).IsRequired();
-            this.HasKey(mso => mso.Id);
+            this.HasKey(mso => new { mso.MashStepId,mso.OtherId });
         }
     }
 }

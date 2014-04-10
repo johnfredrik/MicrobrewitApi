@@ -15,6 +15,9 @@ using Microbrewit.Repository;
 using AutoMapper;
 using log4net;
 using Microbrewit.Model.DTOs;
+using ServiceStack.Redis;
+using Newtonsoft.Json;
+using System.Configuration;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -24,6 +27,7 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private IFermentableRepository fermentableRepository = new FermentableRepository();
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
         // GET api/Fermentable 
@@ -52,31 +56,6 @@ namespace Microbrewit.Api.Controllers
             result.Fermentables.Add(fermentable);
             return Ok(result);
         }
-
-        //[Route("grains")]
-        //public FermentablesCompleteDto GetGrains()
-        //{
-        //    return fermentableRepository.GetGrains();
-        //}
-
-        //[Route("sugars")]
-        //public IList<Sugar> GetSugars()
-        //{
-        //    return fermentableRepository.GetSugars();
-        //}
-
-        //[Route("dryextracts")]
-        //public IList<DryExtract> GetDryExtracts()
-        //{
-        //    return fermentableRepository.GetDryExtracts();
-        //}
-
-        //[Route("liquidextracts")]
-        //public IList<LiquidExtract> GetLiquidExtracts()
-        //{
-        //    return fermentableRepository.GetLiquidExtracts();
-        //}
-
 
         // PUT api/Fermentable/5
         public async Task<IHttpActionResult> PutFermentable(int id, Fermentable fermentable)
@@ -124,7 +103,15 @@ namespace Microbrewit.Api.Controllers
 
             var fermentablePost = Mapper.Map<IList<FermentablePostDto>, Fermentable[]>(fermentablePostDtos);
             fermentableRepository.Add(fermentablePost);
-         //   var result = Mapper.Map<Fermentable, FermentableDto>(fermentable); 
+            var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentableRepository.GetAll("Supplier.Origin"));
+           
+            using (var redisClient = new RedisClient(redisStore))
+            {
+                foreach (var fermentable in fermentables)
+                {
+                    redisClient.SetEntryInHash("fermentables", fermentable.Id.ToString(), JsonConvert.SerializeObject(fermentable));
+                }
+            }
             return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, fermentablePostDtos);
         }
 

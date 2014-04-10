@@ -11,7 +11,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public UserBeerConfiguration()
         {
-            HasKey(userBeer => new { userBeer.BeerId, userBeer.UserId });
+            HasKey(userBeer => new { userBeer.BeerId,userBeer.Username });
         }
     }
 }

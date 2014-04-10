@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
+using System.Configuration;
+using ServiceStack.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -26,6 +28,7 @@ namespace Microbrewit.Api.Controllers
 
         private MicrobrewitContext db = new MicrobrewitContext();
         private IHopRepository hopRepository = new HopRepository();
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
 
@@ -128,8 +131,15 @@ namespace Microbrewit.Api.Controllers
            var hops = Mapper.Map<IList<HopPostDto>,Hop[]>(hopPosts);
 
             hopRepository.Add(hops);
-
+            
             var results = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts"));
+            using (var redisClient = new RedisClient(redisStore))
+            {
+                foreach (var hop in results)
+	            {
+                    redisClient.SetEntryInHash("hops", hop.Id.ToString(),JsonConvert.SerializeObject(hop));
+                }
+            }
             return CreatedAtRoute("DefaultApi",new {controller = "hops",},results);
         }
 
@@ -148,6 +158,20 @@ namespace Microbrewit.Api.Controllers
             await db.SaveChangesAsync();
 
             return Ok(hop);
+        }
+
+        [Route("hopforms")]
+        public IList<HopForm> GetHopForm()
+        {
+            var hopforms = db.HopForms.ToList();
+            using (var redisClient = new RedisClient())
+            {
+                foreach (var item in hopforms)
+                {
+                    redisClient.SetEntryInHash("hopforms", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                }
+            }
+            return hopforms;
         }
 
         protected override void Dispose(bool disposing)

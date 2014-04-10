@@ -13,6 +13,9 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
+using System.Configuration;
+using ServiceStack.Redis;
+using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -20,6 +23,7 @@ namespace Microbrewit.Api.Controllers
     public class BeerStyleController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private readonly IBeerStyleRepository beerStyleRepository = new BeerStyleRepository();
 
         [Route("")]
@@ -84,6 +88,9 @@ namespace Microbrewit.Api.Controllers
         }
 
         // POST api/BeerStyle
+
+        [Route("")]
+
         [ResponseType(typeof(IList<BeerStyle>))]
         public IHttpActionResult PostBeerStyle(IList<BeerStyle> beerstyles)
         {
@@ -93,7 +100,14 @@ namespace Microbrewit.Api.Controllers
             }
 
             beerStyleRepository.Add(beerstyles.ToArray());
-            
+            var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
+            using (var redisClient = new RedisClient())
+            {
+                foreach (var item in bs)
+                {
+                    redisClient.SetEntryInHash("beerstyles", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                }
+            }
             return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, beerstyles);
         }
 

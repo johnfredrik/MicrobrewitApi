@@ -15,7 +15,6 @@ namespace Microbrewit.Model
         public BeerStyle SuperStyle { get; set; }
         public ICollection<BeerStyle> SubStyles { get; set; }
 
-        public ICollection<Recipe> Recipes { get; set; }
         public ICollection<Beer> Beers { get; set; }
 
     }

@@ -13,7 +13,6 @@ namespace Microbrewit.Model
         public int Id { get; set; }
         public int Volume { get; set; }
         public string Notes { get; set; }
-        public int BeerStyleId { get; set; }
         public int? ForkeOfId { get; set; }
         // Single relations.
         public Recipe ForkeOf { get; set; }

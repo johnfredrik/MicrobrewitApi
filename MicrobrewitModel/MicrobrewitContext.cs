@@ -70,6 +70,7 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new FermentationStepFermentableConfiguration());
             modelBuilder.Configurations.Add(new MashStepOtherConfiguration());
             modelBuilder.Configurations.Add(new BoilStepOtherConfiguration());
+            modelBuilder.Configurations.Add(new FermentationStepOtherConfiguration());
             modelBuilder.Configurations.Add(new FermentationStepYeastConfiguration());
             modelBuilder.Configurations.Add(new BeerStyleConfiguration());
             modelBuilder.Configurations.Add(new HopFormConfiguration());

@@ -18,26 +18,10 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasKey(r => r.Id);
             
             // relations
-            this.HasMany(r => r.MashSteps).WithMany(mashStep => mashStep.Recipes).Map(m =>
-            {
-
-                m.MapLeftKey("RecipeId");
-                m.MapRightKey("MashStepId");
-                m.ToTable("RecipeMashStep");
-            });
-            this.HasMany(r => r.BoilSteps).WithMany(boilStep => boilStep.Recipes).Map(m =>
-            {
-
-                m.MapLeftKey("RecipeId");
-                m.MapRightKey("BoilStepId");
-                m.ToTable("RecipeBoilStep");
-            });
-            this.HasMany(r => r.FermentationSteps).WithMany(fermentationStep => fermentationStep.Recipes).Map(m =>
-                {
-                    m.MapLeftKey("RecipeId");
-                    m.MapRightKey("FermentationStepId");
-                    m.ToTable("RecipeFermentationStep");
-                });
+            this.HasMany(r => r.BoilSteps).WithRequired().HasForeignKey(boilStep => boilStep.RecipeId);
+            this.HasMany(r => r.FermentationSteps).WithRequired().HasForeignKey(fermentationStep => fermentationStep.RecipeId);
+            this.HasMany(r => r.MashSteps).WithRequired().HasForeignKey(mashStep => mashStep.RecipeId);
+           
 
             this.HasMany(recipe => recipe.Forks)
                 .WithOptional(recipe => recipe.ForkeOf)

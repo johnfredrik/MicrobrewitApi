@@ -9,5 +9,6 @@ namespace Microbrewit.Repository
 {
     public class BeerRepository : GenericDataRepository<Beer>, IBeerRepository
     {
+
     }
 }

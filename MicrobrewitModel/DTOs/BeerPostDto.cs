@@ -17,6 +17,6 @@ namespace Microbrewit.Model.DTOs
         public RecipePostDto Recipe { get; set; }
 
         public IList<DTO> Breweries { get; set; }
-        public IList<DTO> Brewers { get; set; }
+        public IList<DTOUser> Brewers { get; set; }
     }
 }

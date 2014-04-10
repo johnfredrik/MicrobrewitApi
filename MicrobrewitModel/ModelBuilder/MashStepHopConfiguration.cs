@@ -11,10 +11,9 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public MashStepHopConfiguration()
         {
-            Property(msh => msh.Id).IsRequired().HasColumnName("MashStepHopId");
             Property(msh => msh.HopId).IsRequired();
             Property(msh => msh.MashStepId).IsRequired();
-            this.HasKey(msh => msh.Id);
+            this.HasKey(msh => new { msh.HopId,msh.MashStepId});
         }
     }
 }

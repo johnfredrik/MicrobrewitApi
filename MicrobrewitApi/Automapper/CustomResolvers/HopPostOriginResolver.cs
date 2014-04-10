@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class HopOriginResolver : ValueResolver<HopPostDto, int>
+    public class HopPostOriginResolver : ValueResolver<HopPostDto, int>
     {
         protected override int ResolveCore(HopPostDto dto)
         {
