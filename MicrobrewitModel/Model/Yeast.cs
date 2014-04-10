@@ -18,8 +18,7 @@ namespace Microbrewit.Model
         public string AlcoholTolerance { get; set; }
         public string ProductCode { get; set; }
         public string Comment { get; set; }
-        [NotMapped]
-        public string Type { get { return this.GetType().Name; } }
+        public string Type { get; set; }
 
         public int? SupplierId { get; set; }
         public Supplier Supplier { get; set; }

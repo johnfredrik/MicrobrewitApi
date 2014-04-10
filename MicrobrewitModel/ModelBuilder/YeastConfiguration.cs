@@ -18,19 +18,19 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasOptional(y => y.Supplier).WithMany().HasForeignKey(y => y.SupplierId);
             this.HasMany(yeast => yeast.FermentationSteps).WithRequired(FermentationStepYeast => FermentationStepYeast.Yeast).HasForeignKey(FermentationStepYeast => FermentationStepYeast.YeastId);
 
-            Map(m =>
-            {
-                m.ToTable("Yeast");
-                m.Requires("Type").HasValue("");
-            })
-            .Map<LiquidYeast>(m =>
-            {
-                m.Requires("Type").HasValue("Liquid Yeast");
-            })
-            .Map<DryYeast>(m =>
-            {
-                m.Requires("Type").HasValue("Dry Yeast");
-            });
+            //Map(m =>
+            //{
+            //    m.ToTable("Yeast");
+            //    m.Requires("Type").HasValue("");
+            //})
+            //.Map<LiquidYeast>(m =>
+            //{
+            //    m.Requires("Type").HasValue("Liquid Yeast");
+            //})
+            //.Map<DryYeast>(m =>
+            //{
+            //    m.Requires("Type").HasValue("Dry Yeast");
+            //});
         }
     }
 }

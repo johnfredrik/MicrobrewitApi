@@ -5,6 +5,7 @@ using System.Web;
 using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Api.Automapper.CustomResolvers;
 
 namespace Microbrewit.Api.Automapper
 {
@@ -30,6 +31,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
                 .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM))
+                .ForMember(dto => dto.BeerStyle, conf => conf.ResolveUsing<BeerStyleResolver>())
                 .ForMember(dto => dto.Recipe, conf => conf.MapFrom(rec => rec.Recipe))
                 .ForMember(dto => dto.Breweries, conf => conf.MapFrom(rec => rec.Breweries))
                 .ForMember(dto => dto.Brewers, conf => conf.MapFrom(rec => rec.Brewers));
@@ -45,17 +47,16 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<UserBeer , DTOUser>()
                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
                .ForMember(dto => dto.Email, conf => conf.MapFrom(rec => rec.User.Email));
-               
+
 
             Mapper.CreateMap<ABV, ABVDto>()
-                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
-                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
-                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
+                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard));
+               
 
             Mapper.CreateMap<IBU, IBUDto>()
                 .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
-                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
-                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
+                .ForMember(dto => dto.Tinseth, conf => conf.MapFrom(rec => rec.Tinseth))
+                .ForMember(dto => dto.Rager, conf => conf.MapFrom(rec => rec.Rager));
 
             Mapper.CreateMap<SRM, SRMDto>()
                 .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
@@ -73,14 +74,12 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Brewers, conf => conf.MapFrom(rec => rec.Brewers));
 
             Mapper.CreateMap<ABVDto, ABV>()
-                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
-                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
-                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
+                .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard));
 
             Mapper.CreateMap<IBUDto, IBU>()
                 .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
-                .ForMember(dto => dto.Formula1, conf => conf.MapFrom(rec => rec.Formula1))
-                .ForMember(dto => dto.Formula2, conf => conf.MapFrom(rec => rec.Formula2));
+                .ForMember(dto => dto.Rager, conf => conf.MapFrom(rec => rec.Rager))
+                .ForMember(dto => dto.Tinseth, conf => conf.MapFrom(rec => rec.Tinseth));
 
             Mapper.CreateMap<SRMDto, SRM>()
                 .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))

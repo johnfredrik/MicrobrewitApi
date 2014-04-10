@@ -8,9 +8,9 @@ using System.Web;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
-    public class SubstitutResolver : ValueResolver<HopPostDto, IList<Hop>>
+    public class SubstitutResolver : ValueResolver<HopDto, IList<Hop>>
     {
-        protected override IList<Hop> ResolveCore(HopPostDto dto)
+        protected override IList<Hop> ResolveCore(HopDto dto)
         {
             using (var context = new MicrobrewitContext())
             {

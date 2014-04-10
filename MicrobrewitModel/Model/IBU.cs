@@ -9,9 +9,9 @@ namespace Microbrewit.Model
     public class IBU
     {
         public int Id { get; set; }
-        public int Standard { get; set; }
-        public int Formula1 { get; set; }
-        public int Formula2 { get; set; }
+        public double Standard { get; set; }
+        public double Tinseth { get; set; }
+        public double Rager { get; set; }
 
         public Beer Beer { get; set; }
 

@@ -11,8 +11,6 @@ namespace Microbrewit.Model.DTOs
       
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
-        //[JsonProperty(PropertyName = "href")]
-        //public string Href { get; set; }
         [JsonProperty(PropertyName = "supplier")]
         public DTO Supplier { get; set; }
         [JsonProperty(PropertyName = "name")]

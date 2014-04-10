@@ -30,9 +30,31 @@ namespace Microbrewit.Api.Controllers
         // GET api/BeerStyle
         public BeerStyleCompleteDto GetBeerStyles()
         {
-            var beerStyles = Mapper.Map<IList<BeerStyle>,IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles","SuperStyle"));
-            var result = new BeerStyleCompleteDto();
-            result.BeerStyles = beerStyles;
+            var result = new BeerStyleCompleteDto() {BeerStyles = new List<BeerStyleDto>() };
+            using (var redisClient = new RedisClient(redisStore))
+            {
+                if (redisClient.ContainsKey("beerstyles"))
+                {
+                    var json = redisClient.GetHashValues("beerstyles");
+                    foreach (var item in json)
+                    {
+                        result.BeerStyles.Add(JsonConvert.DeserializeObject<BeerStyleDto>(item));
+                    } 
+                    
+                }
+                else
+                {
+
+                    var beerStyles = Mapper.Map<IList<BeerStyle>,IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles","SuperStyle"));
+                    foreach (var item in beerStyles)
+                    {
+                        redisClient.SetEntryInHash("beerstyles", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                    }
+                    result.BeerStyles = beerStyles;
+
+                }
+            }
+            
             return result;
         }
 

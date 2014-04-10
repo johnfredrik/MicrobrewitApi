@@ -26,7 +26,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {
-            var beers = Mapper.Map<IList<Beer>,IList<BeerSimpleDto>>(beerRepository.GetAll("Recipe","SRM"));
+            var beers = Mapper.Map<IList<Beer>,IList<BeerSimpleDto>>(beerRepository.GetAll("Recipe","SRM","ABV","IBU","Brewers","Breweries"));
             var result = new BeerSimpleCompleteDto();
             result.Beers = beers;
             return result;
@@ -50,7 +50,8 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Hops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
-                "Brewers", "ABV", "IBU", "SRM", "Brewers", "Breweries");
+                "Recipe.FermentationSteps.Yeasts",
+                "ABV", "IBU", "SRM", "Brewers", "Breweries");
             if (beer == null)
             {
                 return NotFound();
@@ -66,10 +67,7 @@ namespace Microbrewit.Api.Controllers
         public IHttpActionResult GetBeerRedis(int id)
         {
             var beer = beerRepository.GetSingle(b => b.Id == id,
-                "Recipe.MashSteps",
-                "Recipe.BoilSteps",
-                "Recipe.FermentationSteps",
-                "Brewers", "ABV", "IBU", "SRM", "Brewers", "Breweries");
+                "Recipe","Brewers", "ABV", "IBU", "SRM", "Breweries");
 
             if (beer == null)
             {
@@ -124,14 +122,30 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest(ModelState);
             }
             var beer = Mapper.Map<BeerPostDto, Beer>(beerPost);
+            beer.Recipe.OG = Calculation.CalculateOG(beer.Recipe);
+            beer.ABV = Calculation.CalculateABV(beer.Recipe);
             beer.SRM = Calculation.CalculateSRM(beer.Recipe);
+            beer.IBU = Calculation.CalculateIBU(beer.Recipe);
             beer.BeerStyle = null;
             
 
             beerRepository.Add(beer);
+            var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
             
+            result.Beers.Add(Mapper.Map<Beer,BeerDto>(beerRepository.GetSingle(b => b.Id == beer.Id,
+                "Recipe.MashSteps.Hops",
+                "Recipe.MashSteps.Fermentables",
+                "Recipe.MashSteps.Others",
+                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.Fermentables",
+                "Recipe.BoilSteps.Others",
+                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.Fermentables",
+                "Recipe.FermentationSteps.Others",
+                "Recipe.FermentationSteps.Yeasts",
+                 "ABV", "IBU", "SRM", "Brewers", "Breweries"))); 
            
-            return CreatedAtRoute("DefaultApi", new { controller = "beers" }, beer);
+            return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
         }
 
         // DELETE api/Beer/5

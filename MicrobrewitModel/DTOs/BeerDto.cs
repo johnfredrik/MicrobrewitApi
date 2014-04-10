@@ -13,6 +13,7 @@ namespace Microbrewit.Model.DTOs
             public ABVDto ABV { get; set; }
             public IBUDto IBU { get; set; }
             public SRMDto SRM { get; set; }
+            public DTO BeerStyle { get; set; }
             public RecipeDto Recipe { get; set; }
 
             public IList<DTO> Breweries { get; set; }

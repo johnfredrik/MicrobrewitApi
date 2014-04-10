@@ -56,7 +56,7 @@ namespace Microbrewit.Api.Automapper
                .ForMember(dto => dto.HopId, conf => conf.MapFrom(rec => rec.HopId))
                .ForMember(dto => dto.HopFormId, conf => conf.MapFrom(rec => rec.HopForm.Id))
                .ForMember(dto => dto.HopForm, conf => conf.ResolveUsing<SetHopFromNullResolver>())
-               .ForMember(dto => dto.AAAmount, conf => conf.MapFrom(rec => rec.Amount))
+               .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount))
                .ForMember(dto => dto.AAValue, conf => conf.MapFrom(rec => rec.AAValue));
 
 

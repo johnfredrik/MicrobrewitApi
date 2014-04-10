@@ -13,9 +13,15 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "aalow")]
-        public int AALow { get; set; }
+        public double AALow { get; set; }
         [JsonProperty(PropertyName = "aahigh")]
-        public int AAHigh { get; set; }
+        public double AAHigh { get; set; }
+        [JsonProperty(PropertyName = "betalow")]
+        public double BetaLow { get; set; }
+        [JsonProperty(PropertyName = "betahigh")]
+        public double BetaHigh { get; set; }
+        [JsonProperty(PropertyName = "notes")]
+        public string Notes { get; set; }
         [JsonProperty(PropertyName = "flavourdescription")]
         public String FlavourDescription { get; set; }
         [JsonProperty(PropertyName = "origin")]

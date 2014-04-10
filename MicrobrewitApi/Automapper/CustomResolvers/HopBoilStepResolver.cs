@@ -27,7 +27,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     {
                         HopId = item.HopId,
                         StepId = item.StepId,
-                        Amount = item.AAAmount,
+                        Amount = item.Amount,
                         AAValue = item.AAValue,
                     };
                     var hopJson = redisClient.GetValueFromHash("hops", hopStepDto.HopId.ToString());
