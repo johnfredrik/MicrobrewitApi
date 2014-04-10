@@ -153,16 +153,12 @@
     <Compile Include="Model\BoilStepOther.cs" />
     <Compile Include="Model\Brewery.cs" />
     <Compile Include="Model\BreweryMember.cs" />
-    <Compile Include="Model\DryExtract.cs" />
-    <Compile Include="Model\DryYeast.cs" />
     <Compile Include="Model\Fermentable.cs" />
     <Compile Include="Model\FermentationStep.cs" />
     <Compile Include="Model\FermentationStepFermentable.cs" />
     <Compile Include="Model\FermentationStepOther.cs" />
     <Compile Include="Model\FermentationStepYeast.cs" />
     <Compile Include="Model\Flavour.cs" />
-    <Compile Include="Model\Fruit.cs" />
-    <Compile Include="Model\Grain.cs" />
     <Compile Include="Model\Hop.cs" />
     <Compile Include="InitializeDatabaseWithSeedData.cs" />
     <Compile Include="MicrobrewitContext.cs" />
@@ -172,26 +168,21 @@
     <Compile Include="Model\HopFlavour.cs" />
     <Compile Include="Model\HopForm.cs" />
     <Compile Include="Model\IBU.cs" />
-    <Compile Include="Model\LiquidExtract.cs" />
     <Compile Include="Model\MashStep.cs" />
     <Compile Include="Model\MashStepFermentable.cs" />
     <Compile Include="Model\MashStepHop.cs" />
     <Compile Include="Model\MashStepOther.cs" />
-    <Compile Include="Model\NoneFermentableSugar.cs" />
     <Compile Include="Model\Origin.cs" />
     <Compile Include="Model\Other.cs" />
     <Compile Include="Model\Recipe.cs" />
     <Compile Include="Model\FermentationStepHop.cs" />
-    <Compile Include="Model\Spice.cs" />
     <Compile Include="Model\SRM.cs" />
     <Compile Include="Model\Substitut.cs" />
-    <Compile Include="Model\Sugar.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserBeer.cs" />
     <Compile Include="Model\UserCredentials.cs" />
     <Compile Include="Model\Yeast.cs" />
-    <Compile Include="Model\LiquidYeast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
