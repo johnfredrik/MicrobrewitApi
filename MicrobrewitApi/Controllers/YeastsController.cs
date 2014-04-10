@@ -13,6 +13,9 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
+using System.Configuration;
+using ServiceStack.Redis;
+using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -21,6 +24,7 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private IYeastRepository yeastRespository = new YeastRepository();
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
 
         // GET api/Yeasts
         [Route("")]
@@ -94,6 +98,16 @@ namespace Microbrewit.Api.Controllers
             }
             var yeasts = Mapper.Map<IList<YeastPostDto>,Yeast[]>(yeastPosts);
             yeastRespository.Add(yeasts);
+
+            var y = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastRespository.GetAll("Supplier.Origin"));
+
+            using (var redisClient = new RedisClient(redisStore))
+            {
+                foreach (var item in y)
+                {
+                    redisClient.SetEntryInHash("yeasts", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                }
+            }
             return CreatedAtRoute("DefaultApi", new {controller = "yeasts",}, yeastPosts);
         }
 
