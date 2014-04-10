@@ -17,7 +17,8 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<FermentationStep, FermentationStepDto>()
                  .ForMember(dto => dto.Hops, conf => conf.ResolveUsing<HopFermentationStepResolver>())
                  .ForMember(dto => dto.Fermentables, conf => conf.ResolveUsing<FermentableFermentationStepResolver>())
-                 .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherFermentationStepResolver>());
+                 .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherFermentationStepResolver>())
+                  .ForMember(dto => dto.Yeasts, conf => conf.ResolveUsing<YeastFermentationStepResolver>());
 
             Mapper.CreateMap<FermentationStepHop, HopStepDto>()
                 .ForMember(dto => dto.HopId, conf => conf.MapFrom(rec => rec.HopId))
