@@ -146,6 +146,7 @@
     <Compile Include="Automapper\BrewerProfile.cs" />
     <Compile Include="Automapper\BreweryProfile.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\BeerStyleResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
