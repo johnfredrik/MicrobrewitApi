@@ -36,23 +36,6 @@ namespace Microbrewit.Api.Controllers
             return result;
         }
 
-        [Route("spices")]
-        public IQueryable<Spice> GetSpice()
-        {
-            return db.Others.OfType<Spice>();
-        }
-
-        [Route("fruits")]
-        public IQueryable<Fruit> GetFruit()
-        {
-            return db.Others.OfType<Fruit>();
-        }
-
-        [Route("nonefermentablesugars")]
-        public IQueryable<NoneFermentableSugar> GetNoneFermentableSugars()
-        {
-            return db.Others.OfType<NoneFermentableSugar>();
-        }
 
         // GET api/Others/5
         [Route("{id:int}")]
