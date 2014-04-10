@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
 using Microbrewit.Model;
+
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
     public class OtherBoilStepResolver : ValueResolver<BoilStep, IList<OtherStepDto>>
