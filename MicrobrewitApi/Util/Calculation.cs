@@ -14,6 +14,7 @@ namespace Microbrewit.Api.Util
     public static class Calculation
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
 
         public static SRM CalculateSRM(Recipe recipe)
         {
@@ -41,7 +42,6 @@ namespace Microbrewit.Api.Util
             var rager = 0.0;
             foreach (var boilStep in recipe.BoilSteps)
             {
-                // Change 1.050 to real OG value
                 var tinsethUtilisation = Formulas.TinsethUtilisation(og, boilStep.Length);
                 var ragerUtilisation = Formulas.RangerUtilisation(boilStep.Length);
                 foreach (var hop in boilStep.Hops)
@@ -63,13 +63,9 @@ namespace Microbrewit.Api.Util
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                    using (var redis = ConnectionMultiplexer.Connect(redisStore))
-                    {
                         var redisClient = redis.GetDatabase();
                         var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.HashGet("fermentables", fermentable.FermentableId));
                         og += Formulas.MaltOG(fermentable.Amount, redisFermentable.PPG, recipe.Efficiency, recipe.Volume);
-                    }
-
                 }
             }
             return Math.Round(1 + og / 1000, 4);
