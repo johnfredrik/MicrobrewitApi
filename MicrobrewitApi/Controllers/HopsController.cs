@@ -121,11 +121,14 @@ namespace Microbrewit.Api.Controllers
             var results = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts"));
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+
                 var redisClient = redis.GetDatabase();
+
                 foreach (var hop in results)
                 {
                     redisClient.HashSet("hops", hop.Id, JsonConvert.SerializeObject(hop),flags:CommandFlags.FireAndForget);
                 }
+
             }
             return CreatedAtRoute("DefaultApi", new { controller = "hops", }, results);
         }
