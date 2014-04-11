@@ -14,7 +14,7 @@ using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
 using System.Configuration;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
@@ -30,7 +30,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public YeastCompleteDto GetYeasts()
         {
-            var yeasts = Mapper.Map<IList<Yeast>,IList<YeastDto>>(yeastRespository.GetAll("Supplier"));
+            var yeasts = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastRespository.GetAll("Supplier"));
             var result = new YeastCompleteDto();
             result.Yeasts = yeasts;
             return result;
@@ -42,19 +42,19 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetYeast(int id)
         {
-            var yeast = Mapper.Map<Yeast,YeastDto>(yeastRespository.GetSingle(y => y.Id == id,"Supplier"));
+            var yeast = Mapper.Map<Yeast, YeastDto>(yeastRespository.GetSingle(y => y.Id == id, "Supplier"));
             if (yeast == null)
             {
                 return NotFound();
             }
-            var result = new YeastCompleteDto(){Yeasts = new List<YeastDto>()};
+            var result = new YeastCompleteDto() { Yeasts = new List<YeastDto>() };
             result.Yeasts.Add(yeast);
             return Ok(result);
         }
 
         // PUT api/Yeasts/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutYeast(int id, YeastDto yeastDto)
+        public IHttpActionResult PutYeast(int id, YeastDto yeastDto)
         {
             if (!ModelState.IsValid)
             {
@@ -81,19 +81,20 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var yeasts = Mapper.Map<IList<YeastDto>,Yeast[]>(yeastPosts);
+            var yeasts = Mapper.Map<IList<YeastDto>, Yeast[]>(yeastPosts);
             yeastRespository.Add(yeasts);
 
             var y = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastRespository.GetAll("Supplier.Origin"));
 
-            using (var redisClient = new RedisClient(redisStore))
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+                var redisClient = redis.GetDatabase();
                 foreach (var item in y)
                 {
-                    redisClient.SetEntryInHash("yeasts", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                    redisClient.HashSet("yeasts", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
                 }
             }
-            return CreatedAtRoute("DefaultApi", new {controller = "yeasts",}, yeastPosts);
+            return CreatedAtRoute("DefaultApi", new { controller = "yeasts", }, yeastPosts);
         }
 
         // DELETE api/Yeasts/5

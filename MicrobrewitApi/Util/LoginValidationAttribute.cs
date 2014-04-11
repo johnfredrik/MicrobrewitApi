@@ -9,10 +9,9 @@ using System.Text;
 using Microbrewit.Model;
 using System.Net.Http;
 using System.IdentityModel.Tokens;
-using ServiceStack.Redis.Generic;
-using ServiceStack.Text;
+using StackExchange.Redis;
 using Microbrewit.Model.DTOs;
-using ServiceStack.Redis;
+
 using System.Configuration;
 
 
@@ -24,7 +23,9 @@ namespace Microbrewit.Api.Util
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly int expire = int.Parse(ConfigurationManager.AppSettings["expire"]);
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-	    #endregion
+
+
+        #endregion
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
@@ -45,21 +46,24 @@ namespace Microbrewit.Api.Util
             {
                 base.OnActionExecuting(actionContext);
 
-               
+
                 //JwtHeader jwtHeader = new JwtHeader{{typ, JWT})
                 var jwtString = Encrypting.JWTDecrypt(userCredentials.User);
+                using (var redis = ConnectionMultiplexer.Connect(redisStore))
+                {
 
-                using (var redisClient = new RedisClient(redisStore))
-                    {
-                         var timespan = TimeSpan.FromMinutes(expire);
-                         redisClient.SetEntry(jwtString, userCredentials.Username, timespan);
-                    }
-                // seting token to header
-                HttpContext.Current.Response.AddHeader("Authorization-Token", jwtString);
+                    var redisClient = redis.GetDatabase();
+
+                    var timespan = TimeSpan.FromMinutes(expire);
+                    redisClient.SetAdd(jwtString, userCredentials.Username,flags: CommandFlags.FireAndForget);
+                    redisClient.KeyExpire(jwtString, timespan, flags:CommandFlags.FireAndForget);
+                    // seting token to header
+                    HttpContext.Current.Response.AddHeader("Authorization-Token", jwtString);
+                }
             }
             else
             {
-               // returns unauthorised if not password maches.
+                // returns unauthorised if not password maches.
                 actionContext.Response = new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
         }

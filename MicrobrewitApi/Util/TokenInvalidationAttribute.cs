@@ -9,10 +9,9 @@ using System.Text;
 using Microbrewit.Model;
 using System.Net.Http;
 using System.IdentityModel.Tokens;
-using ServiceStack.Redis.Generic;
-using ServiceStack.Text;
+using StackExchange.Redis;
 using Microbrewit.Model.DTOs;
-using ServiceStack.Redis;
+
 
 namespace Microbrewit.Api.Util
 {

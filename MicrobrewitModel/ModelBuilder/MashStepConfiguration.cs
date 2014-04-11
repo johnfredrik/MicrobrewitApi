@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
         public MashStepConfiguration()
         {
             Property(m => m.Id).HasColumnName("MashStepId").IsRequired();
-
+            HasKey(m => m.Id);
 
             this.HasMany(m => m.Hops).WithRequired(mashStepHop => mashStepHop.MashStep).HasForeignKey(mashStepHop => mashStepHop.MashStepId);
             this.HasMany(m => m.Fermentables).WithRequired(mashStepFermentable => mashStepFermentable.MashStep).HasForeignKey(mashStepFermentable => mashStepFermentable.MashStepId);

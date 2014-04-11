@@ -15,7 +15,7 @@ using Microbrewit.Repository;
 using AutoMapper;
 using log4net;
 using Microbrewit.Model.DTOs;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using Newtonsoft.Json;
 using System.Configuration;
 
@@ -29,6 +29,7 @@ namespace Microbrewit.Api.Controllers
         private IFermentableRepository fermentableRepository = new FermentableRepository();
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
       
         // GET api/Fermentable 
         [Route("")]
@@ -59,7 +60,7 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Fermentable/5
         [Route("{id}")]
-        public async Task<IHttpActionResult> PutFermentable(int id, FermentableDto fermentableDto)
+        public IHttpActionResult PutFermentable(int id, FermentableDto fermentableDto)
         {
             if (!ModelState.IsValid)
             {
@@ -90,13 +91,16 @@ namespace Microbrewit.Api.Controllers
             var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(FermentableDtos);
             fermentableRepository.Add(fermentablePost);
             var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentableRepository.GetAll("Supplier.Origin"));
-           
-            using (var redisClient = new RedisClient(redisStore))
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+
+            var redisClient = redis.GetDatabase();
+            
                 foreach (var fermentable in fermentables)
                 {
-                    redisClient.SetEntryInHash("fermentables", fermentable.Id.ToString(), JsonConvert.SerializeObject(fermentable));
+                    redisClient.HashSet("fermentables", fermentable.Id.ToString(), JsonConvert.SerializeObject(fermentable), flags: CommandFlags.FireAndForget);
                 }
+            
             }
             return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, FermentableDtos);
         }

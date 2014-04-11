@@ -17,7 +17,7 @@ using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 using System.Configuration;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -30,14 +30,14 @@ namespace Microbrewit.Api.Controllers
         private IHopRepository hopRepository = new HopRepository();
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
 
         // GET api/Hops
         [Route("")]
         public HopCompleteDto GetHops()
         {
-            var hops = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts")); 
-            var result = new HopCompleteDto(){Hops = hops};
+            var hops = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts"));
+            var result = new HopCompleteDto() { Hops = hops };
             return result;
         }
 
@@ -93,16 +93,16 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            var hop = Mapper.Map<HopDto,Hop>(hopDto);
-            
+            var hop = Mapper.Map<HopDto, Hop>(hopDto);
+
             hopRepository.Update(hop);
-            
+
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/Hops
-    
+
         [Route("")]
         [ResponseType(typeof(IList<HopDto>))]
         public IHttpActionResult PostHop(IList<HopDto> HopDtos)
@@ -114,19 +114,20 @@ namespace Microbrewit.Api.Controllers
 
                 return BadRequest(ModelState);
             }
-           var hops = Mapper.Map<IList<HopDto>,Hop[]>(HopDtos);
+            var hops = Mapper.Map<IList<HopDto>, Hop[]>(HopDtos);
 
             hopRepository.Add(hops);
-            
+
             var results = Mapper.Map<IList<Hop>, IList<HopDto>>(hopRepository.GetAll("Flavours.Flavour", "Origin", "Substituts"));
-            using (var redisClient = new RedisClient(redisStore))
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+                var redisClient = redis.GetDatabase();
                 foreach (var hop in results)
-	            {
-                    redisClient.SetEntryInHash("hops", hop.Id.ToString(),JsonConvert.SerializeObject(hop));
+                {
+                    redisClient.HashSet("hops", hop.Id, JsonConvert.SerializeObject(hop),flags:CommandFlags.FireAndForget);
                 }
             }
-            return CreatedAtRoute("DefaultApi",new {controller = "hops",},results);
+            return CreatedAtRoute("DefaultApi", new { controller = "hops", }, results);
         }
 
         // DELETE api/Hopd/5
@@ -150,13 +151,15 @@ namespace Microbrewit.Api.Controllers
         public IList<HopForm> GetHopForm()
         {
             var hopforms = db.HopForms.ToList();
-            using (var redisClient = new RedisClient(redisStore))
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+                var redisClient = redis.GetDatabase();
                 foreach (var item in hopforms)
                 {
-                    redisClient.SetEntryInHash("hopforms", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                    redisClient.HashSet("hopforms", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
                 }
             }
+
             return hopforms;
         }
 

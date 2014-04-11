@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AutoMapper;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using System.Configuration;
 using Microbrewit.Model.DTOs;
 using Newtonsoft.Json;
@@ -15,10 +15,12 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
     public class YeastFermentationStepResolver : ValueResolver<FermentationStep, IList<YeastStepDto>>
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+
         protected override IList<YeastStepDto> ResolveCore(FermentationStep step)
         {
-            using (var redisClient = new RedisClient(redisStore))
-            {
+            var redisClient = redis.GetDatabase();
+            
                 var yeastStepDtoList = new List<YeastStepDto>();
                 foreach (var item in step.Yeasts)
                 {
@@ -28,7 +30,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         YeastId = item.YeastId,
                         Amount = item.Amount
                     };
-                    var yeastJson = redisClient.GetValueFromHash("yeasts", yeastStepDto.YeastId.ToString());
+                    var yeastJson = redisClient.HashGet("yeasts", yeastStepDto.YeastId);
                     var yeast = JsonConvert.DeserializeObject<YeastDto>(yeastJson);
                     yeastStepDto.Name = yeast.Name;
                     yeastStepDto.Supplier = yeast.Supplier;
@@ -38,7 +40,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
 
                 }
                 return yeastStepDtoList;
-            }
+            
         }
     }
 }

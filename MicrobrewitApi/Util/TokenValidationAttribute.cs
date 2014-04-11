@@ -8,9 +8,8 @@ using log4net;
 using Newtonsoft.Json;
 using Microbrewit.Model;
 using System.IdentityModel.Tokens;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using Microbrewit.Model.DTOs;
-using ServiceStack.Redis.Generic;
 
 namespace Microbrewit.Api.Controllers
 {

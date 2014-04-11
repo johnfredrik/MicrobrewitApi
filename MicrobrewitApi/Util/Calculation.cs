@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using Newtonsoft.Json;
 using Microbrewit.Model.DTOs;
 using System.Configuration;
@@ -18,15 +18,15 @@ namespace Microbrewit.Api.Util
         public static SRM CalculateSRM(Recipe recipe)
         {
             var srm = new SRM();
-            
+
             foreach (var mashStep in recipe.MashSteps)
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                    srm.Standard += Math.Round(Formulas.MaltColourUnits(fermentable.Amount, fermentable.Lovibond, mashStep.Volume),0);
-                    srm.Morey += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, mashStep.Volume),0);
-                    srm.Mosher += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, mashStep.Volume),0);
-                    srm.Daniels += Math.Round(Formulas.Daniels(fermentable.Amount, fermentable.Lovibond, mashStep.Volume),0);
+                    srm.Standard += Math.Round(Formulas.MaltColourUnits(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
+                    srm.Morey += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
+                    srm.Mosher += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
+                    srm.Daniels += Math.Round(Formulas.Daniels(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
                 }
             }
 
@@ -46,13 +46,13 @@ namespace Microbrewit.Api.Util
                 var ragerUtilisation = Formulas.RangerUtilisation(boilStep.Length);
                 foreach (var hop in boilStep.Hops)
                 {
-                    var tinasethMgl = Formulas.TinsethMgl(hop.Amount,hop.AAValue,recipe.Volume);
-                    tinseth  += Formulas.TinsethIbu(tinasethMgl, tinsethUtilisation);
+                    var tinasethMgl = Formulas.TinsethMgl(hop.Amount, hop.AAValue, recipe.Volume);
+                    tinseth += Formulas.TinsethIbu(tinasethMgl, tinsethUtilisation);
                     rager += Formulas.RangerIbu(hop.Amount, ragerUtilisation, hop.AAValue, recipe.Volume, og);
                 }
             }
-            ibu.Tinseth = Math.Round(tinseth,1);
-            ibu.Rager = Math.Round(rager,1);
+            ibu.Tinseth = Math.Round(tinseth, 1);
+            ibu.Rager = Math.Round(rager, 1);
             return ibu;
         }
 
@@ -63,26 +63,27 @@ namespace Microbrewit.Api.Util
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                    using(var redisClient = new RedisClient(redisStore))
-	                {
-                        var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.GetValueFromHash("fermentables",fermentable.FermentableId.ToString()));
-
+                    using (var redis = ConnectionMultiplexer.Connect(redisStore))
+                    {
+                        var redisClient = redis.GetDatabase();
+                        var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.HashGet("fermentables", fermentable.FermentableId));
                         og += Formulas.MaltOG(fermentable.Amount, redisFermentable.PPG, recipe.Efficiency, recipe.Volume);
-	                }
+                    }
+
                 }
             }
-            return Math.Round(1 + og/1000,4);
+            return Math.Round(1 + og / 1000, 4);
         }
 
         public static ABV CalculateABV(Recipe recipe)
         {
             var abv = new ABV();
-            abv.Standard = Math.Round(Formulas.MicrobrewitABV(recipe.OG, recipe.FG),2);
-            abv.Miller = Math.Round(Formulas.MillerABV(recipe.OG, recipe.FG),2);
-            abv.Simple = Math.Round(Formulas.SimpleABV(recipe.OG, recipe.FG),2);
-            abv.Advanced = Math.Round(Formulas.AdvancedABV(recipe.OG, recipe.FG),2);
-            abv.AdvancedAlternative = Math.Round(Formulas.AdvancedAlternativeABV(recipe.OG, recipe.FG),2);
-            abv.AlternativeSimple = Math.Round(Formulas.SimpleAlternativeABV(recipe.OG, recipe.FG),2);
+            abv.Standard = Math.Round(Formulas.MicrobrewitABV(recipe.OG, recipe.FG), 2);
+            abv.Miller = Math.Round(Formulas.MillerABV(recipe.OG, recipe.FG), 2);
+            abv.Simple = Math.Round(Formulas.SimpleABV(recipe.OG, recipe.FG), 2);
+            abv.Advanced = Math.Round(Formulas.AdvancedABV(recipe.OG, recipe.FG), 2);
+            abv.AdvancedAlternative = Math.Round(Formulas.AdvancedAlternativeABV(recipe.OG, recipe.FG), 2);
+            abv.AlternativeSimple = Math.Round(Formulas.SimpleAlternativeABV(recipe.OG, recipe.FG), 2);
 
             return abv;
         }

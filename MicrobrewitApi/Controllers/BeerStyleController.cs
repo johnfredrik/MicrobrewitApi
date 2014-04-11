@@ -14,7 +14,7 @@ using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 using System.Configuration;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
@@ -30,33 +30,38 @@ namespace Microbrewit.Api.Controllers
         // GET api/BeerStyle
         public BeerStyleCompleteDto GetBeerStyles()
         {
-            var result = new BeerStyleCompleteDto() {BeerStyles = new List<BeerStyleDto>() };
-            using (var redisClient = new RedisClient(redisStore))
+            var result = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
+
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
-                if (redisClient.ContainsKey("beerstyles"))
+
+                var redisClient = redis.GetDatabase();
+
+                if (redisClient.KeyExists("beerstyles"))
                 {
-                    var json = redisClient.GetHashValues("beerstyles");
+                    var json = redisClient.HashValues("beerstyles");
                     foreach (var item in json)
                     {
                         result.BeerStyles.Add(JsonConvert.DeserializeObject<BeerStyleDto>(item));
-                    } 
-                    
+                    }
+
                 }
                 else
                 {
 
-                    var beerStyles = Mapper.Map<IList<BeerStyle>,IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles","SuperStyle"));
+                    var beerStyles = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
                     foreach (var item in beerStyles)
                     {
-                        redisClient.SetEntryInHash("beerstyles", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                        redisClient.HashSet("beerstyles", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
                     }
                     result.BeerStyles = beerStyles;
 
                 }
             }
-            
             return result;
         }
+
+
 
         [Route("{id:int}")]
         // GET api/BeerStyle/5
@@ -69,7 +74,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-            var result = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>()};
+            var result = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
             result.BeerStyles.Add(beerStyle);
 
             return Ok(result);
@@ -123,14 +128,17 @@ namespace Microbrewit.Api.Controllers
 
             beerStyleRepository.Add(beerstyles.ToArray());
             var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
-            using (var redisClient = new RedisClient(redisStore))
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+                var redisClient = redis.GetDatabase();
+
                 foreach (var item in bs)
                 {
-                    redisClient.SetEntryInHash("beerstyles", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                    redisClient.HashSet("beerstyles", item.Id, JsonConvert.SerializeObject(item),flags: CommandFlags.FireAndForget);
                 }
+
             }
-            return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, beerstyles);
+            return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, bs);
         }
 
         // DELETE api/BeerStyle/5

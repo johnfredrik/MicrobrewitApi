@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AutoMapper;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using System.Configuration;
 using Microbrewit.Model.DTOs;
 using Newtonsoft.Json;
@@ -16,15 +16,17 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
     public class FermentableMashStepResolver : ValueResolver<MashStep, IList<FermentableStepDto>>
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+
         protected override IList<FermentableStepDto> ResolveCore(MashStep step)
         {
             var fermentableStepDtoList = new List<FermentableStepDto>();
-            using (var redisClient = new RedisClient(redisStore))
-            {
+            var redisClient = redis.GetDatabase();
+            
 
                 foreach (var item in step.Fermentables)
                 {
-                    var fermJson = redisClient.GetValueFromHash("fermentables", item.FermentableId.ToString());
+                    var fermJson = redisClient.HashGet("fermentables", item.FermentableId);
                     var fermentable = JsonConvert.DeserializeObject<FermentableDto>(fermJson);
                     var fermentableStepDto = new FermentableStepDto();
                     
@@ -46,7 +48,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     }
                     fermentableStepDtoList.Add(fermentableStepDto);
                 }
-            }
+            
             return fermentableStepDtoList;
         }
 

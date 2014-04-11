@@ -46,7 +46,7 @@ namespace Microbrewit.Api.Automapper
                .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
 
             Mapper.CreateMap<FermentationStepYeast, YeastStepDto>()
-                 .ForMember(dto => dto.YeastId, conf => conf.MapFrom(rec => rec.FermentationStepId))
+                 .ForMember(dto => dto.YeastId, conf => conf.MapFrom(rec => rec.YeastId))
                   .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Yeast.Name))
                    .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount))
                     .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Yeast.Supplier));
@@ -74,9 +74,12 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.FermentationStepId, conf => conf.MapFrom(rec => rec.StepId))
                 .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
 
-            Mapper.CreateMap<OtherStepDto,FermentationStepOther>()
+            Mapper.CreateMap<OtherStepDto, FermentationStepOther>()
                .ForMember(dto => dto.OtherId, conf => conf.MapFrom(rec => rec.OtherId))
                .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
+               
+
+
 
             Mapper.CreateMap<YeastStepDto, FermentationStepYeast>()
                  .ForMember(dto => dto.YeastId, conf => conf.MapFrom(rec => rec.YeastId))

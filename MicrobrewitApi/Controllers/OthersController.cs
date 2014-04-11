@@ -14,7 +14,7 @@ using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 using System.Configuration;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
@@ -26,11 +26,13 @@ namespace Microbrewit.Api.Controllers
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private IOtherRepository otherRepository = new OtherRepository();
 
+
+
         // GET api/Others
         [Route("")]
         public OtherCompleteDto GetOthers()
         {
-            var others = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetAll());
+            var others = Mapper.Map<IList<Other>, IList<OtherDto>>(otherRepository.GetAll());
             var result = new OtherCompleteDto();
             result.Others = others;
             return result;
@@ -48,7 +50,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-            var result = new OtherCompleteDto(){Others = new List<OtherDto>()};
+            var result = new OtherCompleteDto() { Others = new List<OtherDto>() };
             result.Others.Add(other);
 
             return Ok(result);
@@ -89,7 +91,7 @@ namespace Microbrewit.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/others/spices
+        // POST api/others
         [Route("")]
         [ResponseType(typeof(IList<Other>))]
         public IHttpActionResult PostOther(IList<Other> otherPosts)
@@ -100,19 +102,21 @@ namespace Microbrewit.Api.Controllers
             }
             var others = Mapper.Map<IList<Other>, Other[]>(otherPosts);
             otherRepository.Add(others);
-          
-            var result = Mapper.Map<IList<Other>,IList<OtherDto>>(otherRepository.GetAll());
-            using (var redisClient = new RedisClient(redisStore))
+
+            var result = Mapper.Map<IList<Other>, IList<OtherDto>>(otherRepository.GetAll());
+
+            using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
+                var redisClient = redis.GetDatabase();
                 foreach (var item in result)
                 {
-                    redisClient.SetEntryInHash("others", item.Id.ToString(), JsonConvert.SerializeObject(item));
+                    redisClient.HashSet("others", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { controller="others", }, otherPosts);
+            return CreatedAtRoute("DefaultApi", new { controller = "others", }, otherPosts);
         }
-   
+
 
         // DELETE api/Others/5
         [Route("{id:int}")]

@@ -17,7 +17,7 @@ using log4net;
 using System.Web;
 using System.Security.Principal;
 using AutoMapper;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 
 namespace Microbrewit.Api.Controllers
 {

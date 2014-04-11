@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AutoMapper;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 using System.Configuration;
 using Microbrewit.Model.DTOs;
 using Newtonsoft.Json;
@@ -15,10 +15,12 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
     public class HopFermentationStepResolver : ValueResolver<FermentationStep, IList<HopStepDto>>
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+
         protected override IList<HopStepDto> ResolveCore(FermentationStep step)
         {
-            using (var redisClient = new RedisClient(redisStore))
-            {
+            var redisClient = redis.GetDatabase();
+            
                 var hopStepDtoList = new List<HopStepDto>();
                 foreach (var item in step.Hops)
                 {
@@ -30,21 +32,21 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         Amount = item.AAAmount,
                         AAValue = item.AAValue,
                     };
-                    var hopJson = redisClient.GetValueFromHash("hops", hopStepDto.HopId.ToString());
+                    var hopJson = redisClient.HashGet("hops", hopStepDto.HopId);
                     var hop = JsonConvert.DeserializeObject<HopDto>(hopJson);
                     hopStepDto.Name = hop.Name;
                     hopStepDto.Origin = hop.Origin;
                     hopStepDto.Flavours = hop.Flavours;
                     hopStepDto.FlavourDescription = hop.FlavourDescription;
 
-                    var hopFormJson = redisClient.GetValueFromHash("hopforms", item.HopFormId.ToString());
+                    var hopFormJson = redisClient.HashGet("hopforms", item.HopFormId);
 
                     hopStepDto.HopForm = JsonConvert.DeserializeObject<DTO>(hopFormJson);
                     hopStepDtoList.Add(hopStepDto);
 
                 }
                 return hopStepDtoList;
-            }
+            
         }
     }
 }
