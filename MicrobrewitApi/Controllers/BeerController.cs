@@ -13,6 +13,8 @@ using Microbrewit.Api.Util;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
+using System.Diagnostics;
+using log4net;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -20,6 +22,8 @@ namespace Microbrewit.Api.Controllers
     public class BeerController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IBeerRepository beerRepository = new BeerRepository();
 
         // GET api/Beer
@@ -37,6 +41,8 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Beer))]
         public IHttpActionResult GetBeer(int id)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var beer = beerRepository.GetSingle(b => b.Id == id,
                 //"Recipe.MashSteps",
                 "Recipe.MashSteps.Hops",
@@ -52,12 +58,16 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
                 "ABV", "IBU", "SRM", "Brewers", "Breweries");
+            Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
+            
             if (beer == null)
             {
                 return NotFound();
             }
+            stopwatch.Restart();
             var result = new BeerCompleteDto() {Beers = new List<BeerDto>()};
             result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
+            Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
             return Ok(result);
         }
 
@@ -66,15 +76,19 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Beer))]
         public IHttpActionResult GetBeerRedis(int id)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var beer = beerRepository.GetSingle(b => b.Id == id,
                 "Recipe","Brewers", "ABV", "IBU", "SRM", "Breweries");
-
+            Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
             if (beer == null)
             {
                 return NotFound();
             }
+            stopwatch.Restart();
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
             result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
+            Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
             return Ok(result);
         }
 
