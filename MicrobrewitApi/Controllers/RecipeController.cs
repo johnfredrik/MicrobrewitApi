@@ -106,8 +106,8 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Recipe
         [Route("")]
-        [ResponseType(typeof(RecipePostDto))]
-        public IHttpActionResult PostRecipe(RecipePostDto recipePost)
+        [ResponseType(typeof(RecipeDto))]
+        public IHttpActionResult PostRecipe(RecipeDto recipePost)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (!ModelState.IsValid)

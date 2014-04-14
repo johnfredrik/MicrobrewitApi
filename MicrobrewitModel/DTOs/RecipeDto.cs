@@ -18,7 +18,6 @@ namespace Microbrewit.Model.DTOs
         public double Efficiency { get; set; }
         public DTO BeerStyle { get; set; }
 
-        public IList<BrewerDto> Brewers { get; set; }
         public IList<MashStepDto> MashSteps { get; set; }
         public IList<BoilStepDto> BoilSteps { get; set; }
         public IList<FermentationStepDto> FermentationSteps { get; set; }

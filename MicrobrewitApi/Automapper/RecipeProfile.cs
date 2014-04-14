@@ -31,7 +31,7 @@ namespace Microbrewit.Api.Automapper
                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                  .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
-            Mapper.CreateMap<RecipePostDto,Recipe>()
+            Mapper.CreateMap<RecipeDto,Recipe>()
                 .ForMember(dto => dto.Notes, conf => conf.MapFrom(rec => rec.Notes))
                 .ForMember(dto => dto.MashSteps, conf => conf.MapFrom(rec => rec.MashSteps))
                 .ForMember(dto => dto.BoilSteps, conf => conf.MapFrom(rec => rec.BoilSteps))
