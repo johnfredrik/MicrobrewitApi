@@ -128,14 +128,14 @@ namespace Microbrewit.Api.Controllers
 
         // POST api/Beer
         [Route("")]
-        [ResponseType(typeof(BeerPostDto))]
-        public IHttpActionResult PostBeer(BeerPostDto beerPost)
+        [ResponseType(typeof(BeerDto))]
+        public IHttpActionResult PostBeer(BeerDto beerPost)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var beer = Mapper.Map<BeerPostDto, Beer>(beerPost);
+            var beer = Mapper.Map<BeerDto, Beer>(beerPost);
             beer.Recipe.OG = Calculation.CalculateOG(beer.Recipe);
             beer.ABV = Calculation.CalculateABV(beer.Recipe);
             beer.SRM = Calculation.CalculateSRM(beer.Recipe);
