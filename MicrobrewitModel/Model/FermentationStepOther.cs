@@ -9,7 +9,7 @@ namespace Microbrewit.Model
     public class FermentationStepOther
     {
         public int OtherId { get; set; }
-        public int FermentationStepId { get; set; }
+        public int StepId { get; set; }
         public int Amount { get; set; }
 
         public FermentationStep FermentationStep { get; set; }

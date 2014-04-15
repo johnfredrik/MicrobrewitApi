@@ -30,7 +30,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {
-            var beers = Mapper.Map<IList<Beer>,IList<BeerSimpleDto>>(beerRepository.GetAll("Recipe","SRM","ABV","IBU","Brewers","Breweries"));
+            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
             var result = new BeerSimpleCompleteDto();
             result.Beers = beers;
             return result;
@@ -48,24 +48,24 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
-               // "Recipe.BoilSteps",
+                // "Recipe.BoilSteps",
                 "Recipe.BoilSteps.Hops",
                 "Recipe.BoilSteps.Fermentables",
                 "Recipe.BoilSteps.Others",
-               // "Recipe.FermentationSteps",
+                // "Recipe.FermentationSteps",
                 "Recipe.FermentationSteps.Hops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
                 "ABV", "IBU", "SRM", "Brewers", "Breweries");
             Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
-            
+
             if (beer == null)
             {
                 return NotFound();
             }
             stopwatch.Restart();
-            var result = new BeerCompleteDto() {Beers = new List<BeerDto>()};
+            var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
             result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
             Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
             return Ok(result);
@@ -79,7 +79,7 @@ namespace Microbrewit.Api.Controllers
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var beer = beerRepository.GetSingle(b => b.Id == id,
-                "Recipe","Brewers", "ABV", "IBU", "SRM", "Breweries");
+                "Recipe", "Brewers", "ABV", "IBU", "SRM", "Breweries");
             Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
             if (beer == null)
             {
@@ -93,35 +93,37 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/Beer/5
-        public IHttpActionResult PutBeer(int id, Beer beer)
+        [Route("{id}")]
+        public IHttpActionResult PutBeer(int id, BeerDto beerDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != beer.Id)
+            if (id != beerDto.Id)
             {
                 return BadRequest();
             }
+            var beer = Mapper.Map<BeerDto, Beer>(beerDto);
+            BeerCalculations(beer);
+            beer.BeerStyle = null;
+            //beer.Recipe.BoilSteps = null;
+            //beer.Recipe.FermentationSteps = null;
+            //foreach (var item in beer.Recipe.FermentationSteps)
+            //{
+            //    item.Others = null;
+            //    item.Hops = null;
+            //    item.Yeasts = null;
 
-            db.Entry(beer).State = EntityState.Modified;
+            //}
+            //beer.Recipe.MashSteps = null;
+            //beer.IBU = null;
+            ///beer.ABV = null;
+            //beer.SRM = null;
+            //beer.Brewers = null;
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BeerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            beerRepository.Update(beer);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -136,17 +138,14 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest(ModelState);
             }
             var beer = Mapper.Map<BeerDto, Beer>(beerPost);
-            beer.Recipe.OG = Calculation.CalculateOG(beer.Recipe);
-            beer.ABV = Calculation.CalculateABV(beer.Recipe);
-            beer.SRM = Calculation.CalculateSRM(beer.Recipe);
-            beer.IBU = Calculation.CalculateIBU(beer.Recipe);
+            BeerCalculations(beer);
             beer.BeerStyle = null;
-            
+
 
             beerRepository.Add(beer);
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
-            
-            result.Beers.Add(Mapper.Map<Beer,BeerDto>(beerRepository.GetSingle(b => b.Id == beer.Id,
+
+            result.Beers.Add(Mapper.Map<Beer, BeerDto>(beerRepository.GetSingle(b => b.Id == beer.Id,
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
@@ -157,9 +156,32 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
-                 "ABV", "IBU", "SRM", "Brewers", "Breweries"))); 
-           
+                 "ABV", "IBU", "SRM", "Brewers", "Breweries")));
+
             return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
+        }
+
+        private static void BeerCalculations(Beer beer)
+        {
+            beer.Recipe.OG = Calculation.CalculateOG(beer.Recipe);
+            var abv = Calculation.CalculateABV(beer.Recipe);
+            if (beer.ABV != null)
+            {
+                abv.Id = beer.ABV.Id;
+            }
+            beer.ABV = abv;
+            var srm = Calculation.CalculateSRM(beer.Recipe);
+            if (beer.SRM!= null)
+            {
+                srm.Id = beer.SRM.Id;
+            }
+            beer.SRM = srm;
+            var ibu = Calculation.CalculateIBU(beer.Recipe);
+            if (beer.IBU != null)
+            {
+                ibu.Id = beer.IBU.Id;
+            }
+            beer.IBU = ibu;
         }
 
         // DELETE api/Beer/5

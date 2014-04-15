@@ -8,6 +8,7 @@ namespace Microbrewit.Model.DTOs
 {
     public class BoilStepDto
     {
+        public int Id { get; set; }
         public int Number { get; set; }
         public int Length { get; set; }
         public int Volume { get; set; }

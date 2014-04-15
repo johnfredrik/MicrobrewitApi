@@ -13,8 +13,8 @@ namespace Microbrewit.Model.ModelBuilder
         public FermentationStepHopConfiguration()
         {
             Property(fsh => fsh.HopId).IsRequired();
-            Property(fsh => fsh.FermentationStepId).IsRequired();
-            this.HasKey(rh => new { rh.FermentationStepId, rh.HopFormId});
+            Property(fsh => fsh.StepId).IsRequired();
+            this.HasKey(rh => new {rh.StepId, rh.HopFormId});
 
         }
     }

@@ -7,6 +7,7 @@ namespace Microbrewit.Model.DTOs
 {
     public class ABVDto
     {
+        public int Id { get; set; }
         public double Standard { get; set; }
         public double Miller { get; set; }
         public double Advanced { get; set; }

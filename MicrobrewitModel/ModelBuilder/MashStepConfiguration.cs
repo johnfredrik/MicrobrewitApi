@@ -14,9 +14,9 @@ namespace Microbrewit.Model.ModelBuilder
             Property(m => m.Id).HasColumnName("MashStepId").IsRequired();
             HasKey(m => m.Id);
 
-            this.HasMany(m => m.Hops).WithRequired(mashStepHop => mashStepHop.MashStep).HasForeignKey(mashStepHop => mashStepHop.MashStepId);
-            this.HasMany(m => m.Fermentables).WithRequired(mashStepFermentable => mashStepFermentable.MashStep).HasForeignKey(mashStepFermentable => mashStepFermentable.MashStepId);
-            this.HasMany(m => m.Others).WithRequired(mashStepOther => mashStepOther.MashStep).HasForeignKey(mashStepOther => mashStepOther.MashStepId);
+            this.HasMany(m => m.Hops).WithRequired(mashStepHop => mashStepHop.MashStep).HasForeignKey(mashStepHop => mashStepHop.StepId);
+            this.HasMany(m => m.Fermentables).WithRequired(mashStepFermentable => mashStepFermentable.MashStep).HasForeignKey(mashStepFermentable => mashStepFermentable.StepId);
+            this.HasMany(m => m.Others).WithRequired(mashStepOther => mashStepOther.MashStep).HasForeignKey(mashStepOther => mashStepOther.StepId);
         }
     }
 }

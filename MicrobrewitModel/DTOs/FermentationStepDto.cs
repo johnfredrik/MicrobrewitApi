@@ -6,7 +6,8 @@ using System.Web;
 namespace Microbrewit.Model.DTOs
 {
     public class FermentationStepDto
-    {       
+    {
+            public int Id { get; set; }
             public int Number { get; set; }
             public string Type { get; set; }
             public int Length { get; set; }

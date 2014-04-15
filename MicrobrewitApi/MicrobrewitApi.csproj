@@ -136,13 +136,17 @@
     <Compile Include="Automapper\BoilStepProfile.cs" />
     <Compile Include="Automapper\BrewerProfile.cs" />
     <Compile Include="Automapper\BreweryProfile.cs" />
+    <Compile Include="Automapper\CustomResolvers\BeerBrewerResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\RecipeBoilStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\RecipeFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableSupplierResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopFermentationStepResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\RecipeMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\YeastFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\OtherFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\OtherBoilStepResolver.cs" />
@@ -159,6 +163,7 @@
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
     <Compile Include="Automapper\OtherProfile.cs" />
+    <Compile Include="Automapper\ResolveRecipeId.cs" />
     <Compile Include="Automapper\SupplierProfile.cs" />
     <Compile Include="Automapper\UserProfile.cs" />
     <Compile Include="Automapper\YeastsProfile.cs" />

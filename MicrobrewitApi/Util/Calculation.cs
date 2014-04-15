@@ -19,6 +19,7 @@ namespace Microbrewit.Api.Util
         public static SRM CalculateSRM(Recipe recipe)
         {
             var srm = new SRM();
+            
 
             foreach (var mashStep in recipe.MashSteps)
             {

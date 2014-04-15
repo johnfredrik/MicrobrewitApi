@@ -14,10 +14,10 @@ namespace Microbrewit.Model.ModelBuilder
             Property(f => f.Id).IsRequired().HasColumnName("FermentationStepId");
 
 
-            this.HasMany(f => f.Hops).WithRequired(fermentationStepHop => fermentationStepHop.FermentationStep).HasForeignKey(fermentationStepHop => fermentationStepHop.FermentationStepId);
-            this.HasMany(f => f.Fermentables).WithRequired(fermentationStepFermentable => fermentationStepFermentable.FermentationStep).HasForeignKey(fermentationStepFermentable => fermentationStepFermentable.FermentationStepId);
-            this.HasMany(f => f.Others).WithRequired(fermentationStepOther => fermentationStepOther.FermentationStep).HasForeignKey(fermentationStepOther => fermentationStepOther.FermentationStepId);
-            this.HasMany(f => f.Yeasts).WithRequired(fermentationStepYeast => fermentationStepYeast.FermentationStep).HasForeignKey(fermentationStepYeast => fermentationStepYeast.FermentationStepId);
+            this.HasMany(f => f.Hops).WithRequired(fermentationStepHop => fermentationStepHop.FermentationStep).HasForeignKey(fermentationStepHop => fermentationStepHop.StepId);
+            this.HasMany(f => f.Fermentables).WithRequired(fermentationStepFermentable => fermentationStepFermentable.FermentationStep).HasForeignKey(fermentationStepFermentable => fermentationStepFermentable.StepId);
+            this.HasMany(f => f.Others).WithRequired(fermentationStepOther => fermentationStepOther.FermentationStep).HasForeignKey(fermentationStepOther => fermentationStepOther.StepId);
+            this.HasMany(f => f.Yeasts).WithRequired(fermentationStepYeast => fermentationStepYeast.FermentationStep).HasForeignKey(fermentationStepYeast => fermentationStepYeast.StepId);
         }
     }
 }

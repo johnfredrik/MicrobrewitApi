@@ -48,7 +48,7 @@ namespace Microbrewit.Api.Automapper
             //
             Mapper.CreateMap<BoilStepDto, BoilStep>()
                  .ForMember(dto => dto.Hops, conf => conf.MapFrom(rec => rec.Hops))
-                 .ForMember(dto => dto.Fermentables, conf => conf.MapFrom(rec => rec.Fermentables))
+                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                  .ForMember(dto => dto.Others, conf => conf.MapFrom(rec => rec.Others));
 
             Mapper.CreateMap<HopStepDto, BoilStepHop>()

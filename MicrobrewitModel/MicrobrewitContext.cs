@@ -20,15 +20,19 @@ namespace Microbrewit.Model
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Flavour> Flavours { get; set; }
         public DbSet<HopFlavour> HopFlavours { get; set; }
+        public DbSet<BoilStep> BoilSteps { get; set; }
+        public DbSet<FermentationStep> FermentationSteps { get; set; }
         public DbSet<MashStep> MashSteps { get; set; }
         public DbSet<MashStepHop> MashStepHops { get; set; }
         public DbSet<BoilStepHop> BoilStepHops { get; set; }
-        public DbSet<FermentationStepHop> FermentationStepHop { get; set; }
+        public DbSet<FermentationStepOther> FermentationStepOthers { get; set; }
+
         public DbSet<MashStepFermentable> MashStepFermentables { get; set; }
         public DbSet<BoilStepFermentable> BoilStepFermentables { get; set; }
-        public DbSet<FermentationStepFermentable> FermentationStepFermentables { get; set; }
         public DbSet<MashStepOther> MashStepOthers { get; set; }
         public DbSet<BoilStepOther> BoilStepOthers { get; set; }
+        public DbSet<FermentationStepFermentable> FermentationStepFermentables { get; set; }
+        public DbSet<FermentationStepHop> FermentationStepHops { get; set; }
         public DbSet<FermentationStepYeast> FermentationStepYeasts { get; set; }
         public DbSet<BeerStyle> BeerStyles { get; set; }
         public DbSet<HopForm> HopForms { get; set; }
