@@ -31,7 +31,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     OtherId = item.OtherId,
                     Amount = item.Amount,
                 };
-                var otherJson = redisClient.HashGet("Others", otherStepDto.OtherId.ToString());
+                var otherJson = redisClient.HashGet("others", otherStepDto.OtherId.ToString());
                 var other = JsonConvert.DeserializeObject<OtherDto>(otherJson);
                 otherStepDto.Name = other.Name;
                 otherStepDto.Type = other.Type;
