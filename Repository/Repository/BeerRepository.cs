@@ -49,178 +49,186 @@ namespace Microbrewit.Repository
 
 
                     var originalRecipe = context.Recipes.SingleOrDefault(r => r.Id == beer.Recipe.Id);
-                    SetChanges(context, originalRecipe, beer.Recipe);
-
-                    // Updates changes to the fermentation steps
-                    foreach (var step in beer.Recipe.FermentationSteps)
+                    if (originalRecipe == null)
                     {
-                        var originalStep = context.FermentationSteps.SingleOrDefault(s => s.Id == step.Id);
-                        if (originalStep == null)
-                        {
-                            context.FermentationSteps.Add(step);
-                        }
-                        else
-                        {
-                            SetChanges(context, originalStep, step);
-
-                        foreach (var fermentableStep in step.Fermentables)
-                        {
-                            var originalFermentableStep = context.FermentationStepFermentables
-                                .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
-                            if (originalFermentableStep != null)
-                            {
-                                SetChanges(context, originalFermentableStep, fermentableStep);
-                            }
-                            else
-                            {
-                                context.FermentationStepFermentables.Add(fermentableStep);
-                            }
-                        }
-                        foreach (var hopStep in step.Hops)
-                        {
-                            var originalHopStep = context.FermentationStepHops
-                                .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
-                            if (originalHopStep != null)
-                            {
-                                SetChanges(context, originalHopStep, hopStep);
-                            }
-                            else
-                            {
-                                context.FermentationStepHops.Add(hopStep);
-                            }
-                        }
-                        foreach (var otherStep in step.Others)
-                        {
-                            var originalOtherStep = context.FermentationStepOthers
-                                .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
-                            if (originalOtherStep != null)
-                            {
-                                SetChanges(context, originalOtherStep, otherStep);
-                            }
-                            else
-                            {
-                                context.FermentationStepOthers.Add(otherStep);
-                            }
-                        }
-                        foreach (var yeastStep in step.Yeasts)
-                        {
-                            var originalYeastStep = context.FermentationStepYeasts
-                                .SingleOrDefault(y => y.StepId == yeastStep.StepId && y.YeastId == yeastStep.YeastId);
-                            if (originalYeastStep != null)
-                            {
-                                SetChanges(context, originalYeastStep, yeastStep);
-                            }
-                            else
-                            {
-                                context.FermentationStepYeasts.Add(yeastStep);
-                            }
-                        }
-                        }
+                        context.Recipes.Add(beer.Recipe);
                     }
-
-                    // Updates changes to the boil steps
-                    foreach (var step in beer.Recipe.BoilSteps)
+                    else
                     {
-                        var originalStep = context.BoilSteps.SingleOrDefault(s => s.Id == step.Id);
-                        if (originalStep == null)
-                        {
-                            context.BoilSteps.Add(step);
-                        }
-                        else
-                        {
-                            SetChanges(context, originalStep, step);
 
-                            foreach (var fermentableStep in step.Fermentables)
-                            {
-                                var originalFermentableStep = context.BoilStepFermentables
-                                    .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
-                                if (originalFermentableStep != null)
-                                {
-                                    SetChanges(context, originalFermentableStep, fermentableStep);
-                                }
-                                else
-                                {
-                                    context.BoilStepFermentables.Add(fermentableStep);
-                                }
-                            }
-                            foreach (var hopStep in step.Hops)
-                            {
-                                var originalHopStep = context.BoilStepHops
-                                    .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
-                                if (originalHopStep != null)
-                                {
-                                    SetChanges(context, originalHopStep, hopStep);
-                                }
-                                else
-                                {
-                                    context.BoilStepHops.Add(hopStep);
-                                }
-                            }
-                            foreach (var otherStep in step.Others)
-                            {
-                                var originalOtherStep = context.BoilStepOthers
-                                    .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
-                                if (originalOtherStep != null)
-                                {
-                                    SetChanges(context, originalOtherStep, otherStep);
-                                }
-                                else
-                                {
-                                    context.BoilStepOthers.Add(otherStep);
-                                }
+                        SetChanges(context, originalRecipe, beer.Recipe);
 
+                        // Updates changes to the fermentation steps
+                        foreach (var step in beer.Recipe.FermentationSteps)
+                        {
+                            var originalStep = context.FermentationSteps.SingleOrDefault(s => s.Id == step.Id);
+                            if (originalStep == null)
+                            {
+                                context.FermentationSteps.Add(step);
+                            }
+                            else
+                            {
+                                SetChanges(context, originalStep, step);
+
+                                foreach (var fermentableStep in step.Fermentables)
+                                {
+                                    var originalFermentableStep = context.FermentationStepFermentables
+                                        .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
+                                    if (originalFermentableStep != null)
+                                    {
+                                        SetChanges(context, originalFermentableStep, fermentableStep);
+                                    }
+                                    else
+                                    {
+                                        context.FermentationStepFermentables.Add(fermentableStep);
+                                    }
+                                }
+                                foreach (var hopStep in step.Hops)
+                                {
+                                    var originalHopStep = context.FermentationStepHops
+                                        .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
+                                    if (originalHopStep != null)
+                                    {
+                                        SetChanges(context, originalHopStep, hopStep);
+                                    }
+                                    else
+                                    {
+                                        context.FermentationStepHops.Add(hopStep);
+                                    }
+                                }
+                                foreach (var otherStep in step.Others)
+                                {
+                                    var originalOtherStep = context.FermentationStepOthers
+                                        .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
+                                    if (originalOtherStep != null)
+                                    {
+                                        SetChanges(context, originalOtherStep, otherStep);
+                                    }
+                                    else
+                                    {
+                                        context.FermentationStepOthers.Add(otherStep);
+                                    }
+                                }
+                                foreach (var yeastStep in step.Yeasts)
+                                {
+                                    var originalYeastStep = context.FermentationStepYeasts
+                                        .SingleOrDefault(y => y.StepId == yeastStep.StepId && y.YeastId == yeastStep.YeastId);
+                                    if (originalYeastStep != null)
+                                    {
+                                        SetChanges(context, originalYeastStep, yeastStep);
+                                    }
+                                    else
+                                    {
+                                        context.FermentationStepYeasts.Add(yeastStep);
+                                    }
+                                }
                             }
                         }
-                    }
-                    // Updates changes to the mash steps
-                    foreach (var step in beer.Recipe.MashSteps)
-                    {
-                        var originalStep = context.MashSteps.SingleOrDefault(s => s.Id == step.Id);
-                        if (originalStep == null)
-                        {
-                            context.MashSteps.Add(step);
-                        }
-                        else
-                        {
 
-                            SetChanges(context, originalStep, step);
-                            foreach (var fermentableStep in step.Fermentables)
+                        // Updates changes to the boil steps
+                        foreach (var step in beer.Recipe.BoilSteps)
+                        {
+                            var originalStep = context.BoilSteps.SingleOrDefault(s => s.Id == step.Id);
+                            if (originalStep == null)
                             {
-                                var originalFermentableStep = context.MashStepFermentables
-                                    .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
-                                if (originalFermentableStep != null)
+                                context.BoilSteps.Add(step);
+                            }
+                            else
+                            {
+                                SetChanges(context, originalStep, step);
+
+                                foreach (var fermentableStep in step.Fermentables)
                                 {
-                                    SetChanges(context, originalFermentableStep, fermentableStep);
+                                    var originalFermentableStep = context.BoilStepFermentables
+                                        .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
+                                    if (originalFermentableStep != null)
+                                    {
+                                        SetChanges(context, originalFermentableStep, fermentableStep);
+                                    }
+                                    else
+                                    {
+                                        context.BoilStepFermentables.Add(fermentableStep);
+                                    }
                                 }
-                                else
+                                foreach (var hopStep in step.Hops)
                                 {
-                                    context.MashStepFermentables.Add(fermentableStep);
+                                    var originalHopStep = context.BoilStepHops
+                                        .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
+                                    if (originalHopStep != null)
+                                    {
+                                        SetChanges(context, originalHopStep, hopStep);
+                                    }
+                                    else
+                                    {
+                                        context.BoilStepHops.Add(hopStep);
+                                    }
+                                }
+                                foreach (var otherStep in step.Others)
+                                {
+                                    var originalOtherStep = context.BoilStepOthers
+                                        .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
+                                    if (originalOtherStep != null)
+                                    {
+                                        SetChanges(context, originalOtherStep, otherStep);
+                                    }
+                                    else
+                                    {
+                                        context.BoilStepOthers.Add(otherStep);
+                                    }
+
                                 }
                             }
-                            foreach (var hopStep in step.Hops)
+                        }
+                        // Updates changes to the mash steps
+                        foreach (var step in beer.Recipe.MashSteps)
+                        {
+                            var originalStep = context.MashSteps.SingleOrDefault(s => s.Id == step.Id);
+                            if (originalStep == null)
                             {
-                                var originalHopStep = context.MashStepHops
-                                    .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
-                                if (originalHopStep != null)
-                                {
-                                    SetChanges(context, originalHopStep, hopStep);
-                                }
-                                else
-                                {
-                                    context.MashStepHops.Add(hopStep);
-                                }
+                                context.MashSteps.Add(step);
                             }
-                            foreach (var otherStep in step.Others)
+                            else
                             {
-                                var originalOtherStep = context.MashStepOthers
-                                    .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
-                                if (originalOtherStep != null)
+
+                                SetChanges(context, originalStep, step);
+                                foreach (var fermentableStep in step.Fermentables)
                                 {
-                                    SetChanges(context, originalOtherStep, otherStep);
+                                    var originalFermentableStep = context.MashStepFermentables
+                                        .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
+                                    if (originalFermentableStep != null)
+                                    {
+                                        SetChanges(context, originalFermentableStep, fermentableStep);
+                                    }
+                                    else
+                                    {
+                                        context.MashStepFermentables.Add(fermentableStep);
+                                    }
                                 }
-                                else
+                                foreach (var hopStep in step.Hops)
                                 {
-                                    context.MashStepOthers.Add(otherStep);
+                                    var originalHopStep = context.MashStepHops
+                                        .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
+                                    if (originalHopStep != null)
+                                    {
+                                        SetChanges(context, originalHopStep, hopStep);
+                                    }
+                                    else
+                                    {
+                                        context.MashStepHops.Add(hopStep);
+                                    }
+                                }
+                                foreach (var otherStep in step.Others)
+                                {
+                                    var originalOtherStep = context.MashStepOthers
+                                        .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
+                                    if (originalOtherStep != null)
+                                    {
+                                        SetChanges(context, originalOtherStep, otherStep);
+                                    }
+                                    else
+                                    {
+                                        context.MashStepOthers.Add(otherStep);
+                                    }
                                 }
                             }
                         }
