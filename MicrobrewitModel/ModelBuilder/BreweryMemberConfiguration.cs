@@ -11,10 +11,9 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BreweryMemberConfiguration()
         {
-            Property(b => b.Id).IsRequired().HasColumnName("BreweryMemberId");
-            Property(b => b.MemberId).IsRequired();
+            Property(b => b.MemberUsername).IsRequired();
             Property(b => b.BreweryId).IsRequired();
-            this.HasKey(b => b.Id);
+            this.HasKey(b => new { b.BreweryId, b.MemberUsername });
         }
     }
 }
