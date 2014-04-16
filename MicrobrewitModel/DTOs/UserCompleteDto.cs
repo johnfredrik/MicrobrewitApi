@@ -7,7 +7,16 @@ namespace Microbrewit.Model.DTOs
 {
     public class UserCompleteDto
     {
-        public Meta Meta { get; set; }
+        public Links Links { get; set; }
         public IList<UserDto> Users { get; set; }
+
+        public UserCompleteDto()
+        {
+            Links = new Links()
+            {
+                Href = "http://api.microbrew.it/breweries/:id",
+                Type = "brewery"
+            };
+        }
     }
 }
