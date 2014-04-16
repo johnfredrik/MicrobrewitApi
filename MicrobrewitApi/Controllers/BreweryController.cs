@@ -48,50 +48,35 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/Brewery/5
-        public async Task<IHttpActionResult> PutBrewery(int id, Brewery brewery)
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> PutBrewery(int id, BreweryDto breweryDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != brewery.Id)
+            if (id != breweryDto.Id)
             {
                 return BadRequest();
             }
-
-            db.Entry(brewery).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BreweryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
+            breweryRepository.Update(brewery);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/Brewery
         [Route("")]
-        [ResponseType(typeof(IList<Brewery>))]
-        public IHttpActionResult PostBrewery(IList<Brewery> breweryPosts)
+        [ResponseType(typeof(IList<BreweryDto>))]
+        public IHttpActionResult PostBrewery(IList<BreweryDto> breweryPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var breweries = breweryPosts.ToArray();
+            var breweries = Mapper.Map<IList<BreweryDto>, Brewery[]>(breweryPosts);
             breweryRepository.Add(breweries);
 
             return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
