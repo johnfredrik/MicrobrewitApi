@@ -19,7 +19,7 @@ namespace Microbrewit.Model
         public Recipe Recipe { get; set; }
 
         
-        public ICollection<Brewery> Breweries { get; set; }
+        public ICollection<BreweryBeer> Breweries { get; set; }
         public ICollection<UserBeer> Brewers { get; set; }
 
     }

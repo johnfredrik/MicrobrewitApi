@@ -14,7 +14,7 @@ namespace Microbrewit.Model
         public string Type { get; set; }
 
         public ICollection<BreweryMember> Members { get; set; }
-        public ICollection<Beer> Beers { get; set; }
+        public ICollection<BreweryBeer> Beers { get; set; }
 
 
     }

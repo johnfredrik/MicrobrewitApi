@@ -115,6 +115,7 @@
     <Compile Include="ModelBuilder\BoilStepFermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepHopConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepOtherConfiguration.cs" />
+    <Compile Include="ModelBuilder\BreweryBeerConfiguration.cs" />
     <Compile Include="ModelBuilder\BreweryConfiguration.cs" />
     <Compile Include="ModelBuilder\BreweryMemberConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepConfiguration.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Model\BoilStepHop.cs" />
     <Compile Include="Model\BoilStepOther.cs" />
     <Compile Include="Model\Brewery.cs" />
+    <Compile Include="Model\BreweryBeer.cs" />
     <Compile Include="Model\BreweryMember.cs" />
     <Compile Include="Model\Fermentable.cs" />
     <Compile Include="Model\FermentationStep.cs" />

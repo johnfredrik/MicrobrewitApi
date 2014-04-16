@@ -29,6 +29,31 @@ namespace Microbrewit.Repository
 
                     var originalIBU = context.IBUs.SingleOrDefault(i => i.Id == beer.IBU.Id);
 
+                    foreach (var userBeer in beer.Brewers)
+                    {
+                        var originalUserBeer = context.UserBeers.SingleOrDefault(u => u.Username.Equals(userBeer.Username) && u.BeerId == beer.Id);
+                        if (originalUserBeer != null)
+                        {
+                            SetChanges(context, originalUserBeer, userBeer);
+                        }
+                        else
+                        {
+                            context.UserBeers.Add(userBeer);
+                        }
+                    }
+
+                    foreach (var breweryBeer in beer.Breweries)
+                    {
+                        var originalBreweryBeer = context.BreweryBeers.SingleOrDefault(b => b.BreweryId == breweryBeer.BreweryId && b.BeerId == beer.Id);
+                        if (originalBreweryBeer != null)
+                        {
+                            SetChanges(context, originalBreweryBeer, breweryBeer);
+                        }
+                        else
+                        {
+                            context.BreweryBeers.Add(breweryBeer);
+                        }
+                    }
 
                     var originalRecipe = context.Recipes.SingleOrDefault(r => r.Id == beer.Recipe.Id);
                     if (originalRecipe == null)

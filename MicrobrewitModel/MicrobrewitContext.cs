@@ -37,6 +37,8 @@ namespace Microbrewit.Model
         public DbSet<BeerStyle> BeerStyles { get; set; }
         public DbSet<HopForm> HopForms { get; set; }
         public DbSet<Brewery> Breweries { get; set; }
+        public DbSet<UserBeer> UserBeers { get; set; }
+        public DbSet<BreweryBeer> BreweryBeers { get; set; }
         public DbSet<ABV> ABVs { get; set; }
         public DbSet<IBU> IBUs { get; set; }
         public DbSet<SRM> SRMs { get; set; }
@@ -85,6 +87,7 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new IBUConfiguration());
             modelBuilder.Configurations.Add(new SRMConfiguration());
             modelBuilder.Configurations.Add(new UserBeerConfiguration());
+            modelBuilder.Configurations.Add(new BreweryBeerConfiguration());
 
            
            

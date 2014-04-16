@@ -16,18 +16,8 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasKey(beer => beer.Id);
             this.HasOptional(beer => beer.BeerStyle).WithMany().HasForeignKey(beer => beer.BeerStyleId).WillCascadeOnDelete(false);
             this.HasMany(beer => beer.Brewers).WithRequired(userBeer => userBeer.Beer).HasForeignKey(userBeer => userBeer.BeerId);
-            //this.HasMany(beer => beer.Brewers).WithMany(brewer => brewer.).Map(map =>
-            //{
-            //    map.MapLeftKey("BeerId");
-            //    map.MapRightKey("BrewerId");
-            //    map.ToTable("BrewerBeer");
-            //});
-            this.HasMany(beer => beer.Breweries).WithMany(brewery => brewery.Beers).Map(map =>
-            {
-                map.MapLeftKey("BeerId");
-                map.MapRightKey("BreweryId");
-                map.ToTable("BreweryBeer");
-            });
+            this.HasMany(beer => beer.Breweries).WithRequired(breweryBeer => breweryBeer.Beer).HasForeignKey(breweryBeer => breweryBeer.BeerId);
+           
 
         }
     }
