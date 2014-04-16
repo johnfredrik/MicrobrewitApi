@@ -12,7 +12,7 @@ namespace Microbrewit.Model
         public int StepId { get; set; }
         public int Amount { get; set; }
 
-         public MashStep MashStep { get; set; }
+        public MashStep MashStep { get; set; }
         public Other Other { get; set; }
     }
 }
