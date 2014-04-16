@@ -21,12 +21,25 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers));
 
             Mapper.CreateMap<BreweryMember, DTOUser>()
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Member.Username))
+                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.MemberUsername))
                 .ForMember(dto => dto.Email, conf => conf.MapFrom(rec => rec.Member.Email));
+
+
 
             Mapper.CreateMap<Beer, DTO>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
+
+            Mapper.CreateMap<BreweryDto, Brewery>()
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.Description, conf => conf.MapFrom(rec => rec.Description))
+                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
+                .ForMember(dto => dto.Members, conf => conf.MapFrom(rec => rec.Members))
+                .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers));
+
+            Mapper.CreateMap<DTOUser, BreweryMember>()
+               .ForMember(dto => dto.MemberUsername, conf => conf.MapFrom(rec => rec.Username));
         }
     }
 }
