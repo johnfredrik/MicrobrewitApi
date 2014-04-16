@@ -18,6 +18,7 @@ using System.Web;
 using System.Security.Principal;
 using AutoMapper;
 using StackExchange.Redis;
+using System.Text;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -35,12 +36,8 @@ namespace Microbrewit.Api.Controllers
         public UserCompleteDto GetUsers()
         {
             var users = Mapper.Map<IList<User>, IList<UserDto>>(userRepository.GetAll());
-            var meta = new Meta();
             var result = new UserCompleteDto();
-            
-            meta.Returned = users.Count();
             result.Users = users;
-            result.Meta = meta;
             return result;
         }
 
@@ -56,9 +53,7 @@ namespace Microbrewit.Api.Controllers
                 return NotFound();
             }
             var result = new UserCompleteDto() { Users = new List<UserDto>() };
-            var meta = new Meta() { Returned = 1 };
             result.Users.Add(user);
-            result.Meta = meta;
             return Ok(result);
         }
 
@@ -123,7 +118,8 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var encryptedPassword = Encrypting.Encrypt(userPostDto.Password, userPostDto.Email);
+            var password = Encoding.UTF8.GetString(Convert.FromBase64String(userPostDto.Password));
+            var encryptedPassword = Encrypting.Encrypt(password, userPostDto.Email);
             var salt = Encrypting.GenerateRandomBytes(256 / 8);
            
             var user = Mapper.Map<UserPostDto,User>(userPostDto);
