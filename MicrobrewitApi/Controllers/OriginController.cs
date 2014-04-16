@@ -58,23 +58,7 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            db.Entry(origin).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OriginExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            originRepsository.Update(origin);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
