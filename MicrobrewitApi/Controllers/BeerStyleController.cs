@@ -81,7 +81,8 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/BeerStyle/5
-        public async Task<IHttpActionResult> PutBeerStyle(int id, BeerStyle beerstyle)
+        [Route("{id:int}")]
+        public IHttpActionResult PutBeerStyle(int id, BeerStyle beerstyle)
         {
             if (!ModelState.IsValid)
             {
@@ -93,23 +94,8 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            db.Entry(beerstyle).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BeerStyleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            beerStyleRepository.Update(beerstyle);
+            
 
             return StatusCode(HttpStatusCode.NoContent);
         }
