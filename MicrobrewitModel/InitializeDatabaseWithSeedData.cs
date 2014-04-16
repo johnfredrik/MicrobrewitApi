@@ -93,7 +93,7 @@ namespace Microbrewit.Model
 
 
 
-            context.Breweries.Add(new Brewery() { Name = "Asphaugs Hjemmebryggeri", Members = new List<BreweryMember>() { new BreweryMember() { MemberId = "johnfredrik"} } });
+            //context.Breweries.Add(new Brewery() { Name = "Asphaugs Hjemmebryggeri", Members = new List<BreweryMember>() { new BreweryMember() { MemberUsername = "johnfredrik"} } });
 
             //context.BeerStyles.Add(new BeerStyle() { Id = 1, Name = "Ale" });
             //context.BeerStyles.Add(new BeerStyle() { Id = 2, Name = "Golden Ale", SuperStyleId = 1 });
