@@ -17,24 +17,6 @@ namespace Microbrewit.Repository
             {
                 foreach (var beer in items)
                 {
-                    //var originalBeer = context.Beers
-                    //    .Include("Recipe.MashSteps.Hops")
-                    //    .Include("Recipe.MashSteps.Fermentables")
-                    //    .Include("Recipe.MashSteps.Others")
-                    //    .Include("Recipe.BoilSteps.Hops")
-                    //    .Include("Recipe.BoilSteps.Fermentables")
-                    //    .Include("Recipe.BoilSteps.Others")
-                    //    .Include("Recipe.FermentationSteps.Hops")
-                    //    .Include("Recipe.FermentationSteps.Fermentables")
-                    //    .Include("Recipe.FermentationSteps.Others")
-                    //    .Include("Recipe.FermentationSteps.Yeasts")
-                    //    .Include("ABV")
-                    //    .Include("IBU")
-                    //    .Include("SRM")
-                    //    .Include("Brewers")
-                    //    .Include("Breweries")
-                    //    .SingleOrDefault(b => b.Id == item.Id);
-
 
                     var originalBeer = context.Beers.SingleOrDefault(b => b.Id == beer.Id);
                     SetChanges(context, originalBeer, beer);
