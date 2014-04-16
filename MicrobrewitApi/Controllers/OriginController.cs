@@ -46,7 +46,7 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Origin/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutOrigin(int id, Origin origin)
+        public IHttpActionResult PutOrigin(int id, Origin origin)
         {
             if (!ModelState.IsValid)
             {

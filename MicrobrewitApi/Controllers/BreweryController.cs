@@ -49,7 +49,7 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Brewery/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutBrewery(int id, BreweryDto breweryDto)
+        public IHttpActionResult PutBrewery(int id, BreweryDto breweryDto)
         {
             if (!ModelState.IsValid)
             {

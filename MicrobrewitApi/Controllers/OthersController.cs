@@ -58,7 +58,7 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Others/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutOther(int id, Other other)
+        public IHttpActionResult PutOther(int id, Other other)
         {
             if (!ModelState.IsValid)
             {
