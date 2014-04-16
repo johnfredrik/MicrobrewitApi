@@ -49,7 +49,7 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Supplier/5
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutSupplier(int id, Supplier supplier)
+        public IHttpActionResult PutSupplier(int id, Supplier supplier)
         {
             if (!ModelState.IsValid)
             {
@@ -61,11 +61,9 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            db.Entry(supplier).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
+                supplierRepository.Update(supplier);
             }
             catch (DbUpdateConcurrencyException)
             {
