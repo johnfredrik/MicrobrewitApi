@@ -59,7 +59,7 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/Fermentable/5
-        [Route("{id}")]
+        [Route("{id:int}")]
         public IHttpActionResult PutFermentable(int id, FermentableDto fermentableDto)
         {
             if (!ModelState.IsValid)
