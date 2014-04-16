@@ -55,7 +55,7 @@ namespace Microbrewit.Api.Util
                     var redisClient = redis.GetDatabase();
 
                     var timespan = TimeSpan.FromMinutes(expire);
-                    redisClient.SetAdd(jwtString, userCredentials.Username,flags: CommandFlags.FireAndForget);
+                    redisClient.StringSet(jwtString, userCredentials.Username);
                     redisClient.KeyExpire(jwtString, timespan, flags:CommandFlags.FireAndForget);
                     // seting token to header
                     HttpContext.Current.Response.AddHeader("Authorization-Token", jwtString);
