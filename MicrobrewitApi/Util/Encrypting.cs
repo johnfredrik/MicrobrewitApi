@@ -187,7 +187,11 @@ namespace Microbrewit.Api.Util
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
                 var redisClient = redis.GetDatabase();
-                if (!principal.Identities.First().Claims.Any(c => c.Type == "username" && c.Value.Equals(redisClient.StringGet(tokenString))));
+                var username = principal.Identities.First().Claims.Where(c => c.Type == "username").SingleOrDefault().Value;
+                var keyValue = (string)redisClient.StringGet(tokenString);
+
+                //if (!principal.Identities.First().Claims.Any(c => c.Type == "username" && c.Value.Equals(keyValue.ToString())));
+                if(!keyValue.Equals(username))
                 {
                     throw new SecurityTokenValidationException("No token found in redis store");
                 }
