@@ -70,11 +70,9 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            db.Entry(other).State = EntityState.Modified;
-
             try
             {
-                await db.SaveChangesAsync();
+                otherRepository.Update(other);               
             }
             catch (DbUpdateConcurrencyException)
             {
