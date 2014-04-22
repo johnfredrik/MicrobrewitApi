@@ -101,14 +101,13 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Supplier))]
         public async Task<IHttpActionResult> DeleteSupplier(int id)
         {
-            Supplier supplier = await db.Suppliers.FindAsync(id);
+            Supplier supplier = supplierRepository.GetSingle(s => s.Id == id);
             if (supplier == null)
             {
                 return NotFound();
             }
 
-            db.Suppliers.Remove(supplier);
-            await db.SaveChangesAsync();
+            supplierRepository.Remove(supplier);
 
             return Ok(supplier);
         }
