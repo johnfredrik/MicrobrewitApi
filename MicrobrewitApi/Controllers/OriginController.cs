@@ -82,16 +82,15 @@ namespace Microbrewit.Api.Controllers
         // DELETE api/Origin/5
         [Route("{id:int}")]
         [ResponseType(typeof(Origin))]
-        public async Task<IHttpActionResult> DeleteOrigin(int id)
+        public IHttpActionResult DeleteOrigin(int id)
         {
-            Origin origin = await db.Origins.FindAsync(id);
+            Origin origin = originRepsository.GetSingle(o => o.Id == id);
             if (origin == null)
             {
                 return NotFound();
             }
 
-            db.Origins.Remove(origin);
-            await db.SaveChangesAsync();
+            originRepsository.Remove(origin);
 
             return Ok(origin);
         }
