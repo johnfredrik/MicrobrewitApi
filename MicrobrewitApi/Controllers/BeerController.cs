@@ -185,19 +185,19 @@ namespace Microbrewit.Api.Controllers
         }
 
         // DELETE api/Beer/5
-        [ResponseType(typeof(Beer))]
+        [Route("{id:int}")]
+        [ResponseType(typeof(BeerDto))]
         public IHttpActionResult DeleteBeer(int id)
         {
-            Beer beer = db.Beers.Find(id);
+            Beer beer = beerRepository.GetSingle(b => b.Id == id);
             if (beer == null)
             {
                 return NotFound();
             }
 
-            db.Beers.Remove(beer);
-            db.SaveChanges();
-
-            return Ok(beer);
+            beerRepository.Remove(beer);
+            var beerDto = Mapper.Map<Beer, BeerDto>(beer);
+            return Ok(beerDto);
         }
 
         protected override void Dispose(bool disposing)
