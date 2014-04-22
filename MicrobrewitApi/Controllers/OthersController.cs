@@ -119,17 +119,14 @@ namespace Microbrewit.Api.Controllers
         // DELETE api/Others/5
         [Route("{id:int}")]
         [ResponseType(typeof(Other))]
-        public async Task<IHttpActionResult> DeleteOther(int id)
+        public IHttpActionResult DeleteOther(int id)
         {
-            Other other = await db.Others.FindAsync(id);
+            Other other = otherRepository.GetSingle(o => o.Id == id);
             if (other == null)
             {
                 return NotFound();
             }
-
-            db.Others.Remove(other);
-            await db.SaveChangesAsync();
-
+            otherRepository.Remove(other);
             return Ok(other);
         }
 
