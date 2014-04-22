@@ -136,17 +136,15 @@ namespace Microbrewit.Api.Controllers
         // DELETE api/Hopd/5
         [Route("{id:int}")]
         [ResponseType(typeof(Hop))]
-        public async Task<IHttpActionResult> DeleteHop(int id)
+        public IHttpActionResult DeleteHop(int id)
         {
-            Hop hop = await db.Hops.FindAsync(id);
+            Hop hop = hopRepository.GetSingle(h => h.Id == id);
             if (hop == null)
             {
                 return NotFound();
             }
 
-            db.Hops.Remove(hop);
-            await db.SaveChangesAsync();
-
+            hopRepository.Remove(hop);
             return Ok(hop);
         }
 
