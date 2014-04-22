@@ -23,12 +23,20 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
             var redisClient = redis.GetDatabase();
 
             var dto = new DTO();
-            var beerStyleJson = redisClient.HashGet("beerstyles", beer.BeerStyleId.ToString());
-            var beerStyle = JsonConvert.DeserializeObject<BeerStyle>(beerStyleJson);
-            dto.Id = beerStyle.Id;
-            dto.Name = beerStyle.Name;
+            if (beer.BeerStyleId != null)
+            {
+                var beerStyleJson = redisClient.HashGet("beerstyles", beer.BeerStyleId.ToString());
+                var beerStyle = JsonConvert.DeserializeObject<BeerStyle>(beerStyleJson);
+                dto.Id = beerStyle.Id;
+                dto.Name = beerStyle.Name;
 
-            return dto;
+                return dto;
+            } 
+            else
+	        {
+                return null;
+	        }
+            
 
         }
     }
