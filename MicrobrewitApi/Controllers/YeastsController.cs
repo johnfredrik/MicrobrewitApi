@@ -100,17 +100,16 @@ namespace Microbrewit.Api.Controllers
         // DELETE api/Yeasts/5
         [Route("{id:int}")]
         [ResponseType(typeof(Yeast))]
-        public async Task<IHttpActionResult> DeleteYeast(int id)
+        public IHttpActionResult DeleteYeast(int id)
         {
-            Yeast yeast = await db.Yeasts.FindAsync(id);
+            Yeast yeast = yeastRespository.GetSingle(y => y.Id == id);
             if (yeast == null)
             {
                 return NotFound();
             }
 
-            db.Yeasts.Remove(yeast);
-            await db.SaveChangesAsync();
-
+            yeastRespository.Remove(yeast);
+            
             return Ok(yeast);
         }
 
