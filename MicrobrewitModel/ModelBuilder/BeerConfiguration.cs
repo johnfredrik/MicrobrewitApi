@@ -17,7 +17,10 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasOptional(beer => beer.BeerStyle).WithMany().HasForeignKey(beer => beer.BeerStyleId).WillCascadeOnDelete(false);
             this.HasMany(beer => beer.Brewers).WithRequired(userBeer => userBeer.Beer).HasForeignKey(userBeer => userBeer.BeerId);
             this.HasMany(beer => beer.Breweries).WithRequired(breweryBeer => breweryBeer.Beer).HasForeignKey(breweryBeer => breweryBeer.BeerId);
-           
+            this.HasRequired(beer => beer.ABV).WithOptional(beer => beer.Beer).WillCascadeOnDelete(true);
+            this.HasRequired(beer => beer.SRM).WithOptional(beer => beer.Beer).WillCascadeOnDelete(true);
+            this.HasRequired(beer => beer.IBU).WithOptional(beer => beer.Beer).WillCascadeOnDelete(true);
+            this.HasOptional(beer => beer.Recipe).WithRequired(recipe => recipe.Beer).WillCascadeOnDelete(true);
 
         }
     }

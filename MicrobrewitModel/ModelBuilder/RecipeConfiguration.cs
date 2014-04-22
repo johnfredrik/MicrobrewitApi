@@ -13,9 +13,9 @@ namespace Microbrewit.Model.ModelBuilder
         public RecipeConfiguration()
         {
             Property(p => p.Id).IsRequired().HasColumnName("RecipeId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            this.HasRequired(r => r.Beer).WithRequiredDependent(r => r.Recipe);
-
             this.HasKey(r => r.Id);
+            //this.HasRequired(r => r.Beer).WithRequiredDependent(r => r.Recipe);
+
             
             // relations
             this.HasMany(r => r.BoilSteps).WithRequired().HasForeignKey(boilStep => boilStep.RecipeId);

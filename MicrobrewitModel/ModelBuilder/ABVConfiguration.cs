@@ -14,7 +14,7 @@ namespace Microbrewit.Model.ModelBuilder
         {
             Property(a => a.Id).IsRequired().HasColumnName("AbvId");
             this.HasKey(a => a.Id);
-            this.HasOptional(a => a.Beer).WithOptionalDependent(b => b.ABV);
+            //this.HasOptional(a => a.Beer).WithOptionalDependent(b => b.ABV);
         }
     }
 }
