@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Target",
+    "aalow": 10,
+    "aahigh": 12,
+    "origin": {
+      "id": 2,
+      "name": "United Kingdom"
+    },
+    "flavours": [],
+    "substituts": []
+  },
+  {
+    "name": "Challanger",
+    "aalow": 6,
+    "aahigh": 8,
+    "betalow":4,
+    "betahigh":4.5,
+    "origin": {
+      "id": 2,
+      "name": "United Kingdom"
+    },
+    "flavours": [
+      {
+        "id": 1,
+        "name": "Mild to moderate"
+      },
+      {
+        "id": 2,
+        "name": "Quite spicy"
+      }
+    ],
+    "substituts": []
+  },
+  {
+    "name": "Admiral",
+    "aalow": 9,
+    "aahigh": 15,
+    "origin": {
+      "id": 2,
+      "name": "United Kingdom"
+    },
+    "flavours": [],
+    "substituts": [
+      {
+        "id": 1,
+        "name": "Target"
+      },
+      {
+        "id": 2,
+        "name": "Challanger"
+      }
+    ]
+  },
+  {
+    "name": "East Kent Goldings",
+    "aalow": 4,
+    "aahigh": 7,
+    "origin": {
+      "id": 2,
+      "name": "United Kingdom"
+    },
+    "flavours": [],
+    "substituts": []
+  },
+  {
+    "name": "Ahtanum",
+    "aalow": 5.7,
+    "aahigh": 6.3,
+    "betalow": 4,
+    "betahigh": 6.3,
+    "flavourdescription": "Distinctive aromatic hops with moderate bittering power from washington.",
+    "substituts": [
+      {
+        "id": 0,
+        "name": "Amarillo"
+      },
+      {
+        "id": 0,
+        "name": "Cascade"
+      }
+    ],
+    "flavours": [
+      {
+        "id": 0,
+        "name": "Floral"
+      },
+      {
+        "id": 0,
+        "name": "Citrus"
+      },
+      {
+        "id": 0,
+        "name": "Sharp"
+      },
+      {
+        "id": 0,
+        "name": "Piney"
+      }
+    ],
+    "origin": {
+      "id": 1,
+      "name": "United States"
+    },
+    "notes": "Ahtanum is an aroma-type cultivar bred by yakima chief ranches. its name is derived from the area near yakima where the first hop farm was established in 1869 by charles carpenter."
+  },
+  {
+    "name": "Amarillo",
+    "aalow": 8,
+    "aahigh": 9,
+    "betalow": 6,
+    "betahigh": 7,
+    "substituts": [
+      {
+        "id": 0,
+        "name": "Cascade"
+      },
+      {
+        "id": 0,
+        "name": "Centennial"
+      }
+    ],
+    "flavours": [
+      {
+        "id": 0,
+        "name": "Flowery"
+      },
+      {
+        "id": 0,
+        "name": "Citrusy"
+      }
+    ],
+    "origin": {
+      "id": 0,
+      "name": "United States"
+    },
+    "notes": "Amarillo is an aroma-type cultivar of recent origin, discovered and introduced by virgil gamache farms inc."
+  },
+   {
+    "name": "Centennial",
+    "aalow": 8,
+    "aahigh": 11,
+    "betalow": 3.5,
+    "betahigh": 4.5,
+    "substituts": [
+      {
+        "id": 0,
+        "name": "Cascade"
+      }
+    ],
+    "flavours": [
+      {
+        "id": 0,
+        "name": "Flowery"
+      },
+      {
+        "id": 0,
+        "name": "Citrusy"
+      }
+    ],
+    "origin": {
+      "id": 1,
+      "name": "United States"
+    },
+    "notes": "Centennial is an aroma-type cultivar, bred in 1974 and released in 1990. the genetic composition is 3/4 brewers gold, 3/32 fuggle, 1/16 east kent golding, 1/32 bavarian and 1/16 unknown."
+  }
+]

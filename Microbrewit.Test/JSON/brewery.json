@@ -1,0 +1,23 @@
+[
+	{
+		"Name":"Asphaugs Hjemmebryggeri",
+		"Description": "My litle brewery",
+		"Type": "Homebrewing",
+		"Members":[
+			{
+				"Username":"johnfredrik"
+			}
+		]
+
+	},
+	{
+		"Name":"Thune Hjemmebryggeri",
+		"Type": "Homebrewing",
+		"Members":[
+			{
+				"Username":"torstein"
+			}
+		]
+
+	},
+]

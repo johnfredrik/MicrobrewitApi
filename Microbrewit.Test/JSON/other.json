@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Strawberry",
+    "Type": "Fruit"
+  },
+  {
+    "Name": "Honey",
+    "Type": "NoneFermentableSugar"
+  },
+  {
+
+    "Name": "Koriander",
+    "Type": "Spice"
+  }
+]

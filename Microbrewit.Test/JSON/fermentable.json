@@ -1,0 +1,80 @@
+[
+  {
+    "supplier": null,
+    "name": "Pale Malt",
+    "lovibond": 6,
+    "ppg": 34,
+    "type": "Grain"
+  },
+  {
+    "supplier": null,
+    "name": "Pale Ale Malt",
+    "lovibond": 2,
+    "ppg": 37,
+    "type": "Grain"
+  },
+  {
+    "supplier": null,
+    "name": "Plain Light DME",
+    "lovibond": 4,
+    "ppg": 43,
+    "type": "DryExtract"
+  },
+  {
+    "supplier": null,
+    "name": "Plain Light DME",
+    "lovibond": 4,
+    "ppg": 43,
+    "type": "LiquidExtract"
+  },
+  {
+    "supplier": {
+      "Id": 1,
+      "Name": "Boortmalt"
+    },
+    "name": "Amber Malt",
+    "lovibond": 20,
+    "ppg": 34,
+    "type": "Grain"
+  },
+  {
+    "supplier": {
+      "Id": 4,
+      "Name": "Thomas Fawcett"
+    },
+    "name": "Maris Otter Pale Malt",
+    "lovibond": 7,
+    "ppg": 36,
+    "type": "Grain"
+  },
+  {
+    "name": "Pale Crystal",
+    "lovibond": 75,
+    "ppg": 34,
+    "supplier": {
+      "Id": 4,
+      "Name": "Thomas Fawcett"
+    },
+    "type": "Grain"
+  },
+  {
+    "name": "Chocolate Malt",
+    "lovibond": 1175,
+    "ppg": 30,
+    "supplier": {
+      "Id": 4,
+      "Name": "Thomas Fawcett"
+    },
+    "type": "Grain"
+  },
+  {
+    "supplier": {
+      "Id": 5,
+      "Name": " De Wolf-Cosyns"
+    },
+    "name": "Biscute Malt",
+    "lovibond": 23,
+    "ppg": 35,
+    "type": "Grain"
+  }
+]

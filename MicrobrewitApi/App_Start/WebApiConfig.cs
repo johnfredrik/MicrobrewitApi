@@ -8,6 +8,8 @@ using System.Web.Routing;
 using System.Web.Http;
 using Microbrewit.Api.Util;
 using WebApiContrib.Formatting.Jsonp;
+using Microsoft.Practices.Unity;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api
 {
@@ -24,6 +26,13 @@ namespace Microbrewit.Api
            // config.EnableCors();
 
             //config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+            //dependency injection
+            var container = new UnityContainer();
+            container.RegisterType<IOtherRepository, OtherRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerRepository, BeerRepository>(new HierarchicalLifetimeManager());
+            config.DependencyResolver = new UnityResolver(container);
+
 
             // Web API routes
             config.MapHttpAttributeRoutes();

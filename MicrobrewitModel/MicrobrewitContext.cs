@@ -49,6 +49,8 @@ namespace Microbrewit.Model
         public MicrobrewitContext()
             : base("name=MicrobrewitContext")
         {
+           //Disable initializer
+           //Database.SetInitializer<MicrobrewitContext>(null);
            Configuration.LazyLoadingEnabled = false;
            //Configuration.ProxyCreationEnabled = false;
         }

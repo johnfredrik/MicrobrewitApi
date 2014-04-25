@@ -24,13 +24,18 @@ namespace Microbrewit.Api.Controllers
         private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly IBeerRepository beerRepository = new BeerRepository();
+        private IBeerRepository _beerRepository;
+
+        public BeerController(IBeerRepository beerRepository)
+        {
+            this._beerRepository = beerRepository;
+        }
 
         // GET api/Beer
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {
-            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
+            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
             var result = new BeerSimpleCompleteDto();
             result.Beers = beers;
             return result;
@@ -43,7 +48,7 @@ namespace Microbrewit.Api.Controllers
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var beer = beerRepository.GetSingle(b => b.Id == id,
+            var beer = _beerRepository.GetSingle(b => b.Id == id,
                 //"Recipe.MashSteps",
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
@@ -78,7 +83,7 @@ namespace Microbrewit.Api.Controllers
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var beer = beerRepository.GetSingle(b => b.Id == id,
+            var beer = _beerRepository.GetSingle(b => b.Id == id,
                 "Recipe", "Brewers", "ABV", "IBU", "SRM", "Breweries");
             Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
             if (beer == null)
@@ -123,7 +128,7 @@ namespace Microbrewit.Api.Controllers
             //beer.SRM = null;
             //beer.Brewers = null;
 
-            beerRepository.Update(beer);
+            _beerRepository.Update(beer);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -142,10 +147,20 @@ namespace Microbrewit.Api.Controllers
             beer.BeerStyle = null;
 
 
-            beerRepository.Add(beer);
+            try
+            {
+                _beerRepository.Add(beer);
+            } 
+            catch (DbUpdateException dbUpdateException)
+            {
+                //Log.Error(dbUpdateException);
+                return BadRequest(dbUpdateException.ToString());
+            }
+                
+               
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
 
-            result.Beers.Add(Mapper.Map<Beer, BeerDto>(beerRepository.GetSingle(b => b.Id == beer.Id,
+            result.Beers.Add(Mapper.Map<Beer, BeerDto>(_beerRepository.GetSingle(b => b.Id == beer.Id,
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
@@ -189,13 +204,13 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BeerDto))]
         public IHttpActionResult DeleteBeer(int id)
         {
-            Beer beer = beerRepository.GetSingle(b => b.Id == id);
+            Beer beer = _beerRepository.GetSingle(b => b.Id == id);
             if (beer == null)
             {
                 return NotFound();
             }
 
-            beerRepository.Remove(beer);
+            _beerRepository.Remove(beer);
             var beerDto = Mapper.Map<Beer, BeerDto>(beer);
             return Ok(beerDto);
         }

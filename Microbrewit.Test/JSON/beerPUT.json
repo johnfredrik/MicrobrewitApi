@@ -1,0 +1,252 @@
+    {
+      "Id": 1,
+      "Name": "Joslyn Coco",
+      "ABV": {
+        "Id": 1,
+        "Standard": 5.27,
+        "Miller": 5.32,
+        "Advanced": 5.17,
+        "AdvancedAlternative": 5.39,
+        "Simple": 5.24,
+        "AlternativeSimple": 5.22
+      },
+      "IBU": {
+        "Id": 1,
+        "Standard": 0,
+        "Tinseth": 21.8,
+        "Rager": 24.6
+      },
+      "SRM": {
+        "Id": 1,
+        "Standard": 19,
+        "Mosher": 16,
+        "Daniels": 38,
+        "Morey": 16
+      },
+      "BeerStyle": {
+        "Id": 1,
+        "Name": "Ale"
+      },
+      "Recipe": {
+        "Id": 1,
+        "Name": "Joslyn Coco",
+        "Notes": null,
+        "Volume": 30,
+        "OG": 1.0549,
+        "FG": 1.015,
+        "Efficiency": 80,
+        "BeerStyle": null,
+        "MashSteps": [
+          {
+            "Id": 1,
+            "Number": 0,
+            "Type": null,
+            "Length": 60,
+            "Volume": 30,
+            "Temperature": 68,
+            "Notes": null,
+            "Hops": [],
+            "Fermentables": [
+              {
+                "FermentableId": 6,
+                "StepId": 1,
+                "Name": "Maris Otter Pale Malt",
+                "Lovibond": 7,
+                "PPG": 36,
+                "Supplier": {
+                  "Id": 4,
+                  "Name": "Thomas Fawcett"
+                },
+                "Type": "Grain",
+                "Amount": 5000
+              },
+              {
+                "FermentableId": 7,
+                "StepId": 1,
+                "Name": "Pale Crystal",
+                "Lovibond": 75,
+                "PPG": 34,
+                "Supplier": {
+                  "Id": 4,
+                  "Name": "Thomas Fawcett"
+                },
+                "Type": "Grain",
+                "Amount": 1000
+              },
+              {
+                "FermentableId": 8,
+                "StepId": 1,
+                "Name": "Chocolate Malt",
+                "Lovibond": 1175,
+                "PPG": 30,
+                "Supplier": {
+                  "Id": 4,
+                  "Name": "Thomas Fawcett"
+                },
+                "Type": "Grain",
+                "Amount": 500
+              },
+              {
+                "FermentableId": 9,
+                "StepId": 1,
+                "Name": "Biscute Malt",
+                "Lovibond": 23,
+                "PPG": 35,
+                "Supplier": {
+                  "Id": 5,
+                  "Name": " De Wolf-Cosyns"
+                },
+                "Type": "Grain",
+                "Amount": 500
+              }
+            ],
+            "Others": []
+          }
+        ],
+        "BoilSteps": [
+          {
+            "Id": 1,
+            "Number": 1,
+            "Length": 60,
+            "Volume": 30,
+            "Hops": [
+              {
+                "HopId": 4,
+                "StepId": 1,
+                "Name": "Centennial",
+                "Amount": 15,
+                "AAValue": 10,
+                "Origin": {
+                  "Id": 1,
+                  "Name": "United States"
+                },
+                "HopForm": {
+                  "Id": 1,
+                  "Name": "Pellet"
+                },
+                "FlavourDescription": null,
+                "Flavours": [
+                  {
+                    "Id": 9,
+                    "Name": "Flowery"
+                  },
+                  {
+                    "Id": 10,
+                    "Name": "Citrusy"
+                  }
+                ]
+              }
+            ],
+            "Fermentables": [],
+            "Others": [
+              {
+                "OtherId": 1,
+                "StepId": 0,
+                "Name": "Strawberry",
+                "Type": "Fruit",
+                "Amount": 12
+              }
+            ],
+            "Notes": null
+          },
+          {
+            "Id": 2,
+            "Number": 2,
+            "Length": 15,
+            "Volume": 30,
+            "Hops": [
+              {
+                "HopId": 7,
+                "StepId": 2,
+                "Name": "East Kent Goldings",
+                "Amount": 35,
+                "AAValue": 6,
+                "Origin": {
+                  "Id": 2,
+                  "Name": "United Kingdom"
+                },
+                "HopForm": {
+                  "Id": 1,
+                  "Name": "Pellet"
+                },
+                "FlavourDescription": null,
+                "Flavours": []
+              }
+            ],
+            "Fermentables": [],
+            "Others": [],
+            "Notes": null
+          },
+          {
+            "Id": 3,
+            "Number": 3,
+            "Length": 5,
+            "Volume": 30,
+            "Hops": [
+              {
+                "HopId": 7,
+                "StepId": 3,
+                "Name": "East Kent Goldings",
+                "Amount": 35,
+                "AAValue": 6,
+                "Origin": {
+                  "Id": 2,
+                  "Name": "United Kingdom"
+                },
+                "HopForm": {
+                  "Id": 1,
+                  "Name": "Pellet"
+                },
+                "FlavourDescription": null,
+                "Flavours": []
+              }
+            ],
+            "Fermentables": [],
+            "Others": [],
+            "Notes": null
+          }
+        ],
+        "FermentationSteps": [
+          {
+            "Id": 1,
+            "Number": 1,
+            "Type": "Microbrewit.Model.FermentationStep",
+            "Length": 14,
+            "Volume": 0,
+            "Temperature": 19,
+            "Notes": "Do Something Cool",
+            "Hops": [],
+            "Fermentables": [],
+            "Others": [
+              {
+                "OtherId": 1,
+                "StepId": 0,
+                "Name": "Strawberry",
+                "Type": "Fruit",
+                "Amount": 12
+              }
+            ],
+            "Yeasts": [
+              {
+                "YeastId": 1,
+                "StepId": 0,
+                "Name": "California Ale Yeast",
+                "Amount": 1,
+                "Type": "LiquidYeast",
+                "Supplier": {
+                  "Id": 2,
+                  "Name": "White Labs"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "Breweries": [],
+      "Brewers": [
+        {
+          "Username": "johnfredrik",
+          "Email": null
+        }
+      ]
+    }

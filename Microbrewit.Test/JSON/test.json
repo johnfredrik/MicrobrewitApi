@@ -1,0 +1,7 @@
+{"Links":{
+		"FermentablesMaltster": {
+		"href": "http://api.microbrew.it/maltsters/:maltsterid/",
+		"type": "maltster"
+		}
+}
+}

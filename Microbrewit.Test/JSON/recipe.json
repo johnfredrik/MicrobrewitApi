@@ -1,0 +1,75 @@
+{
+    "MashSteps": [
+        {
+            "Temperature": 68,
+            "Type": "Infusion",
+            "Length": 60,
+            "Volume": 30,
+            "Fermentables": [
+                {
+                    "FermentableId": 6,
+                    "Amount": 5000
+                },
+                {
+                    "FermentableId": 7,
+                    "Amount": 1000
+                },
+                {
+                    "FermentableId": 8,
+                    "Amount": 500
+                },
+                {
+                     "FermentableId": 9,
+                    "Amount": 500
+                }
+            ]
+            
+        }
+       
+    ],
+    "BoilSteps": [
+        {
+            "Number":1,
+            "Length":60,
+            "Volume":30,
+            "Hops": [
+                {
+                    "HopId": 1,
+                    "AAValue": 13,
+                    "HopFormId": 1 
+                },
+                {
+                    "HopId": 1,
+                    "AAValue": 13,
+                    "HopFormId": 1 
+                },
+                {
+                    "HopId": 1,
+                    "AAValue": 13,
+                    "HopFormId": 1 
+                }
+            ]
+        }
+        ],
+    "FermentationSteps": [
+        {
+            "Number": 1,
+            "Length": 14,
+            "Temperature": 19,
+            "Notes": "Do Something Cool",
+            "Yeasts":[
+                    {
+                        "YeastId":1,
+                        "Amount":1
+                    }
+            ],
+            "Others": [
+                {
+                "OtherId": 1,
+                "Amount": 12
+                }
+            ]
+
+        }
+    ]
+}

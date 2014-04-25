@@ -1,0 +1,119 @@
+{
+  "Name": "Joslyn Coco",
+  "Brewers": [
+    {
+      "Username": "johnfredrik",
+      "email": "john-f@online.no"
+    }
+  ],
+  "BeerStyle": {
+    "Id": 1,
+    "Name": "Ale"
+  },
+  "Recipe": {
+    "Volume":30, 
+    "Efficiency":80,
+    "FG":1.015,
+    "MashSteps": [
+      {
+        "Temperature": 68,
+        "Type": "Infusion",
+        "Length": 60,
+        "Volume": 30,
+        "Fermentables": [
+          {
+            "FermentableId": 6,
+            "Amount": 5000,
+            "Lovibond": 10
+          },
+          {
+            "FermentableId": 7,
+            "Amount": 1000,
+            "Lovibond": 10
+          },
+          {
+            "FermentableId": 8,
+            "Amount": 500,
+            "Lovibond": 10
+          },
+          {
+            "FermentableId": 9,
+            "Amount": 500,
+            "Lovibond": 10
+          }
+        ]
+      }
+    ],
+    "BoilSteps": [
+      {
+        "Number": 1,
+        "Length": 60,
+        "Volume": 30,
+        "Hops": [
+          {
+            "HopId": 4,
+            "AAValue": 10,
+            "Amount": 15,
+            "HopForm":
+            {
+              "Id":1,
+              "Name": "Pellet"
+            }
+          }
+        ]
+      },
+      {
+        "Number": 2,
+        "Length": 15,
+        "Volume": 30,
+        "Hops": [
+          {
+            "HopId": 7,
+            "AAValue": 5.9,
+            "Amount": 35,
+            "HopForm":{
+              "Id":1,
+              "Name": "Pellet"
+            }
+          }
+        ]
+      },
+      {
+        "Number": 3,
+        "Length": 5,
+        "Volume": 30,
+        "Hops": [
+          {
+            "HopId": 7,
+            "AAValue": 5.9,
+            "Amount": 35,
+            "HopForm":{
+              "Id":1,
+              "Name": "Pellet"
+            }
+          }
+        ]
+      }
+    ],
+    "FermentationSteps": [
+      {
+        "Number": 1,
+        "Length": 14,
+        "Temperature": 19,
+        "Notes": "Do Something Cool",
+        "Yeasts": [
+          {
+            "YeastId": 1,
+            "Amount": 1
+          }
+        ],
+        "Others": [
+          {
+            "OtherId": 1,
+            "Amount": 12
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -20,19 +20,27 @@ using Newtonsoft.Json;
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("others")]
-    public class OthersController : ApiController
+    public class OtherController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private IOtherRepository otherRepository = new OtherRepository();
+        private IOtherRepository _otherRepository;
 
+        //public OtherController()
+        //{
+        //    this.otherRepository = new OtherRepository();
+        //}
 
+        public OtherController(IOtherRepository otherRepository)
+        {
+            this._otherRepository = otherRepository;
+        }
 
         // GET api/Others
         [Route("")]
         public OtherCompleteDto GetOthers()
         {
-            var others = Mapper.Map<IList<Other>, IList<OtherDto>>(otherRepository.GetAll());
+            var others = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
             var result = new OtherCompleteDto();
             result.Others = others;
             return result;
@@ -45,7 +53,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetOther(int id)
         {
-            var other = Mapper.Map<Other, OtherDto>(otherRepository.GetSingle(o => o.Id == id));
+            var other = Mapper.Map<Other, OtherDto>(_otherRepository.GetSingle(o => o.Id == id));
             if (other == null)
             {
                 return NotFound();
@@ -72,7 +80,7 @@ namespace Microbrewit.Api.Controllers
 
             try
             {
-                otherRepository.Update(other);               
+                _otherRepository.Update(other);               
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -99,9 +107,9 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest(ModelState);
             }
             var others = Mapper.Map<IList<Other>, Other[]>(otherPosts);
-            otherRepository.Add(others);
+            _otherRepository.Add(others);
 
-            var result = Mapper.Map<IList<Other>, IList<OtherDto>>(otherRepository.GetAll());
+            var result = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
 
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
@@ -121,12 +129,12 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Other))]
         public IHttpActionResult DeleteOther(int id)
         {
-            Other other = otherRepository.GetSingle(o => o.Id == id);
+            Other other = _otherRepository.GetSingle(o => o.Id == id);
             if (other == null)
             {
                 return NotFound();
             }
-            otherRepository.Remove(other);
+            _otherRepository.Remove(other);
             return Ok(other);
         }
 

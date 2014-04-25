@@ -1,0 +1,47 @@
+[
+  {
+    "name": "California Ale Yeast",
+    "temperaturehigh": 80,
+    "temperaturelow": 73,
+    "flocculation": null,
+    "alcoholtolerance": null,
+    "productcode": "WLP001",
+    "comment": "This yeast is famous for its clean flavors, balance and ability to be used in almost any style ale. It accentuates the hop flavors and is extremely versatile",
+    "type": "LiquidYeast",
+    "supplier": {
+      "id": 2,
+      "name": "White Labs"
+    }
+  },
+  {
+    "name": "Safale US 05",
+    "temperaturehigh": null,
+    "temperaturelow": null,
+    "flocculation": null,
+    "alcoholtolerance": null,
+    "productcode": null,
+    "comment": "Ready-to-pitch American ale yeast for well balanced beers with low diacetyl and a very crisp end palate.",
+    "type": "LiquidYeast",
+    "supplier": {
+      "id": 3,
+      "name": "Fermentis"
+    }
+  },
+ {
+	"Name": "English Ale Yeast",
+	"Type": "Liquid Yeast",
+	"ProductCode": "WLP002",
+	"temperaturehigh": 18.3,
+	"temperaturehigh": 20,
+	"alcoholtolerance": "Medium",
+	"flocculation": "Very High",
+	"comment": "A classic ESB strain from one of England's largest independent breweries. This yeast is best suited for English style ales including milds, bitters, porters, and English style stouts. This yeast will leave a beer very clear, and will leave some residual sweetness.",
+	"supplier": 
+	{
+		"id": 2,
+		"name": "WhiteLabs"
+	}
+
+}
+]
+

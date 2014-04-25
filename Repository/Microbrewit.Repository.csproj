@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microbrewit.Repository</RootNamespace>
-    <AssemblyName>MicrobrewitRepository</AssemblyName>
+    <AssemblyName>Microbrewit.Repository</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -75,9 +75,9 @@
     <Compile Include="Repository\YeastRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MicrobrewitModel\MicrobrewitModel.csproj">
+    <ProjectReference Include="..\MicrobrewitModel\Microbrewit.Model.csproj">
       <Project>{a7be6b77-35e4-4164-8f31-db0f21451d3d}</Project>
-      <Name>MicrobrewitModel</Name>
+      <Name>Microbrewit.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

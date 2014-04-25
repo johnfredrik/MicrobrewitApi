@@ -1,0 +1,10 @@
+	{
+		"username":"torstein",
+		"email":"torstein@gmail.com",
+		"brewery": {
+			"id":2,
+			"name":"Thune Hjemmebryggeri"
+		},
+		"password":"dGVzdA=="
+
+	}

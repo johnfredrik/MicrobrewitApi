@@ -15,7 +15,7 @@ namespace Microbrewit.Model
         public double AdvancedAlternative { get; set; }
         public double Simple { get; set; }
         public double AlternativeSimple { get; set; }
-
+       
         public Beer Beer { get; set; }
 
        
