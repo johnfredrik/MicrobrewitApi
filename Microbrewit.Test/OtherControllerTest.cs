@@ -64,12 +64,13 @@ namespace Microbrewit.Test
             {
                 _repository = new OtherRepository();
                 string jsonString = file.ReadToEnd();
+                var count = _repository.GetAll().Count();
                 var others = JsonConvert.DeserializeObject<List<Other>>(jsonString);
 
                 var controller = new OtherController(_repository);
                 controller.PostOther(others);
                 var result = controller.GetOthers();
-                Assert.AreEqual(others.Count, result.Others.Count);
+                Assert.AreEqual(count + others.Count, result.Others.Count);
             }
         }
 

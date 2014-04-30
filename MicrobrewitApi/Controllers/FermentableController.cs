@@ -26,16 +26,20 @@ namespace Microbrewit.Api.Controllers
     public class FermentableController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
-        private IFermentableRepository fermentableRepository = new FermentableRepository();
+        private IFermentableRepository _fermentableRepository;
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public FermentableController(IFermentableRepository fermentableRepository)
+        {
+            this._fermentableRepository = fermentableRepository;
+        }
       
         // GET api/Fermentable 
         [Route("")]
         public FermentablesCompleteDto GetFermentables()
         {
-            var fermentables = fermentableRepository.GetAll("Supplier");
+            var fermentables = _fermentableRepository.GetAll("Supplier");
             var fermDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
             var result = new FermentablesCompleteDto();
             result.Fermentables = fermDto;
@@ -48,7 +52,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(FermentablesCompleteDto))]
         public IHttpActionResult GetFermentable(int id)
         {
-            var fermentable = Mapper.Map<Fermentable, FermentableDto>(fermentableRepository.GetSingle(f => f.Id == id, "Supplier")); 
+            var fermentable = Mapper.Map<Fermentable, FermentableDto>(_fermentableRepository.GetSingle(f => f.Id == id, "Supplier")); 
             if (fermentable == null)
             {
                 return NotFound();
@@ -73,7 +77,7 @@ namespace Microbrewit.Api.Controllers
             }
 
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
-            fermentableRepository.Update(fermentable);
+            _fermentableRepository.Update(fermentable);
             
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -89,8 +93,8 @@ namespace Microbrewit.Api.Controllers
             }
 
             var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(FermentableDtos);
-            fermentableRepository.Add(fermentablePost);
-            var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentableRepository.GetAll("Supplier.Origin"));
+            _fermentableRepository.Add(fermentablePost);
+            var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(_fermentableRepository.GetAll("Supplier.Origin"));
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
 

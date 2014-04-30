@@ -14,10 +14,7 @@ namespace Microbrewit.Model.ModelBuilder
         {
             Property(f => f.Id).HasColumnName("FlavourId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(f => f.Name).IsRequired().HasMaxLength(255);
-
-            //this.HasMany(flavour => flavour.Hops).WithRequired(flavourHop => flavourHop.Flavour).HasForeignKey(flavourHop => flavourHop.FlavourId);
-                
-
+         
         }
 
     }

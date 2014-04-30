@@ -10,6 +10,9 @@ using AutoMapper;
 using Microbrewit.Api.Automapper;
 using System.Net.Http.Formatting;
 using WebApiContrib.Formatting.Jsonp;
+using System.Web.Mvc;
+using Microbrewit.HelpPage;
+using System.Web.Optimization;
 
 namespace Microbrewit.Api
 {
@@ -17,11 +20,18 @@ namespace Microbrewit.Api
     {
         protected void Application_Start()
         {
-            GlobalConfiguration.Configure(WebApiConfig.Register);
             GlobalConfiguration.Configuration.AddJsonpFormatter();
+            
+            // Add this code, if not present.
+            AreaRegistration.RegisterAllAreas();
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             AutoMapperConfiguration.Configure();
             Database.SetInitializer(new InitializeDatabaseWithSeedData());
+           
         }
     }
 }

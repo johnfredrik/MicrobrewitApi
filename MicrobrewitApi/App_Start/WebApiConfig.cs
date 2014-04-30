@@ -10,6 +10,7 @@ using Microbrewit.Api.Util;
 using WebApiContrib.Formatting.Jsonp;
 using Microsoft.Practices.Unity;
 using Microbrewit.Repository;
+using System.Web;
 
 namespace Microbrewit.Api
 {
@@ -29,8 +30,17 @@ namespace Microbrewit.Api
 
             //dependency injection
             var container = new UnityContainer();
-            container.RegisterType<IOtherRepository, OtherRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IBeerRepository, BeerRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerStyleRepository, BeerStyleRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBreweryRepository, BreweryRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IFermentableRepository, FermentableRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IHopRepository, HopRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOriginRespository, OriginRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOtherRepository, OtherRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<ISupplierRepository, SupplierRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IUserRepository, UserRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IYeastRepository, YeastRepository>(new HierarchicalLifetimeManager());
+
             config.DependencyResolver = new UnityResolver(container);
 
 
@@ -45,7 +55,7 @@ namespace Microbrewit.Api
 
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
-           
+
         }
     }
 }

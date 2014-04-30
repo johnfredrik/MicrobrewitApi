@@ -19,17 +19,18 @@ using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
 {
+    /// <summary>
+    /// Gets a collection of others
+    /// </summary>
+    /// <description>
+    /// Something others 
+    /// </description>
     [RoutePrefix("others")]
     public class OtherController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private IOtherRepository _otherRepository;
-
-        //public OtherController()
-        //{
-        //    this.otherRepository = new OtherRepository();
-        //}
 
         public OtherController(IOtherRepository otherRepository)
         {

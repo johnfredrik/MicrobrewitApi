@@ -20,13 +20,18 @@ namespace Microbrewit.Api.Controllers
     public class BreweryController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
-        private readonly IBreweryRepository breweryRepository = new BreweryRepository();
+        private IBreweryRepository _breweryRepository;
+
+        public BreweryController(IBreweryRepository breweryRepository)
+        {
+            this._breweryRepository = breweryRepository;
+        }
 
         // GET api/Brewery
         [Route("")]
         public BreweryCompleteDto GetBreweries()
         {
-            var breweries = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweryRepository.GetAll("Members.Member","Beers"));
+            var breweries = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(_breweryRepository.GetAll("Members.Member","Beers"));
             var result = new BreweryCompleteDto();
             result.Breweries = breweries;
             return result;
@@ -37,7 +42,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BreweryCompleteDto))]
         public IHttpActionResult GetBrewery(int id)
         {
-            var brewery = breweryRepository.GetSingle(b => b.Id == id, "Members.Member", "Beers");
+            var brewery = _breweryRepository.GetSingle(b => b.Id == id, "Members.Member", "Beers");
             if (brewery == null)
             {
                 return NotFound();
@@ -61,7 +66,7 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
             var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
-            breweryRepository.Update(brewery);
+            _breweryRepository.Update(brewery);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -77,7 +82,7 @@ namespace Microbrewit.Api.Controllers
             }
 
             var breweries = Mapper.Map<IList<BreweryDto>, Brewery[]>(breweryPosts);
-            breweryRepository.Add(breweries);
+            _breweryRepository.Add(breweries);
 
             return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
         }

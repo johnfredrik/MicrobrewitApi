@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microbrewit.Api</name>
+    </assembly>
+    <members>
+        <member name="M:Microbrewit.Api.Controllers.BeerController.GetBeers">
+            <summary>
+            api.microbrew.it/beers
+            </summary>
+            <returns>Returns collection of all beers</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Util.Formulas.MaltColourUnits(System.Double,System.Double,System.Double)" -->
+        <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Util.Formulas.Morey(System.Double,System.Double,System.Double)" -->
+        <member name="M:Microbrewit.Api.Util.Formulas.Daniels(System.Double,System.Double,System.Double)">
+            <summary>
+            Daniels Equation
+            </summary>
+            <param name="weight"></param>
+            <param name="lovibond"></param>
+            <param name="postBoilVolume"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.Mosher(System.Double,System.Double,System.Double)">
+            <summary>
+            Mosher 
+            </summary>
+            <param name="weight"></param>
+            <param name="lovibond"></param>
+            <param name="postBoilVolume"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.SRMToLovibond(System.Double)">
+            <summary>
+            Converts SRM to Lovibond
+            </summary>
+            <param name="srm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.EBCToSRM(System.Double)">
+            <summary>
+            Converts EBC to SRM
+            </summary>
+            <param name="ebc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.SRMToEBC(System.Double)">
+            <summary>
+            Converts SRM to EBC
+            </summary>
+            <param name="srm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.MillerABV(System.Double,System.Double)">
+            <summary>
+            Dave Miller formula of 1988
+            </summary>
+            <param name="og"></param>
+            <param name="fg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.SimpleABV(System.Double,System.Double)">
+            <summary>
+            Simplified "rule of thumb".
+            </summary>
+            <param name="og"></param>
+            <param name="fg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.AdvancedABV(System.Double,System.Double)">
+            <summary>
+            Advanced simple
+            </summary>
+            <param name="og"></param>
+            <param name="fg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.AdvancedAlternativeABV(System.Double,System.Double)">
+            <summary>
+             rumored to be more accurate at high gravities.
+            </summary>
+            <param name="og"></param>
+            <param name="fg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microbrewit.Api.Util.Formulas.SimpleAlternativeABV(System.Double,System.Double)">
+            <summary>
+            Another formula.
+            </summary>
+            <param name="og"></param>
+            <param name="fg"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

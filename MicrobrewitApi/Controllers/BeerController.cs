@@ -31,7 +31,10 @@ namespace Microbrewit.Api.Controllers
             this._beerRepository = beerRepository;
         }
 
-        // GET api/Beer
+        /// <summary>
+        /// api.microbrew.it/beers
+        /// </summary>
+        /// <returns>Returns collection of all beers</returns>
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {

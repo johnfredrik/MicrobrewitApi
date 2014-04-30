@@ -24,7 +24,12 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private readonly IBeerStyleRepository beerStyleRepository = new BeerStyleRepository();
+        private IBeerStyleRepository _beerStyleRepository;
+
+        public BeerStyleController(IBeerStyleRepository beerStyleRepository)
+        {
+            this._beerStyleRepository = beerStyleRepository;
+        }
 
         [Route("")]
         // GET api/BeerStyle
@@ -49,7 +54,7 @@ namespace Microbrewit.Api.Controllers
                 else
                 {
 
-                    var beerStyles = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
+                    var beerStyles = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(_beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
                     foreach (var item in beerStyles)
                     {
                         redisClient.HashSet("beerstyles", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
@@ -69,7 +74,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetBeerStyle(int id)
         {
-            var beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(beerStyleRepository.GetSingle(b => b.Id == id, "SubStyles", "SuperStyle"));
+            var beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(_beerStyleRepository.GetSingle(b => b.Id == id, "SubStyles", "SuperStyle"));
             if (beerStyle == null)
             {
                 return NotFound();
@@ -94,7 +99,7 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            beerStyleRepository.Update(beerstyle);
+            _beerStyleRepository.Update(beerstyle);
             
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -112,8 +117,8 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            beerStyleRepository.Add(beerstyles.ToArray());
-            var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
+            _beerStyleRepository.Add(beerstyles.ToArray());
+            var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(_beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
                 var redisClient = redis.GetDatabase();
