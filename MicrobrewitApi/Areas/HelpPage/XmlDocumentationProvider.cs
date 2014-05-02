@@ -47,6 +47,8 @@ namespace Microbrewit.Api.Areas.HelpPage
             return GetTagValue(methodNode, "summary");
         }
 
+
+
         public virtual string GetDocumentation(HttpParameterDescriptor parameterDescriptor)
         {
             ReflectedHttpParameterDescriptor reflectedParameterDescriptor = parameterDescriptor as ReflectedHttpParameterDescriptor;
@@ -70,8 +72,10 @@ namespace Microbrewit.Api.Areas.HelpPage
         public string GetResponseDocumentation(HttpActionDescriptor actionDescriptor)
         {
             XPathNavigator methodNode = GetMethodNode(actionDescriptor);
-            return GetTagValue(methodNode, "returns");
+            var result = GetTagValue(methodNode, "returns");
+            return GetAttributeValue(methodNode, "errorCode", "code") + " " + GetTagValue(methodNode, "errorCode");
         }
+
 
         public string GetDocumentation(MemberInfo member)
         {
@@ -121,6 +125,21 @@ namespace Microbrewit.Api.Areas.HelpPage
                 if (node != null)
                 {
                     return node.Value.Trim();
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetAttributeValue(XPathNavigator parentNode, string tagName, string attributeName)
+        {
+            if (parentNode != null)
+            {
+                XPathNavigator node = parentNode.SelectSingleNode(tagName);
+                if (node != null)
+                {
+                    var attribute = node.GetAttribute(attributeName, "");
+                    return attribute;
                 }
             }
 

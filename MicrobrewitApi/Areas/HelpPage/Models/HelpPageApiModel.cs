@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
 using Microbrewit.Api.Areas.HelpPage.ModelDescriptions;
+using System.Net;
 
 namespace Microbrewit.Api.Areas.HelpPage.Models
 {
@@ -20,6 +21,7 @@ namespace Microbrewit.Api.Areas.HelpPage.Models
             SampleRequests = new Dictionary<MediaTypeHeaderValue, object>();
             SampleResponses = new Dictionary<MediaTypeHeaderValue, object>();
             ErrorMessages = new Collection<string>();
+            StatusCodes = new Collection<string>();
         }
 
         /// <summary>
@@ -83,6 +85,8 @@ namespace Microbrewit.Api.Areas.HelpPage.Models
         /// Gets the error messages associated with this model.
         /// </summary>
         public Collection<string> ErrorMessages { get; private set; }
+
+        public Collection<string> StatusCodes { get; set; }
 
         private static IList<ParameterDescription> GetParameterDescriptions(ModelDescription modelDescription)
         {

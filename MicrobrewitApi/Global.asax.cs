@@ -20,11 +20,14 @@ namespace Microbrewit.Api
     {
         protected void Application_Start()
         {
-            GlobalConfiguration.Configuration.AddJsonpFormatter();
-            
             // Add this code, if not present.
             AreaRegistration.RegisterAllAreas();
+           
+            GlobalConfiguration.Configuration.AddJsonpFormatter();
+            
             GlobalConfiguration.Configure(WebApiConfig.Register);
+           
+            
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

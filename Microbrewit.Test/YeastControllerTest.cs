@@ -59,7 +59,7 @@ namespace Microbrewit.Test
         public void GetYeastWithInvalidIdShouldNotBeFound()
         {
             var yeast = _controller.GetYeast(int.MaxValue);
-            Assert.IsInstanceOfType(typeof(NotFoundResult), yeast);
+            Assert.IsInstanceOf<NotFoundResult>(yeast);
         } 
     }
 }

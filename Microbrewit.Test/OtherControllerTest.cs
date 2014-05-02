@@ -14,6 +14,7 @@ using log4net;
 using System.Web.Http;
 using System.Net;
 using System.Web.Http.Results;
+using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Test
 {
@@ -65,7 +66,7 @@ namespace Microbrewit.Test
                 _repository = new OtherRepository();
                 string jsonString = file.ReadToEnd();
                 var count = _repository.GetAll().Count();
-                var others = JsonConvert.DeserializeObject<List<Other>>(jsonString);
+                var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
 
                 var controller = new OtherController(_repository);
                 controller.PostOther(others);

@@ -19,12 +19,7 @@ using Newtonsoft.Json;
 
 namespace Microbrewit.Api.Controllers
 {
-    /// <summary>
-    /// Gets a collection of others
-    /// </summary>
-    /// <description>
-    /// Something others 
-    /// </description>
+    
     [RoutePrefix("others")]
     public class OtherController : ApiController
     {
@@ -32,12 +27,17 @@ namespace Microbrewit.Api.Controllers
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private IOtherRepository _otherRepository;
 
+       
         public OtherController(IOtherRepository otherRepository)
         {
             this._otherRepository = otherRepository;
         }
 
-        // GET api/Others
+        /// <summary>
+        /// Gets a collection of others
+        /// </summary>
+        /// <returns>Ok 200 on success</returns>
+        /// <errorCode code="400"
         [Route("")]
         public OtherCompleteDto GetOthers()
         {
@@ -48,9 +48,12 @@ namespace Microbrewit.Api.Controllers
         }
 
 
-        // GET api/Others/5
+        /// <summary>
+        /// GET api/Others/5
+        /// </summary>
+        /// <errorCode code="400">Not Found</errorCode>
         [Route("{id:int}")]
-        [ResponseType(typeof(Other))]
+        [ResponseType(typeof(OtherDto))]
         [HttpGet]
         public IHttpActionResult GetOther(int id)
         {
@@ -97,17 +100,19 @@ namespace Microbrewit.Api.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
-
+        ///<summary>
+        /// Add a new Other to the database.
+        /// </summary>
         // POST api/others
         [Route("")]
-        [ResponseType(typeof(IList<Other>))]
-        public IHttpActionResult PostOther(IList<Other> otherPosts)
+        [ResponseType(typeof(IList<OtherDto>))]
+        public IHttpActionResult PostOther(IList<OtherDto> otherPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var others = Mapper.Map<IList<Other>, Other[]>(otherPosts);
+            var others = Mapper.Map<IList<OtherDto>, Other[]>(otherPosts);
             _otherRepository.Add(others);
 
             var result = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
@@ -124,8 +129,9 @@ namespace Microbrewit.Api.Controllers
             return CreatedAtRoute("DefaultApi", new { controller = "others", }, otherPosts);
         }
 
-
+        
         // DELETE api/Others/5
+        [ApiExplorerSettings(IgnoreApi=true)]
         [Route("{id:int}")]
         [ResponseType(typeof(Other))]
         public IHttpActionResult DeleteOther(int id)

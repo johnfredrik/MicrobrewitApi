@@ -12,6 +12,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using Microbrewit.Api.Areas.HelpPage.ModelDescriptions;
 using Microbrewit.Api.Areas.HelpPage.Models;
+using System.Net;
 
 namespace Microbrewit.Api.Areas.HelpPage
 {
@@ -239,13 +240,17 @@ namespace Microbrewit.Api.Areas.HelpPage
             {
                 ApiDescription = apiDescription,
             };
-
+            
+            apiModel.StatusCodes.Add(apiDescription.ResponseDescription.Documentation);
+                
             ModelDescriptionGenerator modelGenerator = config.GetModelDescriptionGenerator();
             HelpPageSampleGenerator sampleGenerator = config.GetHelpPageSampleGenerator();
             GenerateUriParameters(apiModel, modelGenerator);
             GenerateRequestModelDescription(apiModel, modelGenerator, sampleGenerator);
             GenerateResourceDescription(apiModel, modelGenerator);
             GenerateSamples(apiModel, sampleGenerator);
+
+
 
             return apiModel;
         }

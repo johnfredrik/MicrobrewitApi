@@ -487,13 +487,17 @@
             </summary>
             <returns>Returns collection of all beers</returns>
         </member>
-        <member name="T:Microbrewit.Api.Controllers.OtherController">
+        <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Controllers.OtherController.GetOthers" -->
+        <member name="M:Microbrewit.Api.Controllers.OtherController.GetOther(System.Int32)">
             <summary>
-            Gets a collection of others
+            GET api/Others/5
             </summary>
-            <description>
-            Something others 
-            </description>
+            <errorCode code="400">Not Found</errorCode>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.OtherController.PostOther(System.Collections.Generic.IList{Microbrewit.Model.DTOs.OtherDto})">
+            <summary>
+             Add a new Other to the database.
+             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Util.Formulas.MaltColourUnits(System.Double,System.Double,System.Double)" -->
         <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Util.Formulas.Morey(System.Double,System.Double,System.Double)" -->
