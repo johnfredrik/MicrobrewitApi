@@ -25,7 +25,7 @@ namespace Microbrewit.Test
             TestUtil.DeleteDataInDatabase();
             AutoMapperConfiguration.Configure();
             _context = new MicrobrewitContext();
-            _repository = new HopRepository();
+            _repository = new HopRepository(new MicrobrewitContext());
         }
 
         [TestFixtureTearDown]
