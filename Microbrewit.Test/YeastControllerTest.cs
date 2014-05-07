@@ -29,7 +29,7 @@ namespace Microbrewit.Test
             //TestUtil.DeleteDataInDatabase();
             AutoMapperConfiguration.Configure();
             _context = new MicrobrewitContext();
-            _repository = new YeastRepository();
+            _repository = new YeastRepository(new MicrobrewitContext());
             _controller = new YeastController(_repository);
 
         }
