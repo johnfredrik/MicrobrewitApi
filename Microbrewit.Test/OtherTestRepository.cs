@@ -27,11 +27,7 @@ namespace Microbrewit.Test
             throw new NotImplementedException();
         }
 
-        public Other GetSingle(Func<Other, bool> where, params string[] navigationProperties)
-        {
-            throw new NotImplementedException();
-        }
-
+    
         public void Add(params Other[] items)
         {
             throw new NotImplementedException();
@@ -43,6 +39,42 @@ namespace Microbrewit.Test
         }
 
         public void Remove(params Other[] items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Other>> GetAllAsync(params string[] navigationProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Other> GetSingleAsync(System.Linq.Expressions.Expression<Func<Other, bool>> where, params string[] navigtionProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> AddAsync(params Other[] items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync(params Other[] items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> RemoveAsync(params Other[] items)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public IList<Other> GetList(System.Linq.Expressions.Expression<Func<Other, bool>> where, params string[] navigationProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Other GetSingle(Func<Other, bool> where, params string[] navigationProperties)
         {
             throw new NotImplementedException();
         }
