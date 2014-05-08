@@ -9,7 +9,5 @@ namespace Microbrewit.Repository
 {
     public class RecipeRepository : GenericDataRepository<Recipe>,IRecipeRepositoy
     {
-        
-         
     }
 }
