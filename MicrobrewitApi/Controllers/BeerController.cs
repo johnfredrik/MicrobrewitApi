@@ -15,6 +15,7 @@ using Microbrewit.Repository;
 using AutoMapper;
 using System.Diagnostics;
 using log4net;
+using System.Threading.Tasks;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -38,7 +39,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {
-            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
+            var beers =  Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
             var result = new BeerSimpleCompleteDto();
             result.Beers = beers;
             return result;
@@ -47,11 +48,11 @@ namespace Microbrewit.Api.Controllers
         // GET api/Beer/5
         [Route("{id}")]
         [ResponseType(typeof(Beer))]
-        public IHttpActionResult GetBeer(int id)
+        public async Task<IHttpActionResult> GetBeer(int id)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var beer = _beerRepository.GetSingle(b => b.Id == id,
+            var beer =  await _beerRepository.GetSingleAsync(b => b.Id == id,
                 //"Recipe.MashSteps",
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
@@ -139,7 +140,7 @@ namespace Microbrewit.Api.Controllers
         // POST api/Beer
         [Route("")]
         [ResponseType(typeof(BeerDto))]
-        public IHttpActionResult PostBeer(BeerDto beerPost)
+        public async Task<IHttpActionResult> PostBeer(BeerDto beerPost)
         {
             if (!ModelState.IsValid)
             {
@@ -147,12 +148,9 @@ namespace Microbrewit.Api.Controllers
             }
             var beer = Mapper.Map<BeerDto, Beer>(beerPost);
             BeerCalculations(beer);
-            beer.BeerStyle = null;
-
-
             try
             {
-                _beerRepository.Add(beer);
+               await _beerRepository.AddAsync(beer);
             } 
             catch (DbUpdateException dbUpdateException)
             {
@@ -162,19 +160,20 @@ namespace Microbrewit.Api.Controllers
                 
                
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
-
-            result.Beers.Add(Mapper.Map<Beer, BeerDto>(_beerRepository.GetSingle(b => b.Id == beer.Id,
-                "Recipe.MashSteps.Hops",
-                "Recipe.MashSteps.Fermentables",
-                "Recipe.MashSteps.Others",
-                "Recipe.BoilSteps.Hops",
-                "Recipe.BoilSteps.Fermentables",
-                "Recipe.BoilSteps.Others",
-                "Recipe.FermentationSteps.Hops",
-                "Recipe.FermentationSteps.Fermentables",
-                "Recipe.FermentationSteps.Others",
-                "Recipe.FermentationSteps.Yeasts",
-                 "ABV", "IBU", "SRM", "Brewers", "Breweries")));
+            //var singleBeer = await _beerRepository.GetSingleAsync(b => b.Id == beer.Id,
+            //    "Recipe.MashSteps.Hops",
+            //    "Recipe.MashSteps.Fermentables",
+            //    "Recipe.MashSteps.Others",
+            //    "Recipe.BoilSteps.Hops",
+            //    "Recipe.BoilSteps.Fermentables",
+            //    "Recipe.BoilSteps.Others",
+            //    "Recipe.FermentationSteps.Hops",
+            //    "Recipe.FermentationSteps.Fermentables",
+            //    "Recipe.FermentationSteps.Others",
+            //    "Recipe.FermentationSteps.Yeasts",
+            //     "ABV", "IBU", "SRM", "Brewers", "Breweries");
+            
+            // result.Beers.Add( Mapper.Map<Beer, BeerDto>(singleBeer));
 
             return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
         }
@@ -187,6 +186,11 @@ namespace Microbrewit.Api.Controllers
             {
                 abv.Id = beer.ABV.Id;
             }
+            else
+            //{
+            //    abv.Id = (int)DateTime.Now.Ticks;
+            //}
+            //beer.ABV.Beer = null;
             beer.ABV = abv;
             var srm = Calculation.CalculateSRM(beer.Recipe);
             if (beer.SRM!= null)
@@ -199,6 +203,10 @@ namespace Microbrewit.Api.Controllers
             {
                 ibu.Id = beer.IBU.Id;
             }
+            //else
+            //{
+            //    ibu.Id = (int)DateTime.Now.Ticks;
+            //}
             beer.IBU = ibu;
         }
 
