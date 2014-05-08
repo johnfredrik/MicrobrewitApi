@@ -52,7 +52,7 @@ namespace Microbrewit.Test
         [Test]
         public void GetAllOthersFromDataBaseReturnsNotNull()
         {
-            _repository = new OtherRepository(new MicrobrewitContext());
+            _repository = new OtherRepository();
             var controller = new OtherController(_repository);
             var others = controller.GetOthers();
             Assert.NotNull(others);
@@ -63,7 +63,7 @@ namespace Microbrewit.Test
         {
             using (var file = new StreamReader(JSONPATH + "other.json"))
             {
-                _repository = new OtherRepository(new MicrobrewitContext());
+                _repository = new OtherRepository();
                 string jsonString = file.ReadToEnd();
                 var count = _repository.GetAll().Count();
                 var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
@@ -78,7 +78,7 @@ namespace Microbrewit.Test
         [Test]
         public void PutOtherGetsChanged()
         {
-            _repository = new OtherRepository(new MicrobrewitContext());
+            _repository = new OtherRepository();
             
             var controller = new OtherController(_repository);
             var other = _context.Others.FirstOrDefault();
