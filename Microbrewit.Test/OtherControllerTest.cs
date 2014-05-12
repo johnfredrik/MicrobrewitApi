@@ -30,6 +30,7 @@ namespace Microbrewit.Test
         public void Init()
         {
             TestUtil.DeleteDataInDatabase();
+            TestUtil.InsertDataDatabase();
             AutoMapperConfiguration.Configure();
             _context = new MicrobrewitContext();
         }
@@ -41,25 +42,25 @@ namespace Microbrewit.Test
         }
        
         [Test]
-        public void GetAllOthersReturnsEverythingInRepository()
+        public async Task GetAllOthersReturnsEverythingInRepository()
         {
             _repository = new OtherTestRepository();
             var controller = new OtherController(_repository);
-            var others = controller.GetOthers();
+            var others = await controller.GetOthers();
             Assert.AreEqual(others.Others.Count, 3);
         }
 
         [Test]
-        public void GetAllOthersFromDataBaseReturnsNotNull()
+        public async Task GetAllOthersFromDataBaseReturnsNotNull()
         {
             _repository = new OtherRepository();
             var controller = new OtherController(_repository);
-            var others = controller.GetOthers();
+            var others = await controller.GetOthers();
             Assert.NotNull(others);
         }
 
         [Test]
-        public void PostOtherToDatabaseGetsAdded()
+        public async Task PostOtherToDatabaseGetsAdded()
         {
             using (var file = new StreamReader(JSONPATH + "other.json"))
             {
@@ -69,14 +70,34 @@ namespace Microbrewit.Test
                 var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
 
                 var controller = new OtherController(_repository);
-                controller.PostOther(others);
-                var result = controller.GetOthers();
-                Assert.AreEqual(count + others.Count, result.Others.Count);
+                await controller.PostOther(others);
+                var result = await controller.GetOthers();
+                Assert.AreEqual(count + others.Count, result.Others.Count());
             }
         }
 
         [Test]
-        public void PutOtherGetsChanged()
+        public async Task PostOtherMultipleInserts()
+        {
+            using (var file = new StreamReader(JSONPATH + "other.json"))
+            {
+                _repository = new OtherRepository();
+                string jsonString = file.ReadToEnd();
+                var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
+
+                var controller = new OtherController(_repository);
+                var count = controller.GetOthers().Result.Others.Count();
+                for (int i = 0; i < 100; i++)
+                {
+                    await controller.PostOther(others);
+                }
+                var result = await controller.GetOthers();
+                Assert.AreEqual(count + (others.Count * 100), result.Others.Count());
+            }
+        }
+
+        [Test]
+        public void PutOtherNameGetsChanged()
         {
             _repository = new OtherRepository();
             

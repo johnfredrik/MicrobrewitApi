@@ -4,18 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
+using System.Configuration;
+using StackExchange.Redis;
 
 namespace Microbrewit.Test
 {
     public static class TestUtil
     {
+        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+
         public static void DeleteDataInDatabase()
         {
             using(var context = new MicrobrewitContext())
 	        {
-                var sql = System.IO.File.ReadAllText(@"DeleteScript.txt");
-                context.Database.ExecuteSqlCommand(sql);
+                var delete = System.IO.File.ReadAllText(@"..\..\JSON\delete.sql");
+                context.Database.ExecuteSqlCommand(delete);
 	        }
+        }
+
+        public static void InsertDataDatabase()
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var insert = System.IO.File.ReadAllText(@"..\..\JSON\insert.sql");
+                context.Database.ExecuteSqlCommand(insert);
+            }
+        }
+        //using (var conn = new RedisConnection(server, port, -1, password,
+        //  allowAdmin: true)) 
+        public static void FlushRedisStore()
+        {
+            using (var redis = ConnectionMultiplexer.Connect(redisStore +",allowAdmin=true"))
+            {
+                var redisServer = redis.GetServer(redisStore,6379);
+                redisServer.FlushAllDatabases();
+            }
         }
     }
 }

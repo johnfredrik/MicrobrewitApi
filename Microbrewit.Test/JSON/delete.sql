@@ -1,4 +1,5 @@
-﻿DELETE ABVs
+﻿-- Deletes Database tables
+DELETE ABVs
 DELETE Beers
 DELETE BeerStyles
 DELETE BoilStepFermentables
@@ -24,13 +25,21 @@ DELETE MashStepFermentables
 DELETE MashStepHops
 DELETE MashStepOthers
 DELETE MashSteps
-DELETE Origins
 DELETE Other
 DELETE Recipes
 DELETE SRMs
 DELETE Substitute
+DELETE Yeasts
+DELETE Origins
 DELETE Suppliers
 DELETE UserBeers
 DELETE UserCredentials
 DELETE Users
-DELETE Yeasts
+
+-- To reset identity
+DBCC CHECKIDENT(Origins, RESEED, 0)
+DBCC CHECKIDENT(Suppliers, RESEED, 0)
+DBCC CHECKIDENT(Hops, RESEED, 0)
+DBCC CHECKIDENT(Other, RESEED,0)
+DBCC CHECKIDENT(Fermentables, RESEED,0)
+DBCC CHECKIDENT(Yeasts, RESEED,0)

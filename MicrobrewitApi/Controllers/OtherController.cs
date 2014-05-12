@@ -39,11 +39,12 @@ namespace Microbrewit.Api.Controllers
         /// <returns>Ok 200 on success</returns>
         /// <errorCode code="400"
         [Route("")]
-        public OtherCompleteDto GetOthers()
+        public async Task<OtherCompleteDto> GetOthers()
         {
-            var others = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
+            var others = await _otherRepository.GetAllAsync();
+            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
             var result = new OtherCompleteDto();
-            result.Others = others;
+            result.Others = othersDto;
             return result;
         }
 
@@ -70,7 +71,7 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/Others/5
         [Route("{id:int}")]
-        public IHttpActionResult PutOther(int id, Other other)
+        public async Task<IHttpActionResult> PutOther(int id, Other other)
         {
             if (!ModelState.IsValid)
             {
@@ -84,7 +85,7 @@ namespace Microbrewit.Api.Controllers
 
             try
             {
-                _otherRepository.Update(other);               
+               await _otherRepository.UpdateAsync(other);               
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -106,14 +107,14 @@ namespace Microbrewit.Api.Controllers
         // POST api/others
         [Route("")]
         [ResponseType(typeof(IList<OtherDto>))]
-        public IHttpActionResult PostOther(IList<OtherDto> otherPosts)
+        public async Task<IHttpActionResult> PostOther(IList<OtherDto> otherPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var others = Mapper.Map<IList<OtherDto>, Other[]>(otherPosts);
-            _otherRepository.Add(others);
+            await _otherRepository.AddAsync(others);
 
             var result = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
 

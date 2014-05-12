@@ -43,27 +43,32 @@ namespace Microbrewit.Test
             throw new NotImplementedException();
         }
 
-        public Task<IList<Other>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Other>> GetAllAsync(params string[] navigationProperties)
+        {
+            return await Task.Run(() =>  new List<Other>()
+            {
+                new Other() { Id = 1, Name = "Strawberry", Type = "Fruit" },
+                new Other() { Id = 2, Name = "Honey", Type= "NoneFermentableSugar" },
+                new Other() { Id = 3, Name = "Koriander", Type = "Spice" },
+            });
+        }
+
+        public async Task<Other> GetSingleAsync(System.Linq.Expressions.Expression<Func<Other, bool>> where, params string[] navigtionProperties)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Other> GetSingleAsync(System.Linq.Expressions.Expression<Func<Other, bool>> where, params string[] navigtionProperties)
+        public async Task AddAsync(params Other[] items)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> AddAsync(params Other[] items)
+        public async Task UpdateAsync(params Other[] items)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> UpdateAsync(params Other[] items)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> RemoveAsync(params Other[] items)
+        public async Task RemoveAsync(params Other[] items)
         {
             throw new NotImplementedException();
         }

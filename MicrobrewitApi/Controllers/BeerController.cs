@@ -35,6 +35,7 @@ namespace Microbrewit.Api.Controllers
         /// <summary>
         /// api.microbrew.it/beers
         /// </summary>
+        /// <response code="200">It's all good!</response>
         /// <returns>Returns collection of all beers</returns>
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
@@ -45,7 +46,13 @@ namespace Microbrewit.Api.Controllers
             return result;
         }
 
-        // GET api/Beer/5
+        /// <summary>
+        /// api.microbrew.it/beers/:id
+        /// </summary>
+        /// <response code="200">Beer found and returned</response>
+        /// <response code="404">Beer with that id not found</response>
+        ///<param name="id"></param>
+        /// <returns></returns>
         [Route("{id}")]
         [ResponseType(typeof(Beer))]
         public async Task<IHttpActionResult> GetBeer(int id)

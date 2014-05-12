@@ -26,11 +26,11 @@ namespace Microbrewit.Api
             GlobalConfiguration.Configuration.AddJsonpFormatter();
             
             GlobalConfiguration.Configure(WebApiConfig.Register);
-           
+            GlobalConfiguration.Configuration.EnableCors();
             
-            //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            //RouteConfig.RegisterRoutes(RouteTable.Routes);
-            //BundleConfig.RegisterBundles(BundleTable.Bundles);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             AutoMapperConfiguration.Configure();
             Database.SetInitializer(new InitializeDatabaseWithSeedData());

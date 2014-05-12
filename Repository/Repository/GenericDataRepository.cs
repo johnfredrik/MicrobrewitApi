@@ -33,8 +33,7 @@ namespace Microbrewit.Repository
             return list;
         }
 
-        public virtual IList<T> GetList(Expression<Func<T, bool>> where,
-             params string[] navigationProperties)
+        public virtual IList<T> GetList(Expression<Func<T, bool>> where, params string[] navigationProperties)
         {
             List<T> list;
             using (var context = new MicrobrewitContext())
@@ -53,8 +52,7 @@ namespace Microbrewit.Repository
             return list;
         }
 
-        public virtual T GetSingle(Func<T, bool> where,
-             params string[] navigationProperties)
+        public virtual T GetSingle(Func<T, bool> where, params string[] navigationProperties)
         {
             T item = null;
             using (var context = new MicrobrewitContext())
@@ -123,7 +121,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task<IList<T>> GetAllAsync(params string[] navigationProperties)
+        public virtual async Task<IList<T>> GetAllAsync(params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -139,7 +137,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> where, params string[] navigationProperties)
+        public virtual async Task<T> GetSingleAsync(Expression<Func<T, bool>> where, params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -154,7 +152,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task<int> AddAsync(params T[] items)
+        public virtual async Task AddAsync(params T[] items)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -166,7 +164,7 @@ namespace Microbrewit.Repository
 
             try
             {
-                return await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -177,13 +175,12 @@ namespace Microbrewit.Repository
                         Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
                     }
                 }
-                return 0;
             }
             }
 
         }
 
-        public async Task<int> UpdateAsync(params T[] items)
+        public virtual async Task UpdateAsync(params T[] items)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -192,11 +189,11 @@ namespace Microbrewit.Repository
             {
                 context.Entry(item).State = EntityState.Modified;
             }
-            return await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             }
         }
 
-        public async Task<int> RemoveAsync(params T[] items)
+        public virtual async Task RemoveAsync(params T[] items)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -205,7 +202,7 @@ namespace Microbrewit.Repository
             {
                 context.Entry(item).State = EntityState.Deleted;
             }
-            return await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             }
         }
 

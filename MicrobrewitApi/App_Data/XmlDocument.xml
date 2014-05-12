@@ -485,7 +485,17 @@
             <summary>
             api.microbrew.it/beers
             </summary>
+            <response code="200">It's all good!</response>
             <returns>Returns collection of all beers</returns>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.BeerController.GetBeer(System.Int32)">
+             <summary>
+             api.microbrew.it/beers/:id
+             </summary>
+             <response code="200">Beer found and returned</response>
+             <response code="404">Beer with that id not found</response>
+            <param name="id"></param>
+             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Controllers.OtherController.GetOthers" -->
         <member name="M:Microbrewit.Api.Controllers.OtherController.GetOther(System.Int32)">
@@ -498,6 +508,42 @@
             <summary>
              Add a new Other to the database.
              </summary>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.YeastController.GetYeasts">
+            <summary>
+            Gets all yeasts.
+            </summary>
+            <returns>200 OK</returns>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.YeastController.GetYeast(System.Int32)">
+            <summary>
+            Gets single yeast.
+            api.microbrew.it/yeasts/:id
+            </summary>
+            <param name="id">Yeast Id</param>
+            <returns>200 OK Single yeast</returns>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.YeastController.PutYeast(System.Int32,Microbrewit.Model.DTOs.YeastDto)">
+            <summary>
+            Updates a yeast.
+            </summary>
+            <param name="id">Yeast Id</param>
+            <param name="yeastDto">Json of the YeastDto object</param>
+            <returns>No Content 204</returns>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.YeastController.PostYeast(System.Collections.Generic.IList{Microbrewit.Model.DTOs.YeastDto})">
+            <summary>
+            Inserts new yeast.
+            </summary>
+            <param name="yeastPosts">Takes a list of YeastDto objects in form of json</param>
+            <returns>201 Created</returns>
+        </member>
+        <member name="M:Microbrewit.Api.Controllers.YeastController.DeleteYeast(System.Int32)">
+            <summary>
+            Deletes a yeast
+            </summary>
+            <param name="id">Yeast id</param>
+            <returns>200 OK</returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Util.Formulas.MaltColourUnits(System.Double,System.Double,System.Double)" -->
         <!-- Badly formed XML comment ignored for member "M:Microbrewit.Api.Util.Formulas.Morey(System.Double,System.Double,System.Double)" -->

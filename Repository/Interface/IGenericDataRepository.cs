@@ -19,8 +19,8 @@ namespace Microbrewit.Repository
         //Async methods
         Task<IList<T>> GetAllAsync(params string[] navigationProperties);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> where, params string[] navigtionProperties);
-        Task<int> AddAsync(params T[] items);
-        Task<int> UpdateAsync(params T[] items);
-        Task<int> RemoveAsync(params T[] items);
+        Task AddAsync(params T[] items);
+        Task UpdateAsync(params T[] items);
+        Task RemoveAsync(params T[] items);
     }
 }

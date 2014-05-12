@@ -43,7 +43,7 @@ namespace Microbrewit.Api
 
             config.DependencyResolver = new UnityResolver(container);
 
-
+            config.EnableCors();
             // Web API routes
             config.MapHttpAttributeRoutes();
 

@@ -24,6 +24,21 @@ namespace Microbrewit.Repository
                 base.Add(yeasts);
             }
         }
+
+        public override async Task AddAsync(params Yeast[] yeasts)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                foreach (var yeast in yeasts)
+                {
+                    if (yeast.Supplier != null)
+                    {
+                        yeast.Supplier = null;
+                    }
+                }
+               base.AddAsync(yeasts);
+            }
+        }
       
     }
 }

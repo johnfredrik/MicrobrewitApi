@@ -32,11 +32,32 @@ namespace Microbrewit.Repository
             }
         }
 
+        public async override Task AddAsync(params Hop[] hops)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                foreach (Hop hop in hops)
+                {
+                    if (hop.OriginId > 0)
+                    {
+                        hop.Origin = null;
+                    }
+                    foreach (var subs in hop.Substituts)
+                    {
+                        context.Entry(subs).State = EntityState.Unchanged;
+                    }
+                    //context.Entry(hop).State = EntityState.Added;
+
+                }
+                await base.AddAsync(hops);
+                //context.SaveChanges();
+            }
+        }
         public Flavour AddFlavour(string name)
         {
             using (var context = new MicrobrewitContext())
             {
-                var flavourId = context.Flavours.Max(f => f.Id) + 1;
+                var flavourId = (context.Flavours.Max(f => (int?)f.Id) ?? 0) + 1;
                 var flavour = new Flavour() { 
                     Id = flavourId, 
                     Name = name
