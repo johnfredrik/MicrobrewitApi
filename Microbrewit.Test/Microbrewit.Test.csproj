@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BreweryControllerTest.cs" />
     <Compile Include="HopControllerTests.cs" />
     <Compile Include="OriginControllerTests.cs" />
     <Compile Include="OtherControllerTest.cs" />
