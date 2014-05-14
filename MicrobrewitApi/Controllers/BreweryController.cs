@@ -27,22 +27,33 @@ namespace Microbrewit.Api.Controllers
             this._breweryRepository = breweryRepository;
         }
 
-        // GET api/Brewery
+        /// <summary>
+        /// Get all breweries.
+        /// <response code="200">OK</response>
+        /// </summary>
+        /// <returns></returns>
         [Route("")]
-        public BreweryCompleteDto GetBreweries()
+        public async Task<BreweryCompleteDto> GetBreweries()
         {
-            var breweries = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(_breweryRepository.GetAll("Members.Member","Beers"));
+            var brewery = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(brewery);
             var result = new BreweryCompleteDto();
-            result.Breweries = breweries;
+            result.Breweries = breweriesDto;
             return result;
         }
 
-        // GET api/Brewery/5
+        /// <summary>
+        /// Get brewery by id.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Beerstyle id</param>
+        /// <returns></returns>
         [Route("{id}")]
         [ResponseType(typeof(BreweryCompleteDto))]
-        public IHttpActionResult GetBrewery(int id)
+        public async Task<IHttpActionResult> GetBrewery(int id)
         {
-            var brewery = _breweryRepository.GetSingle(b => b.Id == id, "Members.Member", "Beers");
+            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == id, "Members.Member", "Beers");
             if (brewery == null)
             {
                 return NotFound();
@@ -52,9 +63,16 @@ namespace Microbrewit.Api.Controllers
             return Ok(result);
         }
 
-        // PUT api/Brewery/5
+        /// <summary>
+        /// Updates a beerstyle.
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="id">Brewery id</param>
+        /// <param name="beerstyle">Brewery object</param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        public IHttpActionResult PutBrewery(int id, BreweryDto breweryDto)
+        public async Task<IHttpActionResult> PutBrewery(int id, BreweryDto breweryDto)
         {
             if (!ModelState.IsValid)
             {
@@ -65,16 +83,23 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
+           
             var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
-            _breweryRepository.Update(brewery);
-
+            var response = await _breweryRepository.UpdateAsync(brewery);
+         
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/Brewery
+        /// <summary>
+        /// Add brewery.
+        /// </summary>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="beerstyles">Brewery object.</param>
+        /// <returns></returns>
         [Route("")]
         [ResponseType(typeof(IList<BreweryDto>))]
-        public IHttpActionResult PostBrewery(IList<BreweryDto> breweryPosts)
+        public async Task<IHttpActionResult> PostBrewery(IList<BreweryDto> breweryPosts)
         {
             if (!ModelState.IsValid)
             {
@@ -82,25 +107,28 @@ namespace Microbrewit.Api.Controllers
             }
 
             var breweries = Mapper.Map<IList<BreweryDto>, Brewery[]>(breweryPosts);
-            _breweryRepository.Add(breweries);
+            await _breweryRepository.AddAsync(breweries);
 
             return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
         }
 
-        // DELETE api/Brewery/5
-        [ResponseType(typeof(Brewery))]
+        /// <summary>
+        /// Deletes brewery by id.
+        /// </summary>
+        /// <response code="404">Node Found</response>
+        /// <param name="id">Brewery id.</param>
+        /// <returns></returns>
+        [ResponseType(typeof(BreweryDto))]
         public async Task<IHttpActionResult> DeleteBrewery(int id)
         {
-            Brewery brewery = await db.Breweries.FindAsync(id);
+            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == id);
             if (brewery == null)
             {
                 return NotFound();
             }
-
-            db.Breweries.Remove(brewery);
-            await db.SaveChangesAsync();
-
-            return Ok(brewery);
+            await _breweryRepository.RemoveAsync(brewery);
+            var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
+            return Ok(breweryDto);
         }
 
         protected override void Dispose(bool disposing)
