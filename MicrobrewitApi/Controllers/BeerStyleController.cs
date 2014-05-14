@@ -31,8 +31,12 @@ namespace Microbrewit.Api.Controllers
             this._beerStyleRepository = beerStyleRepository;
         }
 
+        /// <summary>
+        /// Get all beerstyles.
+        /// <response code="200">OK</response>
+        /// </summary>
+        /// <returns></returns>
         [Route("")]
-        // GET api/BeerStyle
         public BeerStyleCompleteDto GetBeerStyles()
         {
             var result = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
@@ -67,10 +71,15 @@ namespace Microbrewit.Api.Controllers
         }
 
 
-
+        /// <summary>
+        /// Get beerstyle by id.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Beerstyle id</param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        // GET api/BeerStyle/5
-        [ResponseType(typeof(BeerStyle))]
+        [ResponseType(typeof(BeerStyleCompleteDto))]
         [HttpGet]
         public IHttpActionResult GetBeerStyle(int id)
         {
@@ -85,15 +94,22 @@ namespace Microbrewit.Api.Controllers
             return Ok(result);
         }
 
-        // PUT api/BeerStyle/5
+        /// <summary>
+        /// Updates a beerstyle.
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="id">Beerstyle id</param>
+        /// <param name="beerstyle">BeerStyle object</param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        public IHttpActionResult PutBeerStyle(int id, BeerStyle beerstyle)
+        public IHttpActionResult PutBeerStyle(int id, BeerStyleDto beerstyleDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var beerstyle = Mapper.Map<BeerStyleDto, BeerStyle>(beerstyleDto);
             if (id != beerstyle.Id)
             {
                 return BadRequest();
@@ -105,19 +121,23 @@ namespace Microbrewit.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/BeerStyle
-
+        /// <summary>
+        /// Add beerstyle.
+        /// </summary>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="beerstyles">Beerstyle object.</param>
+        /// <returns></returns>
         [Route("")]
-
-        [ResponseType(typeof(IList<BeerStyle>))]
-        public IHttpActionResult PostBeerStyle(IList<BeerStyle> beerstyles)
+        [ResponseType(typeof(IList<BeerStyleDto>))]
+        public IHttpActionResult PostBeerStyle(IList<BeerStyleDto> beerstyles)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            _beerStyleRepository.Add(beerstyles.ToArray());
+            var beerDto = Mapper.Map<IList<BeerStyleDto>, IList<BeerStyle>>(beerstyles);
+            _beerStyleRepository.Add(beerDto.ToArray());
             var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(_beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
@@ -132,8 +152,13 @@ namespace Microbrewit.Api.Controllers
             return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, bs);
         }
 
-        // DELETE api/BeerStyle/5
-        [ResponseType(typeof(BeerStyle))]
+        /// <summary>
+        /// Deletes beerstyle by id.
+        /// </summary>
+        /// <response code="404">Node Found</response>
+        /// <param name="id">Beerstyle id.</param>
+        /// <returns></returns>
+        [ResponseType(typeof(BeerStyleDto))]
         public async Task<IHttpActionResult> DeleteBeerStyle(int id)
         {
             BeerStyle beerstyle = await db.BeerStyles.FindAsync(id);
@@ -144,8 +169,8 @@ namespace Microbrewit.Api.Controllers
 
             db.BeerStyles.Remove(beerstyle);
             await db.SaveChangesAsync();
-
-            return Ok(beerstyle);
+            var beerStyleDto = Mapper.Map<BeerStyle, BeerStyleDto>(beerstyle);
+            return Ok(beerStyleDto);
         }
 
         protected override void Dispose(bool disposing)
