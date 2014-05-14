@@ -21,32 +21,54 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly IOriginRespository originRepsository = new OriginRepository();
+        private IOriginRespository _originRepository;
 
-        // GET api/Origin
-        [Route("")]
-        public IList<Origin> GetOrigins()
+        public OriginController(IOriginRespository originRepository)
         {
-            return originRepsository.GetAll();
+            this._originRepository = originRepository;
         }
 
-        // GET api/Origin/5
+
+        /// <summary>
+        /// Get all origins.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <returns></returns>
+        [Route("")]
+        public async Task<IList<Origin>> GetOrigins()
+        {
+            return await _originRepository.GetAllAsync();
+        }
+
+        /// <summary>
+        /// Get origin by id.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code=""404>Not Found</response>
+        /// <param name="id">Origin id</param>
+        /// <returns></returns>
         [Route("{id:int}")]
         [ResponseType(typeof(Origin))]
-        public IHttpActionResult GetOrigin(int id)
+        public async Task<IHttpActionResult> GetOrigin(int id)
         {
-            Origin origin = originRepsository.GetSingle(o => o.Id == id);
+            var origin = await _originRepository.GetSingleAsync(o => o.Id == id);
             if (origin == null)
             {
                 return NotFound();
             }
-
-            return Ok(origin);
+            return  Ok(origin);
         }
 
-        // PUT api/Origin/5
+        /// <summary>
+        /// Updates a origin
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="id">Origin id</param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        public IHttpActionResult PutOrigin(int id, Origin origin)
+        public async Task<IHttpActionResult> PutOrigin(int id, Origin origin)
         {
             if (!ModelState.IsValid)
             {
@@ -58,39 +80,51 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            originRepsository.Update(origin);
+            await _originRepository.UpdateAsync(origin);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/Origin
+        /// <summary>
+        /// Adds origins.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="originPosts"></param>
+        /// <returns></returns>
         [Route("")]
         [ResponseType(typeof(IList<Origin>))]
-        public IHttpActionResult PostOrigin(IList<Origin> originPosts)
+        public async Task<IHttpActionResult> PostOrigin(IList<Origin> originPosts)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var origins = originPosts.ToArray();
-            originRepsository.Add(origins);
+            await _originRepository.AddAsync(origins);
 
 
             return CreatedAtRoute("DefaultApi", new { controller= "origins", }, origins);
         }
 
-        // DELETE api/Origin/5
+        /// <summary>
+        /// Deletes a origin.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Origin id</param>
+        /// <returns></returns>
         [Route("{id:int}")]
         [ResponseType(typeof(Origin))]
-        public IHttpActionResult DeleteOrigin(int id)
+        public async Task<IHttpActionResult> DeleteOrigin(int id)
         {
-            Origin origin = originRepsository.GetSingle(o => o.Id == id);
+            Origin origin = _originRepository.GetSingle(o => o.Id == id);
             if (origin == null)
             {
                 return NotFound();
             }
 
-            originRepsository.Remove(origin);
+            await _originRepository.RemoveAsync(origin);
 
             return Ok(origin);
         }
