@@ -26,7 +26,7 @@ namespace Microbrewit.Model
         public DbSet<MashStepHop> MashStepHops { get; set; }
         public DbSet<BoilStepHop> BoilStepHops { get; set; }
         public DbSet<FermentationStepOther> FermentationStepOthers { get; set; }
-
+        public DbSet<BreweryMember> BreweryMembers { get; set; }
         public DbSet<MashStepFermentable> MashStepFermentables { get; set; }
         public DbSet<BoilStepFermentable> BoilStepFermentables { get; set; }
         public DbSet<MashStepOther> MashStepOthers { get; set; }
@@ -52,7 +52,7 @@ namespace Microbrewit.Model
            //Disable initializer
            //Database.SetInitializer<MicrobrewitContext>(null);
            //Configuration.LazyLoadingEnabled = false;
-           //Configuration.ProxyCreationEnabled = false;
+           Configuration.ProxyCreationEnabled = false;
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
