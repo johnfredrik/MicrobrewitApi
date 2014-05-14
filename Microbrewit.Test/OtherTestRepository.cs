@@ -63,7 +63,7 @@ namespace Microbrewit.Test
             throw new NotImplementedException();
         }
 
-        public async Task UpdateAsync(params Other[] items)
+        public async Task<int> UpdateAsync(params Other[] items)
         {
             throw new NotImplementedException();
         }
