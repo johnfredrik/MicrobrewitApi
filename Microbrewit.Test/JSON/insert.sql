@@ -4,6 +4,7 @@ INSERT INTO [dbo].[Origins] ([OriginId], [Name]) VALUES (1, N'United States')
 INSERT INTO [dbo].[Origins] ([OriginId], [Name]) VALUES (2, N'United Kingdom')
 INSERT INTO [dbo].[Origins] ([OriginId], [Name]) VALUES (3, N'Belgium')
 INSERT INTO [dbo].[Origins] ([OriginId], [Name]) VALUES (4, N'Germany')
+INSERT INTO [dbo].[Origins] ([OriginId], [Name]) VALUES (5, N'Norway')
 SET IDENTITY_INSERT Origins OFF
 
 SET IDENTITY_INSERT Suppliers ON
@@ -14,6 +15,28 @@ INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (4, N'Th
 INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (5, N'De Wolf-Cosyns',3)
 INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (6, N'Bestmaltz',4)
 SET IDENTITY_INSERT Suppliers OFF
+
+-- Breweries
+SET IDENTITY_INSERT Breweries ON
+INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (1, N'Hummlepung bryggeri', N'Best kitchen brewed beer around',N'Home Brewery')
+INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (2, N'Ægir Bryggeri ', N'Flåmsbrygga er eit tun ved Aurlandsfjorden som omfattar Flåmsbrygga Hotell med konferansefasillitetar, Ægir Bryggeri & Pub, Flåmstova Restaurant og Furukroa Kafé.', N'Microbrewery')
+INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (3, N'Gromle bryggeri', N'Best kitchen brewed beer around',N'Home Brewery')
+INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (4, N'Fomle bryggeri', N'Best kitchen brewed beer around',N'Home Brewery')
+SET IDENTITY_INSERT Breweries OFF
+
+-- Brewery Members
+INSERT INTO [dbo].[Users] ([Username],[Email],[Settings]) VALUES (N'johnfredrik',N'john-f@online.no',N'{something}')
+INSERT INTO [dbo].[Users] ([Username],[Email],[Settings]) VALUES (N'torstein',N'torstein@gmail.com',N'{something}')
+
+
+INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (1,N'torstein',N'Bossman')
+INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (2,N'torstein',N'Bossman')
+INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (4,N'torstein',N'Bossman')
+
+SET IDENTITY_INSERT UserCredentials ON
+INSERT INTO [dbo].[UserCredentials] ([UserCredentialsId],[Password],[SharedSecret],[Username]) VALUES (1,N'EAAAAA2i7rB183t/vrZ62ahBVELmFmmO9B5Fzz4xz9F57tya',N'test',N'johnfredrik')
+INSERT INTO [dbo].[UserCredentials] ([UserCredentialsId],[Password],[SharedSecret],[Username]) VALUES (2,N'EAAAAA2i7rB183t/vrZ62ahBVELmFmmO9B5Fzz4xz9F57tya',N'test',N'torstein')
+SET IDENTITY_INSERT UserCredentials OFF
 
 SET IDENTITY_INSERT Hops ON
 INSERT INTO [dbo].[Hops] ([HopId], [Name], [AAlow], [AAHigh],[BetaLow],[BetaHigh],[Notes],[FlavourDescription],[OriginId]) VALUES (1, N'Challanger', 6, 8, 4, 4.5, '', '',2)
@@ -39,13 +62,12 @@ INSERT INTO [dbo].[Fermentables] ([FermentableId],[Name],[EBC],[Lovibond],[PPG],
 SET IDENTITY_INSERT Fermentables OFF
 
 -- Gets Added in the test
-/*
 SET IDENTITY_INSERT Other ON
 INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (1,'Strawberry','Fruit')
 INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (2,'Honey','NoneFermentableSugar')
 INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (3,'Koriander','Spice')
 SET IDENTITY_INSERT Other OFF
-*/
+
 SET IDENTITY_INSERT Yeasts ON
 INSERT INTO [dbo].[Yeasts] ([YeastId],
 							[Name],
