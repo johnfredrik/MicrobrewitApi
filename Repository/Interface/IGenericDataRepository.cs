@@ -20,7 +20,7 @@ namespace Microbrewit.Repository
         Task<IList<T>> GetAllAsync(params string[] navigationProperties);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> where, params string[] navigtionProperties);
         Task AddAsync(params T[] items);
-        Task UpdateAsync(params T[] items);
+        Task<int> UpdateAsync(params T[] items);
         Task RemoveAsync(params T[] items);
     }
 }
