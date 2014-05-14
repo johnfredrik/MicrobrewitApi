@@ -57,7 +57,7 @@ namespace Microbrewit.Test
         public async Task GetYeastWithValidIdNotNullOrEmpty()
         {
             var first = _context.Yeasts.FirstOrDefault();
-            var yeast = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;;
+            var yeast = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
             Assert.NotNull(yeast);
         }
 
