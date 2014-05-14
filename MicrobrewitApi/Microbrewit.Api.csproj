@@ -243,6 +243,7 @@
     <Compile Include="Automapper\CustomResolvers\BeerBrewerResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\BreweryMemberResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\RecipeBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\RecipeFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
@@ -276,7 +277,6 @@
     <Compile Include="Controllers\BreweryController.cs" />
     <Compile Include="Automapper\HopProfile.cs" />
     <Compile Include="Automapper\RecipeProfile.cs" />
-    <Compile Include="Controllers\Default1Controller.cs" />
     <Compile Include="Controllers\FermentableController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HopController.cs" />
