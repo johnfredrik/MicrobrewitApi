@@ -33,7 +33,7 @@ namespace Microbrewit.Api.Controllers
         }
 
         /// <summary>
-        /// api.microbrew.it/beers
+        /// Gets all beer
         /// </summary>
         /// <response code="200">It's all good!</response>
         /// <returns>Returns collection of all beers</returns>
@@ -47,11 +47,11 @@ namespace Microbrewit.Api.Controllers
         }
 
         /// <summary>
-        /// api.microbrew.it/beers/:id
+        /// Gets beer by id
         /// </summary>
         /// <response code="200">Beer found and returned</response>
         /// <response code="404">Beer with that id not found</response>
-        ///<param name="id"></param>
+        ///<param name="id">Id of the beer</param>
         /// <returns></returns>
         [Route("{id}")]
         [ResponseType(typeof(Beer))]
@@ -88,6 +88,7 @@ namespace Microbrewit.Api.Controllers
         }
 
         // GET api/Beer/5
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("redis/{id}")]
         [ResponseType(typeof(Beer))]
         public IHttpActionResult GetBeerRedis(int id)
@@ -108,7 +109,14 @@ namespace Microbrewit.Api.Controllers
             return Ok(result);
         }
 
-        // PUT api/Beer/5
+        /// <summary>
+        /// Updates a beer
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="id">Id of the beer</param>
+        /// <param name="beerDto"></param>
+        /// <returns></returns>
         [Route("{id}")]
         public IHttpActionResult PutBeer(int id, BeerDto beerDto)
         {
@@ -144,7 +152,13 @@ namespace Microbrewit.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/Beer
+        /// <summary>
+        /// Adds a beer
+        /// </summary>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="beerPost"></param>
+        /// <returns></returns>
         [Route("")]
         [ResponseType(typeof(BeerDto))]
         public async Task<IHttpActionResult> PostBeer(BeerDto beerPost)
@@ -217,7 +231,13 @@ namespace Microbrewit.Api.Controllers
             beer.IBU = ibu;
         }
 
-        // DELETE api/Beer/5
+        /// <summary>
+        /// Deletes a beer
+        /// </summary>
+        /// <response code="200">Ok</response>
+        /// <resppmse code="404">Not Found</resppmse>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Route("{id:int}")]
         [ResponseType(typeof(BeerDto))]
         public IHttpActionResult DeleteBeer(int id)
