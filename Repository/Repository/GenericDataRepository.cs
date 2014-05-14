@@ -100,7 +100,6 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
-
                 foreach (T item in items)
                 {
                     context.Entry(item).State = EntityState.Modified;
@@ -180,7 +179,7 @@ namespace Microbrewit.Repository
 
         }
 
-        public virtual async Task UpdateAsync(params T[] items)
+        public virtual async Task<int> UpdateAsync(params T[] items)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -189,7 +188,8 @@ namespace Microbrewit.Repository
             {
                 context.Entry(item).State = EntityState.Modified;
             }
-            await context.SaveChangesAsync();
+            return await context.SaveChangesAsync();
+           
             }
         }
 
