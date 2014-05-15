@@ -27,10 +27,12 @@ SET IDENTITY_INSERT Breweries OFF
 -- Brewery Members
 INSERT INTO [dbo].[Users] ([Username],[Email],[Settings]) VALUES (N'johnfredrik',N'john-f@online.no',N'{something}')
 INSERT INTO [dbo].[Users] ([Username],[Email],[Settings]) VALUES (N'torstein',N'torstein@gmail.com',N'{something}')
-
+INSERT INTO [dbo].[Users] ([Username],[Email],[Settings]) VALUES (N'thedude','thedude@dude.no',N'{something}')
 
 INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (1,N'torstein',N'Bossman')
+INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (1,N'thedude',N'Slave')
 INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (2,N'torstein',N'Bossman')
+INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (2,N'thedude',N'Slave')
 INSERT INTO [dbo].[BreweryMembers] ([BreweryId],[MemberUsername],[Role]) VALUES (4,N'torstein',N'Bossman')
 
 SET IDENTITY_INSERT UserCredentials ON
