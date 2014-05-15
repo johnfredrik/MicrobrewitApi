@@ -75,7 +75,26 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
-                return await context.BreweryMembers.ToListAsync();
+                return await context.BreweryMembers.Where(b => b.BreweryId == breweryId).ToListAsync();
+            }
+        }
+
+
+        public async Task UpdateBreweryMember(BreweryMember breweryMember)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                context.Entry(breweryMember).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task PostBreweryMember(BreweryMember breweryMember)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                context.BreweryMembers.Add(breweryMember);
+                await context.SaveChangesAsync();
             }
         }
     }

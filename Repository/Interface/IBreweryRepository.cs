@@ -12,6 +12,8 @@ namespace Microbrewit.Repository
         Task<BreweryMember> GetBreweryMember(int breweryId,string username);
         Task<IList<BreweryMember>> GetBreweryMembers(int breweryId);
         Task DeleteBreweryMember(int breweryId, string username);
+        Task UpdateBreweryMember(BreweryMember breweryMember);
+        Task PostBreweryMember(BreweryMember breweryMember);
        
     }
 }

@@ -64,12 +64,12 @@ namespace Microbrewit.Api.Controllers
         }
 
         /// <summary>
-        /// Updates a beerstyle.
+        /// Updates a brewery member.
         /// </summary>
         /// <response code="204">No Content</response>
         /// <response code="400">Bad Request</response>
         /// <param name="id">Brewery id</param>
-        /// <param name="beerstyle">Brewery object</param>
+        /// <param name="breweryDto">Brewery object</param>
         /// <returns></returns>
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutBrewery(int id, BreweryDto breweryDto)
@@ -95,7 +95,7 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <response code="201">Created</response>
         /// <response code="400">Bad Request</response>
-        /// <param name="beerstyles">Brewery object.</param>
+        /// <param name="breweryPosts">List of brewery objects</param>
         /// <returns></returns>
         [Route("")]
         [ResponseType(typeof(IList<BreweryDto>))]
@@ -186,6 +186,47 @@ namespace Microbrewit.Api.Controllers
         {
             var breweryMembers = await _breweryRepository.GetBreweryMembers(id);
             return Ok(breweryMembers);
+        }
+
+        /// <summary>
+        /// Updates a brewery member for a brewery.
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="id">Brewery id</param>
+        /// <param name="username">Member username</param>
+        /// <returns></returns>
+        [Route("{id:int}/members/{username}")]
+        public async Task<IHttpActionResult> PutBreweryMember(int id,string username, BreweryMember breweryMember)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != breweryMember.BreweryId || username != breweryMember.MemberUsername)
+            {
+                return BadRequest();
+            }
+
+            await _breweryRepository.UpdateBreweryMember(breweryMember);
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [Route("{id:int}/members")]
+        [ResponseType(typeof(BreweryMember))]
+        public async Task<IHttpActionResult> PostBreweryMember(int id, BreweryMember breweryMember)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            await _breweryRepository.PostBreweryMember(breweryMember);
+
+            return CreatedAtRoute("DefaultApi", new { controller = "breweries/members" }, breweryMember);
         }
 
         protected override void Dispose(bool disposing)
