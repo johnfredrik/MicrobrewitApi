@@ -14,7 +14,6 @@ namespace Microbrewit.Api.Automapper
         {
             Mapper.CreateMap<User, BrewerDto>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Username));
-               
         }
 
     }
