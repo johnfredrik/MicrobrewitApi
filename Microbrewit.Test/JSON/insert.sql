@@ -22,6 +22,7 @@ INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (
 INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (2, N'Ægir Bryggeri ', N'Flåmsbrygga er eit tun ved Aurlandsfjorden som omfattar Flåmsbrygga Hotell med konferansefasillitetar, Ægir Bryggeri & Pub, Flåmstova Restaurant og Furukroa Kafé.', N'Microbrewery')
 INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (3, N'Gromle bryggeri', N'Best kitchen brewed beer around',N'Home Brewery')
 INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (4, N'Fomle bryggeri', N'Best kitchen brewed beer around',N'Home Brewery')
+INSERT INTO [dbo].[Breweries] ([BreweryId],[Name],[Description],[Type]) VALUES (5, N'Best bryggeri', N'Best kitchen brewed beer around',N'Home Brewery')
 SET IDENTITY_INSERT Breweries OFF
 
 -- Brewery Members
