@@ -51,5 +51,32 @@ namespace Microbrewit.Repository
             context.Entry(original).CurrentValues.SetValues(updated);
         }
 
+
+        public async Task<BreweryMember> GetBreweryMember(int breweryId, string username)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return await context.BreweryMembers.SingleOrDefaultAsync(bm => bm.MemberUsername.Equals(username) && bm.BreweryId == breweryId);
+            }
+        }
+
+        public async Task DeleteBreweryMember(int breweryId, string username)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+               var breweryMember = await context.BreweryMembers.SingleOrDefaultAsync(bm => bm.MemberUsername.Equals(username) && bm.BreweryId == breweryId);
+               context.BreweryMembers.Remove(breweryMember);
+               await context.SaveChangesAsync();
+            }
+            
+        }
+
+        public async Task<IList<BreweryMember>> GetBreweryMembers(int breweryId)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return await context.BreweryMembers.ToListAsync();
+            }
+        }
     }
 }

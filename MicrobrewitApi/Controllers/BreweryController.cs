@@ -118,6 +118,7 @@ namespace Microbrewit.Api.Controllers
         /// <response code="404">Node Found</response>
         /// <param name="id">Brewery id.</param>
         /// <returns></returns>
+        [Route("{id:int}")]
         [ResponseType(typeof(BreweryDto))]
         public async Task<IHttpActionResult> DeleteBrewery(int id)
         {
@@ -129,6 +130,62 @@ namespace Microbrewit.Api.Controllers
             await _breweryRepository.RemoveAsync(brewery);
             var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
             return Ok(breweryDto);
+        }
+
+        /// <summary>
+        /// Deletes a brewery member from a brewery.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Brewery id</param>
+        /// <param name="username">Username for member</param>
+        /// <returns>Deleted brewery member</returns>
+        [Route("{id:int}/members/{username}")]
+        [ResponseType(typeof(BreweryMember))]
+        public async Task<IHttpActionResult> DeleteBreweryMember(int id, string username)
+        {
+            var breweryMember = await _breweryRepository.GetBreweryMember(id, username);
+            if (breweryMember == null)
+            {
+                return NotFound();
+            }
+            await _breweryRepository.DeleteBreweryMember(breweryMember.BreweryId, breweryMember.MemberUsername);
+            return Ok(breweryMember);
+        }
+
+        /// <summary>
+        /// Gets a brewery member of a brewery
+        /// </summary>
+        /// <response code="200">Ok</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Brewery id</param>
+        /// <param name="username">Member username</param>
+        /// <returns>Returns brewery member</returns>
+        [Route("{id:int}/members/{username}")]
+        [ResponseType(typeof(BreweryMember))]
+        public async Task<IHttpActionResult> GetBreweryMember(int id,string username)
+        {
+            var breweryMember = await _breweryRepository.GetBreweryMember(id,username);
+            if (breweryMember == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(breweryMember);
+        }
+
+        /// <summary>
+        /// Gets all brewery members for a brewery.
+        /// </summary>
+        /// <response code="200">Ok</response>
+        /// <param name="id">Brewery id</param>
+        /// <returns>Returns list of brewery members</returns>
+        [Route("{id:int}/members")]
+        [ResponseType(typeof(IList<BreweryMember>))]
+        public async Task<IHttpActionResult> GetBreweryMembers(int id)
+        {
+            var breweryMembers = await _breweryRepository.GetBreweryMembers(id);
+            return Ok(breweryMembers);
         }
 
         protected override void Dispose(bool disposing)

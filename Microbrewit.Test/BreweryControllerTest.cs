@@ -109,7 +109,7 @@ namespace Microbrewit.Test
         {
             var breweryCompleteDto = await _controller.GetBrewery(2) as OkNegotiatedContentResult<BreweryCompleteDto>;
             var brewery = breweryCompleteDto.Content.Breweries[0];
-            brewery.Members[0].Role = "Brewmaster";
+            brewery.Members.SingleOrDefault(m => m.Username.Equals("torstein")).Role = "Brewmaster";
             var member = new DTOUser() { Username = "johnfredrik" };
             brewery.Members.Add(member);
             var memberCount = brewery.Members.Count();
@@ -139,13 +139,39 @@ namespace Microbrewit.Test
         [Test]
         public async Task DeleteBreweryReturnStatusCode200()
         {
-
             var response = await _controller.DeleteBrewery(3) as OkNegotiatedContentResult<BreweryDto>;
             Assert.IsInstanceOf<OkNegotiatedContentResult<BreweryDto>>(response);
         }
 
+        [Test]
+        public async Task DeletBreweryMemberReturnStatusCodeOK200()
+        {
+            var response = await _controller.DeleteBreweryMember(1, "thedude") as OkNegotiatedContentResult<BreweryMember>;
+            Assert.IsInstanceOf<OkNegotiatedContentResult<BreweryMember>>(response);
+        }
 
+        [Test]
+        public async Task DeleteBreweryMemberDeletedAfterGetNotFound()
+        {
+            var response = await _controller.DeleteBreweryMember(2, "thedude") as OkNegotiatedContentResult<BreweryMember>;
+            var breweryMember = await _controller.GetBreweryMember(response.Content.BreweryId, response.Content.MemberUsername) as NotFoundResult;
+            Assert.IsInstanceOf<NotFoundResult>(breweryMember);
+        }
 
+        [Test]
+        public async Task GetBreweryMemberReturnOK200WithObject()
+        {
+            var breweryMember = await _controller.GetBreweryMember(1, "torstein") as OkNegotiatedContentResult<BreweryMember>;
+            Assert.NotNull(breweryMember);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<BreweryMember>>(breweryMember);
+        }
 
+        [Test]
+        public async Task GetBreweryMembersReturnOK200WithMembers()
+        {
+            var breweryMembers = await _controller.GetBreweryMembers(1) as OkNegotiatedContentResult<IList<BreweryMember>>;
+            Assert.IsInstanceOf<OkNegotiatedContentResult<IList<BreweryMember>>>(breweryMembers);
+            Assert.True(breweryMembers.Content.Any());
+        }
     }
 }
