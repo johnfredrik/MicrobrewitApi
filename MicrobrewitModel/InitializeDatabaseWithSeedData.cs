@@ -81,15 +81,15 @@ namespace Microbrewit.Model
             //context.Fermentables.Add(new DryExtract() {Id = 4, Name = "Plain Light DME" , EBC = 4, PPG = 43,});
             //context.Fermentables.Add(new LiquidExtract() {Id = 5, Name = "Plain Light DME", EBC = 4, PPG = 43,});
 
-            var user = new User() { Username = "johnfredrik", Email = "john-f@online.no" };
-            context.Users.Add(user);
-            context.UserCredentials.Add(new UserCredentials()
-            {
-                Id = 1,
-                Password = "EAAAAA2i7rB183t/vrZ62ahBVELmFmmO9B5Fzz4xz9F57tya",
-                SharedSecret = "test",
-                Username = "johnfredrik",
-            });
+            //var user = new User() { Username = "johnfredrik", Email = "john-f@online.no" };
+            //context.Users.Add(user);
+            //context.UserCredentials.Add(new UserCredentials()
+            //{
+            //    Id = 1,
+            //    Password = "EAAAAA2i7rB183t/vrZ62ahBVELmFmmO9B5Fzz4xz9F57tya",
+            //    SharedSecret = "test",
+            //    Username = "johnfredrik",
+            //});
 
 
 
