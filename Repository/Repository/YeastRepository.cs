@@ -36,7 +36,7 @@ namespace Microbrewit.Repository
                         yeast.Supplier = null;
                     }
                 }
-               base.AddAsync(yeasts);
+               await base.AddAsync(yeasts);
             }
         }
       
