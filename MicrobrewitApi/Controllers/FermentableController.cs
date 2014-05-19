@@ -35,36 +35,53 @@ namespace Microbrewit.Api.Controllers
             this._fermentableRepository = fermentableRepository;
         }
       
-        // GET api/Fermentable 
+        /// <summary>
+        /// Gets all fermentables.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <returns></returns>
         [Route("")]
-        public FermentablesCompleteDto GetFermentables()
+        public async Task<FermentablesCompleteDto> GetFermentables()
         {
-            var fermentables = _fermentableRepository.GetAll("Supplier");
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier");
             var fermDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
             var result = new FermentablesCompleteDto();
             result.Fermentables = fermDto;
             return result;
         }
 
-        // GET api/Fermentable/5
-        [HttpGet]
+        /// <summary>
+        /// Get a fermentable by its id.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Fermentable </param>
+        /// <returns></returns>
         [Route("{id:int}")]
         [ResponseType(typeof(FermentablesCompleteDto))]
-        public IHttpActionResult GetFermentable(int id)
+        public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            var fermentable = Mapper.Map<Fermentable, FermentableDto>(_fermentableRepository.GetSingle(f => f.Id == id, "Supplier")); 
+            var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier"); 
             if (fermentable == null)
             {
                 return NotFound();
             }
+            var fermentableDto = Mapper.Map<Fermentable, FermentableDto>(fermentable);
             var result = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
-            result.Fermentables.Add(fermentable);
+            result.Fermentables.Add(fermentableDto);
             return Ok(result);
         }
 
-        // PUT api/Fermentable/5
+        /// <summary>
+        /// Updates a fermentable.
+        /// </summary>
+        /// <param name="id">Fermentable id</param>
+        /// <param name="fermentableDto">Fermentable data transfer object</param>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <returns></returns>
         [Route("{id:int}")]
-        public IHttpActionResult PutFermentable(int id, FermentableDto fermentableDto)
+        public async Task<IHttpActionResult> PutFermentable(int id, FermentableDto fermentableDto)
         {
             if (!ModelState.IsValid)
             {
@@ -77,15 +94,21 @@ namespace Microbrewit.Api.Controllers
             }
 
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
-            _fermentableRepository.Update(fermentable);
+            await _fermentableRepository.UpdateAsync(fermentable);
             
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/Fermentable
+        /// <summary>
+        /// Adds fermentables.
+        /// </summary>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="FermentableDtos">List of fermentable transfer objects</param>
+        /// <returns></returns>
         [Route("")]
         [ResponseType(typeof(IList<FermentableDto>))]
-        public IHttpActionResult PostFermentable(IList<FermentableDto> FermentableDtos)
+        public async Task<IHttpActionResult> PostFermentable(IList<FermentableDto> FermentableDtos)
         {
             if (!ModelState.IsValid)
             {
@@ -93,7 +116,7 @@ namespace Microbrewit.Api.Controllers
             }
 
             var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(FermentableDtos);
-            _fermentableRepository.Add(fermentablePost);
+            await _fermentableRepository.AddAsync(fermentablePost);
             var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(_fermentableRepository.GetAll("Supplier.Origin"));
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
@@ -106,23 +129,30 @@ namespace Microbrewit.Api.Controllers
                 }
             
             }
-            return CreatedAtRoute("DefaultApi", new { controller = "fermetables",}, FermentableDtos);
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetables", }, FermentableDtos);
         }
 
-        // DELETE api/Fermentable/5
+        /// <summary>
+        /// Deletes a fermentable by id.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Fermentable id</param>
+        /// <returns></returns>
+        [Route("{id:int}")]
         [ResponseType(typeof(Fermentable))]
         public async Task<IHttpActionResult> DeleteFermentable(int id)
         {
-            Fermentable fermentable = await db.Fermentables.FindAsync(id);
+            var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id);
             if (fermentable == null)
             {
                 return NotFound();
             }
 
-            db.Fermentables.Remove(fermentable);
-            await db.SaveChangesAsync();
-
-            return Ok(fermentable);
+            await _fermentableRepository.RemoveAsync(fermentable);
+            var response = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
+            response.Fermentables.Add(Mapper.Map<Fermentable, FermentableDto>(fermentable));
+            return Ok(response);
         }
 
         protected override void Dispose(bool disposing)
