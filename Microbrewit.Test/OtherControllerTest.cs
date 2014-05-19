@@ -24,6 +24,7 @@ namespace Microbrewit.Test
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IOtherRepository _repository;
         private MicrobrewitContext _context;
+        private OtherController _controller;
         private const string JSONPATH = @"..\..\JSON\";
 
         [TestFixtureSetUp]
@@ -32,7 +33,11 @@ namespace Microbrewit.Test
             TestUtil.DeleteDataInDatabase();
             TestUtil.InsertDataDatabase();
             AutoMapperConfiguration.Configure();
+            _repository = new OtherRepository();
             _context = new MicrobrewitContext();
+            _controller = new OtherController(_repository);
+
+
         }
 
         [TestFixtureTearDown]
@@ -41,22 +46,23 @@ namespace Microbrewit.Test
             _context.Dispose();
         }
        
-        [Test]
-        public async Task GetAllOthersReturnsEverythingInRepository()
-        {
-            _repository = new OtherTestRepository();
-            var controller = new OtherController(_repository);
-            var others = await controller.GetOthers();
-            Assert.AreEqual(others.Others.Count, 3);
-        }
 
         [Test]
-        public async Task GetAllOthersFromDataBaseReturnsNotNull()
+        public async Task GetAllOthersReturnsNotNullAndNotEmpty()
         {
             _repository = new OtherRepository();
             var controller = new OtherController(_repository);
             var others = await controller.GetOthers();
             Assert.NotNull(others);
+            Assert.True(others.Others.Any());
+        }
+
+        [Test]
+        public async Task GetOtherReturn200OKWithObject()
+        {
+            var response = await _controller.GetOther(1) as OkNegotiatedContentResult<OtherCompleteDto>;
+            Assert.IsInstanceOf<OkNegotiatedContentResult<OtherCompleteDto>>(response);
+            Assert.True(response.Content.Others.Any());
         }
 
         [Test]
@@ -64,14 +70,12 @@ namespace Microbrewit.Test
         {
             using (var file = new StreamReader(JSONPATH + "other.json"))
             {
-                _repository = new OtherRepository();
                 string jsonString = file.ReadToEnd();
                 var count = _repository.GetAll().Count();
                 var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
 
-                var controller = new OtherController(_repository);
-                await controller.PostOther(others);
-                var result = await controller.GetOthers();
+                await _controller.PostOther(others);
+                var result = await _controller.GetOthers();
                 Assert.AreEqual(count + others.Count, result.Others.Count());
             }
         }
@@ -81,36 +85,56 @@ namespace Microbrewit.Test
         {
             using (var file = new StreamReader(JSONPATH + "other.json"))
             {
-                _repository = new OtherRepository();
                 string jsonString = file.ReadToEnd();
                 var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
-
-                var controller = new OtherController(_repository);
-                var count = controller.GetOthers().Result.Others.Count();
+                var count = _controller.GetOthers().Result.Others.Count();
                 for (int i = 0; i < 100; i++)
                 {
-                    await controller.PostOther(others);
+                    await _controller.PostOther(others);
                 }
-                var result = await controller.GetOthers();
+                var result = await _controller.GetOthers();
                 Assert.AreEqual(count + (others.Count * 100), result.Others.Count());
             }
         }
 
         [Test]
-        public void PutOtherNameGetsChanged()
+        public async Task PutOtherReturnStatusCode204NoContent()
         {
-            _repository = new OtherRepository();
-            
-            var controller = new OtherController(_repository);
-            var other = _context.Others.FirstOrDefault();
-            Log.DebugFormat("other.Name= {0}", other.Name);
-            other.Name = "YELLOW";
-            var statusCode = controller.PutOther(other.Id, other);
-            var updatedOther = _context.Others.SingleOrDefault(o => o.Id == other.Id);
-            Assert.AreEqual(other.Name, updatedOther.Name);
+            var respone = await _controller.GetOther(1) as OkNegotiatedContentResult<OtherCompleteDto>;
+            var other = respone.Content.Others.FirstOrDefault();
+            other.Name = "Black";
+            var statusCode = await _controller.PutOther(other.Id, other) as StatusCodeResult;
+            Assert.AreEqual(HttpStatusCode.NoContent, statusCode.StatusCode);
         }
 
 
+        [Test]
+        public async Task PutOtherNameGetsChanged()
+        {
+            var respone = await _controller.GetOther(1) as OkNegotiatedContentResult<OtherCompleteDto>;
+            var other = respone.Content.Others.FirstOrDefault();
+            Log.DebugFormat("other.Name= {0}", other.Name);
+            other.Name = "YELLOW";
+            await _controller.PutOther(other.Id, other);
+            var updatedOther = await _controller.GetOther(other.Id) as OkNegotiatedContentResult<OtherCompleteDto>;
+            Assert.AreEqual(other.Name, updatedOther.Content.Others.FirstOrDefault().Name);
+        }
+
+
+        [Test]
+        public async Task DeleteOtherReturns200OK()
+        {
+            var response = await _controller.DeleteOther(4) as OkNegotiatedContentResult<OtherCompleteDto>;
+            Assert.IsInstanceOf<OkNegotiatedContentResult<OtherCompleteDto>>(response);
+        }
+
+        [Test]
+        public async Task DeleteOtherGetOther404NotFound()
+        {
+            await _controller.DeleteOther(5);
+            var response = await _controller.GetOther(5) as NotFoundResult;
+            Assert.IsInstanceOf<NotFoundResult>(response);
+        }
 
 
     }
