@@ -23,5 +23,20 @@ namespace Microbrewit.Repository
                 base.Add(suppliers);
             }
         }
+
+        public override async Task AddAsync(params Supplier[] suppliers)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                foreach (var supplier in suppliers)
+                {
+                    if (supplier.Origin != null)
+                    {
+                        supplier.Origin = null;
+                    }
+                }
+                await base.AddAsync(suppliers);
+            }
+        }
     }
 }
