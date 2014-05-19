@@ -50,41 +50,53 @@ namespace Microbrewit.Api.Controllers
 
 
         /// <summary>
-        /// GET api/Others/5
+        /// Get other.
         /// </summary>
-        /// <errorCode code="400">Not Found</errorCode>
+        /// <response code="200">OK</response>
+        /// <response code="400">Not Found</response>
+        /// <param name="id">Other id</param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        [ResponseType(typeof(OtherDto))]
-        [HttpGet]
-        public IHttpActionResult GetOther(int id)
+        [ResponseType(typeof(OtherCompleteDto))]
+        public async Task<IHttpActionResult> GetOther(int id)
         {
-            var other = Mapper.Map<Other, OtherDto>(_otherRepository.GetSingle(o => o.Id == id));
-            if (other == null)
+            var other = _otherRepository.GetSingle(o => o.Id == id);
+            var otherDto = Mapper.Map<Other, OtherDto>(other);
+            if (otherDto == null)
             {
                 return NotFound();
             }
-            var result = new OtherCompleteDto() { Others = new List<OtherDto>() };
-            result.Others.Add(other);
+            var response = new OtherCompleteDto() { Others = new List<OtherDto>() };
+            response.Others.Add(otherDto);
 
-            return Ok(result);
+            return Ok(response);
         }
 
-        // PUT api/Others/5
+        /// <summary>
+        /// Updates a other.
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id"></param>
+        /// <param name="otherDto"></param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutOther(int id, Other other)
+        public async Task<IHttpActionResult> PutOther(int id, OtherDto otherDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != other.Id)
+            if (id != otherDto.Id)
             {
                 return BadRequest();
             }
 
             try
             {
+                var other = Mapper.Map<OtherDto, Other>(otherDto);
                await _otherRepository.UpdateAsync(other);               
             }
             catch (DbUpdateConcurrencyException)
@@ -101,19 +113,20 @@ namespace Microbrewit.Api.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
-        ///<summary>
-        /// Add a new Other to the database.
+        /// <summary>
+        /// Add new other.
         /// </summary>
-        // POST api/others
+        /// <param name="otherDtos"></param>
+        /// <returns></returns>
         [Route("")]
-        [ResponseType(typeof(IList<OtherDto>))]
-        public async Task<IHttpActionResult> PostOther(IList<OtherDto> otherPosts)
+        [ResponseType(typeof(OtherCompleteDto))]
+        public async Task<IHttpActionResult> PostOther(IList<OtherDto> otherDtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var others = Mapper.Map<IList<OtherDto>, Other[]>(otherPosts);
+            var others = Mapper.Map<IList<OtherDto>, Other[]>(otherDtos);
             await _otherRepository.AddAsync(others);
 
             var result = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
@@ -126,24 +139,33 @@ namespace Microbrewit.Api.Controllers
                     redisClient.HashSet("others", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
                 }
             }
-
-            return CreatedAtRoute("DefaultApi", new { controller = "others", }, otherPosts);
+            var response = new OtherCompleteDto() { Others = new List<OtherDto>() };
+            response.Others = otherDtos;
+            return CreatedAtRoute("DefaultApi", new { controller = "others", }, response);
         }
 
         
-        // DELETE api/Others/5
+        /// <summary>
+        /// Delets other by id.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Other id</param>
+        /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi=true)]
         [Route("{id:int}")]
-        [ResponseType(typeof(Other))]
-        public IHttpActionResult DeleteOther(int id)
+        [ResponseType(typeof(OtherCompleteDto))]
+        public async Task<IHttpActionResult> DeleteOther(int id)
         {
-            Other other = _otherRepository.GetSingle(o => o.Id == id);
+            var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
             if (other == null)
             {
                 return NotFound();
             }
-            _otherRepository.Remove(other);
-            return Ok(other);
+            await _otherRepository.RemoveAsync(other);
+            var response = new OtherCompleteDto(){Others = new List<OtherDto>()};
+            response.Others.Add(Mapper.Map<Other,OtherDto>(other));
+            return Ok(response);
         }
 
         protected override void Dispose(bool disposing)

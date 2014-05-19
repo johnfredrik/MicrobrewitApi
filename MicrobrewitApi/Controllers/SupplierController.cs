@@ -27,48 +27,66 @@ namespace Microbrewit.Api.Controllers
             this._supplierRepository = supplierRepository;
         }
 
-        // GET api/Supplier
+        /// <summary>
+        /// Gets all suppliers
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <returns></returns>
         [Route("")]
-        public SupplierCompleteDTO GetSuppliers()
+        public async Task<SupplierCompleteDto> GetSuppliers()
         {
-            var suppliers = _supplierRepository.GetAll("Origin");
-            var result = new SupplierCompleteDTO();
-            result.Suppliers = suppliers;
+            var suppliers = await _supplierRepository.GetAllAsync("Origin");
+            var result = new SupplierCompleteDto();
+            result.Suppliers = Mapper.Map<IList<Supplier>,IList<SupplierDto>>(suppliers);
             return result;
         }
 
-        // GET api/Supplier/5
+        /// <summary>
+        /// Get a supplier.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id">Supplier id</param>
+        /// <returns></returns>
         [Route("{id:int}")]
         [ResponseType(typeof(Supplier))]
-        public IHttpActionResult GetSupplier(int id)
+        public async Task<IHttpActionResult> GetSupplier(int id)
         {
-            var supplier = _supplierRepository.GetSingle(s => s.Id == id,"Origin");
+            var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id,"Origin");
             if (supplier == null)
             {
                 return NotFound();
             }
-            var result = new SupplierCompleteDTO() { Suppliers = new List<Supplier>() };
-            result.Suppliers.Add(supplier);
+            var result = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
+            result.Suppliers.Add(Mapper.Map<Supplier,SupplierDto>(supplier));
             return Ok(result);
         }
 
-        // PUT api/Supplier/5
+        /// <summary>
+        /// Updates a supplier.
+        /// </summary>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad Request</response>
+        /// <param name="id">Supplier id</param>
+        /// <param name="supplierDto">Supplier transfer object</param>
+        /// <returns></returns>
         [Route("{id:int}")]
-        public IHttpActionResult PutSupplier(int id, Supplier supplier)
+        public async Task<IHttpActionResult> PutSupplier(int id, SupplierDto supplierDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != supplier.Id)
+            if (id != supplierDto.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                _supplierRepository.Update(supplier);
+                var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
+                await _supplierRepository.UpdateAsync(supplier);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -85,36 +103,58 @@ namespace Microbrewit.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST api/Supplier
+        /// <summary>
+        /// Adds suppliers.
+        /// </summary>
+        /// <param name="supplierDtos">List of supplier tranfer objects</param>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad Request</response>
+        /// <returns></returns>
         [Route("")]
-        [ResponseType(typeof(IList<SupplierDto>))]
-        public IHttpActionResult PostSupplier(IList<SupplierDto> supplierPosts)
+        [ResponseType(typeof(SupplierCompleteDto))]
+        public async Task<IHttpActionResult> PostSupplier(IList<SupplierDto> supplierDtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var suppliers = Mapper.Map<IList<SupplierDto>, Supplier[]>(supplierPosts);
-            _supplierRepository.Add(suppliers);
-           
+            var suppliers = Mapper.Map<IList<SupplierDto>, Supplier[]>(supplierDtos);
+            await _supplierRepository.AddAsync(suppliers);
+            var response = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
+            response.Suppliers = supplierDtos;
 
-            return CreatedAtRoute("DefaultApi", new {controller = "others"}, supplierPosts);
+            return CreatedAtRoute("DefaultApi", new {controller = "others"}, response);
         }
 
-        // DELETE api/Supplier/5
+        /// <summary>
+        /// Delets supplier.
+        /// </summary>
+        /// <response code="200">OK</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Not Found</response>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Route("{id}")]
-        [ResponseType(typeof(Supplier))]
-        public IHttpActionResult DeleteSupplier(int id)
+        [ResponseType(typeof(SupplierCompleteDto))]
+        public async Task<IHttpActionResult> DeleteSupplier(int id)
         {
-            Supplier supplier = _supplierRepository.GetSingle(s => s.Id == id);
+           var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id);
             if (supplier == null)
             {
                 return NotFound();
             }
 
-            _supplierRepository.Remove(supplier);
-
-            return Ok(supplier);
+            try
+            {
+                await _supplierRepository.RemoveAsync(supplier);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                 return BadRequest(dbUpdateException.InnerException.InnerException.Message.ToString());    
+            } 
+            var response = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
+            response.Suppliers.Add(Mapper.Map<Supplier, SupplierDto>(supplier));
+            return Ok(response);
         }
 
         protected override void Dispose(bool disposing)
