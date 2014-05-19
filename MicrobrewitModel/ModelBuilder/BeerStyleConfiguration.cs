@@ -11,7 +11,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BeerStyleConfiguration()
         {
-            Property(b => b.Id).IsRequired();
+            Property(b => b.Id).IsRequired().HasColumnName("BeerStyleId");
             Property(b => b.Name).IsRequired().HasMaxLength(255);
             this.HasKey(beerStyle => beerStyle.Id);
 
