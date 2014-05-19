@@ -37,9 +37,9 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("")]
-        public BeerStyleCompleteDto GetBeerStyles()
+        public async Task<BeerStyleCompleteDto> GetBeerStyles()
         {
-            var result = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
+            var response = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
 
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
@@ -48,26 +48,26 @@ namespace Microbrewit.Api.Controllers
 
                 if (redisClient.KeyExists("beerstyles"))
                 {
-                    var json = redisClient.HashValues("beerstyles");
+                    var json = await redisClient.HashValuesAsync("beerstyles");
                     foreach (var item in json)
                     {
-                        result.BeerStyles.Add(JsonConvert.DeserializeObject<BeerStyleDto>(item));
+                        response.BeerStyles.Add(JsonConvert.DeserializeObject<BeerStyleDto>(item));
                     }
 
                 }
                 else
                 {
-
-                    var beerStyles = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(_beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
-                    foreach (var item in beerStyles)
+                    var beerStyles = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+                    var beerStylesDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyles);
+                    foreach (var item in beerStylesDto)
                     {
-                        redisClient.HashSet("beerstyles", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
+                        await redisClient.HashSetAsync("beerstyles", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
                     }
-                    result.BeerStyles = beerStyles;
+                    response.BeerStyles = beerStylesDto;
 
                 }
             }
-            return result;
+            return response;
         }
 
 
@@ -80,18 +80,18 @@ namespace Microbrewit.Api.Controllers
         /// <returns></returns>
         [Route("{id:int}")]
         [ResponseType(typeof(BeerStyleCompleteDto))]
-        [HttpGet]
-        public IHttpActionResult GetBeerStyle(int id)
+        public async Task<IHttpActionResult> GetBeerStyle(int id)
         {
-            var beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(_beerStyleRepository.GetSingle(b => b.Id == id, "SubStyles", "SuperStyle"));
-            if (beerStyle == null)
+            var beerStyle = await _beerStyleRepository.GetSingleAsync(b => b.Id == id, "SubStyles", "SuperStyle");
+            var beerStyleDto = Mapper.Map<BeerStyle, BeerStyleDto>(beerStyle);
+            if (beerStyleDto == null)
             {
                 return NotFound();
             }
-            var result = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
-            result.BeerStyles.Add(beerStyle);
+            var response = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
+            response.BeerStyles.Add(beerStyleDto);
 
-            return Ok(result);
+            return Ok(response);
         }
 
         /// <summary>
@@ -100,10 +100,10 @@ namespace Microbrewit.Api.Controllers
         /// <response code="204">No Content</response>
         /// <response code="400">Bad Request</response>
         /// <param name="id">Beerstyle id</param>
-        /// <param name="beerstyle">BeerStyle object</param>
+        /// <param name="beerstyleDto">BeerStyle object</param>
         /// <returns></returns>
         [Route("{id:int}")]
-        public IHttpActionResult PutBeerStyle(int id, BeerStyleDto beerstyleDto)
+        public async Task<IHttpActionResult> PutBeerStyle(int id, BeerStyleDto beerstyleDto)
         {
             if (!ModelState.IsValid)
             {
@@ -115,9 +115,7 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
-            _beerStyleRepository.Update(beerstyle);
-            
-
+            await _beerStyleRepository.UpdateAsync(beerstyle);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -126,18 +124,19 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <response code="201">Created</response>
         /// <response code="400">Bad Request</response>
-        /// <param name="beerstyles">Beerstyle object.</param>
+        /// <param name="beerStylesDto">Beerstyle object.</param>
         /// <returns></returns>
         [Route("")]
-        [ResponseType(typeof(IList<BeerStyleDto>))]
-        public IHttpActionResult PostBeerStyle(IList<BeerStyleDto> beerstyles)
+        [ResponseType(typeof(BeerStyleCompleteDto))]
+        public async Task<IHttpActionResult> PostBeerStyle(IList<BeerStyleDto> beerStylesDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var beerDto = Mapper.Map<IList<BeerStyleDto>, IList<BeerStyle>>(beerstyles);
-            _beerStyleRepository.Add(beerDto.ToArray());
+            var beerStyles = Mapper.Map<IList<BeerStyleDto>, BeerStyle[]>(beerStylesDto);
+            await _beerStyleRepository.AddAsync(beerStyles);
+            
             var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(_beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
@@ -145,11 +144,13 @@ namespace Microbrewit.Api.Controllers
 
                 foreach (var item in bs)
                 {
-                    redisClient.HashSet("beerstyles", item.Id, JsonConvert.SerializeObject(item),flags: CommandFlags.FireAndForget);
+                    await redisClient.HashSetAsync("beerstyles", item.Id, JsonConvert.SerializeObject(item),flags: CommandFlags.FireAndForget);
                 }
 
             }
-            return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, bs);
+            var response = new BeerStyleCompleteDto(){BeerStyles = new List<BeerStyleDto>()};
+            response.BeerStyles = beerStylesDto;
+            return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, response);
         }
 
         /// <summary>
@@ -158,19 +159,20 @@ namespace Microbrewit.Api.Controllers
         /// <response code="404">Node Found</response>
         /// <param name="id">Beerstyle id.</param>
         /// <returns></returns>
-        [ResponseType(typeof(BeerStyleDto))]
+        [ResponseType(typeof(BeerStyleCompleteDto))]
         public async Task<IHttpActionResult> DeleteBeerStyle(int id)
         {
-            BeerStyle beerstyle = await db.BeerStyles.FindAsync(id);
+            var beerstyle = await _beerStyleRepository.GetSingleAsync(bs => bs.Id == id);
             if (beerstyle == null)
             {
                 return NotFound();
             }
 
-            db.BeerStyles.Remove(beerstyle);
-            await db.SaveChangesAsync();
+            await _beerStyleRepository.RemoveAsync(beerstyle);
             var beerStyleDto = Mapper.Map<BeerStyle, BeerStyleDto>(beerstyle);
-            return Ok(beerStyleDto);
+            var response = new BeerStyleCompleteDto(){BeerStyles = new List<BeerStyleDto>()};
+            response.BeerStyles.Add(beerStyleDto);
+            return Ok(response);
         }
 
         protected override void Dispose(bool disposing)
