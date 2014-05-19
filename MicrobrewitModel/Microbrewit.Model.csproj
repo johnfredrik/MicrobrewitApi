@@ -99,7 +99,7 @@
     <Compile Include="DTOs\RecipeSimpleCompleteDto.cs" />
     <Compile Include="DTOs\RecipeSimpleDto.cs" />
     <Compile Include="DTOs\SRMDto.cs" />
-    <Compile Include="DTOs\SupplierCompleteDTO.cs" />
+    <Compile Include="DTOs\SupplierCompleteDto.cs" />
     <Compile Include="DTOs\SupplierDto.cs" />
     <Compile Include="DTOs\UserCompleteDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />
