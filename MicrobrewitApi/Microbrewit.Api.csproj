@@ -189,6 +189,10 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\Microbrewit - FTP %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\microbrewit - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\Microbrewit - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\microbrewit - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -282,7 +286,6 @@
     <Compile Include="Controllers\HopController.cs" />
     <Compile Include="Controllers\OriginController.cs" />
     <Compile Include="Controllers\OtherController.cs" />
-    <Compile Include="Controllers\RecipeController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\YeastController.cs" />
