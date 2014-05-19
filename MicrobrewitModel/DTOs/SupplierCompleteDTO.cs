@@ -6,12 +6,12 @@ using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
-    public class SupplierCompleteDTO
+    public class SupplierCompleteDto
     {
         public Links Links { get; set; }
-        public IList<Supplier> Suppliers { get; set; }
+        public IList<SupplierDto> Suppliers { get; set; }
 
-        public SupplierCompleteDTO()
+        public SupplierCompleteDto()
         {
             Links = new Links()
             {
