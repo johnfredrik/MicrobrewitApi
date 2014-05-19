@@ -80,12 +80,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeerStyleControllerTest.cs" />
     <Compile Include="BreweryControllerTest.cs" />
+    <Compile Include="FermentableControllerTest.cs" />
     <Compile Include="HopControllerTests.cs" />
     <Compile Include="OriginControllerTests.cs" />
     <Compile Include="OtherControllerTest.cs" />
-    <Compile Include="OtherTestRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupplierControllerTests.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="YeastControllerTest.cs" />
   </ItemGroup>
