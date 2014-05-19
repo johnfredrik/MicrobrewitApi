@@ -14,7 +14,15 @@ INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (3, N'Fe
 INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (4, N'Thomas Fawcett',2)
 INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (5, N'De Wolf-Cosyns',3)
 INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (6, N'Bestmaltz',4)
+INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (7, N'Delete this Bitch',4)
+INSERT INTO [dbo].[Suppliers] ([SupplierId], [Name], [OriginId]) VALUES (8, N'Delete this Bitch2',4)
 SET IDENTITY_INSERT Suppliers OFF
+
+-- Beer styles
+SET IDENTITY_INSERT BeerStyles ON
+INSERT INTO [dbo].BeerStyles (BeerStyleId,[Name],[SuperStyleId]) VALUES (1, N'Ale',null)
+INSERT INTO [dbo].BeerStyles (BeerStyleId,[Name],[SuperStyleId]) VALUES (2, N'Golden Ale', 1)
+SET IDENTITY_INSERT BeerStyles OFF
 
 -- Breweries
 SET IDENTITY_INSERT Breweries ON
@@ -69,6 +77,8 @@ SET IDENTITY_INSERT Other ON
 INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (1,'Strawberry','Fruit')
 INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (2,'Honey','NoneFermentableSugar')
 INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (3,'Koriander','Spice')
+INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (4,'For Deleting','Spice')
+INSERT INTO [dbo].[Other] ([OtherId],[Name],[Type]) VALUES (5,'For Deleting','Fruit')
 SET IDENTITY_INSERT Other OFF
 
 SET IDENTITY_INSERT Yeasts ON
