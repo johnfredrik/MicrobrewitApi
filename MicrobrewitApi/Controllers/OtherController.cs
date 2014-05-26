@@ -60,7 +60,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(OtherCompleteDto))]
         public async Task<IHttpActionResult> GetOther(int id)
         {
-            var other = _otherRepository.GetSingle(o => o.Id == id);
+            var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
             var otherDto = Mapper.Map<Other, OtherDto>(other);
             if (otherDto == null)
             {
