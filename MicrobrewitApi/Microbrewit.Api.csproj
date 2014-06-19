@@ -296,6 +296,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redis\BeerStylesRedis.cs" />
+    <Compile Include="Redis\HopsRedis.cs" />
     <Compile Include="Swagger\AddStandardResponseCodes.cs" />
     <Compile Include="UnityResolver .cs" />
     <Compile Include="Util\Calculation.cs" />
@@ -350,7 +352,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Redis\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicrobrewitModel\Microbrewit.Model.csproj">
