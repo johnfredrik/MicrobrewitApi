@@ -29,6 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>App_Data/XmlDocument.xml</DocumentationFile>
+    <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -85,9 +86,8 @@
     <Reference Include="StackExchange.Redis">
       <HintPath>..\packages\StackExchange.Redis.1.0.247\lib\StackExchange.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\Swashbuckle\Swashbuckle.Core\bin\Debug\Swashbuckle.Core.dll</HintPath>
+    <Reference Include="Swashbuckle.Core">
+      <HintPath>..\packages\Swashbuckle.Core.4.0\lib\net40\Swashbuckle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IdentityModel.Tokens.Jwt">
@@ -189,6 +189,7 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\Malazan.pubxml" />
     <None Include="Properties\PublishProfiles\Microbrewit - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\microbrewit - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\Microbrewit - Web Deploy %282%29.pubxml" />
@@ -286,6 +287,7 @@
     <Compile Include="Controllers\HopController.cs" />
     <Compile Include="Controllers\OriginController.cs" />
     <Compile Include="Controllers\OtherController.cs" />
+    <Compile Include="Controllers\RedisController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\YeastController.cs" />
@@ -348,6 +350,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Redis\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicrobrewitModel\Microbrewit.Model.csproj">

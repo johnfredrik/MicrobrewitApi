@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Microbrewit.Model;
 using System.Configuration;
 using StackExchange.Redis;
+using log4net;
 
 namespace Microbrewit.Test
 {
     public static class TestUtil
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void DeleteDataInDatabase()
         {
@@ -34,11 +36,18 @@ namespace Microbrewit.Test
         //  allowAdmin: true)) 
         public static void FlushRedisStore()
         {
-            using (var redis = ConnectionMultiplexer.Connect(redisStore +",allowAdmin=true"))
+            try
             {
-                var redisServer = redis.GetServer(redisStore,6379);
-                redisServer.FlushAllDatabases();
+                using (var redis = ConnectionMultiplexer.Connect(redisStore + ",allowAdmin=true"))
+                {
+                    var redisServer = redis.GetServer(redisStore, 6379);
+                    redisServer.FlushAllDatabases();
+                }
             }
+            catch (RedisConnectionException redisConnectionException)
+            {
+                Log.Debug("Redis connection not found");
+            } 
         }
     }
 }

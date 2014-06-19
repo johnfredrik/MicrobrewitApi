@@ -47,7 +47,6 @@ namespace Microbrewit.Api.Controllers
         }
 
         // GET api/User/5
-        [HttpGet]
         [Route("{username}")]
         [ResponseType(typeof(User))]
         public IHttpActionResult GetUser(string username)
@@ -97,9 +96,12 @@ namespace Microbrewit.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+        /// <summary>
+        /// Takes username and password in base 
+        /// </summary>
+        /// <returns></returns>
         [LoginValidation]
         [Route("login")]
-        [HttpPost]
         public IHttpActionResult PostLogin()
         {                 
             return Ok();
