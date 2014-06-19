@@ -22,9 +22,7 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("beers")]
     public class BeerController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private IBeerRepository _beerRepository;
 
         public BeerController(IBeerRepository beerRepository)
@@ -251,20 +249,6 @@ namespace Microbrewit.Api.Controllers
             _beerRepository.Remove(beer);
             var beerDto = Mapper.Map<Beer, BeerDto>(beer);
             return Ok(beerDto);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool BeerExists(int id)
-        {
-            return db.Beers.Count(e => e.Id == id) > 0;
         }
     }
 }
