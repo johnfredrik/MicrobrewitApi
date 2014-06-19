@@ -93,11 +93,10 @@ namespace Microbrewit.Test
             hop.BetaHigh = 99;
             var response = await _controller.PutHop(hop.Id, hop) as System.Web.Http.HttpResponseException;
             
-            var hopTemp = _context.Hops.SingleOrDefault(h => h.Id == first.Id);
             var result = await _controller.GetHop(first.Id) as OkNegotiatedContentResult<HopCompleteDto>;
             var updatedHop = result.Content.Hops[0];
-            Assert.AreEqual(hop.Notes, hopTemp.Notes);
-            Assert.AreEqual(hop.BetaHigh,hopTemp.BetaHigh);
+            Assert.AreEqual(hop.Notes, updatedHop.Notes);
+            Assert.AreEqual(hop.BetaHigh, updatedHop.BetaHigh);
         }
 
         
