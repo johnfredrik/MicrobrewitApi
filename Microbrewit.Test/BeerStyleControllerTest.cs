@@ -49,6 +49,7 @@ namespace Microbrewit.Test
             Assert.True(beerstyles.BeerStyles.Any());
         }
 
+
         [Test]
         public async Task GetBeerStyleWithValidIdReturn200OKWithObject()
         {
@@ -73,6 +74,18 @@ namespace Microbrewit.Test
             var response = await _controller.PostBeerStyle(beerStyles) as CreatedAtRouteNegotiatedContentResult<BeerStyleCompleteDto>;
             Assert.IsInstanceOf<CreatedAtRouteNegotiatedContentResult<BeerStyleCompleteDto>>(response);
             Assert.True(response.Content.BeerStyles.Any());
+        }
+
+        [Test]
+        public async Task PutBeerStyleValueGetsUpdated()
+        {
+            var beerStyles = await _controller.GetBeerStyles();
+            var firstBeerStyle = beerStyles.BeerStyles.FirstOrDefault();
+            firstBeerStyle.Name = "New Super Style";
+            await _controller.PutBeerStyle(firstBeerStyle.Id, firstBeerStyle);
+            var updatedBeerStyle = await _controller.GetBeerStyle(firstBeerStyle.Id) as OkNegotiatedContentResult<BeerStyleCompleteDto>;
+            Assert.AreEqual(firstBeerStyle.Name, updatedBeerStyle.Content.BeerStyles[0].Name);
+            
         }
     }
 }
