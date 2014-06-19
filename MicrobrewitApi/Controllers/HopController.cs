@@ -18,6 +18,7 @@ using AutoMapper;
 using Microbrewit.Repository;
 using System.Configuration;
 using StackExchange.Redis;
+using Microbrewit.Api.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -42,42 +43,17 @@ namespace Microbrewit.Api.Controllers
         {
             IList<HopDto> hopsDto = new List<HopDto>();
             IList<Hop> hops;
-            await GetHopsRedis(hopsDto);
+            hopsDto = await HopsRedis.GetHopsRedis(hopsDto);
             if (hopsDto.Count <= 0)
             {
                 hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
                 hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
             } 
-           
             var result = new HopCompleteDto() { Hops = hopsDto };
             return result;
         }
 
-        /// <summary>
-        /// Gets all hops from redis store.
-        /// </summary>
-        /// <param name="hopsDto"></param>
-        /// <returns></returns>
-        private static async Task GetHopsRedis(IList<HopDto> hopsDto)
-        {
-            try
-            {
-                using (var redis = ConnectionMultiplexer.Connect(redisStore))
-                {
-                    var redisClient = redis.GetDatabase();
-                    var hopsJson = await redisClient.HashGetAllAsync("hops");
-                    foreach (var hopJson in hopsJson.ToList())
-                    {
-                        hopsDto.Add(JsonConvert.DeserializeObject<HopDto>(hopJson.Value));
-                    }
-
-                }
-            }
-            catch (RedisConnectionException connectionException)
-            {
-                Log.Debug(connectionException.Message);
-            }
-        }
+      
 
         // GET api/Hops/5
         [Route("{id:int}")]
@@ -85,9 +61,8 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetHop(int id)
         {
-
             HopDto hopDto = null;
-            hopDto = await GetHopRedis(id);
+            hopDto = await HopsRedis.GetHopRedis(id);
             if (hopDto == null)
             {
                 var hop = await _hopRepository.GetSingleAsync(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts");
@@ -105,32 +80,6 @@ namespace Microbrewit.Api.Controllers
             return Ok(result);
         }
 
-        private async static Task<HopDto> GetHopRedis(int id)
-        {
-            try
-            {
-
-                using (var redis = ConnectionMultiplexer.Connect(redisStore))
-                {
-                    var redisClient = redis.GetDatabase();
-                    var hopJson = await redisClient.HashGetAsync("hops", id);
-                    if (!hopJson.IsNull)
-                    {
-                        return JsonConvert.DeserializeObject<HopDto>(hopJson);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-                return null;
-            }
-        }
-
         // PUT api/Hops/5
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutHop(int id, HopDto hopDto)
@@ -146,7 +95,8 @@ namespace Microbrewit.Api.Controllers
             }
             var hop = Mapper.Map<HopDto, Hop>(hopDto);
             await _hopRepository.UpdateAsync(hop);
-
+            var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
+            await HopsRedis.UpdateRedisStore(hops);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -169,7 +119,9 @@ namespace Microbrewit.Api.Controllers
 
             var result = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
             var resultsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(result);
-            UpdateHops();
+
+
+            HopsRedis.UpdateRedisStore(await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts"));
             return CreatedAtRoute("DefaultApi", new { controller = "hops", }, resultsDto);
         }
 
@@ -212,40 +164,14 @@ namespace Microbrewit.Api.Controllers
             }
             return hopforms;
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool HopExists(int id)
-        {
-            return db.Hops.Count(e => e.Id == id) > 0;
-        }
-
+        
         [Route("redis")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateHops()
         {
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
-                var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-                var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-
-                var redisClient = redis.GetDatabase();
-
-                foreach (var hop in hopsDto)
-                {
-                    await redisClient.HashSetAsync("hops", hop.Id, JsonConvert.SerializeObject(hop), flags: CommandFlags.FireAndForget);
-                }
-
-                return Ok();
-
-            }
+            var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
+           await HopsRedis.UpdateRedisStore(hops);
+           return StatusCode(HttpStatusCode.NoContent);
         }
     }
 }

@@ -16,6 +16,7 @@ using Microbrewit.Repository;
 using System.Configuration;
 using StackExchange.Redis;
 using Newtonsoft.Json;
+using Microbrewit.Api.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace Microbrewit.Api.Controllers
     public class BeerStyleController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
+       
         private IBeerStyleRepository _beerStyleRepository;
 
         public BeerStyleController(IBeerStyleRepository beerStyleRepository)
@@ -41,32 +42,14 @@ namespace Microbrewit.Api.Controllers
         {
             var response = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
 
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
+            var beerStylesDto = await BeerStylesRedis.GetBeerStyles();
+            if (beerStylesDto.Count < 1)
             {
-
-                var redisClient = redis.GetDatabase();
-
-                if (redisClient.KeyExists("beerstyles"))
-                {
-                    var json = await redisClient.HashValuesAsync("beerstyles");
-                    foreach (var item in json)
-                    {
-                        response.BeerStyles.Add(JsonConvert.DeserializeObject<BeerStyleDto>(item));
-                    }
-
-                }
-                else
-                {
                     var beerStyles = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
-                    var beerStylesDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyles);
-                    foreach (var item in beerStylesDto)
-                    {
-                        await redisClient.HashSetAsync("beerstyles", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
-                    }
-                    response.BeerStyles = beerStylesDto;
+                    beerStylesDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyles);
 
-                }
             }
+            response.BeerStyles = beerStylesDto;
             return response;
         }
 
@@ -82,8 +65,12 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BeerStyleCompleteDto))]
         public async Task<IHttpActionResult> GetBeerStyle(int id)
         {
-            var beerStyle = await _beerStyleRepository.GetSingleAsync(b => b.Id == id, "SubStyles", "SuperStyle");
-            var beerStyleDto = Mapper.Map<BeerStyle, BeerStyleDto>(beerStyle);
+            var beerStyleDto = await BeerStylesRedis.GetBeerStyle(id);
+            if (beerStyleDto == null)
+            {
+                var beerStyle = await _beerStyleRepository.GetSingleAsync(b => b.Id == id, "SubStyles", "SuperStyle");
+                beerStyleDto = Mapper.Map<BeerStyle, BeerStyleDto>(beerStyle);
+            }
             if (beerStyleDto == null)
             {
                 return NotFound();
@@ -114,8 +101,10 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-
+            
             await _beerStyleRepository.UpdateAsync(beerstyle);
+            var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+            await BeerStylesRedis.UpdateRedisStore(bs);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -137,17 +126,8 @@ namespace Microbrewit.Api.Controllers
             var beerStyles = Mapper.Map<IList<BeerStyleDto>, BeerStyle[]>(beerStylesDto);
             await _beerStyleRepository.AddAsync(beerStyles);
             
-            var bs = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(_beerStyleRepository.GetAll("SubStyles", "SuperStyle"));
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
-                var redisClient = redis.GetDatabase();
-
-                foreach (var item in bs)
-                {
-                    await redisClient.HashSetAsync("beerstyles", item.Id, JsonConvert.SerializeObject(item),flags: CommandFlags.FireAndForget);
-                }
-
-            }
+            var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+            await BeerStylesRedis.UpdateRedisStore(bs);
             var response = new BeerStyleCompleteDto(){BeerStyles = new List<BeerStyleDto>()};
             response.BeerStyles = beerStylesDto;
             return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, response);
