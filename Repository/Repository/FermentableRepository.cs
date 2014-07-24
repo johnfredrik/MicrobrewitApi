@@ -26,5 +26,20 @@ namespace Microbrewit.Repository
                 base.Add(fermentables);
             }
         }
+
+        public async override Task AddAsync(params Fermentable[] fermentables)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                foreach (Fermentable fermentable in fermentables)
+                {
+                    if (fermentable.Supplier != null)
+                    {
+                        fermentable.Supplier = null;
+                    }
+                }
+                await base.AddAsync(fermentables);
+            }
+        }
     }
 }
