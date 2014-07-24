@@ -8,7 +8,7 @@ namespace Microbrewit.Model.DTOs
 {
     public class FermentableLinks
     {
-        [JsonProperty(PropertyName = "maltsterid")]
+        [JsonProperty(PropertyName = "supplierid")]
         public int MaltsterId { get; set; }
     }
 }

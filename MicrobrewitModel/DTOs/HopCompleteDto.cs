@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +9,7 @@ namespace Microbrewit.Model.DTOs
 {
     public class HopCompleteDto
     {
+        private static readonly string apiPath = ConfigurationManager.AppSettings["api"];
         [JsonProperty(PropertyName = "links")]
         public LinksHop Links { get; set; }
         [JsonProperty(PropertyName = "hops")]
@@ -19,18 +21,18 @@ namespace Microbrewit.Model.DTOs
             {
                 HopFlavors = new Links()
                 {
-                    Href = "http://api.microbrew.it/flavors/:id",
+                    Href = apiPath + "flavors/:id",
                     Type = "flavor"
 
                 },
                 HopOrigins = new Links()
                 {
-                    Href = "http://api.microbrew.it/origins/:id",
+                    Href = apiPath + "/origins/:id",
                     Type = "origin"
                 },
                 HopSubstitutions = new Links()
                 {
-                    Href = "http://api.microbrew.it/hop/:id",
+                    Href = apiPath + "/hop/:id",
                     Type = "hop"
                 }
 

@@ -12,7 +12,7 @@ namespace Microbrewit.Model.DTOs
         public string Name { get; set; }
         public double Lovibond { get; set; }
         public double PPG { get; set; }
-        public DTO Supplier { get; set; }
+        public SupplierDto Supplier { get; set; }
         public string Type { get; set; }
         public int Amount { get; set; }
     }

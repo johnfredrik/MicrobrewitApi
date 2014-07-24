@@ -12,7 +12,7 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
         [JsonProperty(PropertyName = "supplier")]
-        public DTO Supplier { get; set; }
+        public SupplierDto Supplier { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "lovibond")]

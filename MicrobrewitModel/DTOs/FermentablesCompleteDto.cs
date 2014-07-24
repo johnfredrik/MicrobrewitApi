@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web;
+using System.Configuration;
 
 namespace Microbrewit.Model.DTOs
 {
     public class FermentablesCompleteDto
     {
+        private static readonly string apiPath = ConfigurationManager.AppSettings["api"];
         //public Meta Meta { get; set; }
         [JsonProperty(PropertyName = "links")]
         public LinksFermentable Links { get; set; }
@@ -22,8 +24,8 @@ namespace Microbrewit.Model.DTOs
                 
                 FermentablesMaltster = new Links()
                 {
-                    Href = "http://api.microbrew.it/maltsters/:id",
-                    Type = "maltster",
+                    Href = apiPath + "/supplier/:id",
+                    Type = "supplier",
                 }
             };
         }
