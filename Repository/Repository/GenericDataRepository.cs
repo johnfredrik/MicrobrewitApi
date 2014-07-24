@@ -10,11 +10,14 @@ using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
+using log4net;
 
 namespace Microbrewit.Repository
 {
     public class GenericDataRepository<T> : IGenericDataRepository<T> where T : class
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public virtual IList<T> GetAll(params string[] navigationProperties)
         {
             List<T> list;
@@ -90,6 +93,7 @@ namespace Microbrewit.Repository
                         foreach (var validationError in validationErrors.ValidationErrors)
                         {
                             Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                            Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
                         }
                     }
                 }
@@ -163,7 +167,7 @@ namespace Microbrewit.Repository
 
             try
             {
-                await context.SaveChangesAsync();
+                var result = await context.SaveChangesAsync();
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -172,6 +176,8 @@ namespace Microbrewit.Repository
                     foreach (var validationError in validationErrors.ValidationErrors)
                     {
                         Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        throw dbEx;
                     }
                 }
             }
