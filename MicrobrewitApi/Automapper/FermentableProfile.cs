@@ -27,6 +27,10 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
+            Mapper.CreateMap<Supplier, SupplierDto>()
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
+
             Mapper.CreateMap<FermentableDto,FermentablesCompleteDto>();
 
             Mapper.CreateMap<FermentableDto, Fermentable>()
@@ -38,6 +42,10 @@ namespace Microbrewit.Api.Automapper
                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
           
             Mapper.CreateMap<DTO,Supplier>()
+                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
+
+            Mapper.CreateMap<SupplierDto, Supplier>()
                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
         }
