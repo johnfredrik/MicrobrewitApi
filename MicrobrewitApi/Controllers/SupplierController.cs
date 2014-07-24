@@ -19,7 +19,6 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("suppliers")]
     public class SupplierController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
         private readonly ISupplierRepository _supplierRepository;
 
         public SupplierController(ISupplierRepository supplierRepository)
@@ -35,9 +34,14 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<SupplierCompleteDto> GetSuppliers()
         {
-            var suppliers = await _supplierRepository.GetAllAsync("Origin");
+            var suppliersDto = await Redis.SupplierRedis.GetSuppliersAsync();
+            if (suppliersDto.Count <= 0)
+            {
+                var suppliers = await _supplierRepository.GetAllAsync("Origin");
+                suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
+            }
             var result = new SupplierCompleteDto();
-            result.Suppliers = Mapper.Map<IList<Supplier>,IList<SupplierDto>>(suppliers);
+            result.Suppliers = suppliersDto;
             return result;
         }
 
@@ -52,13 +56,18 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Supplier))]
         public async Task<IHttpActionResult> GetSupplier(int id)
         {
-            var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id,"Origin");
-            if (supplier == null)
+            var supplierDto = await Redis.SupplierRedis.GetSupplierAsync(id);
+            if (supplierDto == null)
+            {
+                var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id,"Origin");
+                supplierDto = Mapper.Map<Supplier, SupplierDto>(supplier);
+            }
+            if (supplierDto == null)
             {
                 return NotFound();
             }
             var result = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
-            result.Suppliers.Add(Mapper.Map<Supplier,SupplierDto>(supplier));
+            result.Suppliers.Add(supplierDto);
             return Ok(result);
         }
 
@@ -82,24 +91,12 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
+            var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
+            await _supplierRepository.UpdateAsync(supplier);
 
-            try
-            {
-                var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
-                await _supplierRepository.UpdateAsync(supplier);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SupplierExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            // Updates suppliers in redis store.
+            var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
+            await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersRedis);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -120,6 +117,11 @@ namespace Microbrewit.Api.Controllers
             }
             var suppliers = Mapper.Map<IList<SupplierDto>, Supplier[]>(supplierDtos);
             await _supplierRepository.AddAsync(suppliers);
+
+            // Updates suppliers in redis store.
+            var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
+            await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersRedis);
+            
             var response = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
             response.Suppliers = supplierDtos;
 
@@ -147,6 +149,10 @@ namespace Microbrewit.Api.Controllers
             try
             {
                 await _supplierRepository.RemoveAsync(supplier);
+
+                // Updates suppliers in redis store.
+                var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
+                await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersRedis);
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -155,20 +161,6 @@ namespace Microbrewit.Api.Controllers
             var response = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
             response.Suppliers.Add(Mapper.Map<Supplier, SupplierDto>(supplier));
             return Ok(response);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool SupplierExists(int id)
-        {
-            return db.Suppliers.Count(e => e.Id == id) > 0;
         }
     }
 }

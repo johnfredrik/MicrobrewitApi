@@ -19,7 +19,6 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("origins")]
     public class OriginController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IOriginRespository _originRepository;
 
@@ -37,7 +36,14 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<IList<Origin>> GetOrigins()
         {
-            return await _originRepository.GetAllAsync();
+            var origins = await Redis.OriginRedis.GetOriginsAsync();
+            if (origins.Count <= 0)
+            {
+
+                origins = await _originRepository.GetAllAsync();
+            }
+
+            return origins;
         }
 
         /// <summary>
@@ -51,7 +57,11 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Origin))]
         public async Task<IHttpActionResult> GetOrigin(int id)
         {
-            var origin = await _originRepository.GetSingleAsync(o => o.Id == id);
+            var origin = await Redis.OriginRedis.GetOriginAsync(id);
+            if (origin == null)
+            {
+                origin = await _originRepository.GetSingleAsync(o => o.Id == id);
+            }
             if (origin == null)
             {
                 return NotFound();
@@ -81,7 +91,8 @@ namespace Microbrewit.Api.Controllers
             }
 
             await _originRepository.UpdateAsync(origin);
-
+            var originsRedis = await _originRepository.GetAllAsync();
+            await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -103,7 +114,8 @@ namespace Microbrewit.Api.Controllers
             var origins = originPosts.ToArray();
             await _originRepository.AddAsync(origins);
 
-
+            var originsRedis = await _originRepository.GetAllAsync();
+            await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
             return CreatedAtRoute("DefaultApi", new { controller= "origins", }, origins);
         }
 
@@ -125,22 +137,10 @@ namespace Microbrewit.Api.Controllers
             }
 
             await _originRepository.RemoveAsync(origin);
-
+            var originsRedis = await _originRepository.GetAllAsync();
+            await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
             return Ok(origin);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool OriginExists(int id)
-        {
-            return db.Origins.Count(e => e.Id == id) > 0;
-        }
+     
     }
 }

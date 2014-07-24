@@ -15,7 +15,6 @@ using Microbrewit.Repository;
 using AutoMapper;
 using log4net;
 using Microbrewit.Model.DTOs;
-using StackExchange.Redis;
 using Newtonsoft.Json;
 using System.Configuration;
 
@@ -24,10 +23,9 @@ namespace Microbrewit.Api.Controllers
    // [TokenValidationAttribute]
     [RoutePrefix("fermentables")]
     public class FermentableController : ApiController
-    {
+    { 
         private MicrobrewitContext db = new MicrobrewitContext();
         private IFermentableRepository _fermentableRepository;
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FermentableController(IFermentableRepository fermentableRepository)
@@ -43,10 +41,15 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<FermentablesCompleteDto> GetFermentables()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier");
-            var fermDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
+            var fermentablesDto = await Redis.FermentableRedis.GetFermentablesAsync();
+            if (fermentablesDto.Count <= 0)
+            {
+                var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+                fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
+
+            }
             var result = new FermentablesCompleteDto();
-            result.Fermentables = fermDto;
+            result.Fermentables = fermentablesDto;
             return result;
         }
 
@@ -61,12 +64,17 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(FermentablesCompleteDto))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier"); 
-            if (fermentable == null)
+            var fermentableDto = await Redis.FermentableRedis.GetFermentableAsync(id);
+            if (fermentableDto == null)
+            {
+                var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier.Origin"); 
+                fermentableDto = Mapper.Map<Fermentable, FermentableDto>(fermentable);
+
+            }
+            if (fermentableDto == null)
             {
                 return NotFound();
             }
-            var fermentableDto = Mapper.Map<Fermentable, FermentableDto>(fermentable);
             var result = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
             result.Fermentables.Add(fermentableDto);
             return Ok(result);
@@ -95,7 +103,8 @@ namespace Microbrewit.Api.Controllers
 
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
             await _fermentableRepository.UpdateAsync(fermentable);
-            
+            var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesRedis);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -104,32 +113,24 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <response code="201">Created</response>
         /// <response code="400">Bad Request</response>
-        /// <param name="FermentableDtos">List of fermentable transfer objects</param>
+        /// <param name="fermentableDtos">List of fermentable transfer objects</param>
         /// <returns></returns>
         [Route("")]
         [ResponseType(typeof(IList<FermentableDto>))]
-        public async Task<IHttpActionResult> PostFermentable(IList<FermentableDto> FermentableDtos)
+        public async Task<IHttpActionResult> PostFermentable(IList<FermentableDto> fermentableDtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(FermentableDtos);
+            var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(fermentableDtos);
             await _fermentableRepository.AddAsync(fermentablePost);
-            var fermentables = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(_fermentableRepository.GetAll("Supplier.Origin"));
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentables);
 
-            var redisClient = redis.GetDatabase();
-            
-                foreach (var fermentable in fermentables)
-                {
-                    redisClient.HashSet("fermentables", fermentable.Id.ToString(), JsonConvert.SerializeObject(fermentable), flags: CommandFlags.FireAndForget);
-                }
-            
-            }
-            return CreatedAtRoute("DefaultApi", new { controller = "fermetables", }, FermentableDtos);
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetables", }, fermentableDtos);
         }
 
         /// <summary>
@@ -148,25 +149,17 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-
+            //Removes fermentable from database.
             await _fermentableRepository.RemoveAsync(fermentable);
+            
+            //Updates the redis store.
+            var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesRedis);
+
             var response = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
             response.Fermentables.Add(Mapper.Map<Fermentable, FermentableDto>(fermentable));
             return Ok(response);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool FermentableExists(int id)
-        {
-            return db.Fermentables.Count(e => e.Id == id) > 0;
-        }
     }
 }

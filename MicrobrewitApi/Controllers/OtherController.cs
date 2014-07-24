@@ -23,13 +23,13 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("others")]
     public class OtherController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private IOtherRepository _otherRepository;
 
        
         public OtherController(IOtherRepository otherRepository)
         {
+            
             this._otherRepository = otherRepository;
         }
 
@@ -37,12 +37,17 @@ namespace Microbrewit.Api.Controllers
         /// Gets a collection of others
         /// </summary>
         /// <returns>Ok 200 on success</returns>
-        /// <errorCode code="400"
+        /// <errorCode code="400"></errorCode>
         [Route("")]
         public async Task<OtherCompleteDto> GetOthers()
         {
+            var othersDto = await Redis.OtherRedis.GetOthersAsync();
+            if (othersDto.Count <= 0)
+            {
             var others = await _otherRepository.GetAllAsync();
-            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
+            othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
+
+            }
             var result = new OtherCompleteDto();
             result.Others = othersDto;
             return result;
@@ -60,8 +65,13 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(OtherCompleteDto))]
         public async Task<IHttpActionResult> GetOther(int id)
         {
-            var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
-            var otherDto = Mapper.Map<Other, OtherDto>(other);
+            var otherDto = await Redis.OtherRedis.GetOtherAsync(id);
+            if (otherDto == null)
+            {
+                var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
+                otherDto = Mapper.Map<Other, OtherDto>(other);
+
+            }
             if (otherDto == null)
             {
                 return NotFound();
@@ -93,23 +103,12 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
+            var other = Mapper.Map<OtherDto, Other>(otherDto);
+            await _otherRepository.UpdateAsync(other);
 
-            try
-            {
-                var other = Mapper.Map<OtherDto, Other>(otherDto);
-               await _otherRepository.UpdateAsync(other);               
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OtherExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            // Updates redis store.
+            var othersRedis = await _otherRepository.GetAllAsync();
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -131,14 +130,10 @@ namespace Microbrewit.Api.Controllers
 
             var result = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
 
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
-                var redisClient = redis.GetDatabase();
-                foreach (var item in result)
-                {
-                    redisClient.HashSet("others", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
-                }
-            }
+            // Updates redis store.
+            var othersRedis = await _otherRepository.GetAllAsync();
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
+
             var response = new OtherCompleteDto() { Others = new List<OtherDto>() };
             response.Others = otherDtos;
             return CreatedAtRoute("DefaultApi", new { controller = "others", }, response);
@@ -163,23 +158,14 @@ namespace Microbrewit.Api.Controllers
                 return NotFound();
             }
             await _otherRepository.RemoveAsync(other);
+
+            // Updates redis store.
+            var othersRedis = await _otherRepository.GetAllAsync();
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
+
             var response = new OtherCompleteDto(){Others = new List<OtherDto>()};
             response.Others.Add(Mapper.Map<Other,OtherDto>(other));
             return Ok(response);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool OtherExists(int id)
-        {
-            return db.Others.Count(e => e.Id == id) > 0;
         }
     }
 }

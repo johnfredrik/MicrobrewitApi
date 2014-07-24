@@ -22,9 +22,7 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("yeasts")]
     public class YeastController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
         private IYeastRepository _yeastRespository;
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
 
         public YeastController(IYeastRepository yeastRepository)
         {
@@ -37,16 +35,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<YeastCompleteDto> GetYeasts()
         {
-            IList<YeastDto> yeastsDto = new List<YeastDto>();
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
-                var redisClient = redis.GetDatabase();
-                var yeastsHash = await redisClient.HashGetAllAsync("yeasts");
-                foreach (var yeast in yeastsHash)
-                {
-                    yeastsDto.Add(JsonConvert.DeserializeObject<YeastDto>(yeast.Value));
-                }
-            }
+            var yeastsDto = await Redis.YeastRedis.GetYeastsAsync();
             if (yeastsDto.Count <= 0)
             {
                 var yeasts = await _yeastRespository.GetAllAsync("Supplier");
@@ -69,8 +58,8 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> GetYeast(int id)
         {
 
-            var yeastDto = await GetYeastRedis(id);
-            if(yeastDto == null)
+            var yeastDto = await Redis.YeastRedis.GetYeastAsync(id);
+            if (yeastDto == null)
             {
                 var yeast = await _yeastRespository.GetSingleAsync(y => y.Id == id, "Supplier");
                 yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
@@ -81,25 +70,9 @@ namespace Microbrewit.Api.Controllers
             }
             var result = new YeastCompleteDto() { Yeasts = new List<YeastDto>() };
             result.Yeasts.Add(yeastDto);
-            return  Ok(result);
+            return Ok(result);
         }
 
-        private async Task<YeastDto> GetYeastRedis(int id)
-        {
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
-                var redisClient = redis.GetDatabase();
-                var yeast = await redisClient.HashGetAsync("yeasts",id);
-                if (!yeast.IsNull)
-                {
-                    return JsonConvert.DeserializeObject<YeastDto>(yeast);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
         /// <summary>
         /// Updates a yeast.
         /// </summary>
@@ -119,8 +92,13 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
 
+
             var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
             await _yeastRespository.UpdateAsync(yeast);
+
+            // Updates yeasts in the redis store.
+            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
+            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsRedis);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -141,16 +119,10 @@ namespace Microbrewit.Api.Controllers
             var yeasts = Mapper.Map<IList<YeastDto>, Yeast[]>(yeastPosts);
             await _yeastRespository.AddAsync(yeasts);
 
-            var y = Mapper.Map<IList<Yeast>, IList<YeastDto>>(_yeastRespository.GetAll("Supplier.Origin"));
+            // Updates yeasts in the redis store.
+            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
+            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsRedis);
 
-            using (var redis = ConnectionMultiplexer.Connect(redisStore))
-            {
-                var redisClient = redis.GetDatabase();
-                foreach (var item in y)
-                {
-                    redisClient.HashSet("yeasts", item.Id, JsonConvert.SerializeObject(item), flags: CommandFlags.FireAndForget);
-                }
-            }
             return CreatedAtRoute("DefaultApi", new { controller = "yeasts", }, yeastPosts);
         }
 
@@ -170,22 +142,13 @@ namespace Microbrewit.Api.Controllers
             }
 
             _yeastRespository.Remove(yeast);
+
+            // Updates yeasts in the redis store.
+            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
+            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsRedis);
+
             var yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
             return Ok(yeastDto);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool YeastExists(int id)
-        {
-            return db.Yeasts.Count(e => e.Id == id) > 0;
         }
     }
 }
