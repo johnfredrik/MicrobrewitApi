@@ -13,60 +13,45 @@ using System.Web;
 
 namespace Microbrewit.Api.Redis
 {
-    /// <summary>
-    /// Helper class to handle redis calls for hops.
-    /// </summary>
-    public static class HopsRedis
+    public class YeastRedis
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        /// <summary>
-        /// Gets all hops from redis store.
-        /// </summary>
-        /// <param name="hopsDto"></param>
-        /// <returns>List of Hops as HopDto</returns>
-        public static async Task<IList<HopDto>> GetHopsRedis()
+        public async static Task<IList<YeastDto>> GetYeastsAsync()
         {
-            var hopsDto = new List<HopDto>(); 
+            var yeastsDto = new List<YeastDto>();
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopsJson = await redisClient.HashGetAllAsync("hops");
-                    foreach (var hopJson in hopsJson.ToList())
+                    var yeastJson = await redisClient.HashGetAllAsync("yeast");
+                    foreach (var yeast in yeastJson)
                     {
-                        hopsDto.Add(JsonConvert.DeserializeObject<HopDto>(hopJson.Value));
+                        yeastsDto.Add(JsonConvert.DeserializeObject<YeastDto>(yeast.Value));
                     }
-                    return hopsDto;
+                    return yeastsDto;
                 }
             }
             catch (RedisConnectionException connectionException)
             {
                 Log.Debug(connectionException.Message);
-                return hopsDto;     
+                return yeastsDto;
             }
-           
         }
-        /// <summary>
-        /// Gets single hops from the redis store.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Single Hop as HopDto</returns>
-        public async static Task<HopDto> GetHopRedis(int id)
+
+        public async static Task<YeastDto> GetYeastAsync(int id)
         {
-            
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopJson = await redisClient.HashGetAsync("hops", id);
-                    if (!hopJson.IsNull)
+                    var yeastJson = await redisClient.HashGetAsync("yeast", id);
+                    if (!yeastJson.IsNull)
                     {
-                        return JsonConvert.DeserializeObject<HopDto>(hopJson);
+                        return JsonConvert.DeserializeObject<YeastDto>(yeastJson);
                     }
                     else
                     {
@@ -80,21 +65,19 @@ namespace Microbrewit.Api.Redis
                 return null;
             }
         }
-        
-        public async static Task UpdateRedisStore(IList<Hop> hops)
+
+        public async static Task UpdateRedisStoreAsync(IList<Yeast> fermenetables)
         {
-          
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-
+                    var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(fermenetables);
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var hop in hopsDto)
+                    foreach (var yeast in yeastsDto)
                     {
-                        await redisClient.HashSetAsync("hops", hop.Id, JsonConvert.SerializeObject(hop), flags: CommandFlags.FireAndForget);
+                        await redisClient.HashSetAsync("yeast", yeast.Id, JsonConvert.SerializeObject(yeast), flags: CommandFlags.FireAndForget);
                     }
 
                 }

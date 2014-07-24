@@ -13,60 +13,45 @@ using System.Web;
 
 namespace Microbrewit.Api.Redis
 {
-    /// <summary>
-    /// Helper class to handle redis calls for hops.
-    /// </summary>
-    public static class HopsRedis
+    public class SupplierRedis
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        /// <summary>
-        /// Gets all hops from redis store.
-        /// </summary>
-        /// <param name="hopsDto"></param>
-        /// <returns>List of Hops as HopDto</returns>
-        public static async Task<IList<HopDto>> GetHopsRedis()
+        public async static Task<IList<SupplierDto>> GetSuppliersAsync()
         {
-            var hopsDto = new List<HopDto>(); 
+            var suppliersDto = new List<SupplierDto>();
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopsJson = await redisClient.HashGetAllAsync("hops");
-                    foreach (var hopJson in hopsJson.ToList())
+                    var supplierJson = await redisClient.HashGetAllAsync("supplier");
+                    foreach (var supplier in supplierJson)
                     {
-                        hopsDto.Add(JsonConvert.DeserializeObject<HopDto>(hopJson.Value));
+                        suppliersDto.Add(JsonConvert.DeserializeObject<SupplierDto>(supplier.Value));
                     }
-                    return hopsDto;
+                    return suppliersDto;
                 }
             }
             catch (RedisConnectionException connectionException)
             {
                 Log.Debug(connectionException.Message);
-                return hopsDto;     
+                return suppliersDto;
             }
-           
         }
-        /// <summary>
-        /// Gets single hops from the redis store.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Single Hop as HopDto</returns>
-        public async static Task<HopDto> GetHopRedis(int id)
+
+        public async static Task<SupplierDto> GetSupplierAsync(int id)
         {
-            
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopJson = await redisClient.HashGetAsync("hops", id);
-                    if (!hopJson.IsNull)
+                    var supplierJson = await redisClient.HashGetAsync("supplier", id);
+                    if (!supplierJson.IsNull)
                     {
-                        return JsonConvert.DeserializeObject<HopDto>(hopJson);
+                        return JsonConvert.DeserializeObject<SupplierDto>(supplierJson);
                     }
                     else
                     {
@@ -80,21 +65,19 @@ namespace Microbrewit.Api.Redis
                 return null;
             }
         }
-        
-        public async static Task UpdateRedisStore(IList<Hop> hops)
+
+        public async static Task UpdateRedisStoreAsync(IList<Supplier> fermenetables)
         {
-          
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-
+                    var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(fermenetables);
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var hop in hopsDto)
+                    foreach (var supplier in suppliersDto)
                     {
-                        await redisClient.HashSetAsync("hops", hop.Id, JsonConvert.SerializeObject(hop), flags: CommandFlags.FireAndForget);
+                        await redisClient.HashSetAsync("supplier", supplier.Id, JsonConvert.SerializeObject(supplier), flags: CommandFlags.FireAndForget);
                     }
 
                 }

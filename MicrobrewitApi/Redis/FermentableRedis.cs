@@ -13,60 +13,45 @@ using System.Web;
 
 namespace Microbrewit.Api.Redis
 {
-    /// <summary>
-    /// Helper class to handle redis calls for hops.
-    /// </summary>
-    public static class HopsRedis
+    public class FermentableRedis
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        /// <summary>
-        /// Gets all hops from redis store.
-        /// </summary>
-        /// <param name="hopsDto"></param>
-        /// <returns>List of Hops as HopDto</returns>
-        public static async Task<IList<HopDto>> GetHopsRedis()
+        public async static Task<IList<FermentableDto>> GetFermentablesAsync()
         {
-            var hopsDto = new List<HopDto>(); 
+            var fermentablesDto = new List<FermentableDto>();
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopsJson = await redisClient.HashGetAllAsync("hops");
-                    foreach (var hopJson in hopsJson.ToList())
+                    var fermentableJson = await redisClient.HashGetAllAsync("fermentable");
+                    foreach (var fermentable in fermentableJson)
                     {
-                        hopsDto.Add(JsonConvert.DeserializeObject<HopDto>(hopJson.Value));
+                        fermentablesDto.Add(JsonConvert.DeserializeObject<FermentableDto>(fermentable.Value));
                     }
-                    return hopsDto;
+                    return fermentablesDto;
                 }
             }
             catch (RedisConnectionException connectionException)
             {
                 Log.Debug(connectionException.Message);
-                return hopsDto;     
+                return fermentablesDto;
             }
-           
         }
-        /// <summary>
-        /// Gets single hops from the redis store.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Single Hop as HopDto</returns>
-        public async static Task<HopDto> GetHopRedis(int id)
+
+        public async static Task<FermentableDto> GetFermentableAsync(int id)
         {
-            
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopJson = await redisClient.HashGetAsync("hops", id);
-                    if (!hopJson.IsNull)
+                    var fermentableJson = await redisClient.HashGetAsync("fermentable", id);
+                    if (!fermentableJson.IsNull)
                     {
-                        return JsonConvert.DeserializeObject<HopDto>(hopJson);
+                        return JsonConvert.DeserializeObject<FermentableDto>(fermentableJson);
                     }
                     else
                     {
@@ -80,21 +65,19 @@ namespace Microbrewit.Api.Redis
                 return null;
             }
         }
-        
-        public async static Task UpdateRedisStore(IList<Hop> hops)
+
+        public async static Task UpdateRedisStoreAsync(IList<Fermentable> fermenetables)
         {
-          
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-
+                    var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermenetables);
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var hop in hopsDto)
+                    foreach (var fermentable in fermentablesDto)
                     {
-                        await redisClient.HashSetAsync("hops", hop.Id, JsonConvert.SerializeObject(hop), flags: CommandFlags.FireAndForget);
+                        await redisClient.HashSetAsync("fermentable", fermentable.Id, JsonConvert.SerializeObject(fermentable), flags: CommandFlags.FireAndForget);
                     }
 
                 }

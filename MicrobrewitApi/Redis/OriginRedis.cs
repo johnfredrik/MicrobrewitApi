@@ -13,60 +13,45 @@ using System.Web;
 
 namespace Microbrewit.Api.Redis
 {
-    /// <summary>
-    /// Helper class to handle redis calls for hops.
-    /// </summary>
-    public static class HopsRedis
+    public class OriginRedis
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        /// <summary>
-        /// Gets all hops from redis store.
-        /// </summary>
-        /// <param name="hopsDto"></param>
-        /// <returns>List of Hops as HopDto</returns>
-        public static async Task<IList<HopDto>> GetHopsRedis()
+        public async static Task<IList<Origin>> GetOriginsAsync()
         {
-            var hopsDto = new List<HopDto>(); 
+            var originsDto = new List<Origin>();
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopsJson = await redisClient.HashGetAllAsync("hops");
-                    foreach (var hopJson in hopsJson.ToList())
+                    var originJson = await redisClient.HashGetAllAsync("origin");
+                    foreach (var origin in originJson)
                     {
-                        hopsDto.Add(JsonConvert.DeserializeObject<HopDto>(hopJson.Value));
+                        originsDto.Add(JsonConvert.DeserializeObject<Origin>(origin.Value));
                     }
-                    return hopsDto;
+                    return originsDto;
                 }
             }
             catch (RedisConnectionException connectionException)
             {
                 Log.Debug(connectionException.Message);
-                return hopsDto;     
+                return originsDto;
             }
-           
         }
-        /// <summary>
-        /// Gets single hops from the redis store.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Single Hop as HopDto</returns>
-        public async static Task<HopDto> GetHopRedis(int id)
+
+        public async static Task<Origin> GetOriginAsync(int id)
         {
-            
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
                     var redisClient = redis.GetDatabase();
-                    var hopJson = await redisClient.HashGetAsync("hops", id);
-                    if (!hopJson.IsNull)
+                    var originJson = await redisClient.HashGetAsync("origin", id);
+                    if (!originJson.IsNull)
                     {
-                        return JsonConvert.DeserializeObject<HopDto>(hopJson);
+                        return JsonConvert.DeserializeObject<Origin>(originJson);
                     }
                     else
                     {
@@ -80,21 +65,18 @@ namespace Microbrewit.Api.Redis
                 return null;
             }
         }
-        
-        public async static Task UpdateRedisStore(IList<Hop> hops)
+
+        public async static Task UpdateRedisStoreAsync(IList<Origin> origins)
         {
-          
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var hop in hopsDto)
+                    foreach (var origin in origins)
                     {
-                        await redisClient.HashSetAsync("hops", hop.Id, JsonConvert.SerializeObject(hop), flags: CommandFlags.FireAndForget);
+                        await redisClient.HashSetAsync("origin", origin.Id, JsonConvert.SerializeObject(origin), flags: CommandFlags.FireAndForget);
                     }
 
                 }
