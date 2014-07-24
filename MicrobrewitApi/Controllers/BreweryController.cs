@@ -13,6 +13,7 @@ using Microbrewit.Model;
 using Microbrewit.Repository;
 using AutoMapper;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Api.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -35,8 +36,12 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<BreweryCompleteDto> GetBreweries()
         {
-            var brewery = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(brewery);
+            var breweriesDto = await BreweryRedis.GetBreweries();
+            if (breweriesDto.Count <= 0)
+            {
+                var brewery = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+                breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(brewery);
+            }
             var result = new BreweryCompleteDto();
             result.Breweries = breweriesDto;
             return result;
@@ -53,13 +58,19 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BreweryCompleteDto))]
         public async Task<IHttpActionResult> GetBrewery(int id)
         {
-            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == id, "Members.Member", "Beers");
-            if (brewery == null)
+            var breweryDto = await Redis.BreweryRedis.GetBrewery(id);
+            if(breweryDto == null)
+            {
+                var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == id, "Members.Member", "Beers");
+                breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
+            }
+
+            if (breweryDto == null)
             {
                 return NotFound();
             }
             var result = new BreweryCompleteDto() { Breweries = new List<BreweryDto>() };
-            result.Breweries.Add(Mapper.Map<Brewery, BreweryDto>(brewery));
+            result.Breweries.Add(breweryDto);
             return Ok(result);
         }
 
@@ -86,7 +97,9 @@ namespace Microbrewit.Api.Controllers
            
             var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
             var response = await _breweryRepository.UpdateAsync(brewery);
-         
+
+            var breweriesRedis = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -108,7 +121,8 @@ namespace Microbrewit.Api.Controllers
 
             var breweries = Mapper.Map<IList<BreweryDto>, Brewery[]>(breweryPosts);
             await _breweryRepository.AddAsync(breweries);
-
+            var breweriesRedis = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
         }
 
@@ -129,6 +143,8 @@ namespace Microbrewit.Api.Controllers
             }
             await _breweryRepository.RemoveAsync(brewery);
             var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
+            var breweriesRedis = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return Ok(breweryDto);
         }
 
@@ -150,6 +166,8 @@ namespace Microbrewit.Api.Controllers
                 return NotFound();
             }
             await _breweryRepository.DeleteBreweryMember(breweryMember.BreweryId, breweryMember.MemberUsername);
+            var breweriesRedis = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return Ok(breweryMember);
         }
 
@@ -210,7 +228,8 @@ namespace Microbrewit.Api.Controllers
             }
 
             await _breweryRepository.UpdateBreweryMember(breweryMember);
-
+            var breweriesRedis = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -225,7 +244,8 @@ namespace Microbrewit.Api.Controllers
 
 
             await _breweryRepository.PostBreweryMember(breweryMember);
-
+            var breweriesRedis = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return CreatedAtRoute("DefaultApi", new { controller = "breweries/members" }, breweryMember);
         }
 
