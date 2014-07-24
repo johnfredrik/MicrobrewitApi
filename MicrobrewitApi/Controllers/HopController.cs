@@ -43,7 +43,7 @@ namespace Microbrewit.Api.Controllers
         {
             IList<HopDto> hopsDto = new List<HopDto>();
             IList<Hop> hops;
-            hopsDto = await HopsRedis.GetHopsRedis(hopsDto);
+            hopsDto = await HopsRedis.GetHopsRedis();
             if (hopsDto.Count <= 0)
             {
                 hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");

@@ -33,7 +33,7 @@ namespace Microbrewit.Api
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             AutoMapperConfiguration.Configure();
-            Database.SetInitializer(new InitializeDatabaseWithSeedData());
+            //Database.SetInitializer(new InitializeDatabaseWithSeedData());
            
         }
     }
