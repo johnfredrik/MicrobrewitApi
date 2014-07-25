@@ -41,6 +41,29 @@ namespace Microbrewit.Api.Redis
             }
         }
 
+        public async static Task<IList<YeastDto>> GetYeastsAsync(string search)
+        {
+            var yeastsDto = new List<YeastDto>();
+            try
+            {
+                using (var redis = ConnectionMultiplexer.Connect(redisStore))
+                {
+                    var redisClient = redis.GetDatabase();
+                    var yeastJson = await redisClient.HashGetAllAsync("yeast");
+                    foreach (var yeast in yeastJson)
+                    {
+                        yeastsDto.Add(JsonConvert.DeserializeObject<YeastDto>(yeast.Value));
+                    }
+                    return yeastsDto;
+                }
+            }
+            catch (RedisConnectionException connectionException)
+            {
+                Log.Debug(connectionException.Message);
+                return yeastsDto;
+            }
+        }
+
         public async static Task<YeastDto> GetYeastAsync(int id)
         {
             try
@@ -66,16 +89,16 @@ namespace Microbrewit.Api.Redis
             }
         }
 
-        public async static Task UpdateRedisStoreAsync(IList<Yeast> fermenetables)
+        public async static Task UpdateRedisStoreAsync(IList<YeastDto> yeasts)
         {
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(fermenetables);
+                    
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var yeast in yeastsDto)
+                    foreach (var yeast in yeasts)
                     {
                         await redisClient.HashSetAsync("yeast", yeast.Id, JsonConvert.SerializeObject(yeast), flags: CommandFlags.FireAndForget);
                     }
