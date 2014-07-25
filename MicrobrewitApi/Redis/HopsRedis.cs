@@ -81,18 +81,18 @@ namespace Microbrewit.Api.Redis
             }
         }
         
-        public async static Task UpdateRedisStore(IList<Hop> hops)
+        public async static Task UpdateRedisStore(IList<HopDto> hops)
         {
           
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
+                    
 
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var hop in hopsDto)
+                    foreach (var hop in hops)
                     {
                         await redisClient.HashSetAsync("hops", hop.Id, JsonConvert.SerializeObject(hop), flags: CommandFlags.FireAndForget);
                     }

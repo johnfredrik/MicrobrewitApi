@@ -29,12 +29,14 @@ namespace Microbrewit.Api.Controllers
 
         private MicrobrewitContext db = new MicrobrewitContext();
         private IHopRepository _hopRepository;
+        private Elasticsearch.ElasticSearch _elasticsearch;
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public HopController(IHopRepository hopRepository)
         {
             this._hopRepository = hopRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
         // GET api/Hops
@@ -96,7 +98,10 @@ namespace Microbrewit.Api.Controllers
             var hop = Mapper.Map<HopDto, Hop>(hopDto);
             await _hopRepository.UpdateAsync(hop);
             var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-            await HopsRedis.UpdateRedisStore(hops);
+            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
+            await HopsRedis.UpdateRedisStore(hopsDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -119,9 +124,10 @@ namespace Microbrewit.Api.Controllers
 
             var result = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
             var resultsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(result);
-
-
-            HopsRedis.UpdateRedisStore(await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts"));
+            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
+            await HopsRedis.UpdateRedisStore(hopsDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
             return CreatedAtRoute("DefaultApi", new { controller = "hops", }, resultsDto);
         }
 
@@ -130,15 +136,20 @@ namespace Microbrewit.Api.Controllers
         // DELETE api/Hopd/5
         [Route("{id:int}")]
         [ResponseType(typeof(Hop))]
-        public IHttpActionResult DeleteHop(int id)
+        public async Task<IHttpActionResult> DeleteHop(int id)
         {
-            Hop hop = _hopRepository.GetSingle(h => h.Id == id);
+            Hop hop = await _hopRepository.GetSingleAsync(h => h.Id == id);
             if (hop == null)
             {
                 return NotFound();
             }
 
-            _hopRepository.Remove(hop);
+            await _hopRepository.RemoveAsync(hop);
+            var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
+            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
+            await HopsRedis.UpdateRedisStore(hopsDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
             return Ok(hop);
         }
 
@@ -170,8 +181,22 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> UpdateHopsRedis()
         {
             var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-           await HopsRedis.UpdateRedisStore(hops);
+            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
+            await HopsRedis.UpdateRedisStore(hopsDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
            return Ok();
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<HopCompleteDto> GetYeastsBySearch(string query)
+        {
+            var hopDto = await _elasticsearch.GetHops(query);
+
+            var result = new HopCompleteDto   ();
+            result.Hops = hopDto.ToList();
+            return result;
         }
     }
 }

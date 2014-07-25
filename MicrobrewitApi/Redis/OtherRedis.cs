@@ -66,16 +66,16 @@ namespace Microbrewit.Api.Redis
             }
         }
 
-        public async static Task UpdateRedisStoreAsync(IList<Other> fermenetables)
+        public async static Task UpdateRedisStoreAsync(IList<OtherDto> others)
         {
             try
             {
                 using (var redis = ConnectionMultiplexer.Connect(redisStore))
                 {
-                    var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(fermenetables);
+                    
                     var redisClient = redis.GetDatabase();
 
-                    foreach (var other in othersDto)
+                    foreach (var other in others)
                     {
                         await redisClient.HashSetAsync("other", other.Id, JsonConvert.SerializeObject(other), flags: CommandFlags.FireAndForget);
                     }

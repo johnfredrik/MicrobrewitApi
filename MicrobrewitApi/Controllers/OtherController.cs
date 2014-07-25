@@ -25,12 +25,13 @@ namespace Microbrewit.Api.Controllers
     {
         private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
         private IOtherRepository _otherRepository;
-
+        private Elasticsearch.ElasticSearch _elasticsearch;
        
         public OtherController(IOtherRepository otherRepository)
         {
             
             this._otherRepository = otherRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
         /// <summary>
@@ -108,8 +109,10 @@ namespace Microbrewit.Api.Controllers
 
             // Updates redis store.
             var othersRedis = await _otherRepository.GetAllAsync();
-            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
-
+            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(othersRedis);
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
         /// <summary>
@@ -132,7 +135,10 @@ namespace Microbrewit.Api.Controllers
 
             // Updates redis store.
             var othersRedis = await _otherRepository.GetAllAsync();
-            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
+            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(othersRedis);
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
 
             var response = new OtherCompleteDto() { Others = new List<OtherDto>() };
             response.Others = otherDtos;
@@ -161,7 +167,10 @@ namespace Microbrewit.Api.Controllers
 
             // Updates redis store.
             var othersRedis = await _otherRepository.GetAllAsync();
-            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
+            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(othersRedis);
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
 
             var response = new OtherCompleteDto(){Others = new List<OtherDto>()};
             response.Others.Add(Mapper.Map<Other,OtherDto>(other));
@@ -173,8 +182,23 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> UpdateOtherRedis()
         {
             var othersRedis = await _otherRepository.GetAllAsync();
-            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
+            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(othersRedis);
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
+
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<OtherCompleteDto> GetOthersBySearch(string query)
+        {
+            var hopDto = await _elasticsearch.GetOthers(query);
+
+            var result = new OtherCompleteDto();
+            result.Others = hopDto.ToList();
+            return result;
         }
     }
 }

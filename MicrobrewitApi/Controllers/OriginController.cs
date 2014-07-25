@@ -21,10 +21,12 @@ namespace Microbrewit.Api.Controllers
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IOriginRespository _originRepository;
+        private Elasticsearch.ElasticSearch _elasticsearch;
 
         public OriginController(IOriginRespository originRepository)
         {
             this._originRepository = originRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
 
@@ -93,6 +95,9 @@ namespace Microbrewit.Api.Controllers
             await _originRepository.UpdateAsync(origin);
             var originsRedis = await _originRepository.GetAllAsync();
             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOriginElasticSearch(originsRedis);
+
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -116,6 +121,9 @@ namespace Microbrewit.Api.Controllers
 
             var originsRedis = await _originRepository.GetAllAsync();
             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOriginElasticSearch(originsRedis);
+
             return CreatedAtRoute("DefaultApi", new { controller= "origins", }, origins);
         }
 
@@ -139,6 +147,9 @@ namespace Microbrewit.Api.Controllers
             await _originRepository.RemoveAsync(origin);
             var originsRedis = await _originRepository.GetAllAsync();
             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateOriginElasticSearch(originsRedis);
+
             return Ok(origin);
         }
 
@@ -148,7 +159,18 @@ namespace Microbrewit.Api.Controllers
         {
              var originsRedis = await _originRepository.GetAllAsync();
              await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+             // updated elasticsearch.
+             await _elasticsearch.UpdateOriginElasticSearch(originsRedis);
+
              return Ok();
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IList<Origin>> GetOriginBySearch(string query)
+        {
+            var result = await _elasticsearch.GetOrigins(query);
+            return result.ToList();
         }
      
     }
