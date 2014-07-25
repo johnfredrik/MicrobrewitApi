@@ -26,11 +26,13 @@ namespace Microbrewit.Api.Controllers
     { 
         private MicrobrewitContext db = new MicrobrewitContext();
         private IFermentableRepository _fermentableRepository;
+        private Elasticsearch.ElasticSearch _elasticsearch;
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FermentableController(IFermentableRepository fermentableRepository)
         {
             this._fermentableRepository = fermentableRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
       
         /// <summary>
@@ -104,7 +106,11 @@ namespace Microbrewit.Api.Controllers
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
             await _fermentableRepository.UpdateAsync(fermentable);
             var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesRedis);
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentablesRedis);
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
+
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -127,8 +133,10 @@ namespace Microbrewit.Api.Controllers
             var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(fermentableDtos);
             await _fermentableRepository.AddAsync(fermentablePost);
             var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentables);
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
 
             return CreatedAtRoute("DefaultApi", new { controller = "fermetables", }, fermentableDtos);
         }
@@ -154,12 +162,39 @@ namespace Microbrewit.Api.Controllers
             
             //Updates the redis store.
             var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesRedis);
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentablesRedis);
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
 
             var response = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
             response.Fermentables.Add(Mapper.Map<Fermentable, FermentableDto>(fermentable));
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("redis")]
+        public async Task<IHttpActionResult> UpdateRedisFermentable()
+        {
+            // Updates yeasts in the redis store.
+            var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentablesRedis);
+            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<FermentablesCompleteDto> GetFermentablesBySearch(string query)
+        {
+            var fermentablesDto = await _elasticsearch.GetFermentables(query);
+
+            var result = new FermentablesCompleteDto();
+            result.Fermentables = fermentablesDto.ToList();
+            return result;
+        }
     }
 }
