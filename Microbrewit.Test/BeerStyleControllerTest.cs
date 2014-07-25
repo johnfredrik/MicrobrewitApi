@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 
 namespace Microbrewit.Test
 {
+    [TestFixture]
     public class BeerStyleControllerTest
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

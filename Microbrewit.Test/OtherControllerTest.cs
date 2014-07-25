@@ -68,16 +68,14 @@ namespace Microbrewit.Test
         [Test]
         public async Task PostOtherToDatabaseGetsAdded()
         {
-            using (var file = new StreamReader(JSONPATH + "other.json"))
-            {
-                string jsonString = file.ReadToEnd();
-                var count = _repository.GetAll().Count();
-                var others = JsonConvert.DeserializeObject<List<OtherDto>>(jsonString);
+                var others = new List<OtherDto>
+                {
+                    new OtherDto{ Name = "Sun Flower", Type = "Flower"}
+                };
 
                 await _controller.PostOther(others);
                 var result = await _controller.GetOthers();
-                Assert.AreEqual(count + others.Count, result.Others.Count());
-            }
+                Assert.True(result.Others.Any(o => o.Name.Equals(others[0].Name)));
         }
 
         [Test]
