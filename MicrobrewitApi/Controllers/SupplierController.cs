@@ -162,5 +162,15 @@ namespace Microbrewit.Api.Controllers
             response.Suppliers.Add(Mapper.Map<Supplier, SupplierDto>(supplier));
             return Ok(response);
         }
+
+
+        [Route("redis")]
+        [HttpGet]
+        public async Task<IHttpActionResult> UpdateSupplierRedis()
+        {
+            var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
+            await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersRedis);
+            return Ok();
+        }
     }
 }
