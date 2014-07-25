@@ -15,6 +15,8 @@ using Microbrewit.Model.DTOs;
 using System.Web.Http.Results;
 using Newtonsoft.Json;
 using System.Net;
+using Nest;
+using Microbrewit.Api.Elasticsearch;
 
 namespace Microbrewit.Test
 {
@@ -25,6 +27,10 @@ namespace Microbrewit.Test
         private IYeastRepository _repository;
         private MicrobrewitContext _context;
         private YeastController _controller;
+        private ElasticSearch _elasticSearch;
+        private Uri _node;
+        private ConnectionSettings _settings;
+        private ElasticClient _client;
         private const string JSONPATH = @"..\..\JSON\";
 
         [TestFixtureSetUp]
@@ -37,13 +43,17 @@ namespace Microbrewit.Test
             _context = new MicrobrewitContext();
             _repository = new YeastRepository();
             _controller = new YeastController(_repository);
-
+            _node = new Uri("http://localhost:9200");
+            _settings = new ConnectionSettings(_node, defaultIndex: "mb");
+            _client = new ElasticClient(_settings);
+            _elasticSearch = new ElasticSearch();
         }
 
         [TestFixtureTearDown]
         public void TearDown()
         {
             _context.Dispose();
+            
         }
 
         [Test]
@@ -90,7 +100,7 @@ namespace Microbrewit.Test
             var yeastCompleteDto = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
             var yeast = yeastCompleteDto.Content.Yeasts[0];
             yeast.Flocculation = "Medium";
-            _controller.PutYeast(yeast.Id,yeast);
+            await _controller.PutYeast(yeast.Id,yeast);
             var result = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
             var updatedYeast = result.Content.Yeasts[0];
             Assert.AreEqual(yeast.Flocculation,updatedYeast.Flocculation);
@@ -117,6 +127,46 @@ namespace Microbrewit.Test
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
+        [Test]
+        public async Task UpdateYeasts_Into_ElasticSearch()
+        {
+            var yeasts = await _controller.GetYeasts();
+            await _elasticSearch.UpdateYeastsElasticSearch(yeasts.Yeasts);
+
+            var searchResults = _client.Search<YeastDto>(s => s
+                                                .From(0)
+                                                .Size(10)
+                                                .Query(q => q
+                                                    .Term(y => y.Name, "safale")));
+
+            var result = searchResults.Documents;
+            Assert.AreEqual(1, result.Count());
+        }
+
+        [Test]
+        public async Task UpdateYeasts_Into_ElasticSearch_Value_Gets_Updated()
+        {
+            var yeasts = await _controller.GetYeasts();
+            var updatedYeast = yeasts.Yeasts.FirstOrDefault();
+            updatedYeast.Name = "NEWNAME";
+            await _controller.PutYeast(updatedYeast.Id, updatedYeast);
+
+
+
+            var searchResults = _client.Search<YeastDto>(s => s
+                                                .From(0)
+                                                .Size(10)
+                                                .Query(q => q
+                                                    .Term(y => y.Name, "new")));
+
+           
+            var result = searchResults.Documents;
+            Assert.True(result.Any());
+        }
+
+           
+
+        
 
     }
 }
