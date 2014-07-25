@@ -167,11 +167,11 @@ namespace Microbrewit.Api.Controllers
         
         [Route("redis")]
         [HttpGet]
-        public async Task<IHttpActionResult> UpdateHops()
+        public async Task<IHttpActionResult> UpdateHopsRedis()
         {
             var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
            await HopsRedis.UpdateRedisStore(hops);
-           return StatusCode(HttpStatusCode.NoContent);
+           return Ok();
         }
     }
 }

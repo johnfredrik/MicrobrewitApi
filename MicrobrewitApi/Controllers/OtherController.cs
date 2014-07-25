@@ -167,5 +167,14 @@ namespace Microbrewit.Api.Controllers
             response.Others.Add(Mapper.Map<Other,OtherDto>(other));
             return Ok(response);
         }
+
+        [Route("redis")]
+        [HttpGet]
+        public async Task<IHttpActionResult> UpdateOtherRedis()
+        {
+            var othersRedis = await _otherRepository.GetAllAsync();
+            await Redis.OtherRedis.UpdateRedisStoreAsync(othersRedis);
+            return Ok();
+        }
     }
 }

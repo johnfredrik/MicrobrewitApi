@@ -141,6 +141,15 @@ namespace Microbrewit.Api.Controllers
             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
             return Ok(origin);
         }
+
+        [Route("redis")]
+        [HttpGet]
+        public async Task<IHttpActionResult> UpdateOriginRedis()
+        {
+             var originsRedis = await _originRepository.GetAllAsync();
+             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+             return Ok();
+        }
      
     }
 }
