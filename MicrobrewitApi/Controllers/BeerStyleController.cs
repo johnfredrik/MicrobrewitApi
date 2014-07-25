@@ -155,18 +155,14 @@ namespace Microbrewit.Api.Controllers
             return Ok(response);
         }
 
-        protected override void Dispose(bool disposing)
+        [HttpGet]
+        [Route("redis")]
+        public async Task<IHttpActionResult> UpdateRedisBeerStyle()
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+            var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+            await BeerStylesRedis.UpdateRedisStore(bs);
 
-        private bool BeerStyleExists(int id)
-        {
-            return db.BeerStyles.Count(e => e.Id == id) > 0;
+            return Ok();
         }
     }
 }
