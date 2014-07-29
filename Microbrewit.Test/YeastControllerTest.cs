@@ -17,6 +17,9 @@ using Newtonsoft.Json;
 using System.Net;
 using Nest;
 using Microbrewit.Api.Elasticsearch;
+using Elasticsearch;
+using Elasticsearch.Net;
+using Elasticsearch.Net.Connection;
 
 namespace Microbrewit.Test
 {
@@ -32,6 +35,8 @@ namespace Microbrewit.Test
         private ConnectionSettings _settings;
         private ElasticClient _client;
         private const string JSONPATH = @"..\..\JSON\";
+
+      
 
         [TestFixtureSetUp]
         public void Init()
@@ -163,6 +168,20 @@ namespace Microbrewit.Test
             var result = searchResults.Documents;
             Assert.True(result.Any());
         }
+
+        [Test]
+        public async Task SearchAllElasticSearch()
+        {
+            var node = new Uri("http://localhost:9200");
+            var settings = new ConnectionConfiguration(node);
+            var client = new ElasticsearchClient(settings);
+
+            var query = "{\"query\" : { \"term\": { \"name\" : \"safale\"}}}";
+            var res = client.Search<string>("mb", query);
+            dynamic json = JsonConvert.DeserializeObject(res.Response);
+            var result = json.hits.hits; 
+           
+         }
 
            
 
