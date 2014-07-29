@@ -11,6 +11,8 @@ using WebApiContrib.Formatting.Jsonp;
 using Microsoft.Practices.Unity;
 using Microbrewit.Repository;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microbrewit.Api
 {
@@ -18,13 +20,14 @@ namespace Microbrewit.Api
     {
         public static void Register(HttpConfiguration config)
         {
+            
            
             // Web API configuration and services
 
             //config.Filters.Add(new TokenValidationAttribute());
             //config.Filters.Add(new CustomHttpsAttribute());         
             //config.Filters.Add(new BasicAuthenticationAttibute());
-           // config.EnableCors();
+          
 
             //config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
@@ -40,21 +43,34 @@ namespace Microbrewit.Api
             container.RegisterType<ISupplierRepository, SupplierRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IUserRepository, UserRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IYeastRepository, YeastRepository>(new HierarchicalLifetimeManager());
+           
+            
 
             config.DependencyResolver = new UnityResolver(container);
-
-            config.EnableCors();
-            // Web API routes
+            //// Web API routes
             config.MapHttpAttributeRoutes();
 
+            //var cors = new EnableCorsAttribute("*",
+            //                                     "*",
+            //                                     "*");
+
+            //config.EnableCors();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            
+            var formatters = GlobalConfiguration.Configuration.Formatters;
+            var jsonFormatter = formatters.JsonFormatter;
+            var settings = jsonFormatter.SerializerSettings;
+            settings.Formatting = Formatting.Indented;
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
+
+          
 
         }
     }
