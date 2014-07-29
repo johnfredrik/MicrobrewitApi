@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -12,7 +13,6 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using Microbrewit.Api.Areas.HelpPage.ModelDescriptions;
 using Microbrewit.Api.Areas.HelpPage.Models;
-using System.Net;
 
 namespace Microbrewit.Api.Areas.HelpPage
 {
@@ -240,17 +240,13 @@ namespace Microbrewit.Api.Areas.HelpPage
             {
                 ApiDescription = apiDescription,
             };
-            
-            apiModel.StatusCodes.Add(apiDescription.ResponseDescription.Documentation);
-                
+
             ModelDescriptionGenerator modelGenerator = config.GetModelDescriptionGenerator();
             HelpPageSampleGenerator sampleGenerator = config.GetHelpPageSampleGenerator();
             GenerateUriParameters(apiModel, modelGenerator);
             GenerateRequestModelDescription(apiModel, modelGenerator, sampleGenerator);
             GenerateResourceDescription(apiModel, modelGenerator);
             GenerateSamples(apiModel, sampleGenerator);
-
-
 
             return apiModel;
         }
@@ -273,7 +269,28 @@ namespace Microbrewit.Api.Areas.HelpPage
                         complexTypeDescription = typeDescription as ComplexTypeModelDescription;
                     }
 
-                    if (complexTypeDescription != null)
+                    // Example:
+                    // [TypeConverter(typeof(PointConverter))]
+                    // public class Point
+                    // {
+                    //     public Point(int x, int y)
+                    //     {
+                    //         X = x;
+                    //         Y = y;
+                    //     }
+                    //     public int X { get; set; }
+                    //     public int Y { get; set; }
+                    // }
+                    // Class Point is bindable with a TypeConverter, so Point will be added to UriParameters collection.
+                    // 
+                    // public class Point
+                    // {
+                    //     public int X { get; set; }
+                    //     public int Y { get; set; }
+                    // }
+                    // Regular complex class Point will have properties X and Y added to UriParameters collection.
+                    if (complexTypeDescription != null
+                        && !IsBindableWithTypeConverter(parameterType))
                     {
                         foreach (ParameterDescription uriParameter in complexTypeDescription.Properties)
                         {
@@ -308,6 +325,16 @@ namespace Microbrewit.Api.Areas.HelpPage
                     }
                 }
             }
+        }
+
+        private static bool IsBindableWithTypeConverter(Type parameterType)
+        {
+            if (parameterType == null)
+            {
+                return false;
+            }
+
+            return TypeDescriptor.GetConverter(parameterType).CanConvertFrom(typeof(string));
         }
 
         private static ParameterDescription AddParameterDescription(HelpPageApiModel apiModel,

@@ -40,16 +40,10 @@
     }
 
     <h2>Response Information</h2>
-      
 
     <h3>Resource Description</h3>
-    <p>@description.ResponseDescription.Documentation</p>
 
-    @if (Model.StatusCodes != null)
-    {
-        <h3>Error Code</h3>
-        <p>@Html.DisplayFor(m => m.StatusCodes);</p>
-    }
+    <p>@description.ResponseDescription.Documentation</p>
 
     @if (Model.ResourceDescription != null)
     {
