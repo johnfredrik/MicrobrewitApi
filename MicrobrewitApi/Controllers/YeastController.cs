@@ -179,9 +179,9 @@ namespace Microbrewit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<YeastCompleteDto> GetYeastsBySearch(string query)
+        public async Task<YeastCompleteDto> GetYeastsBySearch(string query, int from = 0, int size = 20)
         {
-            var yeastsDto = await _elasticsearch.GetYeasts(query);
+            var yeastsDto = await _elasticsearch.GetYeasts(query,from,size);
             
             var result = new YeastCompleteDto();
             result.Yeasts = yeastsDto.ToList();

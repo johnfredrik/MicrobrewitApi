@@ -192,9 +192,9 @@ namespace Microbrewit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<OtherCompleteDto> GetOthersBySearch(string query)
+        public async Task<OtherCompleteDto> GetOthersBySearch(string query, int from = 0, int size = 20)
         {
-            var hopDto = await _elasticsearch.GetOthers(query);
+            var hopDto = await _elasticsearch.GetOthers(query,from,size);
 
             var result = new OtherCompleteDto();
             result.Others = hopDto.ToList();

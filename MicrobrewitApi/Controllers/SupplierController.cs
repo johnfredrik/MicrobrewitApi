@@ -190,9 +190,9 @@ namespace Microbrewit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<SupplierCompleteDto> GetOthersBySearch(string query)
+        public async Task<SupplierCompleteDto> GetSuppliersBySearch(string query, int from = 0, int size = 20)
         {
-            var supplierDto = await _elasticsearch.GetSuppliers(query);
+            var supplierDto = await _elasticsearch.GetSuppliers(query,from,size);
 
             var result = new SupplierCompleteDto();
             result.Suppliers = supplierDto.ToList();

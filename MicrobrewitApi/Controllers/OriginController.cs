@@ -167,9 +167,9 @@ namespace Microbrewit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IList<Origin>> GetOriginBySearch(string query)
+        public async Task<IList<Origin>> GetOriginBySearch(string query, int from = 0, int size = 20)
         {
-            var result = await _elasticsearch.GetOrigins(query);
+            var result = await _elasticsearch.GetOrigins(query,from, size);
             return result.ToList();
         }
      

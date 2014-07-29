@@ -188,9 +188,9 @@ namespace Microbrewit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<FermentablesCompleteDto> GetFermentablesBySearch(string query)
+        public async Task<FermentablesCompleteDto> GetFermentablesBySearch(string query, int from = 0, int size = 20)
         {
-            var fermentablesDto = await _elasticsearch.GetFermentables(query);
+            var fermentablesDto = await _elasticsearch.GetFermentables(query,from,size);
 
             var result = new FermentablesCompleteDto();
             result.Fermentables = fermentablesDto.ToList();

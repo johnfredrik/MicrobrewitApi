@@ -190,9 +190,9 @@ namespace Microbrewit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<HopCompleteDto> GetYeastsBySearch(string query)
+        public async Task<HopCompleteDto> GetYeastsBySearch(string query, int from = 0, int size = 20)
         {
-            var hopDto = await _elasticsearch.GetHops(query);
+            var hopDto = await _elasticsearch.GetHops(query,from,size);
 
             var result = new HopCompleteDto   ();
             result.Hops = hopDto.ToList();

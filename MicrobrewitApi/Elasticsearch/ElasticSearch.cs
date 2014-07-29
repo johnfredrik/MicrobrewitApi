@@ -1,9 +1,13 @@
-﻿using Microbrewit.Model;
+﻿using Elasticsearch.Net;
+using Elasticsearch.Net.Connection;
+using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Nest;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -22,30 +26,31 @@ namespace Microbrewit.Api.Elasticsearch
             this._client = new ElasticClient(_settings);
         }
 
-        public async Task SearchAll(string query)
+        public async Task<string> SearchAll(string query, int from, int size)
         {
-            //var result = _client.Search(s => s
-            //    .From(0)
-            //    .Size(20)
-            //    .Query(q => q.Name, query));
+            var node = new Uri("http://localhost:9200");
+            var settings = new ConnectionConfiguration(node);
+            var client = new ElasticsearchClient(settings);
+
+            //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
+            var queryString = "{\"from\" : " + from + ", \"size\" : " + size +", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
+            var res = client.Search<string>("mb", queryString);
+            return res.Response;
         }
 
 
         public async Task UpdateYeastsElasticSearch(IList<YeastDto> yeasts)
         {
-            foreach (var yeast in yeasts)
-            {
-                // Adds an analayzer to the name property in yeastDto object.
-                _client.Map<YeastDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
-                var index = _client.Index<YeastDto>(yeast);
-            }
+            _client.Map<YeastDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+            _client.IndexMany(yeasts, "mb");
+           
         }
 
-        public async Task<IEnumerable<YeastDto>> GetYeasts(string query)
+        public async Task<IEnumerable<YeastDto>> GetYeasts(string query, int from, int size)
         {
             var searchResults = _client.Search<YeastDto>(s => s
-                                                .From(0)
-                                                .Size(10)
+                                                .From(from)
+                                                .Size(size)
                                                 .Query(q => q
                                                     .Term(y => y.Name, query)));
 
@@ -62,11 +67,11 @@ namespace Microbrewit.Api.Elasticsearch
             }
         }
 
-        public async Task<IEnumerable<FermentableDto>> GetFermentables(string query)
+        public async Task<IEnumerable<FermentableDto>> GetFermentables(string query, int from, int size)
         {
             var searchResults = _client.Search<FermentableDto>(s => s
-                                                .From(0)
-                                                .Size(10)
+                                                .From(from)
+                                                .Size(size)
                                                 .Query(q => q
                                                     .Term(y => y.Name, query)));
 
@@ -83,11 +88,11 @@ namespace Microbrewit.Api.Elasticsearch
             }
         }
 
-        public async Task<IEnumerable<HopDto>> GetHops(string query)
+        public async Task<IEnumerable<HopDto>> GetHops(string query, int from, int size)
         {
             var searchResults = _client.Search<HopDto>(s => s
-                                                .From(0)
-                                                .Size(10)
+                                                .From(from)
+                                                .Size(size)
                                                 .Query(q => q
                                                     .Term(y => y.Name, query)));
 
@@ -104,11 +109,11 @@ namespace Microbrewit.Api.Elasticsearch
             }
         }
 
-        public async Task<IEnumerable<OtherDto>> GetOthers(string query)
+        public async Task<IEnumerable<OtherDto>> GetOthers(string query, int from, int size)
         {
             var searchResults = _client.Search<OtherDto>(s => s
-                                                .From(0)
-                                                .Size(10)
+                                                .From(from)
+                                                .Size(size)
                                                 .Query(q => q
                                                     .Term(y => y.Name, query)));
 
@@ -125,11 +130,11 @@ namespace Microbrewit.Api.Elasticsearch
             }
         }
 
-        public async Task<IEnumerable<SupplierDto>> GetSuppliers(string query)
+        public async Task<IEnumerable<SupplierDto>> GetSuppliers(string query, int from, int size)
         {
             var searchResults = _client.Search<SupplierDto>(s => s
-                                                .From(0)
-                                                .Size(10)
+                                                .From(from)
+                                                .Size(size)
                                                 .Query(q => q
                                                     .Term(y => y.Name, query)));
 
@@ -145,12 +150,18 @@ namespace Microbrewit.Api.Elasticsearch
                 var index = _client.Index<Origin>(origin);
             }
         }
-
-        public async Task<IEnumerable<Origin>> GetOrigins(string query)
+        /// <summary>
+        /// Search for origins.
+        /// </summary>
+        /// <param name="query">Query text</param>
+        /// <param name="from">Start point of return, default is 0</param>
+        /// <param name="size">Amount of return size, default is 20</param>
+        /// <returns>List of origins</returns>
+        public async Task<IEnumerable<Origin>> GetOrigins(string query, int from, int size)
         {
             var searchResults = _client.Search<Origin>(s => s
-                                                .From(0)
-                                                .Size(10)
+                                                .From(from)
+                                                .Size(size)
                                                 .Query(q => q
                                                     .Term(y => y.Name, query)));
 
