@@ -40,7 +40,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public UserCompleteDto GetUsers()
         {
-            var users = Mapper.Map<IList<User>, IList<UserDto>>(_userRepository.GetAll());
+            var temp = _userRepository.GetAll("Breweries.Brewery","Beers.Beer");
+            var users = Mapper.Map<IList<User>, IList<UserDto>>(temp);
             var result = new UserCompleteDto();
             result.Users = users;
             return result;
@@ -51,7 +52,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(User))]
         public IHttpActionResult GetUser(string username)
         {
-            var user = Mapper.Map<User, UserDto>(_userRepository.GetSingle( u => u.Username.Equals(username)));
+            var user = Mapper.Map<User, UserDto>(_userRepository.GetSingle(u => u.Username.Equals(username), "Breweries.Brewery", "Beers.Beer"));
             if (user == null)
             {
                 return NotFound();
@@ -102,9 +103,13 @@ namespace Microbrewit.Api.Controllers
         /// <returns></returns>
         [LoginValidation]
         [Route("login")]
-        public IHttpActionResult PostLogin()
+        public async Task<IHttpActionResult> PostLogin(HttpRequestMessage response)
         {                 
-            return Ok();
+            var authorization = Encoding.UTF8.GetString(Convert.FromBase64String(response.Headers.Authorization.Parameter));
+            var username = authorization.Split(':').First();
+            var user = await _userRepository.GetSingleAsync(u => u.Username.Equals(username), "Breweries.Brewery");          
+            var userDto =  Mapper.Map<User,UserDto>(user);
+            return Ok(userDto);
         }
 
         [TokenInvalidation]
