@@ -13,6 +13,7 @@ using Microbrewit.Model;
 using log4net;
 using Microbrewit.Repository;
 using AutoMapper;
+using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -36,7 +37,7 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<IList<Origin>> GetOrigins()
+        public async Task<OriginCompleteDto> GetOrigins()
         {
             var origins = await Redis.OriginRedis.GetOriginsAsync();
             if (origins.Count <= 0)
@@ -44,8 +45,8 @@ namespace Microbrewit.Api.Controllers
 
                 origins = await _originRepository.GetAllAsync();
             }
-
-            return origins;
+            var originsComplete = new OriginCompleteDto { Origins = origins };
+            return originsComplete;
         }
 
         /// <summary>
@@ -68,7 +69,9 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-            return  Ok(origin);
+            var originsComplete = new OriginCompleteDto { Origins = new List<Origin>() };
+            originsComplete.Origins.Add(origin);
+            return  Ok(originsComplete);
         }
 
         /// <summary>
@@ -123,8 +126,9 @@ namespace Microbrewit.Api.Controllers
             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
             // updated elasticsearch.
             await _elasticsearch.UpdateOriginElasticSearch(originsRedis);
+            var originsComplete = new OriginCompleteDto { Origins = origins };
 
-            return CreatedAtRoute("DefaultApi", new { controller= "origins", }, origins);
+            return CreatedAtRoute("DefaultApi", new { controller= "origins", }, originsComplete);
         }
 
         /// <summary>
@@ -149,10 +153,13 @@ namespace Microbrewit.Api.Controllers
             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
             // updated elasticsearch.
             await _elasticsearch.UpdateOriginElasticSearch(originsRedis);
-
-            return Ok(origin);
+            var originsComplete = new OriginCompleteDto { Origins = new List<Origin> { origin } };
+            return Ok(originsComplete);
         }
-
+        /// <summary>
+        /// Updates elasticsearch and redis with data from the database.
+        /// </summary>
+        /// <returns>200 OK</returns>
         [Route("redis")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateOriginRedis()
@@ -164,7 +171,13 @@ namespace Microbrewit.Api.Controllers
 
              return Ok();
         }
-
+        /// <summary>
+        /// Searches in origin.
+        /// </summary>
+        /// <param name="query">Query phrase</param>
+        /// <param name="from">From what object</param>
+        /// <param name="size">Number of objects returned</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public async Task<IList<Origin>> GetOriginBySearch(string query, int from = 0, int size = 20)
