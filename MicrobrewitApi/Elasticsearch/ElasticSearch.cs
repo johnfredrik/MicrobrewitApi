@@ -51,8 +51,8 @@ namespace Microbrewit.Api.Elasticsearch
             var searchResults = _client.Search<YeastDto>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q
-                                                    .Term(y => y.Name, query)));
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
 
             return searchResults.Documents;
         }
@@ -72,8 +72,8 @@ namespace Microbrewit.Api.Elasticsearch
             var searchResults = _client.Search<FermentableDto>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q
-                                                    .Term(y => y.Name, query)));
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
 
             return searchResults.Documents;
         }
@@ -93,8 +93,8 @@ namespace Microbrewit.Api.Elasticsearch
             var searchResults = _client.Search<HopDto>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q
-                                                    .Term(y => y.Name, query)));
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
 
             return searchResults.Documents;
         }
@@ -114,8 +114,8 @@ namespace Microbrewit.Api.Elasticsearch
             var searchResults = _client.Search<OtherDto>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q
-                                                    .Term(y => y.Name, query)));
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
 
             return searchResults.Documents;
         }
@@ -135,8 +135,8 @@ namespace Microbrewit.Api.Elasticsearch
             var searchResults = _client.Search<SupplierDto>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q
-                                                    .Term(y => y.Name, query)));
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
 
             return searchResults.Documents;
         }
@@ -150,20 +150,20 @@ namespace Microbrewit.Api.Elasticsearch
                 var index = _client.Index<Origin>(origin);
             }
         }
-        /// <summary>
-        /// Search for origins.
-        /// </summary>
-        /// <param name="query">Query text</param>
-        /// <param name="from">Start point of return, default is 0</param>
-        /// <param name="size">Amount of return size, default is 20</param>
-        /// <returns>List of origins</returns>
+        
         public async Task<IEnumerable<Origin>> GetOrigins(string query, int from, int size)
         {
+            //var searchResults = _client.Search<Origin>(s => s
+            //                                    .From(from)
+            //                                    .Size(size)
+            //                                    .Query(q => q
+            //                                        .Term(y => y.Name, query)));
+
             var searchResults = _client.Search<Origin>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q
-                                                    .Term(y => y.Name, query)));
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
 
             return searchResults.Documents;
         }
