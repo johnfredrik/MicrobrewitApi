@@ -21,7 +21,7 @@ namespace Microbrewit.Model.DTOs
             {
                 HopFlavors = new Links()
                 {
-                    Href = apiPath + "flavors/:id",
+                    Href = apiPath + "/flavors/:id",
                     Type = "flavor"
 
                 },
