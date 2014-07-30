@@ -101,6 +101,7 @@
     <Compile Include="DTOs\Login.cs" />
     <Compile Include="DTOs\MashStepDto.cs" />
     <Compile Include="DTOs\Meta.cs" />
+    <Compile Include="DTOs\OriginCompleteDto.cs" />
     <Compile Include="DTOs\OtherCompleteDto.cs" />
     <Compile Include="DTOs\OtherDto.cs" />
     <Compile Include="DTOs\OtherLinks.cs" />
