@@ -13,9 +13,10 @@ using StackExchange.Redis;
 using Microbrewit.Model.DTOs;
 
 using System.Configuration;
+using Microbrewit.Api.Util;
 
 
-namespace Microbrewit.Api.Util
+namespace Microbrewit.Api.ValidationAttribute
 {
     public class LoginValidationAttribute : ActionFilterAttribute
     {

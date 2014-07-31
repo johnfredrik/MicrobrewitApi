@@ -11,9 +11,10 @@ using System.Net.Http;
 using System.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Api.Util;
 
 
-namespace Microbrewit.Api.Util
+namespace Microbrewit.Api.ValidationAttribute
 {
     public class TokenInvalidationAttribute : ActionFilterAttribute
     {
