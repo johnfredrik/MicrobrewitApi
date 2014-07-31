@@ -219,11 +219,15 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
+    <Content Include="appSettings.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\Malazan.pubxml" />
     <None Include="Properties\PublishProfiles\Microbrewit - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\microbrewit - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\Microbrewit - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\microbrewit - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Microbrewit-dev-api.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -338,10 +342,11 @@
     <Compile Include="Util\Calculation.cs" />
     <Compile Include="Util\Formulas.cs" />
     <Compile Include="Util\Encrypting.cs" />
-    <Compile Include="Util\LoginValidationAttribute.cs" />
+    <Compile Include="Util\MailHelper.cs" />
+    <Compile Include="ValidationAttribute\LoginValidationAttribute.cs" />
     <Compile Include="Util\RSAClass.cs" />
-    <Compile Include="Util\TokenInvalidationAttribute.cs" />
-    <Compile Include="Util\TokenValidationAttribute.cs" />
+    <Compile Include="ValidationAttribute\TokenInvalidationAttribute.cs" />
+    <Compile Include="ValidationAttribute\TokenValidationAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
