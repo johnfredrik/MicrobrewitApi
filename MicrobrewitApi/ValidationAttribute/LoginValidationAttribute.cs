@@ -43,7 +43,7 @@ namespace Microbrewit.Api.ValidationAttribute
                 userCredentials = context.UserCredentials.Include("User").Where(u => u.Username.Equals(username)).FirstOrDefault();
 
             }
-            if (userCredentials != null && password.Equals(Encrypting.Decrypt(userCredentials.Password, userCredentials.SharedSecret)))
+            if (userCredentials != null && Encrypting.ValidatePassword(userCredentials,password))
             {
                 base.OnActionExecuting(actionContext);
 
