@@ -13,7 +13,7 @@ namespace Microbrewit.Model.ModelBuilder
         {
             Property(u => u.Id).IsRequired().HasColumnName("UserCredentialsId");
             Property(u => u.Password).IsRequired();
-            Property(u => u.SharedSecret).IsRequired();
+            Property(u => u.Salt).IsRequired();
             Property(u => u.Username).IsRequired().HasMaxLength(255);
           
             this.HasRequired(u => u.User).WithMany().HasForeignKey(u => u.Username);
