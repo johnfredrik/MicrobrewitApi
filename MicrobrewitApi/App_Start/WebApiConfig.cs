@@ -13,6 +13,8 @@ using Microbrewit.Repository;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Web.Http.ExceptionHandling;
+using Microbrewit.Api.ErrorHandler;
 
 namespace Microbrewit.Api
 {
@@ -61,7 +63,16 @@ namespace Microbrewit.Api
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-            
+
+            // There can be multiple exception loggers. (By default, no exception loggers are registered.)
+            config.Services.Add(typeof(IExceptionLogger), new Log4NetExceptionLogger());
+
+
+            // There must be exactly one exception handler. (There is a default one that may be replaced.)
+            // To make this sample easier to run in a browser, replace the default exception handler with one that sends
+            // back text/plain content for all errors.
+            config.Services.Replace(typeof(IExceptionHandler), new DbUpdateExceptionHandler());
+
             var formatters = GlobalConfiguration.Configuration.Formatters;
             var jsonFormatter = formatters.JsonFormatter;
             var settings = jsonFormatter.SerializerSettings;
