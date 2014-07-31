@@ -224,3 +224,4 @@ packages/NUnit.2.6.3/license.txt
 Microbrewit.Test/JSON/brewtoad.js
 packages/log4net.2.0.3/lib/net10-full/log4net.xml
 MicrobrewitApi/appSettings.config
+MicrobrewitApi/mylogfile.txt
