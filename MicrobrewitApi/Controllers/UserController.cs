@@ -19,6 +19,7 @@ using System.Security.Principal;
 using AutoMapper;
 using StackExchange.Redis;
 using System.Text;
+using Microbrewit.Api.ValidationAttribute;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -27,12 +28,15 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private IUserRepository _userRepository;
-        private readonly IUserCredentialRepository userCredentialsRepsoitory = new UserCredentialRepository();
+        private Elasticsearch.ElasticSearch _elasticsearch;
+        private readonly IUserCredentialRepository _userCredentialsRepsoitory;
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IUserCredentialRepository userCredentialsRepsoitory)
         {
             this._userRepository = userRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            this._userCredentialsRepsoitory = userCredentialsRepsoitory;
         }
 
         // GET api/User
@@ -63,36 +67,32 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/User/5
-        [Route("")]
-        public async Task<IHttpActionResult> PutUser(string id, User user)
+        [Route("{username}")]
+        public async Task<IHttpActionResult> PutUser(string username, UserPostDto userPostDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!id.Equals(user.Username))
+            if (!username.Equals(userPostDto.Username))
             {
                 return BadRequest();
             }
-
-            db.Entry(user).State = EntityState.Modified;
-
-            try
+            if (userPostDto.Password != null)
             {
-                await db.SaveChangesAsync();
+
+                var userCredentials = await _userCredentialsRepsoitory.GetSingleAsync(u => u.Username.Equals(userPostDto.Username));
+                var salt = Encrypting.GenerateSalt();
+                var hashedPassword = Encrypting.Hash(userPostDto.Password, salt);
+                userCredentials.Password = hashedPassword;
+                userCredentials.Salt = salt;
+                await _userCredentialsRepsoitory.UpdateAsync(userCredentials);
+
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            var user = Mapper.Map<UserPostDto,User>(userPostDto);
+            await _userRepository.UpdateAsync(user);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -130,13 +130,13 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var password = Encoding.UTF8.GetString(Convert.FromBase64String(userPostDto.Password));
-            var encryptedPassword = Encrypting.Encrypt(password, userPostDto.Email);
-            var salt = Encrypting.GenerateRandomBytes(256 / 8);
-           
+            var password = userPostDto.Password;
+            var salt = Encrypting.GenerateSalt();
+            var hashedPassword = Encrypting.Hash(password,salt);
+                       
             var user = Mapper.Map<UserPostDto,User>(userPostDto);
-            var userCredential = new UserCredentials() { Password = encryptedPassword, SharedSecret = userPostDto.Email, Username = user.Username, User = user };
-            userCredentialsRepsoitory.Add(userCredential);
+            var userCredential = new UserCredentials() { Password = hashedPassword, Salt = salt, Username = user.Username, User = user };
+            _userCredentialsRepsoitory.Add(userCredential);
 
             var result = new UserCompleteDto() { Users = new List<UserDto>()};
          
@@ -161,18 +161,68 @@ namespace Microbrewit.Api.Controllers
             return Ok(user);
         }
 
-        protected override void Dispose(bool disposing)
+        /// <summary>
+        /// Updates users to elasticsearch.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("update")]
+        public async Task<IHttpActionResult> UpdateBrewery()
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            var users = await _userRepository.GetAllAsync("Breweries.Brewery", "Beers.Beer");
+            var usersDto = Mapper.Map<IList<User>, IList<UserDto>>(users);
+            await _elasticsearch.UpdateUsersElasticSearch(usersDto);
+
+            return Ok();
         }
 
-        private bool UserExists(string id)
+        /// <summary>
+        /// Searches in users.
+        /// </summary>
+        /// <param name="query">The pharse you want to match.</param>
+        /// <param name="from">Start point of the search.</param>
+        /// <param name="size">Number of results returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public async Task<UserCompleteDto> GetUsersBySearch(string query, int from = 0, int size = 20)
         {
-            return db.Users.Count(e => e.Username.Equals(id)) > 0;
+            var usersDto = await _elasticsearch.GetUsers(query, from, size);
+
+            var result = new UserCompleteDto();
+            result.Users = usersDto.ToList();
+            return result;
+        }
+
+        
+
+        /// <summary>
+        /// To reset password.
+        /// </summary>
+        /// <param name="email">The email used for that account.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("renew")]
+        public async Task<IHttpActionResult> GetNewPassword(string email)
+        {
+           var password = System.Web.Security.Membership.GeneratePassword(8, 0);
+           var salt = Encrypting.GenerateSalt();
+           var hashedPassword = Encrypting.Hash(password, salt);
+
+           var user = await _userRepository.GetSingleAsync(u => u.Email.Equals(email));
+           if (user == null)
+           {
+               return NotFound();
+           }
+           var userCredentials = await _userCredentialsRepsoitory.GetSingleAsync(u => u.Username.Equals(user.Username));
+           userCredentials.Password = hashedPassword;
+           userCredentials.Salt = salt;
+           await _userCredentialsRepsoitory.UpdateAsync(userCredentials);
+            
+
+
+            MailHelper.SendMail("New password for you dude", "This is your new password: " + password , user.Email);
+            return Ok();
         }
 
     }
