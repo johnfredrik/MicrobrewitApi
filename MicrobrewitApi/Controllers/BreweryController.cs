@@ -22,10 +22,12 @@ namespace Microbrewit.Api.Controllers
     {
         private MicrobrewitContext db = new MicrobrewitContext();
         private IBreweryRepository _breweryRepository;
+        private Elasticsearch.ElasticSearch _elasticsearch;
 
         public BreweryController(IBreweryRepository breweryRepository)
         {
             this._breweryRepository = breweryRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
         /// <summary>
@@ -48,13 +50,28 @@ namespace Microbrewit.Api.Controllers
         }
 
         /// <summary>
+        /// Updates breweries to elasticsearch.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("update")]
+        public async Task<IHttpActionResult> UpdateBrewery()
+        {
+            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
+            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Get brewery by id.
         /// </summary>
         /// <response code="200">OK</response>
         /// <response code="404">Not Found</response>
         /// <param name="id">Beerstyle id</param>
         /// <returns></returns>
-        [Route("{id}")]
+        [Route("{id:int}")]
         [ResponseType(typeof(BreweryCompleteDto))]
         public async Task<IHttpActionResult> GetBrewery(int id)
         {
@@ -125,6 +142,8 @@ namespace Microbrewit.Api.Controllers
             await Redis.BreweryRedis.UpdateRedisStore(breweriesRedis);
             return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
         }
+
+     
 
         /// <summary>
         /// Deletes brewery by id.
@@ -249,18 +268,25 @@ namespace Microbrewit.Api.Controllers
             return CreatedAtRoute("DefaultApi", new { controller = "breweries/members" }, breweryMember);
         }
 
-        protected override void Dispose(bool disposing)
+      
+
+        /// <summary>
+        /// Searches in breweries.
+        /// </summary>
+        /// <param name="query">The pharse you want to match.</param>
+        /// <param name="from">Start point of the search.</param>
+        /// <param name="size">Number of results returned.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public async Task<BreweryCompleteDto> GetBreweriesBySearch(string query, int from = 0, int size = 20)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            var breweriesDto = await _elasticsearch.GetBreweries(query, from, size);
+
+            var result = new BreweryCompleteDto();
+            result.Breweries = breweriesDto.ToList();
+            return result;
         }
 
-        private bool BreweryExists(int id)
-        {
-            return db.Breweries.Count(e => e.Id == id) > 0;
-        }
     }
 }
