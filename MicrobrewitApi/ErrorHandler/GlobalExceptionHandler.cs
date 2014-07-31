@@ -11,7 +11,7 @@ using System.Web.Http.ExceptionHandling;
 
 namespace Microbrewit.Api.ErrorHandler
 {
-    public class DbUpdateExceptionHandler : ExceptionHandler
+    public class GlobalExceptionHandler : ExceptionHandler
     {
         public override void Handle(System.Web.Http.ExceptionHandling.ExceptionHandlerContext context)
         {
