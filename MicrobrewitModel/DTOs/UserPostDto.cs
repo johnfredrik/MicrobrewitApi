@@ -7,7 +7,7 @@ namespace Microbrewit.Model.DTOs
 {
     public class UserPostDto
     {
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
         public DTO Brewery { get; set; }
         public string Settings { get; set; }
