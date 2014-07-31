@@ -153,18 +153,51 @@ namespace Microbrewit.Api.Elasticsearch
         
         public async Task<IEnumerable<Origin>> GetOrigins(string query, int from, int size)
         {
-            //var searchResults = _client.Search<Origin>(s => s
-            //                                    .From(from)
-            //                                    .Size(size)
-            //                                    .Query(q => q
-            //                                        .Term(y => y.Name, query)));
-
             var searchResults = _client.Search<Origin>(s => s
                                                 .From(from)
                                                 .Size(size)
                                                 .Query(q => q.Match(m => m.OnField(f => f.Name)
                                                                           .Query(query))));
+            return searchResults.Documents;
+        }
 
+        public async Task UpdateBreweryElasticSearch(IList<BreweryDto> breweries)
+        {
+            foreach (var brewery in breweries)
+            {
+                // Adds an analayzer to the name property in FermentableDto object.
+                _client.Map<BreweryDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+                var index = _client.Index<BreweryDto>(brewery);
+            }
+        }
+
+        public async Task<IEnumerable<BreweryDto>> GetBreweries(string query, int from, int size)
+        {
+            var searchResults = _client.Search<BreweryDto>(s => s
+                                                .From(from)
+                                                .Size(size)
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
+            return searchResults.Documents;
+        }
+
+        public async Task UpdateUsersElasticSearch(IList<UserDto> users)
+        {
+            foreach (var user in users)
+            {
+                // Adds an analayzer to the name property in FermentableDto object.
+                _client.Map<UserDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Username).Analyzer("autocomplete"))));
+                var index = _client.Index<UserDto>(user);
+            }
+        }
+
+        public async Task<IEnumerable<UserDto>> GetUsers(string query, int from, int size)
+        {
+            var searchResults = _client.Search<UserDto>(s => s
+                                                .From(from)
+                                                .Size(size)
+                                                .Query(q => q.Match(m => m.OnField(f => f.Username)
+                                                                          .Query(query))));
             return searchResults.Documents;
         }
     }
