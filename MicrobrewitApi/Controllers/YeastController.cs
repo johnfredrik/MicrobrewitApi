@@ -176,7 +176,13 @@ namespace Microbrewit.Api.Controllers
 
             return Ok();
         }
-
+        /// <summary>
+        /// Searches in yeasts
+        /// </summary>
+        /// <param name="query">The pharse you want to match.</param>
+        /// <param name="from">Start point of the search.</param>
+        /// <param name="size">Number of results returned.</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public async Task<YeastCompleteDto> GetYeastsBySearch(string query, int from = 0, int size = 20)
