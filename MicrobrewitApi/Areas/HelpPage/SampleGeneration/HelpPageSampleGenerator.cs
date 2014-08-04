@@ -8,10 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Web.Http.Description;
 using System.Xml.Linq;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 
 namespace Microbrewit.Api.Areas.HelpPage
 {
@@ -99,7 +99,7 @@ namespace Microbrewit.Api.Areas.HelpPage
             Collection<MediaTypeFormatter> formatters;
             Type type = ResolveType(api, controllerName, actionName, parameterNames, sampleDirection, out formatters);
             var samples = new Dictionary<MediaTypeHeaderValue, object>();
-            
+
             // Use the samples provided directly for actions
             var actionSamples = GetAllActionSamples(controllerName, actionName, parameterNames, sampleDirection);
             foreach (var actionSample in actionSamples)
