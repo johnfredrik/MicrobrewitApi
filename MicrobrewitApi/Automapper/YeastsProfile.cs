@@ -19,9 +19,13 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.ProductCode, conf => conf.MapFrom(rec => rec.ProductCode))
                 .ForMember(dto => dto.TemperatureLow, conf => conf.MapFrom(rec => rec.TemperatureLow))
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
-                .ForMember(dto => dto.Comment, conf => conf.MapFrom(rec => rec.Comment))
+                .ForMember(dto => dto.Notes, conf => conf.MapFrom(rec => rec.Notes))
                 .ForMember(dto => dto.Flocculation, conf => conf.MapFrom(rec => rec.Flocculation))
                 .ForMember(dto => dto.AlcoholTolerance, conf => conf.MapFrom(rec => rec.AlcoholTolerance))
+                .ForMember(dto => dto.BrewerySource, conf => conf.MapFrom(rec => rec.BrewerySource))
+                .ForMember(dto => dto.Species, conf => conf.MapFrom(rec => rec.Species))
+                .ForMember(dto => dto.AttenutionRange, conf => conf.MapFrom(rec => rec.AttenutionRange))
+                .ForMember(dto => dto.PitchingFermentationNotes, conf => conf.MapFrom(rec => rec.PitchingFermentationNotes))
                 .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
                
 
@@ -35,7 +39,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.ProductCode, conf => conf.MapFrom(rec => rec.ProductCode))
                 .ForMember(dto => dto.TemperatureLow, conf => conf.MapFrom(rec => rec.TemperatureLow))
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
-                .ForMember(dto => dto.Comment, conf => conf.MapFrom(rec => rec.Comment))
+                .ForMember(dto => dto.Notes, conf => conf.MapFrom(rec => rec.Notes))
                 .ForMember(dto => dto.Flocculation, conf => conf.MapFrom(rec => rec.Flocculation))
                 .ForMember(dto => dto.AlcoholTolerance, conf => conf.MapFrom(rec => rec.AlcoholTolerance))
                 .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier))
