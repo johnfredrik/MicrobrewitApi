@@ -24,10 +24,16 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "productcode")]
         public string ProductCode { get; set; }
         [JsonProperty(PropertyName = "comment")]
-        public string Comment { get; set; }
+        public string Notes { get; set; }
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+        public string BrewerySource { get; set; }
+        public string Species { get; set; }
+        public string AttenutionRange { get; set; }
+        public string PitchingFermentationNotes { get; set; }      
         [JsonProperty(PropertyName = "supplier")]
         public DTO Supplier { get; set; }
+
+
     }
 }
