@@ -21,6 +21,7 @@ namespace Microbrewit.Api.Controllers
         {
             this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
+
         [Route("")]
         public async Task<IHttpActionResult> GetAll(string query, int from = 0, int size = 20)
         {
@@ -28,5 +29,11 @@ namespace Microbrewit.Api.Controllers
             return Ok(JObject.Parse(result));
         }
 
+        [Route("ingredients")]
+        public async Task<IHttpActionResult> GetAllIngredients(string query, int from = 0, int size = 20)
+        {
+            var result = await _elasticsearch.SearchAllIngredients(query, from, size);
+            return Ok(JObject.Parse(result));
+        }
     }
 }

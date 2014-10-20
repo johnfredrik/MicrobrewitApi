@@ -34,10 +34,21 @@ namespace Microbrewit.Api.Elasticsearch
 
             //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
             var queryString = "{\"from\" : " + from + ", \"size\" : " + size +", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
-            var res = client.Search<string>("mb", queryString);
+            var res = client.Search<string>("mb",queryString);
             return res.Response;
         }
 
+        public async Task<string> SearchAllIngredients(string query, int from, int size)
+        {
+            var node = new Uri("http://localhost:9200");
+            var settings = new ConnectionConfiguration(node);
+            var client = new ElasticsearchClient(settings);
+
+            //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
+            var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
+            var res = client.Search<string>("mb","yeastdto,hopdto,fermentabledto,otherdto",queryString);
+            return res.Response;
+        }
 
         public async Task UpdateYeastsElasticSearch(IList<YeastDto> yeasts)
         {
