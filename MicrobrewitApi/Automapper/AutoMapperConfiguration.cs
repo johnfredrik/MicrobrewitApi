@@ -27,6 +27,7 @@ namespace Microbrewit.Api.Automapper
                conf.AddProfile(new BeerProfile());
                conf.AddProfile(new SupplierProfile());
                conf.AddProfile(new BreweryProfile());
+               conf.AddProfile(new OriginProfile());
            });
         }
 
