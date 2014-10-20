@@ -13,5 +13,6 @@ namespace Microbrewit.Model.DTOs
         public IList<BreweryDto> Breweries { get; set; }
         public IList<BeerSimpleDto> Beers { get; set; }
         public string Settings { get; set; }
+        public string DataType { get { return "user"; } }
     }
 }

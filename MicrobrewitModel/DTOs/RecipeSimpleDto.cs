@@ -12,6 +12,7 @@ namespace Microbrewit.Model.DTOs
         public string Notes { get; set; }
         public int Volume { get; set; }
         public DTO BeerStyle { get; set; }
+        public string DataType { get { return "recipe"; } }
 
         //public IList<DTO> MashSteps { get; set; }
         //public IList<DTO> BoilSteps { get; set; }

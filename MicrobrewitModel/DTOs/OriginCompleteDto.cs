@@ -11,6 +11,6 @@ namespace Microbrewit.Model.DTOs
     {
         private static readonly string apiPath = ConfigurationManager.AppSettings["api"];
         public Links Links { get; set; }
-        public IList<Origin> Origins { get; set; }
+        public IList<OriginDto> Origins { get; set; }
     }
 }

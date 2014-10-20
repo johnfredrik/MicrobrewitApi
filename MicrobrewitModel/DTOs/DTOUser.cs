@@ -11,5 +11,6 @@ namespace Microbrewit.Model.DTOs
         public string Username { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public string DataType { get { return "user"; } }
     }
 }

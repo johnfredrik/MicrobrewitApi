@@ -16,5 +16,6 @@ namespace Microbrewit.Model.DTOs
         public IList<FermentableStepDto> Fermentables { get; set; }
         public IList<OtherStepDto> Others { get; set; }
         public string Notes { get; set; }
+
     }
 }

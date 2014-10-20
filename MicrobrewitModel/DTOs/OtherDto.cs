@@ -9,9 +9,8 @@ namespace Microbrewit.Model.DTOs
     public class OtherDto
     {
         public int Id { get; set; }
-        [Required]
         public string Name { get; set; }
-        [Required]
         public string Type { get; set; }
+        public string DataType { get { return "other"; } }
     }
 }

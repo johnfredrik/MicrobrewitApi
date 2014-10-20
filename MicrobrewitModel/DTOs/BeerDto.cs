@@ -20,6 +20,7 @@ namespace Microbrewit.Model.DTOs
 
             public IList<DTO> Breweries { get; set; }
             public IList<DTOUser> Brewers { get; set; }
+            public string DataType { get { return "beer"; } }
        
     }
 }

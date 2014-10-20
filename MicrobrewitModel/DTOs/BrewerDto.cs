@@ -9,6 +9,7 @@ namespace Microbrewit.Model.DTOs
     {
         public string Id { get; set; }
         public string BreweryName { get; set; }
+        public string DataType { get { return "brewer"; } }
     }
 
 }

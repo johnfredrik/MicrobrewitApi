@@ -30,5 +30,6 @@ namespace Microbrewit.Model.DTOs
         public IList<DTO> Flavours { get; set; }
         [JsonProperty(PropertyName = "substitutions")]
         public IList<DTO> Substituts { get; set; }
+        public string DataType { get { return "hop"; } }
     }
 }

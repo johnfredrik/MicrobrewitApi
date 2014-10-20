@@ -14,6 +14,7 @@ namespace Microbrewit.Model.DTOs
         public IBUDto IBU { get; set; }
         public SRMDto SRM { get; set; }
         public DTO Recipe { get; set; }
+        public string DataType { get{return "beer";} }
 
         public IList<DTO> Breweries { get; set; }
         public IList<DTOUser> Brewers { get; set; }
