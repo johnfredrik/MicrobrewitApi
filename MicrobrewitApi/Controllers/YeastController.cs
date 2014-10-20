@@ -38,14 +38,14 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<YeastCompleteDto> GetYeasts()
         {
-            var yeastsDto = await Redis.YeastRedis.GetYeastsAsync();
-            if (yeastsDto.Count <= 0)
+            var yeastsDto = await _elasticsearch.GetAllYeasts();
+            if (yeastsDto.Count() > 0)
             {
                 var yeasts = await _yeastRespository.GetAllAsync("Supplier");
                 yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
             }
             var result = new YeastCompleteDto();
-            result.Yeasts = yeastsDto;
+            result.Yeasts = yeastsDto.OrderBy(y => y.Name).ToList();
             return result;
         }
 
@@ -189,6 +189,18 @@ namespace Microbrewit.Api.Controllers
         {
             var yeastsDto = await _elasticsearch.GetYeasts(query,from,size);
             
+            var result = new YeastCompleteDto();
+            result.Yeasts = yeastsDto.ToList();
+            return result;
+        }
+
+        
+        [HttpGet]
+        [Route("es")]
+        public async Task<YeastCompleteDto> GetYeastsByES()
+        {
+            var yeastsDto = await _elasticsearch.GetAllYeasts();
+
             var result = new YeastCompleteDto();
             result.Yeasts = yeastsDto.ToList();
             return result;

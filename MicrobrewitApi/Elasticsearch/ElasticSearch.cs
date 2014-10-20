@@ -57,6 +57,15 @@ namespace Microbrewit.Api.Elasticsearch
             return searchResults.Documents;
         }
 
+        public async Task<IEnumerable<YeastDto>> GetAllYeasts()
+        {
+            var result = _client.Search<YeastDto>(s => s
+                                                .Types(typeof(YeastDto))
+                                                ).Documents.OrderBy(y => y.Name);
+
+            return result;
+        }
+
         public async Task UpdateFermentableElasticSearch(IList<FermentableDto> fermentables)
         {
             foreach (var fermentable in fermentables)
@@ -141,19 +150,19 @@ namespace Microbrewit.Api.Elasticsearch
             return searchResults.Documents;
         }
 
-        public async Task UpdateOriginElasticSearch(IList<Origin> origins)
+        public async Task UpdateOriginElasticSearch(IList<OriginDto> origins)
         {
             foreach (var origin in origins)
             {
                 // Adds an analayzer to the name property in FermentableDto object.
-                _client.Map<Origin>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
-                var index = _client.Index<Origin>(origin);
+                _client.Map<OriginDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+                var index = _client.Index<OriginDto>(origin);
             }
         }
         
-        public async Task<IEnumerable<Origin>> GetOrigins(string query, int from, int size)
+        public async Task<IEnumerable<OriginDto>> GetOrigins(string query, int from, int size)
         {
-            var searchResults = _client.Search<Origin>(s => s
+            var searchResults = _client.Search<OriginDto>(s => s
                                                 .From(from)
                                                 .Size(size)
                                                 .Query(q => q.Match(m => m.OnField(f => f.Name)
@@ -200,5 +209,6 @@ namespace Microbrewit.Api.Elasticsearch
                                                                           .Query(query))));
             return searchResults.Documents;
         }
+
     }
 }
