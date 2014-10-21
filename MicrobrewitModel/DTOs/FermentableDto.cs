@@ -16,6 +16,7 @@ namespace Microbrewit.Model.DTOs
         public int PPG { get; set; }
         public string Type { get; set; }
         public string DataType { get { return "fermentable"; } }
+        public bool Custom { get; set; }
       }
 
 }

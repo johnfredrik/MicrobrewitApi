@@ -18,6 +18,7 @@ namespace Microbrewit.Model
         public double BetaHigh { get; set; }
         public string Notes { get; set; }
         public string FlavourDescription { get; set; }
+        public bool Custom { get; set; }
         public int? OriginId { get; set; } 
         public Origin Origin { get; set; }
 

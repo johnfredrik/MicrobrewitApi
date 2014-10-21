@@ -28,6 +28,7 @@ namespace Microbrewit.Model
         // relations
         public int? SupplierId { get; set; }
         public Supplier Supplier { get; set; }
+        public bool Custom { get; set; }
 
         public ICollection<FermentationStepYeast> FermentationSteps { get; set; }
 

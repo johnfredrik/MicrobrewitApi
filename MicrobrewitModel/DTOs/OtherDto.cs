@@ -12,5 +12,6 @@ namespace Microbrewit.Model.DTOs
         public string Name { get; set; }
         public string Type { get; set; }
         public string DataType { get { return "other"; } }
+        public bool Custom { get; set; }
     }
 }

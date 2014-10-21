@@ -24,6 +24,7 @@ namespace Microbrewit.Model.DTOs
         public string PitchingFermentationNotes { get; set; }      
         public DTO Supplier { get; set; }
         public string DataType { get { return "yeast"; } }
+        public bool Custom { get; set; }
 
 
     }

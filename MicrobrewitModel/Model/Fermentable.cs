@@ -18,6 +18,7 @@ namespace Microbrewit.Model
         public int? PPG { get; set; }
         public int? SupplierId { get; set; }
         public string Type { get; set; }
+        public bool Custom { get; set; }
 
         public Supplier Supplier { get; set; }
         public ICollection<MashStepFermentable> MashSteps { get; set; }
