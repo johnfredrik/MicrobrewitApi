@@ -24,12 +24,14 @@ namespace Microbrewit.Api.Controllers
     public class BeerStyleController : ApiController
     {
         private MicrobrewitContext db = new MicrobrewitContext();
+        private Elasticsearch.ElasticSearch _elasticsearch;
        
         private IBeerStyleRepository _beerStyleRepository;
 
         public BeerStyleController(IBeerStyleRepository beerStyleRepository)
         {
             this._beerStyleRepository = beerStyleRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
         /// <summary>
@@ -42,14 +44,14 @@ namespace Microbrewit.Api.Controllers
         {
             var response = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
 
-            var beerStylesDto = await BeerStylesRedis.GetBeerStyles();
-            if (beerStylesDto.Count < 1)
+            var beerStylesDto = await _elasticsearch.GetBeerStyles();
+            if (beerStylesDto.Count() <= 0)
             {
                     var beerStyles = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
                     beerStylesDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyles);
 
             }
-            response.BeerStyles = beerStylesDto;
+            response.BeerStyles = beerStylesDto.OrderBy(b => b.Name).ToList();
             return response;
         }
 
@@ -65,7 +67,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BeerStyleCompleteDto))]
         public async Task<IHttpActionResult> GetBeerStyle(int id)
         {
-            var beerStyleDto = await BeerStylesRedis.GetBeerStyle(id);
+            var beerStyleDto = await _elasticsearch.GetBeerStyle(id);
             if (beerStyleDto == null)
             {
                 var beerStyle = await _beerStyleRepository.GetSingleAsync(b => b.Id == id, "SubStyles", "SuperStyle");
@@ -101,10 +103,9 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            
-            await _beerStyleRepository.UpdateAsync(beerstyle);
             var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
-            await BeerStylesRedis.UpdateRedisStore(bs);
+            var bsDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(bs);
+            await _elasticsearch.UpdateBeerStylesElasticSearch(bsDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -125,9 +126,10 @@ namespace Microbrewit.Api.Controllers
             }
             var beerStyles = Mapper.Map<IList<BeerStyleDto>, BeerStyle[]>(beerStylesDto);
             await _beerStyleRepository.AddAsync(beerStyles);
-            
+
             var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
-            await BeerStylesRedis.UpdateRedisStore(bs);
+            var bsDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(bs);
+            await _elasticsearch.UpdateBeerStylesElasticSearch(bsDto);
             var response = new BeerStyleCompleteDto(){BeerStyles = new List<BeerStyleDto>()};
             response.BeerStyles = beerStylesDto;
             return CreatedAtRoute("DefaultApi", new { controller = "beerstyles" }, response);
@@ -142,7 +144,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BeerStyleCompleteDto))]
         public async Task<IHttpActionResult> DeleteBeerStyle(int id)
         {
-            var beerstyle = await _beerStyleRepository.GetSingleAsync(bs => bs.Id == id);
+            var beerstyle = await _beerStyleRepository.GetSingleAsync(b => b.Id == id);
             if (beerstyle == null)
             {
                 return NotFound();
@@ -152,15 +154,21 @@ namespace Microbrewit.Api.Controllers
             var beerStyleDto = Mapper.Map<BeerStyle, BeerStyleDto>(beerstyle);
             var response = new BeerStyleCompleteDto(){BeerStyles = new List<BeerStyleDto>()};
             response.BeerStyles.Add(beerStyleDto);
+
+            var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+            var bsDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(bs);
+            await _elasticsearch.UpdateBeerStylesElasticSearch(bsDto);
+
             return Ok(response);
         }
 
         [HttpGet]
-        [Route("redis")]
-        public async Task<IHttpActionResult> UpdateRedisBeerStyle()
+        [Route("es")]
+        public async Task<IHttpActionResult> UpdateBeerStyleElasticSearch()
         {
             var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
-            await BeerStylesRedis.UpdateRedisStore(bs);
+            var bsDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(bs);
+            await _elasticsearch.UpdateBeerStylesElasticSearch(bsDto);
 
             return Ok();
         }

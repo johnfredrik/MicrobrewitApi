@@ -41,17 +41,17 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<FermentablesCompleteDto> GetFermentables()
+        public async Task<FermentablesCompleteDto> GetFermentables(bool custom)
         {
-            var fermentablesDto = await Redis.FermentableRedis.GetFermentablesAsync();
-            if (fermentablesDto.Count <= 0)
+            var fermentablesDto = await _elasticsearch.GetFermentables();
+            if (fermentablesDto.Count() <= 0)
             {
                 var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
                 fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
 
             }
             var result = new FermentablesCompleteDto();
-            result.Fermentables = fermentablesDto;
+            result.Fermentables = fermentablesDto.OrderBy(f => f.Name).ToList();
             return result;
         }
 
@@ -66,7 +66,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(FermentablesCompleteDto))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            var fermentableDto = await Redis.FermentableRedis.GetFermentableAsync(id);
+            var fermentableDto = await _elasticsearch.GetFermentable(id);
             if (fermentableDto == null)
             {
                 var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier.Origin"); 
@@ -105,9 +105,8 @@ namespace Microbrewit.Api.Controllers
 
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
             await _fermentableRepository.UpdateAsync(fermentable);
-            var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentablesRedis);
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
 
@@ -134,7 +133,6 @@ namespace Microbrewit.Api.Controllers
             await _fermentableRepository.AddAsync(fermentablePost);
             var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
             var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
 
@@ -160,10 +158,8 @@ namespace Microbrewit.Api.Controllers
             //Removes fermentable from database.
             await _fermentableRepository.RemoveAsync(fermentable);
             
-            //Updates the redis store.
-            var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentablesRedis);
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
 
@@ -173,13 +169,11 @@ namespace Microbrewit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("redis")]
-        public async Task<IHttpActionResult> UpdateRedisFermentable()
+        [Route("es")]
+        public async Task<IHttpActionResult> UpdateFermentableElasticSearch()
         {
-            // Updates yeasts in the redis store.
-            var fermentablesRedis = await _fermentableRepository.GetAllAsync("Supplier.Origin");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentablesRedis);
-            await Redis.FermentableRedis.UpdateRedisStoreAsync(fermentablesDto);
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
 
@@ -190,7 +184,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<FermentablesCompleteDto> GetFermentablesBySearch(string query, int from = 0, int size = 20)
         {
-            var fermentablesDto = await _elasticsearch.GetFermentables(query,from,size);
+            var fermentablesDto = await _elasticsearch.SearchFermentables(query,from,size);
 
             var result = new FermentablesCompleteDto();
             result.Fermentables = fermentablesDto.ToList();

@@ -39,14 +39,15 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<OriginCompleteDto> GetOrigins()
         {
-            var origins = await Redis.OriginRedis.GetOriginsAsync();
-            if (origins.Count <= 0)
+            var originDto = await _elasticsearch.GetOrigins();
+            if (originDto.Count() <= 0)
             {
 
-                origins = await _originRepository.GetAllAsync();
+                var origins = await _originRepository.GetAllAsync();
+                originDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
             }
-            var originDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
-            var originsComplete = new OriginCompleteDto { Origins = originDto };
+            
+            var originsComplete = new OriginCompleteDto { Origins = originDto.OrderBy(o => o.Name).ToList() };
             return originsComplete;
         }
 
@@ -61,17 +62,18 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Origin))]
         public async Task<IHttpActionResult> GetOrigin(int id)
         {
-            var origin = await Redis.OriginRedis.GetOriginAsync(id);
-            if (origin == null)
+            var originDto = await _elasticsearch.GetOrigin(id);
+            if (originDto == null)
             {
-                origin = await _originRepository.GetSingleAsync(o => o.Id == id);
+                var origin = await _originRepository.GetSingleAsync(o => o.Id == id);
+                originDto = Mapper.Map<Origin, OriginDto>(origin);
             }
-            if (origin == null)
+            if (originDto == null)
             {
                 return NotFound();
             }
             var originsComplete = new OriginCompleteDto { Origins = new List<OriginDto>() };
-            var originDto = Mapper.Map<Origin, OriginDto>(origin);
+            
             originsComplete.Origins.Add(originDto);
             return  Ok(originsComplete);
         }
@@ -98,9 +100,8 @@ namespace Microbrewit.Api.Controllers
             }
 
             await _originRepository.UpdateAsync(origin);
-            var originsRedis = await _originRepository.GetAllAsync();
-            var originsDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(originsRedis);
-            await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+            var origins = await _originRepository.GetAllAsync();
+            var originsDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
             // updated elasticsearch.
             await _elasticsearch.UpdateOriginElasticSearch(originsDto);
 
@@ -115,7 +116,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="originPosts"></param>
         /// <returns></returns>
         [Route("")]
-        [ResponseType(typeof(IList<Origin>))]
+        [ResponseType(typeof(OriginCompleteDto))]
         public async Task<IHttpActionResult> PostOrigin(IList<OriginDto> originPosts)
         {
             if (!ModelState.IsValid)
@@ -125,9 +126,8 @@ namespace Microbrewit.Api.Controllers
             var origins = Mapper.Map<IList<OriginDto>, Origin[]>(originPosts); ;
             await _originRepository.AddAsync(origins);
 
-            var originsRedis = await _originRepository.GetAllAsync();
-            var originsDto = Mapper.Map<IList<Origin>,IList<OriginDto>>(originsRedis);
-            await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+            var originsEs = await _originRepository.GetAllAsync();
+            var originsDto = Mapper.Map<IList<Origin>,IList<OriginDto>>(originsEs);
             // updated elasticsearch.
             await _elasticsearch.UpdateOriginElasticSearch(originsDto);
 
@@ -155,25 +155,23 @@ namespace Microbrewit.Api.Controllers
             }
             var originDto = Mapper.Map<Origin, OriginDto>(origin);
             await _originRepository.RemoveAsync(origin);
-            var originsRedis = await _originRepository.GetAllAsync();
-            var originsDto = Mapper.Map<IList<Origin>,IList<OriginDto>>(originsRedis);
-            await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+            var origins = await _originRepository.GetAllAsync();
+            var originsDto = Mapper.Map<IList<Origin>,IList<OriginDto>>(origins);
             // updated elasticsearch.
             await _elasticsearch.UpdateOriginElasticSearch(originsDto);
             var originsComplete = new OriginCompleteDto { Origins = new List<OriginDto> { originDto } };
             return Ok(originsComplete);
         }
         /// <summary>
-        /// Updates elasticsearch and redis with data from the database.
+        /// Updates elasticsearch with data from the database.
         /// </summary>
         /// <returns>200 OK</returns>
-        [Route("redis")]
+        [Route("es")]
         [HttpGet]
-        public async Task<IHttpActionResult> UpdateOriginRedis()
+        public async Task<IHttpActionResult> UpdateOriginElasticSearch()
         {
-             var originsRedis = await _originRepository.GetAllAsync();
-             var originsDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(originsRedis);
-             await Redis.OriginRedis.UpdateRedisStoreAsync(originsRedis);
+             var origins = await _originRepository.GetAllAsync();
+             var originsDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
              // updated elasticsearch.
              await _elasticsearch.UpdateOriginElasticSearch(originsDto);
 
@@ -190,7 +188,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<IList<OriginDto>> GetOriginBySearch(string query, int from = 0, int size = 20)
         {
-            var result = await _elasticsearch.GetOrigins(query,from, size);
+            var result = await _elasticsearch.SearchOrigins(query,from, size);
             return result.ToList();
         }
      

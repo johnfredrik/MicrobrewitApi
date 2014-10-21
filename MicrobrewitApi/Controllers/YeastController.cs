@@ -14,9 +14,9 @@ using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
 using System.Configuration;
-using StackExchange.Redis;
 using Newtonsoft.Json;
 using Microbrewit.Api.Elasticsearch;
+using log4net;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -25,6 +25,7 @@ namespace Microbrewit.Api.Controllers
     {
         private IYeastRepository _yeastRespository;
         private Elasticsearch.ElasticSearch _elasticsearch;
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public YeastController(IYeastRepository yeastRepository)
         {
@@ -39,7 +40,8 @@ namespace Microbrewit.Api.Controllers
         public async Task<YeastCompleteDto> GetYeasts()
         {
             var yeastsDto = await _elasticsearch.GetAllYeasts();
-            if (yeastsDto.Count() > 0)
+            Log.Debug(string.Format("Number of yeasts: {0}",yeastsDto.Count()));
+            if (yeastsDto.Count() <= 0)
             {
                 var yeasts = await _yeastRespository.GetAllAsync("Supplier");
                 yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
@@ -61,7 +63,7 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> GetYeast(int id)
         {
 
-            var yeastDto = await Redis.YeastRedis.GetYeastAsync(id);
+            var yeastDto = await _elasticsearch.GetYeast(id);
             if (yeastDto == null)
             {
                 var yeast = await _yeastRespository.GetSingleAsync(y => y.Id == id, "Supplier");
@@ -99,10 +101,8 @@ namespace Microbrewit.Api.Controllers
             var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
             await _yeastRespository.UpdateAsync(yeast);
 
-            // Updates yeasts in the redis store.
-            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsRedis);
-            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsDto);
+            var yeasts = await _yeastRespository.GetAllAsync("Supplier");
+            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
             // updated elasticsearch.
             await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
 
@@ -125,10 +125,8 @@ namespace Microbrewit.Api.Controllers
             var yeasts = Mapper.Map<IList<YeastDto>, Yeast[]>(yeastPosts);
             await _yeastRespository.AddAsync(yeasts);
 
-            // Updates yeasts in the redis store.
-            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsRedis);
-            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsDto);
+            var yeastsES = await _yeastRespository.GetAllAsync("Supplier");
+            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsES);
             // updated elasticsearch.
             await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
 
@@ -152,10 +150,8 @@ namespace Microbrewit.Api.Controllers
 
             _yeastRespository.Remove(yeast);
 
-            // Updates yeasts in the redis store.
-            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsRedis);
-            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsDto);
+            var yeasts = await _yeastRespository.GetAllAsync("Supplier");
+            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
             // updated elasticsearch.
             await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
 
@@ -164,13 +160,12 @@ namespace Microbrewit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("redis")]
+        [Route("es")]
         public async Task<IHttpActionResult> UpdateRedisYeast()
         {
             // Updates yeasts in the redis store.
-            var yeastsRedis = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsRedis);
-            await Redis.YeastRedis.UpdateRedisStoreAsync(yeastsDto);
+            var yeasts = await _yeastRespository.GetAllAsync("Supplier");
+            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
             // updated elasticsearch.
             await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
 
@@ -187,20 +182,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<YeastCompleteDto> GetYeastsBySearch(string query, int from = 0, int size = 20)
         {
-            var yeastsDto = await _elasticsearch.GetYeasts(query,from,size);
+            var yeastsDto = await _elasticsearch.SearchYeasts(query,from,size);
             
-            var result = new YeastCompleteDto();
-            result.Yeasts = yeastsDto.ToList();
-            return result;
-        }
-
-        
-        [HttpGet]
-        [Route("es")]
-        public async Task<YeastCompleteDto> GetYeastsByES()
-        {
-            var yeastsDto = await _elasticsearch.GetAllYeasts();
-
             var result = new YeastCompleteDto();
             result.Yeasts = yeastsDto.ToList();
             return result;

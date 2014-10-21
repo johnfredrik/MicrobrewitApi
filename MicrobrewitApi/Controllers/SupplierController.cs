@@ -36,14 +36,14 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<SupplierCompleteDto> GetSuppliers()
         {
-            var suppliersDto = await Redis.SupplierRedis.GetSuppliersAsync();
-            if (suppliersDto.Count <= 0)
+            var suppliersDto = await _elasticsearch.GetSuppliers();
+            if (suppliersDto.Count() <= 0)
             {
                 var suppliers = await _supplierRepository.GetAllAsync("Origin");
                 suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
             }
             var result = new SupplierCompleteDto();
-            result.Suppliers = suppliersDto;
+            result.Suppliers = suppliersDto.OrderBy(s => s.Name).ToList();
             return result;
         }
 
@@ -58,7 +58,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Supplier))]
         public async Task<IHttpActionResult> GetSupplier(int id)
         {
-            var supplierDto = await Redis.SupplierRedis.GetSupplierAsync(id);
+            var supplierDto = await _elasticsearch.GetSupplier(id);
             if (supplierDto == null)
             {
                 var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id,"Origin");
@@ -96,10 +96,8 @@ namespace Microbrewit.Api.Controllers
             var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
             await _supplierRepository.UpdateAsync(supplier);
 
-            // Updates suppliers in redis store.
-            var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
-            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliersRedis);
-            await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersDto);
+            var suppliers = await _supplierRepository.GetAllAsync("Origin");
+            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
             // updated elasticsearch.
             await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
 
@@ -124,10 +122,8 @@ namespace Microbrewit.Api.Controllers
             var suppliers = Mapper.Map<IList<SupplierDto>, Supplier[]>(supplierDtos);
             await _supplierRepository.AddAsync(suppliers);
 
-            // Updates suppliers in redis store.
-            var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
-            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliersRedis);
-            await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersDto);
+            var suppliersES = await _supplierRepository.GetAllAsync("Origin");
+            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliersES);
             // updated elasticsearch.
             await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
 
@@ -159,10 +155,8 @@ namespace Microbrewit.Api.Controllers
             {
                 await _supplierRepository.RemoveAsync(supplier);
 
-                // Updates suppliers in redis store.
-                var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
-                var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliersRedis);
-                await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersDto);
+                var suppliers = await _supplierRepository.GetAllAsync("Origin");
+                var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
                 // updated elasticsearch.
                 await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
             }
@@ -176,13 +170,12 @@ namespace Microbrewit.Api.Controllers
         }
 
 
-        [Route("redis")]
+        [Route("es")]
         [HttpGet]
-        public async Task<IHttpActionResult> UpdateSupplierRedis()
+        public async Task<IHttpActionResult> UpdateSupplierElasticSearch()
         {
-            var suppliersRedis = await _supplierRepository.GetAllAsync("Origin");
-            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliersRedis);
-            await Redis.SupplierRedis.UpdateRedisStoreAsync(suppliersDto);
+            var suppliers = await _supplierRepository.GetAllAsync("Origin");
+            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
             // updated elasticsearch.
             await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
             return Ok();
@@ -192,7 +185,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<SupplierCompleteDto> GetSuppliersBySearch(string query, int from = 0, int size = 20)
         {
-            var supplierDto = await _elasticsearch.GetSuppliers(query,from,size);
+            var supplierDto = await _elasticsearch.SearchSuppliers(query,from,size);
 
             var result = new SupplierCompleteDto();
             result.Suppliers = supplierDto.ToList();
