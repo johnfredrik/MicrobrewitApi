@@ -24,10 +24,12 @@ namespace Microbrewit.Api.Controllers
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IBeerRepository _beerRepository;
+        private Elasticsearch.ElasticSearch _elasticsearch;
 
         public BeerController(IBeerRepository beerRepository)
         {
             this._beerRepository = beerRepository;
+            this._elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
         /// <summary>
@@ -250,5 +252,42 @@ namespace Microbrewit.Api.Controllers
             var beerDto = Mapper.Map<Beer, BeerDto>(beer);
             return Ok(beerDto);
         }
+
+        /// <summary>
+        /// Updates elasticsearch with data from the database.
+        /// </summary>
+        /// <returns>200 OK</returns>
+        [Route("es")]
+        [HttpGet]
+        public async Task<IHttpActionResult> UpdateOriginElasticSearch()
+        {
+            var beers = await _beerRepository.GetAllAsync();
+            var beersDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
+            // updated elasticsearch.
+            await _elasticsearch.UpdateBeerElasticSearch(beersDto);
+
+            return Ok();
+        }
+        /// <summary>
+        /// Searches in origin.
+        /// </summary>
+        /// <param name="query">Query phrase</param>
+        /// <param name="from">From what object</param>
+        /// <param name="size">Number of objects returned</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public async Task<IList<BeerDto>> GetBeerBySearch(string query, int from = 0, int size = 20)
+        {
+            var result = await _elasticsearch.SearchBeers(query, from, size);
+            return result.ToList();
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IList<BeerDto>> GetLastAddedBeers(int from = 0, int size = 20)
+        {
+
+        };
     }
 }

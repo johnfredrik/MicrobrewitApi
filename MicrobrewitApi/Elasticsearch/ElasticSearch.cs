@@ -344,7 +344,7 @@ namespace Microbrewit.Api.Elasticsearch
             return result.Source;
         }
 
-        public async Task<IEnumerable<BeerStyleDto>> GetBeerStyles(string query, int from, int size)
+        public async Task<IEnumerable<BeerStyleDto>> SearchBeerStyles(string query, int from, int size)
         {
             var searchResults = _client.Search<BeerStyleDto>(s => s
                                                 .From(from)
@@ -355,6 +355,26 @@ namespace Microbrewit.Api.Elasticsearch
         }
 
 
-        
+
+
+        public async Task UpdateBeerElasticSearch(IList<BeerDto> beersDto)
+        {
+            foreach (var beer in beersDto)
+            {
+                // Adds an analayzer to the name property in FermentableDto object.
+                _client.Map<BeerDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+                var index = _client.Index<BeerDto>(beer);
+            }
+        }
+
+        public async Task<IEnumerable<BeerDto>> SearchBeers(string query, int from, int size)
+        {
+            var searchResults = _client.Search<BeerDto>(s => s
+                                                .From(from)
+                                                .Size(size)
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
+            return searchResults.Documents;
+        }
     }
 }
