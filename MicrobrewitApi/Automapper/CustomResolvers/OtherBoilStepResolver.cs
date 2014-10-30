@@ -10,18 +10,17 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
 using Microbrewit.Model;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
     public class OtherBoilStepResolver : ValueResolver<BoilStep, IList<OtherStepDto>>
     {
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+        private Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private IOtherRepository _otherRepository = new OtherRepository();
 
         protected override IList<OtherStepDto> ResolveCore(BoilStep step)
         {
-            var redisClient = redis.GetDatabase();
-
             var otherStepDtoList = new List<OtherStepDto>();
             foreach (var item in step.Others)
             {
@@ -31,8 +30,11 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     OtherId = item.OtherId,
                     Amount = item.Amount,
                 };
-                var otherJson = redisClient.HashGet("others", otherStepDto.OtherId.ToString());
-                var other = JsonConvert.DeserializeObject<OtherDto>(otherJson);
+                var other = _elasticsearch.GetOther(item.OtherId).Result;
+                if (other == null)
+                {
+                    other = Mapper.Map<Other, OtherDto>(_otherRepository.GetSingle(f => f.Id == item.OtherId));
+                }
                 otherStepDto.Name = other.Name;
                 otherStepDto.Type = other.Type;
                 otherStepDtoList.Add(otherStepDto);

@@ -10,28 +10,29 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
 using Microbrewit.Model;
+using Microbrewit.Repository;
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
     public class YeastFermentationStepResolver : ValueResolver<FermentationStep, IList<YeastStepDto>>
     {
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+        private Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private IYeastRepository _yeastRepository = new YeastRepository();
 
         protected override IList<YeastStepDto> ResolveCore(FermentationStep step)
         {
-            var redisClient = redis.GetDatabase();
-            
                 var yeastStepDtoList = new List<YeastStepDto>();
                 foreach (var item in step.Yeasts)
                 {
-
                     var yeastStepDto = new YeastStepDto()
                     {
                         YeastId = item.YeastId,
                         Amount = item.Amount
                     };
-                    var yeastJson = redisClient.HashGet("yeasts", yeastStepDto.YeastId);
-                    var yeast = JsonConvert.DeserializeObject<YeastDto>(yeastJson);
+                    var yeast = _elasticsearch.GetYeast(item.YeastId).Result;
+                    if (yeast == null)
+                    {
+                        yeast = Mapper.Map<Yeast, YeastDto>(_yeastRepository.GetSingle(f => f.Id == item.YeastId));
+                    }
                     yeastStepDto.Name = yeast.Name;
                     yeastStepDto.Supplier = yeast.Supplier;
                     yeastStepDto.Type = yeast.Type;

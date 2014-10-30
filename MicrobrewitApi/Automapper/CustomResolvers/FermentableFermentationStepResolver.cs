@@ -10,24 +10,27 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
 using Microbrewit.Model;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
     public class FermentableFermentationStepResolver : ValueResolver<FermentationStep, IList<FermentableStepDto>>
     {
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+        private Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private IFermentableRepository _fermentableRepository = new FermentableRepository();
 
         protected override IList<FermentableStepDto> ResolveCore(FermentationStep step)
         {
             var fermentableStepDtoList = new List<FermentableStepDto>();
-            var redisClient = redis.GetDatabase();
             
 
                 foreach (var item in step.Fermentables)
                 {
-                    var fermJson = redisClient.HashGet("fermentables", item.FermentableId.ToString());
-                    var fermentable = JsonConvert.DeserializeObject<FermentableDto>(fermJson);
+                    var fermentable = _elasticsearch.GetFermentable(item.FermentableId).Result;
+                    if (fermentable == null)
+                    {
+                        fermentable = Mapper.Map<Fermentable, FermentableDto>(_fermentableRepository.GetSingle(f => f.Id == item.FermentableId));
+                    }
                     var fermentableStepDto = new FermentableStepDto();
                     
                     fermentableStepDto.FermentableId = item.FermentableId;

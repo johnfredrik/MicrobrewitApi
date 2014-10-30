@@ -10,17 +10,16 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
 using Microbrewit.Model;
+using Microbrewit.Repository;
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
     public class HopMashStepResolver : ValueResolver<MashStep, IList<HopStepDto>>
     {
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
-
+        private Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private IHopRepository _hopRepository = new HopRepository();
 
         protected override IList<HopStepDto> ResolveCore(MashStep step)
         {
-            var redisClient = redis.GetDatabase();
             var hopStepDtoList = new List<HopStepDto>();
             foreach (var item in step.Hops)
             {
@@ -32,16 +31,17 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     Amount = item.AAAmount,
                     AAValue = item.AAValue,
                 };
-                var hopJson = redisClient.HashGet("hops", hopStepDto.HopId);
-                var hop = JsonConvert.DeserializeObject<HopDto>(hopJson);
+                var hop = _elasticsearch.GetHop(item.HopId).Result;
+                if (hop == null)
+                {
+                    hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(f => f.Id == item.HopId));
+                }
                 hopStepDto.Name = hop.Name;
                 hopStepDto.Origin = hop.Origin;
                 hopStepDto.Flavours = hop.Flavours;
                 hopStepDto.FlavourDescription = hop.FlavourDescription;
-
-                var hopFormJson = redisClient.HashGet("hopforms", item.HopFormId);
-
-                hopStepDto.HopForm = JsonConvert.DeserializeObject<DTO>(hopFormJson);
+                //TODO: Add elasticsearch on hop form.
+                hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(h => h.Id == item.HopFormId));
                 hopStepDtoList.Add(hopStepDto);
 
             }
