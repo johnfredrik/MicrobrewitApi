@@ -4,17 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using StackExchange.Redis;
 using Newtonsoft.Json;
 using Microbrewit.Model.DTOs;
 using System.Configuration;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Util
 {
     public static class Calculation
     {
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+        private static Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private static IFermentableRepository _fermentableRepository = new FermentableRepository();
 
         public static SRM CalculateSRM(Recipe recipe)
         {
@@ -64,9 +64,20 @@ namespace Microbrewit.Api.Util
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                        var redisClient = redis.GetDatabase();
-                        var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.HashGet("fermentables", fermentable.FermentableId));
-                        og += Formulas.MaltOG(fermentable.Amount, redisFermentable.PPG, recipe.Efficiency, recipe.Volume);
+                        //var redisClient = redis.GetDatabase();
+                        //var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.HashGet("fermentables", fermentable.FermentableId));
+                        var esFermentable =  _elasticsearch.GetFermentable(fermentable.FermentableId).Result;
+                        if (esFermentable != null)
+                        {
+                            og += Formulas.MaltOG(fermentable.Amount, esFermentable.PPG, recipe.Efficiency, recipe.Volume);
+                            
+                        }
+                        else
+                        {
+                            var efFermentable = _fermentableRepository.GetSingle(f => f.Id == fermentable.FermentableId);
+                            og += Formulas.MaltOG(fermentable.Amount, (int)efFermentable.PPG, recipe.Efficiency, recipe.Volume);
+                        }
+                        
                 }
             }
             return Math.Round(1 + og / 1000, 4);
