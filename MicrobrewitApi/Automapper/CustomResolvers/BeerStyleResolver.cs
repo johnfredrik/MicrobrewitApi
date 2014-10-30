@@ -10,23 +10,26 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
 using Microbrewit.Model;
+using AutoMapper;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Automapper.CustomResolvers
 {
     public class BeerStyleResolver : ValueResolver<Beer, DTO>
     {
-        private static readonly string redisStore = ConfigurationManager.AppSettings["redis"];
-        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisStore);
+        private Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private IBeerStyleRepository _beerstyleRespository = new BeerStyleRepository();
 
         protected override DTO ResolveCore(Beer beer)
         {
-            var redisClient = redis.GetDatabase();
-
             var dto = new DTO();
             if (beer.BeerStyleId != null)
             {
-                var beerStyleJson = redisClient.HashGet("beerstyles", beer.BeerStyleId.ToString());
-                var beerStyle = JsonConvert.DeserializeObject<BeerStyle>(beerStyleJson);
+                var beerStyle = _elasticsearch.GetBeerStyle((int)beer.BeerStyleId).Result;
+                if (beerStyle == null)
+                {
+                    beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(_beerstyleRespository.GetSingle(f => f.Id == beer.BeerStyleId));
+                }
                 dto.Id = beerStyle.Id;
                 dto.Name = beerStyle.Name;
 
