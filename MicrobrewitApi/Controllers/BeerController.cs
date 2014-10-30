@@ -87,27 +87,27 @@ namespace Microbrewit.Api.Controllers
             return Ok(result);
         }
 
-        // GET api/Beer/5
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("redis/{id}")]
-        [ResponseType(typeof(Beer))]
-        public IHttpActionResult GetBeerRedis(int id)
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var beer = _beerRepository.GetSingle(b => b.Id == id,
-                "Recipe", "Brewers", "ABV", "IBU", "SRM", "Breweries");
-            Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
-            if (beer == null)
-            {
-                return NotFound();
-            }
-            stopwatch.Restart();
-            var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
-            result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
-            Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
-            return Ok(result);
-        }
+        //// GET api/Beer/5
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        //[Route("redis/{id}")]
+        //[ResponseType(typeof(Beer))]
+        //public IHttpActionResult GetBeerRedis(int id)
+        //{
+        //    var stopwatch = new Stopwatch();
+        //    stopwatch.Start();
+        //    var beer = _beerRepository.GetSingle(b => b.Id == id,
+        //        "Recipe", "Brewers", "ABV", "IBU", "SRM", "Breweries");
+        //    Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
+        //    if (beer == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    stopwatch.Restart();
+        //    var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
+        //    result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
+        //    Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Updates a beer
@@ -261,6 +261,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> UpdateOriginElasticSearch()
         {
+            
             var beers = await _beerRepository.GetAllAsync();
             var beersDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
             // updated elasticsearch.
@@ -283,11 +284,18 @@ namespace Microbrewit.Api.Controllers
             return result.ToList();
         }
 
+        /// <summary>
+        /// Get the last beers added.
+        /// </summary>
+        /// <param name="from">from beer</param>
+        /// <param name="size">number of beer returned</param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("")]
+        [Route("last")]
         public async Task<IList<BeerDto>> GetLastAddedBeers(int from = 0, int size = 20)
         {
-
-        };
+            //var result = await _beerRepository.GetAll
+            return new List<BeerDto>();
+        }
     }
 }
