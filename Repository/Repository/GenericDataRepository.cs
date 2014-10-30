@@ -169,6 +169,7 @@ namespace Microbrewit.Repository
             {
                 var result = await context.SaveChangesAsync();
             }
+            
             catch (DbEntityValidationException dbEx)
             {
                 foreach (var validationErrors in dbEx.EntityValidationErrors)
@@ -180,6 +181,10 @@ namespace Microbrewit.Repository
                         throw dbEx;
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
             }
 
