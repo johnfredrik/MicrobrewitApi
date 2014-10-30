@@ -26,10 +26,10 @@ namespace Microbrewit.Model
             //context.Suppliers.Add(new Supplier { Id = 4, Name = "Thomas Fawcett", OriginId = 2 });
             //context.Suppliers.Add(new Supplier { Id = 5, Name = " De Wolf-Cosyns", OriginId = 3 });
 
-            var mild = new Flavour { Id = 1, Name = "Mild to moderate" };
-            var spicy = new Flavour { Id = 2, Name = "Quite spicy" };
-            context.Flavours.Add(mild);
-            context.Flavours.Add(spicy);
+            //var mild = new Flavour { Id = 1, Name = "Mild to moderate" };
+            //var spicy = new Flavour { Id = 2, Name = "Quite spicy" };
+            //context.Flavours.Add(mild);
+            //context.Flavours.Add(spicy);
             
            // var target = new Hop() { Id = 1, Name ="Target", AALow = 9.5, AAHigh = 12.5, OriginId = 2, FlavourDescription = "Pleasant English hop aroma, quite intense." };
            // var challanger = new Hop() { Id = 2, Name="Challanger", AAHigh = 8.5, AALow = 6.5, OriginId = 2, Flavours = new List<HopFlavour>(){new HopFlavour(){HopId = 1, FlavourId = mild.Id},
