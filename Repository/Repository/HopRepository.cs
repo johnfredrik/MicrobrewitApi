@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
 using System.Data.Entity;
+using System.Linq.Expressions;
 
 namespace Microbrewit.Repository
 {
@@ -68,6 +69,18 @@ namespace Microbrewit.Repository
                 return flavour;
             }
 
+        }
+
+        public HopForm GetForm(Expression<Func<HopForm, bool>> where, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                IQueryable<HopForm> dbQuery = context.Set<HopForm>();
+                foreach (string navigationProperty in navigationProperties)
+                    dbQuery = dbQuery.Include<HopForm>(navigationProperty);
+
+                return dbQuery.SingleOrDefault(where);
+            }
         }
 
     }
