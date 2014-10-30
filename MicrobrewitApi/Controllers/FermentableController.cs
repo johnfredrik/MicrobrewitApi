@@ -41,7 +41,7 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<FermentablesCompleteDto> GetFermentables(bool custom)
+        public async Task<FermentablesCompleteDto> GetFermentables()
         {
             var fermentablesDto = await _elasticsearch.GetFermentables();
             if (fermentablesDto.Count() <= 0)
