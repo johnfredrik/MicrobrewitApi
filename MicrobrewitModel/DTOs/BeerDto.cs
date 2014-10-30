@@ -17,6 +17,8 @@ namespace Microbrewit.Model.DTOs
             public SRMDto SRM { get; set; }
             public DTO BeerStyle { get; set; }
             public RecipeDto Recipe { get; set; }
+            public DateTime CreatedDate { get; set; }
+            public DateTime UpdatedDate { get; set; }
 
             public IList<DTO> Breweries { get; set; }
             public IList<DTOUser> Brewers { get; set; }
