@@ -13,6 +13,7 @@ using WebApiContrib.Formatting.Jsonp;
 using System.Web.Mvc;
 using Microbrewit.HelpPage;
 using System.Web.Optimization;
+using Microbrewit.Model.Migrations;
 
 namespace Microbrewit.Api
 {
@@ -33,7 +34,7 @@ namespace Microbrewit.Api
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             AutoMapperConfiguration.Configure();
-            //Database.SetInitializer(new InitializeDatabaseWithSeedData());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MicrobrewitContext,Configuration>());
            
         }
     }
