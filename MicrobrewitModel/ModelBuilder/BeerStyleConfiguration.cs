@@ -22,6 +22,7 @@ namespace Microbrewit.Model.ModelBuilder
             .WillCascadeOnDelete(false);
 
             this.HasMany(beerStyle => beerStyle.Beers).WithRequired(beer => beer.BeerStyle).HasForeignKey(beer => beer.BeerStyleId).WillCascadeOnDelete(false);
+            this.HasMany(beerStyle => beerStyle.Glasses).WithRequired(beerStyleGlass => beerStyleGlass.BeerStyle).HasForeignKey(beerStyleGlass => beerStyleGlass.BeerStyleId);
 
         }
     }

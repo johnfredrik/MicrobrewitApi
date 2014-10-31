@@ -46,6 +46,7 @@ namespace Microbrewit.Api
             container.RegisterType<IUserRepository, UserRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IYeastRepository, YeastRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IUserCredentialRepository, UserCredentialRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IGlassRepository, GlassRepository>(new HierarchicalLifetimeManager());
            
             
 

@@ -300,6 +300,7 @@
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
     <Compile Include="Automapper\OriginProfile.cs" />
+    <Compile Include="Automapper\GlassProfile.cs" />
     <Compile Include="Automapper\OtherProfile.cs" />
     <Compile Include="Automapper\ResolveRecipeId.cs" />
     <Compile Include="Automapper\SupplierProfile.cs" />
@@ -311,6 +312,7 @@
     <Compile Include="Automapper\HopProfile.cs" />
     <Compile Include="Automapper\RecipeProfile.cs" />
     <Compile Include="Controllers\FermentableController.cs" />
+    <Compile Include="Controllers\GlassController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HopController.cs" />
     <Compile Include="Controllers\OriginController.cs" />

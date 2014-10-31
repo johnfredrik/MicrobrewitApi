@@ -90,6 +90,9 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new SRMConfiguration());
             modelBuilder.Configurations.Add(new UserBeerConfiguration());
             modelBuilder.Configurations.Add(new BreweryBeerConfiguration());
+            modelBuilder.Configurations.Add(new BeerStyleGlassConfiguration());
+            modelBuilder.Configurations.Add(new GlassConfiguration());
+
 
            
            

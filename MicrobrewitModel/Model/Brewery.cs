@@ -12,6 +12,8 @@ namespace Microbrewit.Model
         public string Name { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public ICollection<BreweryMember> Members { get; set; }
         public ICollection<BreweryBeer> Beers { get; set; }

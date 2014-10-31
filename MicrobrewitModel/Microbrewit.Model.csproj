@@ -71,6 +71,7 @@
     <Compile Include="DTOs\BreweryCompleteDto.cs" />
     <Compile Include="DTOs\BreweryDto.cs" />
     <Compile Include="DTOs\DTOUser.cs" />
+    <Compile Include="DTOs\GlassDto.cs" />
     <Compile Include="DTOs\HopPostComplete.cs" />
     <Compile Include="DTOs\LinksBrewery.cs" />
     <Compile Include="DTOs\BeerSimpleCompleteDto.cs" />
@@ -120,9 +121,23 @@
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />
     <Compile Include="DTOs\YeastStepDto.cs" />
+    <Compile Include="Migrations\201410311151384_InitialCreate.cs" />
+    <Compile Include="Migrations\201410311151384_InitialCreate.Designer.cs">
+      <DependentUpon>201410311151384_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410311153278_UpdatedBrewery.cs" />
+    <Compile Include="Migrations\201410311153278_UpdatedBrewery.Designer.cs">
+      <DependentUpon>201410311153278_UpdatedBrewery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410311324440_AddedGlass.cs" />
+    <Compile Include="Migrations\201410311324440_AddedGlass.Designer.cs">
+      <DependentUpon>201410311324440_AddedGlass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerStyleConfiguration.cs" />
+    <Compile Include="ModelBuilder\BeerStyleGlassConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepFermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\BoilStepHopConfiguration.cs" />
@@ -135,6 +150,7 @@
     <Compile Include="ModelBuilder\FermentationStepOtherConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepYeastConfiguration.cs" />
     <Compile Include="ModelBuilder\FlavourConfiguration.cs" />
+    <Compile Include="ModelBuilder\GlassConfiguration.cs" />
     <Compile Include="ModelBuilder\HopFlavourConfiguration.cs" />
     <Compile Include="ModelBuilder\HopFormConfiguration.cs" />
     <Compile Include="ModelBuilder\IBUConfiguration.cs" />
@@ -155,6 +171,7 @@
     <Compile Include="Model\ABV.cs" />
     <Compile Include="Model\Beer.cs" />
     <Compile Include="Model\BeerStyle.cs" />
+    <Compile Include="Model\BeerSyleGlass.cs" />
     <Compile Include="Model\BoilStep.cs" />
     <Compile Include="Model\BoilStepFermentable.cs" />
     <Compile Include="Model\BoilStepHop.cs" />
@@ -168,6 +185,8 @@
     <Compile Include="Model\FermentationStepOther.cs" />
     <Compile Include="Model\FermentationStepYeast.cs" />
     <Compile Include="Model\Flavour.cs" />
+    <Compile Include="Model\Glass.cs" />
+    <Compile Include="DTOs\GlassCompleteDto.cs" />
     <Compile Include="Model\Hop.cs" />
     <Compile Include="InitializeDatabaseWithSeedData.cs" />
     <Compile Include="MicrobrewitContext.cs" />
@@ -201,6 +220,17 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201410311151384_InitialCreate.resx">
+      <DependentUpon>201410311151384_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410311153278_UpdatedBrewery.resx">
+      <DependentUpon>201410311153278_UpdatedBrewery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410311324440_AddedGlass.resx">
+      <DependentUpon>201410311324440_AddedGlass.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

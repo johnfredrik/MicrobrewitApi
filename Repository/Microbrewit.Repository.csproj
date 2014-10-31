@@ -56,6 +56,7 @@
     <Compile Include="Interface\IBreweryRepository.cs" />
     <Compile Include="Interface\IFermentableRepository.cs" />
     <Compile Include="Interface\IGenericDataRepository.cs" />
+    <Compile Include="Interface\IGlassRepository.cs" />
     <Compile Include="Interface\IOriginRespository.cs" />
     <Compile Include="Interface\IOtherRepository.cs" />
     <Compile Include="Interface\ISupplierRepository.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Repository\BreweryRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\GenericDataRepository.cs" />
+    <Compile Include="Repository\GlassRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
     <Compile Include="Interface\IHopRepository.cs" />
     <Compile Include="Interface\IRecipeRepositoy.cs" />
