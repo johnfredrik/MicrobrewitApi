@@ -55,6 +55,10 @@ namespace Microbrewit.Api.Automapper
                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
+            Mapper.CreateMap<HopForm,DTO>()
+                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+               .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
+
            //Mapper.CreateMap<DTO,HopFlavour>()
            //     .ForMember(dto => dto.FlavourId, conf => conf.MapFrom(rec => rec.Id));
         }
