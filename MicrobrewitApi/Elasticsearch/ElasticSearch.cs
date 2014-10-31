@@ -376,5 +376,16 @@ namespace Microbrewit.Api.Elasticsearch
                                                                           .Query(query))));
             return searchResults.Documents;
         }
+
+        public async Task<IList<BeerDto>> GetLastBeers(int from, int size)
+        {
+            var result =  _client.Search<BeerDto>(s => s
+                                                        .Sort(p => p
+                                                            .OnField("createdDate")
+                                                            .Descending())
+                                                        .From(from)
+                                                        .Size(size));
+            return result.Documents.ToList();
+        }
     }
 }
