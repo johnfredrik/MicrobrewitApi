@@ -57,8 +57,6 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Beer))]
         public async Task<IHttpActionResult> GetBeer(int id)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
             var beer = await _beerRepository.GetSingleAsync(b => b.Id == id,
                 //"Recipe.MashSteps",
                 "Recipe.MashSteps.Hops",
@@ -74,40 +72,15 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
                 "ABV", "IBU", "SRM", "Brewers", "Breweries");
-            Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
 
             if (beer == null)
             {
                 return NotFound();
             }
-            stopwatch.Restart();
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
             result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
-            Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
             return Ok(result);
         }
-
-        //// GET api/Beer/5
-        //[ApiExplorerSettings(IgnoreApi = true)]
-        //[Route("redis/{id}")]
-        //[ResponseType(typeof(Beer))]
-        //public IHttpActionResult GetBeerRedis(int id)
-        //{
-        //    var stopwatch = new Stopwatch();
-        //    stopwatch.Start();
-        //    var beer = _beerRepository.GetSingle(b => b.Id == id,
-        //        "Recipe", "Brewers", "ABV", "IBU", "SRM", "Breweries");
-        //    Log.Debug("EF call time elapsed: " + stopwatch.Elapsed);
-        //    if (beer == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    stopwatch.Restart();
-        //    var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
-        //    result.Beers.Add(Mapper.Map<Beer, BeerDto>(beer));
-        //    Log.Debug("Mapper call time elapsed: " + stopwatch.Elapsed);
-        //    return Ok(result);
-        //}
 
         /// <summary>
         /// Updates a beer
@@ -133,20 +106,6 @@ namespace Microbrewit.Api.Controllers
             BeerCalculations(beer);
 
             beer.BeerStyle = null;
-            //beer.Recipe.BoilSteps = null;
-            //beer.Recipe.FermentationSteps = null;
-            //foreach (var item in beer.Recipe.FermentationSteps)
-            //{
-            //    item.Others = null;
-            //    item.Hops = null;
-            //    item.Yeasts = null;
-
-            //}
-            //beer.Recipe.MashSteps = null;
-            //beer.IBU = null;
-            ///beer.ABV = null;
-            //beer.SRM = null;
-            //beer.Brewers = null;
             beer.UpdatedDate = DateTime.Now;
             _beerRepository.Update(beer);
 
@@ -184,6 +143,14 @@ namespace Microbrewit.Api.Controllers
 
 
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
+            await UpdateSingleBeerES(beer, result);
+            
+
+            return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
+        }
+
+        private async Task UpdateSingleBeerES(Beer beer, BeerCompleteDto result)
+        {
             var singleBeer = await _beerRepository.GetSingleAsync(b => b.Id == beer.Id,
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
@@ -202,8 +169,6 @@ namespace Microbrewit.Api.Controllers
             var beerES = new List<BeerDto>();
             beerES.Add(beerdto);
             await _elasticsearch.UpdateBeerElasticSearch(beerES);
-
-            return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
         }
 
         private static void BeerCalculations(Beer beer)
@@ -214,12 +179,7 @@ namespace Microbrewit.Api.Controllers
             {
                 abv.Id = beer.ABV.Id;
             }
-            else
-                //{
-                //    abv.Id = (int)DateTime.Now.Ticks;
-                //}
-                //beer.ABV.Beer = null;
-                beer.ABV = abv;
+            beer.ABV = abv;
             var srm = Calculation.CalculateSRM(beer.Recipe);
             if (beer.SRM != null)
             {
@@ -231,10 +191,6 @@ namespace Microbrewit.Api.Controllers
             {
                 ibu.Id = beer.IBU.Id;
             }
-            //else
-            //{
-            //    ibu.Id = (int)DateTime.Now.Ticks;
-            //}
             beer.IBU = ibu;
         }
 
@@ -266,9 +222,8 @@ namespace Microbrewit.Api.Controllers
         /// <returns>200 OK</returns>
         [Route("es")]
         [HttpGet]
-        public async Task<IHttpActionResult> UpdateOriginElasticSearch()
+        public async Task<IHttpActionResult> UpdateBeersElasticSearch()
         {
-
             var beers = await _beerRepository.GetAllAsync("Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
