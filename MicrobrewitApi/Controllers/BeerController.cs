@@ -40,7 +40,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {
-            var beers =  Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
+            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
             var result = new BeerSimpleCompleteDto();
             result.Beers = beers;
             return result;
@@ -59,7 +59,7 @@ namespace Microbrewit.Api.Controllers
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var beer =  await _beerRepository.GetSingleAsync(b => b.Id == id,
+            var beer = await _beerRepository.GetSingleAsync(b => b.Id == id,
                 //"Recipe.MashSteps",
                 "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
@@ -131,6 +131,7 @@ namespace Microbrewit.Api.Controllers
             }
             var beer = Mapper.Map<BeerDto, Beer>(beerDto);
             BeerCalculations(beer);
+
             beer.BeerStyle = null;
             //beer.Recipe.BoilSteps = null;
             //beer.Recipe.FermentationSteps = null;
@@ -146,7 +147,7 @@ namespace Microbrewit.Api.Controllers
             ///beer.ABV = null;
             //beer.SRM = null;
             //beer.Brewers = null;
-
+            beer.UpdatedDate = DateTime.Now;
             _beerRepository.Update(beer);
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -169,32 +170,38 @@ namespace Microbrewit.Api.Controllers
             }
             var beer = Mapper.Map<BeerDto, Beer>(beerPost);
             BeerCalculations(beer);
+            beer.CreatedDate = DateTime.Now;
+            beer.UpdatedDate = DateTime.Now;
             try
             {
-               await _beerRepository.AddAsync(beer);
-            } 
+                await _beerRepository.AddAsync(beer);
+            }
             catch (DbUpdateException dbUpdateException)
             {
                 //Log.Error(dbUpdateException);
                 return BadRequest(dbUpdateException.ToString());
             }
-                
-               
+
+
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
-            //var singleBeer = await _beerRepository.GetSingleAsync(b => b.Id == beer.Id,
-            //    "Recipe.MashSteps.Hops",
-            //    "Recipe.MashSteps.Fermentables",
-            //    "Recipe.MashSteps.Others",
-            //    "Recipe.BoilSteps.Hops",
-            //    "Recipe.BoilSteps.Fermentables",
-            //    "Recipe.BoilSteps.Others",
-            //    "Recipe.FermentationSteps.Hops",
-            //    "Recipe.FermentationSteps.Fermentables",
-            //    "Recipe.FermentationSteps.Others",
-            //    "Recipe.FermentationSteps.Yeasts",
-            //     "ABV", "IBU", "SRM", "Brewers", "Breweries");
-            
-            // result.Beers.Add( Mapper.Map<Beer, BeerDto>(singleBeer));
+            var singleBeer = await _beerRepository.GetSingleAsync(b => b.Id == beer.Id,
+                "Recipe.MashSteps.Hops",
+                "Recipe.MashSteps.Fermentables",
+                "Recipe.MashSteps.Others",
+                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.Fermentables",
+                "Recipe.BoilSteps.Others",
+                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.Fermentables",
+                "Recipe.FermentationSteps.Others",
+                "Recipe.FermentationSteps.Yeasts",
+                 "ABV", "IBU", "SRM", "Brewers", "Breweries");
+
+            result.Beers.Add(Mapper.Map<Beer, BeerDto>(singleBeer));
+            var beerdto = Mapper.Map<Beer, BeerDto>(singleBeer);
+            var beerES = new List<BeerDto>();
+            beerES.Add(beerdto);
+            await _elasticsearch.UpdateBeerElasticSearch(beerES);
 
             return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
         }
@@ -208,13 +215,13 @@ namespace Microbrewit.Api.Controllers
                 abv.Id = beer.ABV.Id;
             }
             else
-            //{
-            //    abv.Id = (int)DateTime.Now.Ticks;
-            //}
-            //beer.ABV.Beer = null;
-            beer.ABV = abv;
+                //{
+                //    abv.Id = (int)DateTime.Now.Ticks;
+                //}
+                //beer.ABV.Beer = null;
+                beer.ABV = abv;
             var srm = Calculation.CalculateSRM(beer.Recipe);
-            if (beer.SRM!= null)
+            if (beer.SRM != null)
             {
                 srm.Id = beer.SRM.Id;
             }
@@ -261,8 +268,18 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> UpdateOriginElasticSearch()
         {
-            
-            var beers = await _beerRepository.GetAllAsync();
+
+            var beers = await _beerRepository.GetAllAsync("Recipe.MashSteps.Hops",
+                "Recipe.MashSteps.Fermentables",
+                "Recipe.MashSteps.Others",
+                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.Fermentables",
+                "Recipe.BoilSteps.Others",
+                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.Fermentables",
+                "Recipe.FermentationSteps.Others",
+                "Recipe.FermentationSteps.Yeasts",
+                 "ABV", "IBU", "SRM", "Brewers", "Breweries");
             var beersDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
             // updated elasticsearch.
             await _elasticsearch.UpdateBeerElasticSearch(beersDto);
@@ -294,8 +311,14 @@ namespace Microbrewit.Api.Controllers
         [Route("last")]
         public async Task<IList<BeerDto>> GetLastAddedBeers(int from = 0, int size = 20)
         {
-            //var result = await _beerRepository.GetAll
-            return new List<BeerDto>();
+            var beerDto = await _elasticsearch.GetLastBeers(from, size);
+            if (beerDto == null)
+            {
+                var beers = await _beerRepository.GetLastAsync(from, size, "Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries");
+                beerDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
+            }
+            //var result = await _elasticsearch.GetLastBeers(from,size);
+            return beerDto;
         }
     }
 }
