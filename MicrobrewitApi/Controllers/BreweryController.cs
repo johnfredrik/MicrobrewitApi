@@ -298,7 +298,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<BreweryCompleteDto> GetBreweriesBySearch(string query, int from = 0, int size = 20)
         {
-            var breweriesDto = await _elasticsearch.GetBreweries(query, from, size);
+            var breweriesDto = await _elasticsearch.SearchBreweries(query, from, size);
 
             var result = new BreweryCompleteDto();
             result.Breweries = breweriesDto.ToList();

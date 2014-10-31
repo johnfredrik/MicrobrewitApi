@@ -185,10 +185,10 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<OtherCompleteDto> GetOthersBySearch(string query, int from = 0, int size = 20)
         {
-            var hopDto = await _elasticsearch.SearchOthers(query,from,size);
+            var othersDto = await _elasticsearch.SearchOthers(query,from,size);
 
             var result = new OtherCompleteDto();
-            result.Others = hopDto.ToList();
+            result.Others = othersDto.ToList();
             return result;
         }
     }

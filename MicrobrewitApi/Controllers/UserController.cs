@@ -187,7 +187,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<UserCompleteDto> GetUsersBySearch(string query, int from = 0, int size = 20)
         {
-            var usersDto = await _elasticsearch.GetUsers(query, from, size);
+            var usersDto = await _elasticsearch.SearchUsers(query, from, size);
 
             var result = new UserCompleteDto();
             result.Users = usersDto.ToList();
