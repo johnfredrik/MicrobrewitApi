@@ -260,5 +260,21 @@ namespace Microbrewit.Repository
             context.Entry(original).CurrentValues.SetValues(updated);
         }
 
+
+        public async Task<IList<Beer>> GetLastAsync(int from, int size, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+
+                IQueryable<Beer> dbQuery = context.Set<Beer>();
+
+                //Apply eager loading
+                foreach (string navigationProperty in navigationProperties)
+                {
+                    dbQuery = dbQuery.Include<Beer>(navigationProperty);
+                }
+                return await dbQuery.OrderByDescending(b => b.CreatedDate).Skip(from).Take(size).ToListAsync();
+            }
+        }
     }
 }
