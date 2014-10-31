@@ -17,6 +17,8 @@ namespace Microbrewit.Model
         public ABV ABV { get; set; }
         public IBU IBU { get; set; }
         public Recipe Recipe { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         
         public ICollection<BreweryBeer> Breweries { get; set; }
