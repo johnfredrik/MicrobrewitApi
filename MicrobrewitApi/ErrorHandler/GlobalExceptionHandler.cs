@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,8 +14,11 @@ namespace Microbrewit.Api.ErrorHandler
 {
     public class GlobalExceptionHandler : ExceptionHandler
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public override void Handle(System.Web.Http.ExceptionHandling.ExceptionHandlerContext context)
         {
+            Log.Error(context.Exception);
             context.Result = new TextPlainErrorResult
             {
                 Request = context.ExceptionContext.Request,
