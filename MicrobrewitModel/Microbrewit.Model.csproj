@@ -121,17 +121,9 @@
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />
     <Compile Include="DTOs\YeastStepDto.cs" />
-    <Compile Include="Migrations\201410311151384_InitialCreate.cs" />
-    <Compile Include="Migrations\201410311151384_InitialCreate.Designer.cs">
-      <DependentUpon>201410311151384_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410311153278_UpdatedBrewery.cs" />
-    <Compile Include="Migrations\201410311153278_UpdatedBrewery.Designer.cs">
-      <DependentUpon>201410311153278_UpdatedBrewery.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410311324440_AddedGlass.cs" />
-    <Compile Include="Migrations\201410311324440_AddedGlass.Designer.cs">
-      <DependentUpon>201410311324440_AddedGlass.cs</DependentUpon>
+    <Compile Include="Migrations\201411021044480_Initial.cs" />
+    <Compile Include="Migrations\201411021044480_Initial.Designer.cs">
+      <DependentUpon>201411021044480_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
@@ -222,14 +214,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410311151384_InitialCreate.resx">
-      <DependentUpon>201410311151384_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410311153278_UpdatedBrewery.resx">
-      <DependentUpon>201410311153278_UpdatedBrewery.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410311324440_AddedGlass.resx">
-      <DependentUpon>201410311324440_AddedGlass.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411021044480_Initial.resx">
+      <DependentUpon>201411021044480_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
