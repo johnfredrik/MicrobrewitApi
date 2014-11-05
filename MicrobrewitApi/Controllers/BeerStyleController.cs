@@ -103,6 +103,8 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
+            var beerStyleArray = new BeerStyle[]{beerstyle};
+            await _beerStyleRepository.UpdateAsync(beerStyleArray);
             var bs = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
             var bsDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(bs);
             await _elasticsearch.UpdateBeerStylesElasticSearch(bsDto);
@@ -161,6 +163,21 @@ namespace Microbrewit.Api.Controllers
 
             return Ok(response);
         }
+        /// <summary>
+        /// Searches in beer styles.
+        /// </summary>
+        /// <param name="query">Query phrase</param>
+        /// <param name="from">From what object</param>
+        /// <param name="size">Number of objects returned</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public async Task<IList<BeerStyleDto>> GetBeerBySearch(string query, int from = 0, int size = 20)
+        {
+            var result = await _elasticsearch.SearchBeerStyles(query, from, size);
+            return result.ToList();
+        }
+
 
         [HttpGet]
         [Route("es")]
