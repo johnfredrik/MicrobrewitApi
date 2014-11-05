@@ -125,6 +125,14 @@
     <Compile Include="Migrations\201411021044480_Initial.Designer.cs">
       <DependentUpon>201411021044480_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201411040856473_UpdatedBeerStyles.cs" />
+    <Compile Include="Migrations\201411040856473_UpdatedBeerStyles.Designer.cs">
+      <DependentUpon>201411040856473_UpdatedBeerStyles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411050623446_UpdatedBeerStylesWithComments.cs" />
+    <Compile Include="Migrations\201411050623446_UpdatedBeerStylesWithComments.Designer.cs">
+      <DependentUpon>201411050623446_UpdatedBeerStylesWithComments.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
@@ -216,6 +224,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201411021044480_Initial.resx">
       <DependentUpon>201411021044480_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411040856473_UpdatedBeerStyles.resx">
+      <DependentUpon>201411040856473_UpdatedBeerStyles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411050623446_UpdatedBeerStylesWithComments.resx">
+      <DependentUpon>201411050623446_UpdatedBeerStylesWithComments.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
