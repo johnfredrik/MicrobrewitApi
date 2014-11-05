@@ -243,7 +243,7 @@ namespace Microbrewit.Api.Controllers
             return Ok();
         }
         /// <summary>
-        /// Searches in origin.
+        /// Searches in beers.
         /// </summary>
         /// <param name="query">Query phrase</param>
         /// <param name="from">From what object</param>
