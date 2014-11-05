@@ -133,6 +133,7 @@ namespace Microbrewit.Api.Controllers
             beer.UpdatedDate = DateTime.Now;
             try
             {
+                beer.BeerStyle = null;
                 await _beerRepository.AddAsync(beer);
             }
             catch (DbUpdateException dbUpdateException)
