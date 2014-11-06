@@ -61,6 +61,7 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<FermentableStepDto, MashStepFermentable>()
                 .ForMember(dto => dto.FermentableId, conf => conf.MapFrom(rec => rec.FermentableId))
                  .ForMember(dto => dto.StepId, conf => conf.MapFrom(rec => rec.StepId))
+                 .ForMember(dto => dto.PGG, conf => conf.MapFrom(rec => rec.PPG))
                 .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
 
             Mapper.CreateMap<OtherStepDto, MashStepOther>()
