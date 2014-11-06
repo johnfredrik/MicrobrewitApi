@@ -64,20 +64,27 @@ namespace Microbrewit.Api.Util
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                        //var redisClient = redis.GetDatabase();
-                        //var redisFermentable = JsonConvert.DeserializeObject<FermentableDto>(redisClient.HashGet("fermentables", fermentable.FermentableId));
-                        var esFermentable =  _elasticsearch.GetFermentable(fermentable.FermentableId).Result;
-                        if (esFermentable != null)
+                    if (fermentable.PGG <= 0)
+                    {
+                        var esFermentable = _elasticsearch.GetFermentable(fermentable.FermentableId).Result;
+                        if (esFermentable != null && esFermentable.PPG > 0)
                         {
-                            og += Formulas.MaltOG(fermentable.Amount, esFermentable.PPG, recipe.Efficiency, recipe.Volume);
-                            
+                            fermentable.PGG = esFermentable.PPG;
+                            //og += Formulas.MaltOG(fermentable.Amount, esFermentable.PPG, recipe.Efficiency, recipe.Volume);
                         }
                         else
                         {
                             var efFermentable = _fermentableRepository.GetSingle(f => f.Id == fermentable.FermentableId);
-                            og += Formulas.MaltOG(fermentable.Amount, (int)efFermentable.PPG, recipe.Efficiency, recipe.Volume);
+                            if (efFermentable != null && efFermentable.PPG != null)
+                            {
+                                fermentable.PGG = (int)efFermentable.PPG;
+                            }
+                            //og += Formulas.MaltOG(fermentable.Amount, (int)efFermentable.PPG, recipe.Efficiency, recipe.Volume);
                         }
-                        
+
+                    }
+                    og += Formulas.MaltOG(fermentable.Amount, (int)fermentable.PGG, recipe.Efficiency, recipe.Volume);
+ 
                 }
             }
             return Math.Round(1 + og / 1000, 4);
