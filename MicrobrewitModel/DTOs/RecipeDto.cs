@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Microbrewit.Model;
 using System.Linq.Expressions;
+using Newtonsoft.Json;
 
 namespace Microbrewit.Model.DTOs
 {
@@ -13,7 +14,9 @@ namespace Microbrewit.Model.DTOs
         public string Name { get; set; }
         public string  Notes { get; set; }
         public int Volume { get; set; }
+        [JsonProperty(PropertyName = "og")]
         public double OG { get; set; }
+        [JsonProperty(PropertyName = "fg")]
         public double FG { get; set; }
         public double Efficiency { get; set; }
         public DTO BeerStyle { get; set; }

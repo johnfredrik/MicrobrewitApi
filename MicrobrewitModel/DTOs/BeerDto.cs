@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,8 +13,11 @@ namespace Microbrewit.Model.DTOs
             public int Id { get; set; }
             [Required]
             public string Name { get; set; }
+            [JsonProperty(PropertyName = "abv")]
             public ABVDto ABV { get; set; }
+            [JsonProperty(PropertyName = "ibu")]
             public IBUDto IBU { get; set; }
+            [JsonProperty(PropertyName = "srm")]
             public SRMDto SRM { get; set; }
             public DTO BeerStyle { get; set; }
             public RecipeDto Recipe { get; set; }

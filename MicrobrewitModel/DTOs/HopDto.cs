@@ -10,7 +10,9 @@ namespace Microbrewit.Model.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "aaLow")]
         public double AALow { get; set; }
+        [JsonProperty(PropertyName = "aaHigh")]
         public double AAHigh { get; set; }
         public double BetaLow { get; set; }
         public double BetaHigh { get; set; }

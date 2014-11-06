@@ -13,6 +13,7 @@ namespace Microbrewit.Model.DTOs
         public SupplierDto Supplier { get; set; }
         public string Name { get; set; }
         public double Lovibond { get; set; }
+        [JsonProperty(PropertyName = "ppg")]
         public int PPG { get; set; }
         public string Type { get; set; }
         public string DataType { get { return "fermentable"; } }
