@@ -53,18 +53,25 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task UpdateYeastsElasticSearch(IList<YeastDto> yeasts)
         {
-            _client.Map<YeastDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+            _client.Map<YeastDto>(d => d.Properties(p => p
+                .String(s => s.Name(n => n.Name).Analyzer("autocomplete"))
+                .String(s => s.Name(m => m.ProductCode).Analyzer("autocomplete"))));
             _client.IndexMany(yeasts, "mb");
 
         }
 
         public async Task<IEnumerable<YeastDto>> SearchYeasts(string query, int from, int size)
         {
+            //var searchResults = _client.Search<YeastDto>(s => s
+            //                                    .From(from)
+            //                                    .Size(size)
+            //                                    .Query(q => q.Match(m => m.OnField(f => f.ProductCode)
+            //                                                              .Query(query))));
+            var fields = new List<string> { "name", "productCode" };
             var searchResults = _client.Search<YeastDto>(s => s
                                                 .From(from)
                                                 .Size(size)
-                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
-                                                                          .Query(query))));
+                                                .Query(q => q.MultiMatch(m => m.OnFields(fields).Query(query))));
 
             return searchResults.Documents;
         }
