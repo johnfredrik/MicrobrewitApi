@@ -9,7 +9,7 @@ using Microbrewit.Model.Model;
 
 namespace Microbrewit.Model
 {
-    public class InitializeAuthDatabase : DropCreateDatabaseAlways<AuthContext>
+    public class InitializeAuthDatabase : DropCreateDatabaseIfModelChanges<AuthContext>
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
