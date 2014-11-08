@@ -35,6 +35,7 @@ namespace Microbrewit.Api
 
             AutoMapperConfiguration.Configure();
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MicrobrewitContext,Configuration>());
+            Database.SetInitializer(new InitializeAuthDatabase());
            
         }
     }

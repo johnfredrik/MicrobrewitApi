@@ -20,6 +20,7 @@ using Microbrewit.Api.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
+    [Authorize]
     [RoutePrefix("beerstyles")]
     public class BeerStyleController : ApiController
     {
