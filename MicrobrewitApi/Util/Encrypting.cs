@@ -164,10 +164,12 @@ namespace Microbrewit.Api.Util
 
 
             JwtSecurityToken jwtToken = new JwtSecurityToken
-            (issuer: "http://issuer.com", audience: "http://localhost"
-            , claims: new List<Claim>() { new Claim("username", user.Username) }
-            , lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(expire))
-            , signingCredentials: signingCred);
+            (
+            //issuer: "http://issuer.com", audience: "http://localhost"
+            //, claims: new List<Claim>() { new Claim("username", user.Username) }
+            //, lifetime: new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(expire))
+            //, signingCredentials: signingCred
+            );
 
             string tokenString = tokenhandler.WriteToken(jwtToken);
             return tokenString;
@@ -178,23 +180,23 @@ namespace Microbrewit.Api.Util
 
             var validationParameters = new TokenValidationParameters()
             {
-                AllowedAudience = "http://localhost",
-                SigningToken = new BinarySecretSecurityToken(Salt),
-                ValidIssuer = "http://issuer.com",
+                //AllowedAudience = "http://localhost",
+                //SigningToken = new BinarySecretSecurityToken(Salt),
+                //ValidIssuer = "http://issuer.com",
             };
             Log.Debug("Now time: " + DateTime.UtcNow.ToString());
-            var principal = tokenhandler.ValidateToken(tokenString, validationParameters);
+            //var principal = tokenhandler.ValidateToken(tokenString, validationParameters);
             using (var redis = ConnectionMultiplexer.Connect(redisStore))
             {
                 var redisClient = redis.GetDatabase();
-                var username = principal.Identities.First().Claims.Where(c => c.Type == "username").SingleOrDefault().Value;
+                //var username = principal.Identities.First().Claims.Where(c => c.Type == "username").SingleOrDefault().Value;
                 var keyValue = (string)redisClient.StringGet(tokenString);
 
                 //if (!principal.Identities.First().Claims.Any(c => c.Type == "username" && c.Value.Equals(keyValue.ToString())));
-                if(!keyValue.Equals(username))
-                {
-                    throw new SecurityTokenValidationException("No token found in redis store");
-                }
+                //if(!keyValue.Equals(username))
+                //{
+                //    throw new SecurityTokenValidationException("No token found in redis store");
+                //}
             }
         }
 
