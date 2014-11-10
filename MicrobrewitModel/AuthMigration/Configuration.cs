@@ -5,7 +5,7 @@ namespace Microbrewit.Model.AuthMigration
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Microbrewit.Model.AuthContext>
+    public class Configuration : DbMigrationsConfiguration<Microbrewit.Model.AuthContext>
     {
         public Configuration()
         {
