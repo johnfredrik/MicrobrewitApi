@@ -35,7 +35,7 @@ namespace Microbrewit.Api.Elasticsearch
 
             //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
             var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
-            var res = client.Search<string>("mb", queryString);
+            var res = await client.SearchAsync<string>("mb", queryString);
             return res.Response;
         }
 
@@ -47,7 +47,7 @@ namespace Microbrewit.Api.Elasticsearch
 
             //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
             var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
-            var res = client.Search<string>("mb", "yeastdto,hopdto,fermentabledto,otherdto", queryString);
+            var res = await client.SearchAsync<string>("mb", "yeast,hop,fermentable,other", queryString);
             return res.Response;
         }
 
@@ -56,7 +56,7 @@ namespace Microbrewit.Api.Elasticsearch
             _client.Map<YeastDto>(d => d.Properties(p => p
                 .String(s => s.Name(n => n.Name).Analyzer("autocomplete"))
                 .String(s => s.Name(m => m.ProductCode).Analyzer("autocomplete"))));
-            _client.IndexMany(yeasts, "mb");
+           await _client.IndexManyAsync(yeasts, "mb");
 
         }
 
@@ -68,7 +68,7 @@ namespace Microbrewit.Api.Elasticsearch
             //                                    .Query(q => q.Match(m => m.OnField(f => f.ProductCode)
             //                                                              .Query(query))));
             var fields = new List<string> { "name", "productCode" };
-            var searchResults = _client.Search<YeastDto>(s => s
+            var searchResults = await _client.SearchAsync<YeastDto>(s => s
                                                 .From(from)
                                                 .Size(size)
                                                 .Query(q => q.MultiMatch(m => m.OnFields(fields).Query(query))));
@@ -78,7 +78,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<IEnumerable<YeastDto>> GetAllYeasts()
         {
-            return _client.Search<YeastDto>(s => s
+            return  _client.Search<YeastDto>(s => s
                                                .Types(typeof(YeastDto))
                                                .Size(_bigNumber)
                                                ).Documents.OrderBy(y => y.Name);
@@ -122,7 +122,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<FermentableDto> GetFermentable(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "fermentabledto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "fermentable", id.ToString());
             var result = _client.Get<FermentableDto>(getRequest);
             return result.Source;
         }
@@ -147,7 +147,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<HopDto> GetHop(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "hopdto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "hop", id.ToString());
             var result = _client.Get<HopDto>(getRequest);
             return result.Source;
         }
@@ -184,7 +184,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<OtherDto> GetOther(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "otherdto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "other", id.ToString());
             var result = _client.Get<OtherDto>(getRequest);
             return result.Source;
         }
@@ -220,7 +220,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<SupplierDto> GetSupplier(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "supplierdto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "supplier", id.ToString());
             var result = _client.Get<SupplierDto>(getRequest);
             return result.Source;
         }
@@ -256,7 +256,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<OriginDto> GetOrigin(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "origindto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "origin", id.ToString());
             var result = _client.Get<OriginDto>(getRequest);
             return result.Source;
         }
@@ -291,7 +291,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<BreweryDto> GetBrewery(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "brewerydto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "brewery", id.ToString());
             var result = _client.Get<BreweryDto>(getRequest);
             return result.Source;
         }
@@ -346,7 +346,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<BeerStyleDto> GetBeerStyle(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "beerstyledto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "beerstyle", id.ToString());
             var result = _client.Get<BeerStyleDto>(getRequest);
             return result.Source;
         }
@@ -430,7 +430,7 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<GlassDto> GetGlass(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "glassdto", id.ToString());
+            IGetRequest getRequest = new GetRequest("mb", "glass", id.ToString());
             var result = _client.Get<GlassDto>(getRequest);
             return result.Source;
         }
