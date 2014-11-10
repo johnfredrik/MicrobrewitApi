@@ -182,7 +182,7 @@ namespace Microbrewit.Repository
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

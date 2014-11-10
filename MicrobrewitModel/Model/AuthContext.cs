@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace Microbrewit.Model.Model
+namespace Microbrewit.Model
 {
     public class AuthContext : IdentityDbContext<IdentityUser>
     {
