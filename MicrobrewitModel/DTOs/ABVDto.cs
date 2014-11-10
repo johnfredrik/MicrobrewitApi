@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Nest;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "abv")]
     public class ABVDto
     {
         public int Id { get; set; }
