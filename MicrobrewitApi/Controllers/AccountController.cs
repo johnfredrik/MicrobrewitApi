@@ -5,9 +5,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Microbrewit.Model.Model;
+using Microbrewit.Model;
 using Microbrewit.Repository.Repository;
 using Microsoft.AspNet.Identity;
+using Microbrewit.Repository;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -15,10 +16,13 @@ namespace Microbrewit.Api.Controllers
     public class AccountController : ApiController
     {
         private AuthRepository _repo = null;
+        private IUserRepository _userRepository = null;
 
         public AccountController()
         {
             _repo = new AuthRepository();
+            _userRepository = new UserRepository();
+
         }
 
         // POST api/Account/Register
@@ -32,7 +36,14 @@ namespace Microbrewit.Api.Controllers
             }
 
             IdentityResult result = await _repo.RegisterUser(userModel);
+            var user = new User
+            {
+                Username = userModel.UserName,
+                Email = userModel.Email,
+                Settings = userModel.Settings,
 
+            };
+            await _userRepository.AddAsync(user);
             IHttpActionResult errorResult = GetErrorResult(result);
 
             if (errorResult != null)
