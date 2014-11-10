@@ -388,10 +388,7 @@
     <Compile Include="Util\Encrypting.cs" />
     <Compile Include="Util\Helper.cs" />
     <Compile Include="Util\MailHelper.cs" />
-    <Compile Include="ValidationAttribute\LoginValidationAttribute.cs" />
     <Compile Include="Util\RSAClass.cs" />
-    <Compile Include="ValidationAttribute\TokenInvalidationAttribute.cs" />
-    <Compile Include="ValidationAttribute\TokenValidationAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
