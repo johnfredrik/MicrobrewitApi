@@ -22,6 +22,7 @@ namespace Microbrewit.Model.DTOs
         public double FG { get; set; }
         public double Efficiency { get; set; }
         public DTO BeerStyle { get; set; }
+        public int ForkOf { get; set; }
         
 
         public IList<MashStepDto> MashSteps { get; set; }
