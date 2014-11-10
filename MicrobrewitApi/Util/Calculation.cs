@@ -64,12 +64,12 @@ namespace Microbrewit.Api.Util
             {
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                    if (fermentable.PGG <= 0)
+                    if (fermentable.PPG <= 0)
                     {
                         var esFermentable = _elasticsearch.GetFermentable(fermentable.FermentableId).Result;
                         if (esFermentable != null && esFermentable.PPG > 0)
                         {
-                            fermentable.PGG = esFermentable.PPG;
+                            fermentable.PPG = esFermentable.PPG;
                             //og += Formulas.MaltOG(fermentable.Amount, esFermentable.PPG, recipe.Efficiency, recipe.Volume);
                         }
                         else
@@ -77,13 +77,13 @@ namespace Microbrewit.Api.Util
                             var efFermentable = _fermentableRepository.GetSingle(f => f.Id == fermentable.FermentableId);
                             if (efFermentable != null && efFermentable.PPG != null)
                             {
-                                fermentable.PGG = (int)efFermentable.PPG;
+                                fermentable.PPG = (int)efFermentable.PPG;
                             }
                             //og += Formulas.MaltOG(fermentable.Amount, (int)efFermentable.PPG, recipe.Efficiency, recipe.Volume);
                         }
 
                     }
-                    og += Formulas.MaltOG(fermentable.Amount, (int)fermentable.PGG, recipe.Efficiency, recipe.Volume);
+                    og += Formulas.MaltOG(fermentable.Amount, (int)fermentable.PPG, recipe.Efficiency, recipe.Volume);
  
                 }
             }
