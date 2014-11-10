@@ -1,4 +1,5 @@
 ﻿using Microbrewit.Model;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "mashStep")]
     public class MashStepDto
     {
         public int Id { get; set; }

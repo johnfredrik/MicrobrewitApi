@@ -5,9 +5,11 @@ using System.Web;
 using Microbrewit.Model;
 using System.Linq.Expressions;
 using Newtonsoft.Json;
+using Nest;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "recipe")]
     public class RecipeDto
     {
         public int Id { get; set; }

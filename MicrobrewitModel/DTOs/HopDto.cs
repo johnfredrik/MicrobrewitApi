@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Nest;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +7,10 @@ using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "hop")]
     public class HopDto
     {
+        [JsonProperty(PropertyName = "hopId")]
         public int Id { get; set; }
         public string Name { get; set; }
         [JsonProperty(PropertyName = "aaLow")]

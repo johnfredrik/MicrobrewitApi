@@ -1,4 +1,5 @@
 ﻿using Microbrewit.Model;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "boilStep")]
     public class BoilStepDto
     {
         public int Id { get; set; }

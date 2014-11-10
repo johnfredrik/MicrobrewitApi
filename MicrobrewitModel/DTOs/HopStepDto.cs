@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Nest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "hopStep")]
     public class HopStepDto
     {
         public int HopId { get; set; }

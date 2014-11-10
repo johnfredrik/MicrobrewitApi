@@ -4,9 +4,11 @@ using System.Linq;
 using System.Web;
 using Microbrewit.Model;
 using Newtonsoft.Json;
+using Nest;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "beerStyle")]
     public class BeerStyleDto
     {
         public int Id { get; set; }

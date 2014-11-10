@@ -1,4 +1,5 @@
 ﻿using Microbrewit.Model;
+using Nest;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,8 +8,10 @@ using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "yeast")]
     public class YeastDto
     {
+        [JsonProperty(PropertyName = "yeastId")]
         public int Id { get; set; }
         public string Name { get; set; }
         public double? TemperatureHigh { get; set; }

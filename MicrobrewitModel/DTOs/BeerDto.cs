@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Nest;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Model.DTOs
 {
+    [ElasticType(Name = "beer")]
     public class BeerDto
     {       
             public int Id { get; set; }
