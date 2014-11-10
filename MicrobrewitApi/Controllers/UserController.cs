@@ -19,7 +19,6 @@ using System.Security.Principal;
 using AutoMapper;
 using StackExchange.Redis;
 using System.Text;
-using Microbrewit.Api.ValidationAttribute;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -40,7 +39,6 @@ namespace Microbrewit.Api.Controllers
         }
 
         // GET api/User
-        [TokenValidation]
         [Route("")]
         public UserCompleteDto GetUsers()
         {
@@ -101,65 +99,63 @@ namespace Microbrewit.Api.Controllers
         /// Takes username and password in base 
         /// </summary>
         /// <returns></returns>
-        [LoginValidation]
-        [Route("login")]
-        public async Task<IHttpActionResult> PostLogin(HttpRequestMessage response)
-        {                 
-            var authorization = Encoding.UTF8.GetString(Convert.FromBase64String(response.Headers.Authorization.Parameter));
-            var username = authorization.Split(':').First();
-            var user = await _userRepository.GetSingleAsync(u => u.Username.Equals(username), "Breweries.Brewery");          
-            var userDto =  Mapper.Map<User,UserDto>(user);
-            return Ok(userDto);
-        }
-
-        [TokenInvalidation]
-        [Route("logout")]
-        [HttpPost]
-        public IHttpActionResult PostLogout()
-        {
-            return Ok();
-        }
+        //[Route("login")]
+        //public async Task<IHttpActionResult> PostLogin(HttpRequestMessage response)
+        //{                 
+        //    var authorization = Encoding.UTF8.GetString(Convert.FromBase64String(response.Headers.Authorization.Parameter));
+        //    var username = authorization.Split(':').First();
+        //    var user = await _userRepository.GetSingleAsync(u => u.Username.Equals(username), "Breweries.Brewery");          
+        //    var userDto =  Mapper.Map<User,UserDto>(user);
+        //    return Ok(userDto);
+        //}
+        
+        //[Route("logout")]
+        //[HttpPost]
+        //public IHttpActionResult PostLogout()
+        //{
+        //    return Ok();
+        //}
 
         // POST api/User
-        [Route("")]
-        [ResponseType(typeof(UserPostDto))]
-        public IHttpActionResult PostUser(UserPostDto userPostDto)
-        {
+        //[Route("")]
+        //[ResponseType(typeof(UserPostDto))]
+        //public IHttpActionResult PostUser(UserPostDto userPostDto)
+        //{
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var password = userPostDto.Password;
-            var salt = Encrypting.GenerateSalt();
-            var hashedPassword = Encrypting.Hash(password,salt);
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var password = userPostDto.Password;
+        //    var salt = Encrypting.GenerateSalt();
+        //    var hashedPassword = Encrypting.Hash(password,salt);
                        
-            var user = Mapper.Map<UserPostDto,User>(userPostDto);
-            var userCredential = new UserCredentials() { Password = hashedPassword, Salt = salt, Username = user.Username, User = user };
-            _userCredentialsRepsoitory.Add(userCredential);
+        //    var user = Mapper.Map<UserPostDto,User>(userPostDto);
+        //    var userCredential = new UserCredentials() { Password = hashedPassword, Salt = salt, Username = user.Username, User = user };
+        //    _userCredentialsRepsoitory.Add(userCredential);
 
-            var result = new UserCompleteDto() { Users = new List<UserDto>()};
+        //    var result = new UserCompleteDto() { Users = new List<UserDto>()};
          
-            result.Users.Add(Mapper.Map<User,UserDto>(user));
+        //    result.Users.Add(Mapper.Map<User,UserDto>(user));
 
-            return CreatedAtRoute("DefaultApi", new { controller = "users", id = user.Username }, result);
-        }
+        //    return CreatedAtRoute("DefaultApi", new { controller = "users", id = user.Username }, result);
+        //}
 
         // DELETE api/User/5
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> DeleteUser(int id)
-        {
-            User user = await db.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //[ResponseType(typeof(User))]
+        //public async Task<IHttpActionResult> DeleteUser(int id)
+        //{
+        //    User user = await db.Users.FindAsync(id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            db.Users.Remove(user);
-            await db.SaveChangesAsync();
+        //    db.Users.Remove(user);
+        //    await db.SaveChangesAsync();
 
-            return Ok(user);
-        }
+        //    return Ok(user);
+        //}
 
         /// <summary>
         /// Updates users to elasticsearch.
