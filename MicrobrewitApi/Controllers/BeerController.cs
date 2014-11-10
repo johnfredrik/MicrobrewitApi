@@ -47,6 +47,21 @@ namespace Microbrewit.Api.Controllers
         }
 
         /// <summary>
+        /// Gets all beer
+        /// </summary>
+        /// <response code="200">It's all good!</response>
+        /// <returns>Returns collection of all beers</returns>
+        [Route("user/{username}")]
+        public async Task<BeerSimpleCompleteDto> GetUserBeers(string username)
+        {
+            var beers = await _beerRepository.GetAllUserBeer(username, "Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries");
+            var beersDto = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(beers);
+            var result = new BeerSimpleCompleteDto();
+            result.Beers = beersDto;
+            return result;
+        }
+
+        /// <summary>
         /// Gets beer by id
         /// </summary>
         /// <response code="200">Beer found and returned</response>
