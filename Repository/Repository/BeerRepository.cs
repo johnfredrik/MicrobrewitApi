@@ -276,5 +276,23 @@ namespace Microbrewit.Repository
                 return await dbQuery.OrderByDescending(b => b.CreatedDate).Skip(from).Take(size).ToListAsync();
             }
         }
+
+
+        public async Task<IList<Beer>> GetAllUserBeer(string username, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var dbQuery = from beer in context.Beers
+                             join userBeers in context.UserBeers on beer.Id equals userBeers.BeerId
+                             where userBeers.Username.Equals(username)
+                             select beer;
+
+                foreach (string navigationProperty in navigationProperties)
+                {
+                    dbQuery = dbQuery.Include<Beer>(navigationProperty);
+                }
+                return await dbQuery.ToListAsync();
+            }
+        }
     }
 }
