@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microbrewit.Model.DTOs;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microbrewit.Model.Model
+namespace Microbrewit.Model
 {
     public class UserModel
     {
@@ -23,5 +25,9 @@ namespace Microbrewit.Model.Model
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public string Email { get; set; }
+        //public DTO Brewery { get; set; }
+        public string Settings { get; set; }
     }
 }
