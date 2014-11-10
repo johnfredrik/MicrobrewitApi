@@ -44,7 +44,7 @@ namespace Microbrewit.Test
                     redisServer.FlushAllDatabases();
                 }
             }
-            catch (RedisConnectionException redisConnectionException)
+            catch (RedisConnectionException)
             {
                 Log.Debug("Redis connection not found");
             } 
