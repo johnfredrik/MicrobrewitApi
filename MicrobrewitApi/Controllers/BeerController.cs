@@ -143,7 +143,10 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest(ModelState);
             }
             var beer = Mapper.Map<BeerDto, Beer>(beerPost);
-            BeerCalculations(beer);
+            if (beerPost.Recipe != null)
+            {
+                BeerCalculations(beer);
+            }
             beer.CreatedDate = DateTime.Now;
             beer.UpdatedDate = DateTime.Now;
             try
