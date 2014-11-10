@@ -169,6 +169,10 @@
     <Compile Include="Migrations\201411100848151_FixedPPG.Designer.cs">
       <DependentUpon>201411100848151_FixedPPG.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201411101309352_AddedGravatarToUser.cs" />
+    <Compile Include="Migrations\201411101309352_AddedGravatarToUser.Designer.cs">
+      <DependentUpon>201411101309352_AddedGravatarToUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
@@ -277,6 +281,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201411100848151_FixedPPG.resx">
       <DependentUpon>201411100848151_FixedPPG.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411101309352_AddedGravatarToUser.resx">
+      <DependentUpon>201411101309352_AddedGravatarToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

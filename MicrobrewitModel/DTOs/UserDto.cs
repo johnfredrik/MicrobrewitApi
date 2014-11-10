@@ -11,7 +11,7 @@ namespace Microbrewit.Model.DTOs
     {
         public string Id { get; set; }
         public string Username { get; set; }
-        public string Email { get; set; }
+        public string Gravatar { get; set; }
         public IList<BreweryDto> Breweries { get; set; }
         public IList<BeerSimpleDto> Beers { get; set; }
         public string Settings { get; set; }
