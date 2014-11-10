@@ -19,6 +19,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.MashSteps, conf => conf.MapFrom(rec => rec.MashSteps))
                 .ForMember(dto => dto.BoilSteps, conf => conf.MapFrom(rec => rec.BoilSteps))
                 .ForMember(dto => dto.FermentationSteps, conf => conf.MapFrom(rec => rec.FermentationSteps))
+                .ForMember(dto => dto.ForkOf, conf => conf.MapFrom(rec => rec.ForkeOfId))
                  .ForMember(dto => dto.Volume, conf => conf.MapFrom(rec => rec.Volume));
 
             Mapper.CreateMap<Recipe, RecipeSimpleDto>()
@@ -37,6 +38,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.MashSteps, conf => conf.ResolveUsing<RecipeMashStepResolver>())
                 .ForMember(dto => dto.BoilSteps, conf => conf.ResolveUsing<RecipeBoilStepResolver>())
                 .ForMember(dto => dto.FermentationSteps, conf => conf.ResolveUsing<RecipeFermentationStepResolver>())
+                .ForMember(dto => dto.ForkeOfId, conf => conf.MapFrom(rec => rec.ForkOf))
                 .ForMember(dto => dto.Volume, conf => conf.MapFrom(rec => rec.Volume));
             
         }
