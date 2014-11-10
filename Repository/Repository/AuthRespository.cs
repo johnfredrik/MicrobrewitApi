@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
-using Microbrewit.Model.Model;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microbrewit.Repository.Interface;
 
 namespace Microbrewit.Repository.Repository
 {
-    public class AuthRepository : IDisposable
+    public class AuthRepository : IDisposable, IAuthRepository
     {
         private AuthContext _ctx;
 
@@ -26,9 +26,11 @@ namespace Microbrewit.Repository.Repository
         {
             IdentityUser user = new IdentityUser
             {
-                UserName = userModel.UserName
+                UserName = userModel.UserName,
+                Email = userModel.Email,
+                
             };
-
+            
             var result = await _userManager.CreateAsync(user, userModel.Password);
 
             return result;
@@ -89,7 +91,7 @@ namespace Microbrewit.Repository.Repository
             return refreshToken;
         }
 
-        public List<RefreshToken> GetAllRefreshTokens()
+        public IList<RefreshToken> GetAllRefreshTokens()
         {
             return _ctx.RefreshTokens.ToList();
         }
