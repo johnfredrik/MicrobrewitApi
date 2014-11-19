@@ -20,13 +20,10 @@ using Microbrewit.Api.Redis;
 
 namespace Microbrewit.Api.Controllers
 {
-    [Authorize]
     [RoutePrefix("beerstyles")]
     public class BeerStyleController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
-        private Elasticsearch.ElasticSearch _elasticsearch;
-       
+        private Elasticsearch.ElasticSearch _elasticsearch;      
         private IBeerStyleRepository _beerStyleRepository;
 
         public BeerStyleController(IBeerStyleRepository beerStyleRepository)
