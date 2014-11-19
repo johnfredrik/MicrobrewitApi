@@ -11,8 +11,11 @@ namespace Microbrewit.Model.DTOs
     [ElasticType(Name = "beerStyle")]
     public class BeerStyleDto
     {
+        [JsonProperty(PropertyName = "beerStyleId")]
         public int Id { get; set; }
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "superBeerStyle")]
         public DTO SuperBeerStyle { get; set; }
         [JsonProperty(PropertyName = "ogLow")]
         public double OGLow { get; set; }
@@ -34,8 +37,11 @@ namespace Microbrewit.Model.DTOs
         public double ABVLow { get; set; }
         [JsonProperty(PropertyName = "abvHigh")]
         public double ABVHigh { get; set; }
+        [JsonProperty(PropertyName = "comments")]
         public string Comments { get; set; }
+        [JsonProperty(PropertyName = "subBeerStyles")]
         public IList<DTO> SubBeerStyles { get; set; }
+        [JsonProperty(PropertyName = "dataType")]
         public string DataType { get { return "beerstyle"; } }
        
     }

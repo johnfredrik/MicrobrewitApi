@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
-using Microbrewit.Model.Model;
 
 namespace Microbrewit.Model
 {

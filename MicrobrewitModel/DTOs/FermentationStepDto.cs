@@ -3,22 +3,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
 
 namespace Microbrewit.Model.DTOs
 {
     [ElasticType(Name = "fermentationStep")]
     public class FermentationStepDto
     {
-            public int Id { get; set; }
-            public int Number { get; set; }
-            public string Type { get; set; }
-            public int Length { get; set; }
-            public int Volume { get; set; }
-            public int Temperature { get; set; }
-            public string Notes { get; set; }
-            public IList<HopStepDto> Hops { get; set; }
-            public IList<FermentableStepDto> Fermentables { get; set; }
-            public IList<OtherStepDto> Others { get; set; }
-            public IList<YeastStepDto> Yeasts { get; set; }
+        [JsonProperty(PropertyName = "fermentationStepId")]
+        public int Id { get; set; }
+        [JsonProperty(PropertyName = "number")]
+        public int Number { get; set; }
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
+        [JsonProperty(PropertyName = "length")]
+        public int Length { get; set; }
+        [JsonProperty(PropertyName = "volume")]
+        public int Volume { get; set; }
+        [JsonProperty(PropertyName = "temperature")]
+        public int Temperature { get; set; }
+        [JsonProperty(PropertyName = "notes")]
+        public string Notes { get; set; }
+        [JsonProperty(PropertyName = "hops")]
+        public IList<HopStepDto> Hops { get; set; }
+        [JsonProperty(PropertyName = "fermentables")]
+        public IList<FermentableStepDto> Fermentables { get; set; }
+        [JsonProperty(PropertyName = "others")]
+        public IList<OtherStepDto> Others { get; set; }
+        [JsonProperty(PropertyName = "yeasts")]
+        public IList<YeastStepDto> Yeasts { get; set; }
     }
 }
