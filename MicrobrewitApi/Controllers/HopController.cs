@@ -147,10 +147,11 @@ namespace Microbrewit.Api.Controllers
         }
 
         [Route("forms")]
-        public IList<HopForm> GetHopForm()
+        public IList<DTO> GetHopForm()
         {
             var hopforms = db.HopForms.ToList();
-            return hopforms;
+            var hopformsDto = Mapper.Map<IList<HopForm>, IList<DTO>>(hopforms);
+            return hopformsDto;
         }
         
         [Route("es")]
