@@ -21,13 +21,14 @@ namespace Microbrewit.Api
     {
         protected void Application_Start()
         {
-            // Add this code, if not present.
+            //AutoMapperConfiguration.Configure();
+            //// Add this code, if not present.
             //AreaRegistration.RegisterAllAreas();
            
-            //GlobalConfiguration.Configuration.AddJsonpFormatter();
+            ////GlobalConfiguration.Configuration.AddJsonpFormatter();
             
             //GlobalConfiguration.Configure(WebApiConfig.Register);
-            //GlobalConfiguration.Configuration.EnableCors();
+            ////GlobalConfiguration.Configuration.EnableCors();
             
             //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             //RouteConfig.RegisterRoutes(RouteTable.Routes);
