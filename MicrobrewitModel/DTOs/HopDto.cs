@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace Microbrewit.Model.DTOs
 {
@@ -12,6 +13,7 @@ namespace Microbrewit.Model.DTOs
     {
         [JsonProperty(PropertyName = "hopId")]
         public int Id { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "aaLow")]
@@ -34,6 +36,7 @@ namespace Microbrewit.Model.DTOs
         public IList<DTO> Substituts { get; set; }
         [JsonProperty(PropertyName = "dataType")]
         public string DataType { get { return "hop"; } }
+        [Required]
         [JsonProperty(PropertyName = "custom")]
         public bool Custom { get; set; }
     }

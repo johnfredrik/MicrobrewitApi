@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Microbrewit.Model;
@@ -18,6 +19,7 @@ namespace Microbrewit.Model.DTOs
         public string Name { get; set; }
         [JsonProperty(PropertyName = "notes")]
         public string  Notes { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "volume")]
         public int Volume { get; set; }
         [JsonProperty(PropertyName = "og")]

@@ -1,5 +1,6 @@
 ﻿using Nest;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Microbrewit.Model.DTOs
     [ElasticType(Name = "fermentableStep")]
     public class FermentableStepDto
     {
+        [Required]
         [JsonProperty(PropertyName = "fermentableId")]
         public int FermentableId { get; set; }
         [JsonProperty(PropertyName = "stepId")]
@@ -24,6 +26,7 @@ namespace Microbrewit.Model.DTOs
         public SupplierDto Supplier { get; set; }
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "amount")]
         public int Amount { get; set; }
     }

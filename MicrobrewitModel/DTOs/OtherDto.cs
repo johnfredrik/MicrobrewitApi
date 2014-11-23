@@ -13,6 +13,7 @@ namespace Microbrewit.Model.DTOs
     {
         [JsonProperty(PropertyName = "otherId")]
         public int Id { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "type")]

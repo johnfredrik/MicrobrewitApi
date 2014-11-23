@@ -23,6 +23,7 @@ namespace Microbrewit.Model.DTOs
             public IBUDto IBU { get; set; }
             [JsonProperty(PropertyName = "srm")]
             public SRMDto SRM { get; set; }
+            [Required]
             [JsonProperty(PropertyName = "beerStyle")]
             public DTO BeerStyle { get; set; }
             [JsonProperty(PropertyName = "recipe")]
