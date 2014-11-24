@@ -20,7 +20,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                 {
                     BreweryId = source.Id,
                     MemberUsername = memberDto.Username,
-                    Role = memberDto.Role,
+                    //Role = memberDto.Role,
                 };
                 members.Add(member);
             }

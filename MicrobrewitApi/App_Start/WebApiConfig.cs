@@ -21,18 +21,9 @@ namespace Microbrewit.Api
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
-        {
-            
-           
+        {                     
             // Web API configuration and services
-
-            //config.Filters.Add(new TokenValidationAttribute());
-            //config.Filters.Add(new CustomHttpsAttribute());         
-            //config.Filters.Add(new BasicAuthenticationAttibute());
-          
-
-            //config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-
+     
             //dependency injection
             var container = new UnityContainer();
             container.RegisterType<IBeerRepository, BeerRepository>(new HierarchicalLifetimeManager());
@@ -52,13 +43,7 @@ namespace Microbrewit.Api
 
             config.DependencyResolver = new UnityResolver(container);
             //// Web API routes
-            config.MapHttpAttributeRoutes();
-
-            //var cors = new EnableCorsAttribute("*",
-            //                                     "*",
-            //                                     "*");
-
-            //config.EnableCors();
+            config.MapHttpAttributeRoutes();                 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
@@ -73,7 +58,7 @@ namespace Microbrewit.Api
             // To make this sample easier to run in a browser, replace the default exception handler with one that sends
             // back text/plain content for all errors.
             config.Services.Replace(typeof(IExceptionHandler), new GlobalExceptionHandler());
-
+            config.AddJsonpFormatter();
             //var formatters = GlobalConfiguration.Configuration.Formatters;
             //var jsonFormatter = formatters.JsonFormatter;
             //var settings = jsonFormatter.SerializerSettings;
@@ -81,10 +66,7 @@ namespace Microbrewit.Api
             //settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
-            config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
-
-          
-
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);          
         }
     }
 }

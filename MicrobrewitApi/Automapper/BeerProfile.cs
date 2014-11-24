@@ -45,8 +45,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
 
             Mapper.CreateMap<UserBeer , DTOUser>()
-               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-               .ForMember(dto => dto.Email, conf => conf.MapFrom(rec => rec.User.Email));
+               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username));
 
             Mapper.CreateMap<UserBeer, BeerSimpleDto>()
                  .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Beer.Name))
@@ -98,8 +97,12 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
 
             Mapper.CreateMap<DTOUser, UserBeer>()
-               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username));
-               
+                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username));
+               //.ForMember(dto => dto.User.Gravatar, conf => conf.MapFrom(rec => rec.Gravatar));
+
+            Mapper.CreateMap<UserBeer, DTOUser>()
+               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
+               .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.User.Gravatar));
 
             Mapper.CreateMap<DTO, BeerStyle>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))

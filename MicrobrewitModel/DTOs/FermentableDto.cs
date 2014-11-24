@@ -1,5 +1,6 @@
 ﻿using Nest;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Microbrewit.Model.DTOs
         public int Id { get; set; }
         [JsonProperty(PropertyName = "supplier")]
         public SupplierDto Supplier { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "lovibond")]
@@ -24,6 +26,7 @@ namespace Microbrewit.Model.DTOs
         public string Type { get; set; }
         [JsonProperty(PropertyName = "dataType")]
         public string DataType { get { return "fermentable"; } }
+        [Required]
         [JsonProperty(PropertyName = "custom")]
         public bool Custom { get; set; }
       }

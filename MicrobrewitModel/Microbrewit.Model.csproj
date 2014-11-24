@@ -151,7 +151,6 @@
     <Compile Include="DTOs\OtherStepDto.cs" />
     <Compile Include="DTOs\RecipeCompleteDTO.cs" />
     <Compile Include="DTOs\RecipeDto.cs" />
-    <Compile Include="DTOs\RecipeHopDto.cs" />
     <Compile Include="DTOs\RecipeSimpleCompleteDto.cs" />
     <Compile Include="DTOs\RecipeSimpleDto.cs" />
     <Compile Include="DTOs\SRMDto.cs" />

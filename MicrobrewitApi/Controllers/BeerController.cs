@@ -40,7 +40,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public BeerSimpleCompleteDto GetBeers()
         {
-            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries"));
+            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers","Brewers.User", "Breweries"));
             var result = new BeerSimpleCompleteDto();
             result.Beers = beers;
             return result;
@@ -54,7 +54,7 @@ namespace Microbrewit.Api.Controllers
         [Route("user/{username}")]
         public async Task<BeerSimpleCompleteDto> GetUserBeers(string username)
         {
-            var beers = await _beerRepository.GetAllUserBeer(username, "Recipe", "SRM", "ABV", "IBU", "Brewers", "Breweries");
+            var beers = await _beerRepository.GetAllUserBeer(username, "Recipe", "SRM", "ABV", "IBU", "Brewers","Brewers.User", "Breweries");
             var beersDto = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(beers);
             var result = new BeerSimpleCompleteDto();
             result.Beers = beersDto;
@@ -86,7 +86,7 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
-                "ABV", "IBU", "SRM", "Brewers", "Breweries");
+                "ABV", "IBU", "SRM", "Brewers.User", "Breweries");
 
             if (beer == null)
             {

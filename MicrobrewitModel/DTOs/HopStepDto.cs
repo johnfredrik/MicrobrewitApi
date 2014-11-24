@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace Microbrewit.Model.DTOs
@@ -10,18 +11,23 @@ namespace Microbrewit.Model.DTOs
     [ElasticType(Name = "hopStep")]
     public class HopStepDto
     {
+        
         [JsonProperty(PropertyName = "hopId")]
+        [Required]
         public int HopId { get; set; }
         [JsonProperty(PropertyName = "stepId")]
         public int StepId { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "amount")]
+        [Required]
         public double Amount { get; set; }
         [JsonProperty(PropertyName = "aaValue")]
+        [Required]
         public double AAValue { get; set; }
         [JsonProperty(PropertyName = "origin")]
         public DTO Origin { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "hopForm")]
         public DTO HopForm { get; set; }
         [JsonProperty(PropertyName = "flavourDescription")]

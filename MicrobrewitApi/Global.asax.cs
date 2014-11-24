@@ -21,22 +21,22 @@ namespace Microbrewit.Api
     {
         protected void Application_Start()
         {
-            // Add this code, if not present.
-            AreaRegistration.RegisterAllAreas();
+            //AutoMapperConfiguration.Configure();
+            //// Add this code, if not present.
+            //AreaRegistration.RegisterAllAreas();
            
-            GlobalConfiguration.Configuration.AddJsonpFormatter();
+            ////GlobalConfiguration.Configuration.AddJsonpFormatter();
             
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-            GlobalConfiguration.Configuration.EnableCors();
+            //GlobalConfiguration.Configure(WebApiConfig.Register);
+            ////GlobalConfiguration.Configuration.EnableCors();
             
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            //RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            AutoMapperConfiguration.Configure();
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MicrobrewitContext,Configuration>());
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<AuthContext,Model.AuthMigration.Configuration>());
-           
+            //AutoMapperConfiguration.Configure();
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<MicrobrewitContext,Configuration>());
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<AuthContext,Model.AuthMigration.Configuration>());         
         }
     }
 }

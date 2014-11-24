@@ -24,6 +24,10 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<UserPostDto, User>()
                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
                .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings));
-        }
+
+            Mapper.CreateMap<User,DTOUser>()
+                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
+                .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Gravatar));
+            }
     }
 }
