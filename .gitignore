@@ -230,3 +230,7 @@ packages/jQuery.1.10.2/Content/Scripts/jquery-1.10.2.js
 packages/jQuery.1.10.2/Content/Scripts/jquery-1.10.2.min.js
 packages/log4net.2.0.3/lib/net11-full/log4net.xml
 packages/NUnit.2.6.3/license.txt
+MicrobrewitApi/appSettingsDebug.config
+MicrobrewitApi/appSettingsRelease.config
+MicrobrewitApi/Web.Debug.config
+MicrobrewitApi/Web.Release.config
