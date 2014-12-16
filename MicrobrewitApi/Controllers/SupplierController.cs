@@ -37,7 +37,7 @@ namespace Microbrewit.Api.Controllers
         public async Task<SupplierCompleteDto> GetSuppliers()
         {
             var suppliersDto = await _elasticsearch.GetSuppliers();
-            if (suppliersDto.Count() <= 0)
+            if (!suppliersDto.Any())
             {
                 var suppliers = await _supplierRepository.GetAllAsync("Origin");
                 suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
