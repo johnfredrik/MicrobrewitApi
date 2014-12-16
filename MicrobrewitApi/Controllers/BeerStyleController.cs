@@ -43,7 +43,7 @@ namespace Microbrewit.Api.Controllers
             var response = new BeerStyleCompleteDto() { BeerStyles = new List<BeerStyleDto>() };
 
             var beerStylesDto = await _elasticsearch.GetBeerStyles();
-            if (beerStylesDto.Count() <= 0)
+            if (!beerStylesDto.Any())
             {
                     var beerStyles = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
                     beerStylesDto = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyles);
