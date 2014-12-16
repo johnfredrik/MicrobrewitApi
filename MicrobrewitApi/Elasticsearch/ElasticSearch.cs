@@ -147,7 +147,8 @@ namespace Microbrewit.Api.Elasticsearch
                 _client.Search<HopDto>(
                     s => s
                         .Size(_bigNumber)
-                        .Filter(f => f.Term(h => h.DataType, "hop") && f.Term(p => p.Custom, custom)));
+                        .Query(q => q.Filtered(fd => fd
+                        .Filter(f => f.Term(h => h.DataType, "hop") && f.Term(p => p.Custom, custom)))));
             return res.Documents;
         }
 
