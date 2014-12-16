@@ -41,10 +41,10 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<FermentablesCompleteDto> GetFermentables()
+        public async Task<FermentablesCompleteDto> GetFermentables(string custom = "false")
         {
-            var fermentablesDto = await _elasticsearch.GetFermentables();
-            if (fermentablesDto.Count() <= 0)
+            var fermentablesDto = await _elasticsearch.GetFermentables(custom);
+            if (!fermentablesDto.Any())
             {
                 var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
                 fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
