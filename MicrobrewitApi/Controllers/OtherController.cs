@@ -38,10 +38,10 @@ namespace Microbrewit.Api.Controllers
         /// <returns>Ok 200 on success</returns>
         /// <errorCode code="400"></errorCode>
         [Route("")]
-        public async Task<OtherCompleteDto> GetOthers()
+        public async Task<OtherCompleteDto> GetOthers(string custom = "false")
         {
-            var othersDto = await _elasticsearch.GetOthers();
-            if (othersDto.Count() <= 0)
+            var othersDto = await _elasticsearch.GetOthers(custom);
+            if (!othersDto.Any())
             {
             var others = await _otherRepository.GetAllAsync();
             othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
