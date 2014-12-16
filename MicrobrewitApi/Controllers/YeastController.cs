@@ -37,11 +37,10 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <returns>200 OK</returns>
         [Route("")]
-        public async Task<YeastCompleteDto> GetYeasts()
+        public async Task<YeastCompleteDto> GetYeasts(string custom = "false")
         {
-            var yeastsDto = await _elasticsearch.GetAllYeasts();
-            Log.Debug(string.Format("Number of yeasts: {0}",yeastsDto.Count()));
-            if (yeastsDto.Count() <= 0)
+            var yeastsDto = await _elasticsearch.GetAllYeasts(custom);
+            if (!yeastsDto.Any())
             {
                 var yeasts = await _yeastRespository.GetAllAsync("Supplier");
                 yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
