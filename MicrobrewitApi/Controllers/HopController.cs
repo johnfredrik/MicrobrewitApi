@@ -38,11 +38,11 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/Hops
         [Route("")]
-        public async Task<HopCompleteDto> GetHops()
+        public async Task<HopCompleteDto> GetHops(string custom = "false")
         {
             IList<Hop> hops;
-            var hopsDto = await _elasticsearch.GetHops();
-            if (hopsDto.Count() <= 0)
+            var hopsDto = await _elasticsearch.GetHops(custom);
+            if (!hopsDto.Any())
             {
                 hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
                 hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
