@@ -10,11 +10,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
+using log4net;
 
 namespace Microbrewit.Api.Elasticsearch
 {
+
     public class ElasticSearch
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Uri _node;
         private ConnectionSettings _settings;
         private ElasticClient _client;
@@ -22,7 +26,9 @@ namespace Microbrewit.Api.Elasticsearch
 
         public ElasticSearch()
         {
-            this._node = new Uri("http://localhost:9200");
+            string url = WebConfigurationManager.AppSettings["elasticsearch"];
+            Log.Debug("Elasticsearch Url: " + url);
+            this._node = new Uri(url);
             this._settings = new ConnectionSettings(_node, defaultIndex: "mb");
             this._client = new ElasticClient(_settings);
         }
@@ -47,6 +53,7 @@ namespace Microbrewit.Api.Elasticsearch
 
             //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
             var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
+           
             var res = await client.SearchAsync<string>("mb", "yeast,hop,fermentable,other", queryString);
             return res.Response;
         }
@@ -76,12 +83,11 @@ namespace Microbrewit.Api.Elasticsearch
             return searchResults.Documents;
         }
 
-        public async Task<IEnumerable<YeastDto>> GetAllYeasts()
+        public async Task<IEnumerable<YeastDto>> GetAllYeasts(string custom)
         {
-            return  _client.Search<YeastDto>(s => s
-                                               .Types(typeof(YeastDto))
-                                               .Size(_bigNumber)
-                                               ).Documents.OrderBy(y => y.Name);
+            var res = _client.Search<YeastDto>(s => s.Size(_bigNumber).Filter(f => f.Term(t => t.DataType, "yeast") && f.Term(t => t.Custom, custom)));
+
+            return res.Documents;
         }
 
         public async Task<YeastDto> GetYeast(int id)
@@ -112,12 +118,10 @@ namespace Microbrewit.Api.Elasticsearch
             return searchResults.Documents;
         }
 
-        public async Task<IEnumerable<FermentableDto>> GetFermentables()
+        public async Task<IEnumerable<FermentableDto>> GetFermentables(string custom)
         {
-            return _client.Search<FermentableDto>(s => s
-                                                .Types(typeof(FermentableDto))
-                                                .Size(_bigNumber)
-                                                ).Documents;
+            var res = _client.Search<FermentableDto>(s => s.Size(_bigNumber).Filter(f => f.Term(t => t.DataType, "fermentable") && f.Term(t => t.Custom,custom)));
+            return res.Documents;
         }
 
         public async Task<FermentableDto> GetFermentable(int id)
@@ -137,12 +141,14 @@ namespace Microbrewit.Api.Elasticsearch
             }
         }
 
-        public async Task<IEnumerable<HopDto>> GetHops()
+        public async Task<IEnumerable<HopDto>> GetHops(string custom)
         {
-            return _client.Search<HopDto>(s => s
-                                                .Types(typeof(HopDto))
-                                                .Size(_bigNumber)
-                                                ).Documents;
+            var res =
+                _client.Search<HopDto>(
+                    s => s
+                        .Size(_bigNumber)
+                        .Filter(f => f.Term(h => h.DataType, "hop") && f.Term(p => p.Custom, custom)));
+            return res.Documents;
         }
 
         public async Task<HopDto> GetHop(int id)
@@ -158,6 +164,7 @@ namespace Microbrewit.Api.Elasticsearch
             var searchResults = _client.Search<HopDto>(s => s
                                                 .From(from)
                                                 .Size(size)
+                                                .Filter(f => f.Term(t => t.DataType,"hop"))
                                                 .Query(q => q.Match(m => m.OnField(f => f.Name)
                                                                           .Query(query))));
 
@@ -170,16 +177,18 @@ namespace Microbrewit.Api.Elasticsearch
             {
                 // Adds an analayzer to the name property in FermentableDto object.
                 _client.Map<OtherDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
-                var index = _client.Index<OtherDto>(other);
+                _client.Index<OtherDto>(other);
             }
         }
 
-        public async Task<IEnumerable<OtherDto>> GetOthers()
+        public async Task<IEnumerable<OtherDto>> GetOthers(string custom)
         {
-            return _client.Search<OtherDto>(s => s
-                                                .Types(typeof(OtherDto))
-                                                .Size(_bigNumber)
-                                                ).Documents;
+            var res =
+              _client.Search<OtherDto>(
+                  s => s
+                      .Size(_bigNumber)
+                      .Filter(f => f.Term(h => h.DataType, "other") && f.Term(p => p.Custom, custom)));
+            return res.Documents;
         }
 
         public async Task<OtherDto> GetOther(int id)
@@ -213,7 +222,7 @@ namespace Microbrewit.Api.Elasticsearch
         public async Task<IEnumerable<SupplierDto>> GetSuppliers()
         {
             return _client.Search<SupplierDto>(s => s
-                                                .Types(typeof(SupplierDto))
+                                                .Filter(f => f.Term(t => t.DataType,"supplier"))
                                                 .Size(_bigNumber)
                                                 ).Documents;
         }
@@ -249,7 +258,7 @@ namespace Microbrewit.Api.Elasticsearch
         public async Task<IEnumerable<OriginDto>> GetOrigins()
         {
             return _client.Search<OriginDto>(s => s
-                                                .Types(typeof(OriginDto))
+                                                .Filter(f => f.Term(t => t.DataType,"origin"))
                                                 .Size(_bigNumber)
                                                 ).Documents;
         }
@@ -284,7 +293,7 @@ namespace Microbrewit.Api.Elasticsearch
         public async Task<IEnumerable<BreweryDto>> GetBreweries()
         {
             return _client.Search<BreweryDto>(s => s
-                                                .Types(typeof(BreweryDto))
+                                                .Filter(f => f.Term(t => t.DataType,"brewery"))
                                                 .Size(_bigNumber)
                                                 ).Documents;
         }
@@ -339,7 +348,7 @@ namespace Microbrewit.Api.Elasticsearch
         public async Task<IEnumerable<BeerStyleDto>> GetBeerStyles()
         {
             return _client.Search<BeerStyleDto>(s => s
-                                                .Types(typeof(BeerStyleDto))
+                                                .Filter(f => f.Term(t => t.DataType,"beerstyle"))
                                                 .Size(_bigNumber)
                                                 ).Documents;
         }
@@ -422,10 +431,11 @@ namespace Microbrewit.Api.Elasticsearch
 
         public async Task<IEnumerable<GlassDto>> GetGlasses()
         {
-            return _client.Search<GlassDto>(s => s
-                                                .Types(typeof(GlassDto))
-                                                .Size(_bigNumber)
-                                                ).Documents;
+            var res = _client.Search<GlassDto>(s => s
+                .Filter(f => f.Term(t => t.DataType, "glass"))
+                .Size(_bigNumber)
+                );
+            return res.Documents;
         }
 
         public async Task<GlassDto> GetGlass(int id)
