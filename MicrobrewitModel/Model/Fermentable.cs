@@ -20,6 +20,10 @@ namespace Microbrewit.Model
         public string Type { get; set; }
         public bool Custom { get; set; }
 
+        public int? SuperFermentableId { get; set; }
+        public Fermentable SuperFermentable { get; set; }
+        public ICollection<Fermentable> SubFermentables { get; set; }
+        
         public Supplier Supplier { get; set; }
         public ICollection<MashStepFermentable> MashSteps { get; set; }
         public ICollection<BoilStepFermentable> BoilSteps { get; set; }

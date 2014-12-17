@@ -46,7 +46,7 @@ namespace Microbrewit.Api.Controllers
             var fermentablesDto = await _elasticsearch.GetFermentables(custom);
             if (!fermentablesDto.Any())
             {
-                var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+                var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin","SubFermentables");
                 fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
 
             }
@@ -69,7 +69,7 @@ namespace Microbrewit.Api.Controllers
             var fermentableDto = await _elasticsearch.GetFermentable(id);
             if (fermentableDto == null)
             {
-                var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier.Origin"); 
+                var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier.Origin", "SubFermentables"); 
                 fermentableDto = Mapper.Map<Fermentable, FermentableDto>(fermentable);
 
             }
@@ -105,7 +105,7 @@ namespace Microbrewit.Api.Controllers
 
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
             await _fermentableRepository.UpdateAsync(fermentable);
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin","SubFermentables");
             var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
@@ -131,7 +131,7 @@ namespace Microbrewit.Api.Controllers
 
             var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(fermentableDtos);
             await _fermentableRepository.AddAsync(fermentablePost);
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
             var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
@@ -157,8 +157,8 @@ namespace Microbrewit.Api.Controllers
             }
             //Removes fermentable from database.
             await _fermentableRepository.RemoveAsync(fermentable);
-            
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
             var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
@@ -172,7 +172,7 @@ namespace Microbrewit.Api.Controllers
         [Route("es")]
         public async Task<IHttpActionResult> UpdateFermentableElasticSearch()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin");
+            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
             var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
             // updated elasticsearch.
             await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AutoMapper;
+using Elasticsearch.Net.Providers;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Api.Automapper.CustomResolvers;
@@ -20,6 +21,8 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Lovibond, conf => conf.MapFrom(rec => rec.Lovibond))
                 .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
+                .ForMember(dto => dto.SuperFermentableId, conf => conf.MapFrom(rec => rec.SuperFermentableId))
+                .ForMember(dto => dto.SubFermentables, conf => conf.MapFrom(rec => rec.SubFermentables))
                 .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
                
             
@@ -31,6 +34,10 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
+            Mapper.CreateMap<Fermentable, DTO>()
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
+
             Mapper.CreateMap<FermentableDto,FermentablesCompleteDto>();
 
             Mapper.CreateMap<FermentableDto, Fermentable>()
@@ -39,6 +46,8 @@ namespace Microbrewit.Api.Automapper
                .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
                .ForMember(dto => dto.SupplierId, conf => conf.ResolveUsing<FermentableSupplierResolver>())
+                .ForMember(dto => dto.SuperFermentableId, conf => conf.MapFrom(rec => rec.SuperFermentableId))
+                .ForMember(dto => dto.SubFermentables, conf => conf.MapFrom(rec => rec.SubFermentables))
                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
           
             Mapper.CreateMap<DTO,Supplier>()

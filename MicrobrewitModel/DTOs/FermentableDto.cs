@@ -29,6 +29,11 @@ namespace Microbrewit.Model.DTOs
         [Required]
         [JsonProperty(PropertyName = "custom")]
         public bool Custom { get; set; }
+        [JsonProperty(PropertyName = "superFermentableId")]
+        public int? SuperFermentableId { get; set; }
+        [JsonProperty(PropertyName = "subFermentables")]
+        public IList<DTO> SubFermentables { get; set; }
+
       }
 
 }
