@@ -52,9 +52,9 @@ namespace Microbrewit.Api.Elasticsearch
             var client = new ElasticsearchClient(settings);
 
             //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
-            var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
+            var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"filter\":{\"dataType\":hop\",\"dataType\":fermentable\",\"dataType\":yeasts\",\"dataType\":other\",} \"match\": {\"name\": {\"query\": \" " + query + " \"}}}}";
            
-            var res = await client.SearchAsync<string>("mb", "yeast,hop,fermentable,other", queryString);
+            var res = await client.SearchAsync<string>("mb", queryString);
             return res.Response;
         }
 
@@ -147,8 +147,11 @@ namespace Microbrewit.Api.Elasticsearch
                 _client.Search<HopDto>(
                     s => s
                         .Size(_bigNumber)
-                        .Query(q => q.Filtered(fd => fd
-                        .Filter(f => f.Term(h => h.DataType, "hop") && f.Term(p => p.Custom, custom)))));
+                        .Query(q => q
+                            .Filtered(fd => fd
+                                .Filter(f => f
+                                    .Term(h => h.DataType, "hop") && f.Term(p => p.Custom, custom)
+                                    ))));
             return res.Documents;
         }
 
