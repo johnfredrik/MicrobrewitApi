@@ -188,6 +188,14 @@
     <Compile Include="Migrations\201412171431175_AddedSuperSubFermentables.Designer.cs">
       <DependentUpon>201412171431175_AddedSuperSubFermentables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201412191115262_CompositeKeyFermentationStep.cs" />
+    <Compile Include="Migrations\201412191115262_CompositeKeyFermentationStep.Designer.cs">
+      <DependentUpon>201412191115262_CompositeKeyFermentationStep.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412191144003_CompositeKeyBoilStep.cs" />
+    <Compile Include="Migrations\201412191144003_CompositeKeyBoilStep.Designer.cs">
+      <DependentUpon>201412191144003_CompositeKeyBoilStep.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
@@ -302,6 +310,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201412171431175_AddedSuperSubFermentables.resx">
       <DependentUpon>201412171431175_AddedSuperSubFermentables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412191115262_CompositeKeyFermentationStep.resx">
+      <DependentUpon>201412191115262_CompositeKeyFermentationStep.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412191144003_CompositeKeyBoilStep.resx">
+      <DependentUpon>201412191144003_CompositeKeyBoilStep.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
