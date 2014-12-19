@@ -9,7 +9,8 @@ namespace Microbrewit.Model
     public class FermentationStepFermentable
     {
         public int FermentableId { get; set; }
-        public int StepId { get; set; }
+        public int StepNumber { get; set; }
+        public int RecipeId { get; set; }
         public int Amount { get; set; }
         public double Lovibond { get; set; }
 

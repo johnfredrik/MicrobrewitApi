@@ -22,9 +22,9 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         Fermentables = new List<BoilStepFermentable>(),
                         Hops = new List<BoilStepHop>(),
                         Others = new List<BoilStepOther>(),
-                        Id = boilStepDto.Id,
+                       // Id = boilStepDto.Id,
                         Length = boilStepDto.Length,
-                        Number = boilStepDto.Number,
+                        StepNumber = boilStepDto.Number,
                         Notes = boilStepDto.Notes,
                         Volume = boilStepDto.Volume,
                         RecipeId = recipe.Id,
@@ -34,7 +34,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         foreach (var fermentableDto in boilStepDto.Fermentables)
                         {
                             var fermentable = Mapper.Map<FermentableStepDto, BoilStepFermentable>(fermentableDto);
-                            fermentable.StepId = boilStep.Id;
+                            fermentable.StepNumber = boilStep.StepNumber;
                             boilStep.Fermentables.Add(fermentable);
 
                         }
@@ -44,7 +44,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         foreach (var hopDto in boilStepDto.Hops)
                         {
                             var hop = Mapper.Map<HopStepDto, BoilStepHop>(hopDto);
-                            hop.StepId = boilStepDto.Id;
+                            hop.StepNumber = boilStepDto.Id;
                             boilStep.Hops.Add(hop);
                         }
                     }
@@ -54,7 +54,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         foreach (var otherDto in boilStepDto.Others)
                         {
                             var other = Mapper.Map<OtherStepDto, BoilStepOther>(otherDto);
-                            other.StepId = boilStepDto.Id;
+                            other.StepNumber = boilStepDto.Id;
                             boilStep.Others.Add(other);
                         }
                     }

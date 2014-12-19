@@ -12,9 +12,10 @@ namespace Microbrewit.Model.ModelBuilder
         public BoilStepOtherConfiguration()
         {
            
-            Property(bso => bso.StepId).IsRequired();
+            Property(bso => bso.StepNumber).IsRequired();
             Property(bso => bso.OtherId).IsRequired();
-            this.HasKey(bso => new {bso.StepId, bso.OtherId });
+            Property(bso => bso.RecipeId).IsRequired();
+            this.HasKey(bso => new {bso.StepNumber, bso.OtherId, bso.RecipeId});
 
         }
     }

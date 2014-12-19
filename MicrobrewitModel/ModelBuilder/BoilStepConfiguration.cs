@@ -11,11 +11,11 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BoilStepConfiguration()
         {
-            Property(b => b.Id).HasColumnName("BoilStepId").IsRequired();
+            HasKey(p => new {p.StepNumber, p.RecipeId});
             
-            this.HasMany(b => b.Hops).WithRequired(boilStepHop => boilStepHop.BoilStep).HasForeignKey(boilStepHop => boilStepHop.StepId);
-            this.HasMany(b => b.Fermentables).WithRequired(boilStepFermentable => boilStepFermentable.BoilStep).HasForeignKey(boilStepFermentable => boilStepFermentable.StepId);
-            this.HasMany(b => b.Others).WithRequired(boilStepOthers => boilStepOthers.BoilStep).HasForeignKey(boilStepOthers => boilStepOthers.StepId);
+            this.HasMany(b => b.Hops).WithRequired(boilStepHop => boilStepHop.BoilStep).HasForeignKey(boilStepHop => new {boilStepHop.StepNumber, boilStepHop.RecipeId});
+            this.HasMany(b => b.Fermentables).WithRequired(boilStepFermentable => boilStepFermentable.BoilStep).HasForeignKey(boilStepFermentable => new {boilStepFermentable.StepNumber, boilStepFermentable.RecipeId});
+            this.HasMany(b => b.Others).WithRequired(boilStepOthers => boilStepOthers.BoilStep).HasForeignKey(boilStepOthers => new {boilStepOthers.StepNumber, boilStepOthers.RecipeId});
             //this.HasMany(b => b.Recipe).WithRequired().HasForeignKey(b => b.RecipeId);
            
         }

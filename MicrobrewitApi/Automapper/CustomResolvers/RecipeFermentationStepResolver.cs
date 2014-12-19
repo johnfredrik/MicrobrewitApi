@@ -21,9 +21,9 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     Hops = new List<FermentationStepHop>(),
                     Others = new List<FermentationStepOther>(),
                     Yeasts = new List<FermentationStepYeast>(),
-                    Id = fermentationStepDto.Id,
+                  //  Id = fermentationStepDto.Id,
                     Length = fermentationStepDto.Length,
-                    Number = fermentationStepDto.Number,
+                    StepNumber = fermentationStepDto.Number,
                     Notes = fermentationStepDto.Notes,
                     Temperature = fermentationStepDto.Temperature,
                     RecipeId = recipe.Id,
@@ -34,7 +34,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var hopDto in fermentationStepDto.Hops)
                     {
                         var hop = Mapper.Map<HopStepDto, FermentationStepHop>(hopDto);
-                        hop.StepId = fermentationStep.Id;
+                      //  hop.StepNumber = fermentationStep.Id;
                         fermentationStep.Hops.Add(hop);
                     }
                 }
@@ -44,7 +44,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var fermentableDto in fermentationStepDto.Fermentables)
                     {
                         var fermentable = Mapper.Map<FermentableStepDto, FermentationStepFermentable>(fermentableDto);
-                        fermentable.StepId = fermentationStep.Id;
+                        fermentable.StepNumber = fermentationStep.StepNumber;
                         fermentationStep.Fermentables.Add(fermentable);
                     }
                 }
@@ -55,7 +55,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var otherDto in fermentationStepDto.Others)
                     {
                         var other = Mapper.Map<OtherStepDto, FermentationStepOther>(otherDto);
-                        other.StepId = fermentationStep.Id;
+                        other.StepNumber = fermentationStep.StepNumber;
                         fermentationStep.Others.Add(other);
 
                     }
@@ -67,7 +67,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var yeastDto in fermentationStepDto.Yeasts)
                     {
                         var yeast = Mapper.Map<YeastStepDto, FermentationStepYeast>(yeastDto);
-                        yeast.StepId = fermentationStep.Id;
+                        yeast.StepNumber = fermentationStep.StepNumber;
                         fermentationStep.Yeasts.Add(yeast);
                     }
                 }

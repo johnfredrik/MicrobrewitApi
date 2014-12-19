@@ -11,10 +11,9 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public FermentationStepOtherConfiguration()
         {
-            Property(fso => fso.StepId).IsRequired();
+            Property(fso => fso.StepNumber).IsRequired();
             Property(fso => fso.OtherId).IsRequired();
-            this.HasKey(fso => new {fso.StepId, fso.OtherId });
-
+            this.HasKey(fso => new {fso.StepNumber, fso.OtherId,fso.RecipeId});
         }
     }
 }

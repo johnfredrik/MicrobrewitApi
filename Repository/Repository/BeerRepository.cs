@@ -68,7 +68,7 @@ namespace Microbrewit.Repository
                         // Updates changes to the fermentation steps
                         foreach (var step in beer.Recipe.FermentationSteps)
                         {
-                            var originalStep = context.FermentationSteps.SingleOrDefault(s => s.Id == step.Id);
+                            var originalStep = context.FermentationSteps.SingleOrDefault(s => s.StepNumber == step.StepNumber && s.RecipeId == step.RecipeId);
                             if (originalStep == null)
                             {
                                 context.FermentationSteps.Add(step);
@@ -80,7 +80,7 @@ namespace Microbrewit.Repository
                                 foreach (var fermentableStep in step.Fermentables)
                                 {
                                     var originalFermentableStep = context.FermentationStepFermentables
-                                        .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
+                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId && f.RecipeId == fermentableStep.RecipeId);
                                     if (originalFermentableStep != null)
                                     {
                                         SetChanges(context, originalFermentableStep, fermentableStep);
@@ -93,7 +93,7 @@ namespace Microbrewit.Repository
                                 foreach (var hopStep in step.Hops)
                                 {
                                     var originalHopStep = context.FermentationStepHops
-                                        .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
+                                        .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId && h.RecipeId == hopStep.RecipeId);
                                     if (originalHopStep != null)
                                     {
                                         SetChanges(context, originalHopStep, hopStep);
@@ -106,7 +106,7 @@ namespace Microbrewit.Repository
                                 foreach (var otherStep in step.Others)
                                 {
                                     var originalOtherStep = context.FermentationStepOthers
-                                        .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
+                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId && o.RecipeId == otherStep.RecipeId);
                                     if (originalOtherStep != null)
                                     {
                                         SetChanges(context, originalOtherStep, otherStep);
@@ -119,7 +119,7 @@ namespace Microbrewit.Repository
                                 foreach (var yeastStep in step.Yeasts)
                                 {
                                     var originalYeastStep = context.FermentationStepYeasts
-                                        .SingleOrDefault(y => y.StepId == yeastStep.StepId && y.YeastId == yeastStep.YeastId);
+                                        .SingleOrDefault(y => y.StepNumber == yeastStep.StepNumber && y.YeastId == yeastStep.YeastId && y.RecipeId == yeastStep.RecipeId);
                                     if (originalYeastStep != null)
                                     {
                                         SetChanges(context, originalYeastStep, yeastStep);
@@ -135,7 +135,7 @@ namespace Microbrewit.Repository
                         // Updates changes to the boil steps
                         foreach (var step in beer.Recipe.BoilSteps)
                         {
-                            var originalStep = context.BoilSteps.SingleOrDefault(s => s.Id == step.Id);
+                            var originalStep = context.BoilSteps.SingleOrDefault(s => s.RecipeId == step.RecipeId && s.StepNumber == step.StepNumber);
                             if (originalStep == null)
                             {
                                 context.BoilSteps.Add(step);
@@ -147,7 +147,7 @@ namespace Microbrewit.Repository
                                 foreach (var fermentableStep in step.Fermentables)
                                 {
                                     var originalFermentableStep = context.BoilStepFermentables
-                                        .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
+                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId);
                                     if (originalFermentableStep != null)
                                     {
                                         SetChanges(context, originalFermentableStep, fermentableStep);
@@ -160,7 +160,7 @@ namespace Microbrewit.Repository
                                 foreach (var hopStep in step.Hops)
                                 {
                                     var originalHopStep = context.BoilStepHops
-                                        .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
+                                        .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId && h.RecipeId == hopStep.RecipeId);
                                     if (originalHopStep != null)
                                     {
                                         SetChanges(context, originalHopStep, hopStep);
@@ -173,7 +173,7 @@ namespace Microbrewit.Repository
                                 foreach (var otherStep in step.Others)
                                 {
                                     var originalOtherStep = context.BoilStepOthers
-                                        .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
+                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId);
                                     if (originalOtherStep != null)
                                     {
                                         SetChanges(context, originalOtherStep, otherStep);
@@ -189,7 +189,7 @@ namespace Microbrewit.Repository
                         // Updates changes to the mash steps
                         foreach (var step in beer.Recipe.MashSteps)
                         {
-                            var originalStep = context.MashSteps.SingleOrDefault(s => s.Id == step.Id);
+                            var originalStep = context.MashSteps.SingleOrDefault(s => s.StepNumber == step.StepNumber && s.RecipeId == step.RecipeId);
                             if (originalStep == null)
                             {
                                 context.MashSteps.Add(step);
@@ -201,7 +201,7 @@ namespace Microbrewit.Repository
                                 foreach (var fermentableStep in step.Fermentables)
                                 {
                                     var originalFermentableStep = context.MashStepFermentables
-                                        .SingleOrDefault(f => f.StepId == fermentableStep.StepId && f.FermentableId == fermentableStep.FermentableId);
+                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId);
                                     if (originalFermentableStep != null)
                                     {
                                         SetChanges(context, originalFermentableStep, fermentableStep);
@@ -214,7 +214,7 @@ namespace Microbrewit.Repository
                                 foreach (var hopStep in step.Hops)
                                 {
                                     var originalHopStep = context.MashStepHops
-                                        .SingleOrDefault(h => h.StepId == hopStep.StepId && h.HopId == hopStep.HopId);
+                                        .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId);
                                     if (originalHopStep != null)
                                     {
                                         SetChanges(context, originalHopStep, hopStep);
@@ -227,7 +227,7 @@ namespace Microbrewit.Repository
                                 foreach (var otherStep in step.Others)
                                 {
                                     var originalOtherStep = context.MashStepOthers
-                                        .SingleOrDefault(o => o.StepId == otherStep.StepId && o.OtherId == otherStep.OtherId);
+                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId);
                                     if (originalOtherStep != null)
                                     {
                                         SetChanges(context, originalOtherStep, otherStep);

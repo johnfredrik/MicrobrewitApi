@@ -12,8 +12,8 @@ namespace Microbrewit.Model.ModelBuilder
         public MashStepFermentableConfiguration()
         {
             Property(msf => msf.FermentableId).IsRequired();
-            Property(msf => msf.StepId).IsRequired();
-            this.HasKey(msf => new { msf.FermentableId, msf.StepId });
+            Property(msf => msf.StepNumber).IsRequired();
+            this.HasKey(msf => new { msf.FermentableId, msf.StepNumber, msf.RecipeId });
         }
     }
 }

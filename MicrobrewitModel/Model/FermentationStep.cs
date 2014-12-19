@@ -8,8 +8,8 @@ namespace Microbrewit.Model
 {
     public class FermentationStep
     {
-        public int Id { get; set; }
-        public int Number { get; set; }
+        //public int Id { get; set; }
+        public int StepNumber { get; set; }
         public int Length { get; set; }
         public int Temperature { get; set; }
         public string Notes { get; set; }

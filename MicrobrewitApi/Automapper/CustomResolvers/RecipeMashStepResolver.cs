@@ -20,9 +20,9 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     Fermentables = new List<MashStepFermentable>(),
                     Hops = new List<MashStepHop>(),
                     Others = new List<MashStepOther>(),
-                    Id = mashStepDto.Id,
+                  //  Id = mashStepDto.Id,
                     Length = mashStepDto.Length,
-                    Number = mashStepDto.Number,
+                    StepNumber = mashStepDto.Number,
                     Notes = mashStepDto.Notes,
                     Volume = mashStepDto.Volume,
                     Temperature = mashStepDto.Temperature,
@@ -34,7 +34,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var hopDto in mashStepDto.Hops)
                     {
                         var hop = Mapper.Map<HopStepDto, MashStepHop>(hopDto);
-                        hop.StepId = mashStep.Id;
+                        hop.StepNumber = mashStep.StepNumber;
                         mashStep.Hops.Add(hop);
                     }
                 }
@@ -44,7 +44,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var fermentableDto in mashStepDto.Fermentables)
                     {
                         var fermentable = Mapper.Map<FermentableStepDto, MashStepFermentable>(fermentableDto);
-                        fermentable.StepId = mashStep.Id;
+                        fermentable.StepNumber = mashStep.StepNumber;
                         mashStep.Fermentables.Add(fermentable);
                     }
                 }
@@ -55,7 +55,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     foreach (var otherDto in mashStepDto.Others)
                     {
                         var other = Mapper.Map<OtherStepDto, MashStepOther>(otherDto);
-                        other.StepId = mashStep.Id;
+                        other.StepNumber = mashStep.StepNumber;
                         mashStep.Others.Add(other);
 
                     }
