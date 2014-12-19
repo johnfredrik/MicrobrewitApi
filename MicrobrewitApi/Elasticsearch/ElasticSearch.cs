@@ -377,14 +377,19 @@ namespace Microbrewit.Api.Elasticsearch
 
 
 
-        public async Task UpdateBeerElasticSearch(IList<BeerDto> beersDto)
+        public async Task UpdateBeer(IList<BeerDto> beersDto)
         {
-            foreach (var beer in beersDto)
+            foreach (var beerDto in beersDto)
             {
-                // Adds an analayzer to the name property in FermentableDto object.
-                _client.Map<BeerDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
-                var index = _client.Index<BeerDto>(beer);
+                UpdateBeer(beerDto);
             }
+        }
+
+        public async Task UpdateBeer(BeerDto beerDto)
+        {
+            // Adds an analayzer to the name property in FermentableDto object.
+            _client.Map<BeerDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+            var index = _client.Index<BeerDto>(beerDto);
         }
 
         public async Task<IEnumerable<BeerDto>> SearchBeers(string query, int from, int size)
@@ -447,6 +452,32 @@ namespace Microbrewit.Api.Elasticsearch
             IGetRequest getRequest = new GetRequest("mb", "glass", id.ToString());
             var result = _client.Get<GlassDto>(getRequest);
             return result.Source;
+        }
+
+        public IEnumerable<BeerDto> GetAllBeers(int from, int size)
+        {
+            var result = _client.Search<BeerDto>(s => s
+                .From(from)
+                .Size(size)
+                .Query(q => q
+                    .Filtered(f => f
+                        .Filter(filter => filter
+                            .Term(t => t.DataType,"beer")
+                            ))));
+            return result.Documents;
+        }
+
+        public IEnumerable<BeerDto> GetUserBeer(string username)
+        {
+            var result = _client.Search<BeerDto>(s => s
+                .Query(q => q
+                .Filtered(f => f
+                    .Query(q2 => q2
+                    .Term("brewers.userName",username))
+                    .Filter(filter => filter
+                        .Term(t => t.DataType,"beer")
+                        ))));
+            return result.Documents;
         }
     }
 }

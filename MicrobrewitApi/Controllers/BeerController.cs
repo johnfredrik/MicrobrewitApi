@@ -14,6 +14,7 @@ using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
 using System.Diagnostics;
+using System.Drawing;
 using log4net;
 using System.Threading.Tasks;
 
@@ -28,8 +29,8 @@ namespace Microbrewit.Api.Controllers
 
         public BeerController(IBeerRepository beerRepository)
         {
-            this._beerRepository = beerRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _beerRepository = beerRepository;
+            _elasticsearch = new Elasticsearch.ElasticSearch();
         }
 
         /// <summary>
@@ -38,11 +39,28 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">It's all good!</response>
         /// <returns>Returns collection of all beers</returns>
         [Route("")]
-        public BeerSimpleCompleteDto GetBeers()
+        public BeerCompleteDto GetBeers(int from = 0, int size = 1000)
         {
-            var beers = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(_beerRepository.GetAll("Recipe", "SRM", "ABV", "IBU", "Brewers","Brewers.User", "Breweries"));
-            var result = new BeerSimpleCompleteDto();
-            result.Beers = beers;
+            var beers = _elasticsearch.GetAllBeers(from, size);
+            if (beers == null)
+            {
+                beers = Mapper.Map<IList<Beer>, IList<BeerDto>>(_beerRepository.GetAll( 
+                 //"Recipe.MashSteps",
+                "Recipe.MashSteps.FermentationStepHops",
+                "Recipe.MashSteps.Fermentables",
+                "Recipe.MashSteps.Others",
+                // "Recipe.BoilSteps",
+                "Recipe.BoilSteps.FermentationStepHops",
+                "Recipe.BoilSteps.Fermentables",
+                "Recipe.BoilSteps.Others",
+                // "Recipe.FermentationSteps",
+                "Recipe.FermentationSteps.FermentationStepHops",
+                "Recipe.FermentationSteps.Fermentables",
+                "Recipe.FermentationSteps.Others",
+                "Recipe.FermentationSteps.Yeasts",
+                "ABV", "IBU", "SRM", "Brewers.User", "Breweries"));
+            }
+            var result = new BeerCompleteDto {Beers = beers.ToList()};
             return result;
         }
 
@@ -52,12 +70,29 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">It's all good!</response>
         /// <returns>Returns collection of all beers</returns>
         [Route("user/{username}")]
-        public async Task<BeerSimpleCompleteDto> GetUserBeers(string username)
+        public async Task<BeerCompleteDto> GetUserBeers(string username)
         {
-            var beers = await _beerRepository.GetAllUserBeer(username, "Recipe", "SRM", "ABV", "IBU", "Brewers","Brewers.User", "Breweries");
-            var beersDto = Mapper.Map<IList<Beer>, IList<BeerSimpleDto>>(beers);
-            var result = new BeerSimpleCompleteDto();
-            result.Beers = beersDto;
+            var beersDto = _elasticsearch.GetUserBeer(username);
+            if (beersDto == null)
+            {
+                var beers = await _beerRepository.GetAllUserBeer(username,   
+                    //"Recipe.MashSteps",
+                  "Recipe.MashSteps.FermentationStepHops",
+                  "Recipe.MashSteps.Fermentables",
+                  "Recipe.MashSteps.Others",
+                    // "Recipe.BoilSteps",
+                  "Recipe.BoilSteps.FermentationStepHops",
+                  "Recipe.BoilSteps.Fermentables",
+                  "Recipe.BoilSteps.Others",
+                    // "Recipe.FermentationSteps",
+                  "Recipe.FermentationSteps.FermentationStepHops",
+                  "Recipe.FermentationSteps.Fermentables",
+                  "Recipe.FermentationSteps.Others",
+                  "Recipe.FermentationSteps.Yeasts",
+                  "ABV", "IBU", "SRM", "Brewers.User", "Breweries");
+                beersDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
+            } 
+            var result = new BeerCompleteDto {Beers = beersDto.ToList()};
             return result;
         }
 
@@ -74,15 +109,15 @@ namespace Microbrewit.Api.Controllers
         {
             var beer = await _beerRepository.GetSingleAsync(b => b.Id == id,
                 //"Recipe.MashSteps",
-                "Recipe.MashSteps.Hops",
+                "Recipe.MashSteps.FermentationStepHops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
                 // "Recipe.BoilSteps",
-                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.FermentationStepHops",
                 "Recipe.BoilSteps.Fermentables",
                 "Recipe.BoilSteps.Others",
                 // "Recipe.FermentationSteps",
-                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.FermentationStepHops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
@@ -106,7 +141,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="beerDto"></param>
         /// <returns></returns>
         [Route("{id}")]
-        public IHttpActionResult PutBeer(int id, BeerDto beerDto)
+        public async Task<IHttpActionResult> PutBeer(int id, BeerDto beerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -123,6 +158,7 @@ namespace Microbrewit.Api.Controllers
             beer.BeerStyle = null;
             beer.UpdatedDate = DateTime.Now;
             _beerRepository.Update(beer);
+            await UpdateSingleBeerElasticSearch(beer);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -162,32 +198,35 @@ namespace Microbrewit.Api.Controllers
 
 
             var result = new BeerCompleteDto() { Beers = new List<BeerDto>() };
-            await UpdateSingleBeerES(beer, result);
+            await UpdateSingleBeerElasticSearch(beer);
             
 
             return CreatedAtRoute("DefaultApi", new { controller = "beers" }, result);
         }
 
-        private async Task UpdateSingleBeerES(Beer beer, BeerCompleteDto result)
+
+        /// <summary>
+        /// Updates or adds a single beer to elasticsearch
+        /// </summary>
+        /// <param name="beer"></param>
+        /// <returns></returns>
+        private async Task UpdateSingleBeerElasticSearch(Beer beer)
         {
             var singleBeer = await _beerRepository.GetSingleAsync(b => b.Id == beer.Id,
-                "Recipe.MashSteps.Hops",
+                "Recipe.MashSteps.FermentationStepHops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
-                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.FermentationStepHops",
                 "Recipe.BoilSteps.Fermentables",
                 "Recipe.BoilSteps.Others",
-                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.FermentationStepHops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
                  "ABV", "IBU", "SRM", "Brewers", "Breweries");
-
-            result.Beers.Add(Mapper.Map<Beer, BeerDto>(singleBeer));
+           
             var beerdto = Mapper.Map<Beer, BeerDto>(singleBeer);
-            var beerES = new List<BeerDto>();
-            beerES.Add(beerdto);
-            await _elasticsearch.UpdateBeerElasticSearch(beerES);
+            await _elasticsearch.UpdateBeer(beerdto);
         }
 
         private static void BeerCalculations(Beer beer)
@@ -243,20 +282,20 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> UpdateBeersElasticSearch()
         {
-            var beers = await _beerRepository.GetAllAsync("Recipe.MashSteps.Hops",
+            var beers = await _beerRepository.GetAllAsync("Recipe.MashSteps.FermentationStepHops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
-                "Recipe.BoilSteps.Hops",
+                "Recipe.BoilSteps.FermentationStepHops",
                 "Recipe.BoilSteps.Fermentables",
                 "Recipe.BoilSteps.Others",
-                "Recipe.FermentationSteps.Hops",
+                "Recipe.FermentationSteps.FermentationStepHops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
                  "ABV", "IBU", "SRM", "Brewers", "Breweries");
             var beersDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
             // updated elasticsearch.
-            await _elasticsearch.UpdateBeerElasticSearch(beersDto);
+            await _elasticsearch.UpdateBeer(beersDto);
 
             return Ok();
         }
@@ -265,7 +304,7 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <param name="query">Query phrase</param>
         /// <param name="from">From what object</param>
-        /// <param name="size">Number of objects returned</param>
+        /// <param name="size">StepNumber of objects returned</param>
         /// <returns></returns>
         [HttpGet]
         [Route("")]
