@@ -14,13 +14,14 @@ namespace Microbrewit.Api.Automapper
         protected override void Configure()
         {
             Mapper.CreateMap<MashStep, MashStepDto>()
+                .ForMember(dto => dto.Number, conf => conf.MapFrom(rec => rec.StepNumber))
                 .ForMember(dto => dto.Hops, conf => conf.ResolveUsing<HopMashStepResolver>())
                 .ForMember(dto => dto.Fermentables, conf => conf.ResolveUsing<FermentableMashStepResolver>())
                 .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherMashStepResolver>());
 
             Mapper.CreateMap<MashStepHop, HopStepDto>()
                 .ForMember(dto => dto.HopId, conf => conf.MapFrom(rec => rec.HopId))
-                .ForMember(dto => dto.StepId, conf => conf.MapFrom(rec => rec.StepNumber))
+                .ForMember(dto => dto.Number, conf => conf.MapFrom(rec => rec.StepNumber))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Hop.Name))
                 .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Hop.Origin.Name))
                 .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.AAAmount))
@@ -52,7 +53,7 @@ namespace Microbrewit.Api.Automapper
 
             Mapper.CreateMap<HopStepDto, MashStepHop>()
                 .ForMember(dto => dto.HopId, conf => conf.MapFrom(rec => rec.HopId))
-                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepId))
+                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.Number))
                 .ForMember(dto => dto.HopFormId, conf => conf.MapFrom(rec => rec.HopForm.Id))
                 .ForMember(dto => dto.AAAmount, conf => conf.MapFrom(rec => rec.Amount))
                 .ForMember(dto => dto.AAValue, conf => conf.MapFrom(rec => rec.AAValue));
@@ -60,7 +61,7 @@ namespace Microbrewit.Api.Automapper
 
             Mapper.CreateMap<FermentableStepDto, MashStepFermentable>()
                 .ForMember(dto => dto.FermentableId, conf => conf.MapFrom(rec => rec.FermentableId))
-                 .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepId))
+                 .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.Number))
                  .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                 .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
 

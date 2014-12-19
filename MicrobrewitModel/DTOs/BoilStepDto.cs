@@ -12,10 +12,11 @@ namespace Microbrewit.Model.DTOs
     [ElasticType(Name = "boilStep")]
     public class BoilStepDto
     {
-        [JsonProperty(PropertyName = "boilStepId")]
-        public int Id { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "number")]
         public int Number { get; set; }
+        [JsonProperty(PropertyName = "recipeId")]
+        public int RecipeId { get; set; }
         [Required]
         [JsonProperty(PropertyName = "length")]
         public int Length { get; set; }

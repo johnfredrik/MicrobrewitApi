@@ -28,7 +28,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     var hopStepDto = new HopStepDto()
                     {
                         HopId = item.HopId,
-                        StepId = item.StepNumber,
+                        Number = item.StepNumber,
                         Amount = item.Amount,
                         AAValue = item.AAValue,
                     };

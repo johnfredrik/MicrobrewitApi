@@ -34,7 +34,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     var fermentableStepDto = new FermentableStepDto();
                     
                     fermentableStepDto.FermentableId = item.FermentableId;
-                    fermentableStepDto.StepId = item.StepNumber;
+                    fermentableStepDto.Number = item.StepNumber;
                     fermentableStepDto.Amount = item.Amount;
                     fermentableStepDto.Supplier = fermentable.Supplier;
                     fermentableStepDto.Type = fermentable.Type;

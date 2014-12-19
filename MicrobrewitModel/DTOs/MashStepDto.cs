@@ -2,6 +2,7 @@
 using Nest;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Newtonsoft.Json;
@@ -11,10 +12,11 @@ namespace Microbrewit.Model.DTOs
     [ElasticType(Name = "mashStep")]
     public class MashStepDto
     {
-        [JsonProperty(PropertyName = "mashStepId")]
-        public int Id { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "number")]
         public int Number { get; set; }
+        [JsonProperty(PropertyName = "recipeId")]
+        public int RecipeId { get; set; }
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
         [JsonProperty(PropertyName = "length")]
