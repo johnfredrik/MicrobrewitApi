@@ -24,7 +24,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         Others = new List<BoilStepOther>(),
                        // Id = boilStepDto.Id,
                         Length = boilStepDto.Length,
-                        StepNumber = boilStepDto.Number,
+                        StepNumber = boilStepDto.StepNumber,
                         Notes = boilStepDto.Notes,
                         Volume = boilStepDto.Volume,
                         RecipeId = recipe.Id,
@@ -44,7 +44,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         foreach (var hopDto in boilStepDto.Hops)
                         {
                             var hop = Mapper.Map<HopStepDto, BoilStepHop>(hopDto);
-                            hop.StepNumber = boilStepDto.Number;
+                            hop.StepNumber = boilStepDto.StepNumber;
                             boilStep.Hops.Add(hop);
                         }
                     }
@@ -54,7 +54,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         foreach (var otherDto in boilStepDto.Others)
                         {
                             var other = Mapper.Map<OtherStepDto, BoilStepOther>(otherDto);
-                            other.StepNumber = boilStepDto.Number;
+                            other.StepNumber = boilStepDto.StepNumber;
                             boilStep.Others.Add(other);
                         }
                     }

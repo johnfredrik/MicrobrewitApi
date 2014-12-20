@@ -36,7 +36,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                 }
                 otherStepDto.Name = other.Name;
                 otherStepDto.Type = other.Type;
-
+                otherStepDto.RecipeId = item.RecipeId;
 
 
 

@@ -22,7 +22,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     Others = new List<MashStepOther>(),
                   //  Id = mashStepDto.Id,
                     Length = mashStepDto.Length,
-                    StepNumber = mashStepDto.Number,
+                    StepNumber = mashStepDto.StepNumber,
                     Notes = mashStepDto.Notes,
                     Volume = mashStepDto.Volume,
                     Temperature = mashStepDto.Temperature,

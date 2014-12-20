@@ -23,7 +23,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     Yeasts = new List<FermentationStepYeast>(),
                   //  Id = fermentationStepDto.Id,
                     Length = fermentationStepDto.Length,
-                    StepNumber = fermentationStepDto.Number,
+                    StepNumber = fermentationStepDto.StepNumber,
                     Notes = fermentationStepDto.Notes,
                     Temperature = fermentationStepDto.Temperature,
                     RecipeId = recipe.Id,
