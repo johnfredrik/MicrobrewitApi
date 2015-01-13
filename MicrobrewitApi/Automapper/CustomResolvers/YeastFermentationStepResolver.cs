@@ -28,6 +28,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                         YeastId = item.YeastId,
                         Amount = item.Amount,
                         RecipeId = item.RecipeId,
+                        Number = item.StepNumber,
 
                     };
                     var yeast = _elasticsearch.GetYeast(item.YeastId).Result;
@@ -38,6 +39,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     yeastStepDto.Name = yeast.Name;
                     yeastStepDto.Supplier = yeast.Supplier;
                     yeastStepDto.Type = yeast.Type;
+                    yeastStepDto.ProductCode = yeast.ProductCode;
 
                     yeastStepDtoList.Add(yeastStepDto);
 

@@ -41,6 +41,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     fermentableStepDto.Name = fermentable.Name;
                     fermentableStepDto.PPG = fermentable.PPG;
                     fermentableStepDto.RecipeId = item.RecipeId;
+                    fermentableStepDto.Number = item.StepNumber;
                         
                     if(item.Lovibond == 0)
                     {

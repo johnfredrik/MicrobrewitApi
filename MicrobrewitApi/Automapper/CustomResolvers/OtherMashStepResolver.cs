@@ -29,6 +29,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     OtherId = item.OtherId,
                     Amount = item.Amount,
                     RecipeId = item.RecipeId,
+                    Number = item.StepNumber,
                 };
                 var other = _elasticsearch.GetOther(item.OtherId).Result;
                 if (other == null)

@@ -30,7 +30,7 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     Number = item.StepNumber,
                     Amount = item.AAAmount,
                     AAValue = item.AAValue,
-                    RecipeId = item.RecipeId,
+                    RecipeId = item.RecipeId,                    
                 };
                 var hop = _elasticsearch.GetHop(item.HopId).Result;
                 if (hop == null)
