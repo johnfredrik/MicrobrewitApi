@@ -58,6 +58,11 @@ namespace Microbrewit.Api.Controllers
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
+                // "Forks"
+                "Forks.ABV",
+                "Forks.BeerStyle",
+                "Forks.IBU",
+                "Forks.SRM",
                 "ABV", "IBU", "SRM", "Brewers.User", "Breweries"));
             }
             var result = new BeerCompleteDto {Beers = beers.ToList()};
@@ -283,16 +288,26 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> UpdateBeersElasticSearch()
         {
             var beers = await _beerRepository.GetAllAsync("Recipe.MashSteps.Hops",
+                 //"Recipe.MashSteps",
+                "Recipe.MashSteps.Hops",
                 "Recipe.MashSteps.Fermentables",
                 "Recipe.MashSteps.Others",
+                // "Recipe.BoilSteps",
                 "Recipe.BoilSteps.Hops",
                 "Recipe.BoilSteps.Fermentables",
                 "Recipe.BoilSteps.Others",
+                // "Recipe.FermentationSteps",
                 "Recipe.FermentationSteps.Hops",
                 "Recipe.FermentationSteps.Fermentables",
                 "Recipe.FermentationSteps.Others",
                 "Recipe.FermentationSteps.Yeasts",
-                 "ABV", "IBU", "SRM", "Brewers", "Breweries");
+                // "Forks"
+                "Forks",
+                "Forks.ABV",
+                "Forks.BeerStyle",
+                "Forks.IBU",
+                "Forks.SRM",
+                "ABV", "IBU", "SRM", "Brewers.User", "Breweries");
             var beersDto = Mapper.Map<IList<Beer>, IList<BeerDto>>(beers);
             // updated elasticsearch.
             await _elasticsearch.UpdateBeer(beersDto);
