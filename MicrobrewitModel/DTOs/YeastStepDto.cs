@@ -16,6 +16,8 @@ namespace Microbrewit.Model.DTOs
         public int YeastId { get; set; }
         [JsonProperty(PropertyName = "stepNumber")]
         public int Number { get; set; }
+        [JsonProperty(PropertyName = "productCode")]
+        public string ProductCode { get; set; }
         [JsonProperty(PropertyName = "recipeId")]
         public int RecipeId { get; set; }
         [JsonProperty(PropertyName = "name")]

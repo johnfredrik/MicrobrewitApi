@@ -15,8 +15,6 @@ namespace Microbrewit.Model.DTOs
     {
         [JsonProperty(PropertyName = "recipeId")]
         public int Id { get; set; }
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
         [JsonProperty(PropertyName = "notes")]
         public string  Notes { get; set; }
         [Required]
@@ -28,10 +26,6 @@ namespace Microbrewit.Model.DTOs
         public double FG { get; set; }
         [JsonProperty(PropertyName = "efficiency")]
         public double Efficiency { get; set; }
-        [JsonProperty(PropertyName = "beerStyle")]
-        public DTO BeerStyle { get; set; }
-        [JsonProperty(PropertyName = "forkOf")]
-        public int ForkOf { get; set; }
         [JsonProperty(PropertyName = "mashSteps")]
         public IList<MashStepDto> MashSteps { get; set; }
         [JsonProperty(PropertyName = "boilSteps")]

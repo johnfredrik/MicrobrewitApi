@@ -22,6 +22,11 @@ namespace Microbrewit.Model.ModelBuilder
             this.HasOptional(beer => beer.IBU).WithRequired(beer => beer.Beer).WillCascadeOnDelete(true);
             this.HasOptional(beer => beer.Recipe).WithRequired(recipe => recipe.Beer).WillCascadeOnDelete(true);
 
+            this.HasMany(recipe => recipe.Forks)
+    .WithOptional(recipe => recipe.ForkeOf)
+    .HasForeignKey(recipe => recipe.ForkeOfId)
+    .WillCascadeOnDelete(false);
+
         }
     }
 }

@@ -9,7 +9,6 @@ namespace Microbrewit.Model
 {
     public class Recipe
     {
-       
         public int Id { get; set; }
         public int Volume { get; set; }
         public string Notes { get; set; }
@@ -18,11 +17,9 @@ namespace Microbrewit.Model
         public double FG { get; set; }
         public double Efficiency { get; set; }
         // Single relations.
-        public Recipe ForkeOf { get; set; }
         public Beer Beer { get; set; }
 
         //Multi relations
-        public ICollection<Recipe> Forks { get; set; }
         public ICollection<MashStep> MashSteps { get; set; }
         public ICollection<BoilStep> BoilSteps { get; set; }
         public ICollection<FermentationStep> FermentationSteps { get; set; }

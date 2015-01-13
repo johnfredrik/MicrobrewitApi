@@ -15,25 +15,17 @@ namespace Microbrewit.Model.ModelBuilder
             Property(p => p.Id).IsRequired().HasColumnName("RecipeId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             this.HasKey(r => r.Id);
             //this.HasRequired(r => r.Beer).WithRequiredDependent(r => r.Recipe);
-
+            HasRequired(r => r.Beer).WithOptional();
             
             // relations
             this.HasMany(r => r.BoilSteps).WithRequired().HasForeignKey(boilStep => boilStep.RecipeId);
             this.HasMany(r => r.FermentationSteps).WithRequired().HasForeignKey(fermentationStep => fermentationStep.RecipeId);
             this.HasMany(r => r.MashSteps).WithRequired().HasForeignKey(mashStep => mashStep.RecipeId);
-           
 
-            this.HasMany(recipe => recipe.Forks)
-                .WithOptional(recipe => recipe.ForkeOf)
-                .HasForeignKey(recipe => recipe.ForkeOfId)
-                .WillCascadeOnDelete(false);
 
-            this.HasMany(recipe => recipe.Forks).WithMany().Map(map =>
-                {
-                    map.MapLeftKey("RecipeId");
-                    map.MapRightKey("ForkedRecipeId");
-                    map.ToTable("ForkedRecipe");
-                });
+
+
+          
         }
     }
 }

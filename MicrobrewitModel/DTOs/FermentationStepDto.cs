@@ -16,8 +16,6 @@ namespace Microbrewit.Model.DTOs
         public int StepNumber { get; set; }
         [JsonProperty(PropertyName = "recipeId")]
         public int RecipeId { get; set; }
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
         [JsonProperty(PropertyName = "length")]
         public int Length { get; set; }
         [JsonProperty(PropertyName = "volume")]
