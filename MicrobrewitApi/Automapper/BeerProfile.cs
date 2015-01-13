@@ -20,14 +20,13 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
-                .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM))
-                .ForMember(dto => dto.Recipe, conf => conf.MapFrom(rec => rec.Recipe))
-                .ForMember(dto => dto.Breweries, conf => conf.MapFrom(rec => rec.Breweries))
-                .ForMember(dto => dto.Brewers, conf => conf.MapFrom(rec => rec.Brewers));
-
+                  .ForMember(dto => dto.BeerStyle, conf => conf.ResolveUsing<BeerStyleResolver>())
+                .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM));
+               
             Mapper.CreateMap<Beer, BeerDto>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.ForkOf, conf => conf.MapFrom(rec => rec.ForkeOfId))
                 .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
                 .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM))
@@ -73,8 +72,10 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
                 .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM))
                 .ForMember(dto => dto.Recipe, conf => conf.MapFrom(rec => rec.Recipe))
+                .ForMember(dto => dto.ForkeOfId, conf => conf.MapFrom(rec => rec.ForkOf))
                 .ForMember(dto => dto.Breweries, conf => conf.MapFrom(rec => rec.Breweries))
                 .ForMember(dto => dto.Brewers, conf => conf.ResolveUsing<BeerBrewerResolver>());
+
 
             Mapper.CreateMap<ABVDto, ABV>()
                 .ForMember(dto => dto.Standard, conf => conf.MapFrom(rec => rec.Standard))
