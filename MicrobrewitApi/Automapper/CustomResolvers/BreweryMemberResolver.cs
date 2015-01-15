@@ -14,6 +14,8 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
         {
             
             var members = new List<BreweryMember>();
+            if (source.Members == null) return members;
+
             foreach (var memberDto in source.Members)
             {
                 var member = new BreweryMember()
