@@ -20,7 +20,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
                 .ForMember(dto => dto.Members, conf => conf.MapFrom(rec => rec.Members))
                 .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
-                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<GeoLocationResolver>());
+                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>());
 
 
             Mapper.CreateMap<BreweryMember, DTOUser>()
@@ -31,6 +31,7 @@ namespace Microbrewit.Api.Automapper
             Mapper.CreateMap<BreweryMember, BreweryDto>()
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Brewery.Name))
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Brewery.Id))
+                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<BreweryMemberGeoLocationResolver>())
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Brewery.Type));
 
             Mapper.CreateMap<Beer, DTO>()
