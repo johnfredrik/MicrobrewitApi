@@ -53,6 +53,7 @@ namespace Microbrewit.Api.Util
                 }
             }
             ibu.Tinseth = Math.Round(tinseth, 1);
+            ibu.Standard = Math.Round(tinseth, 1);
             ibu.Rager = Math.Round(rager, 1);
             return ibu;
         }
