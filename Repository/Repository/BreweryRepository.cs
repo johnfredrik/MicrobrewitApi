@@ -11,12 +11,23 @@ namespace Microbrewit.Repository
 {
     public class BreweryRepository : GenericDataRepository<Brewery>, IBreweryRepository
     {
+        public Task AddAsync(params Brewery[] breweries)
+        {
+            foreach (var brewery in breweries)
+            {
+                brewery.CreatedDate = DateTime.Now;
+                brewery.UpdatedDate = DateTime.Now;
+            }
+            return base.AddAsync(breweries);
+        }
+
         public override async Task<int> UpdateAsync(params Brewery[] breweries)
         {
             using (var context = new MicrobrewitContext())
             {
                 foreach (var brewery in breweries)
                 {
+                    brewery.UpdatedDate = DateTime.Now;
                     var originalBrewery = context.Breweries.Include(b => b.Members).SingleOrDefault(b => b.Id == brewery.Id);
                     SetChanges(context, originalBrewery, brewery);
                     foreach (var member in brewery.Members)
@@ -33,6 +44,7 @@ namespace Microbrewit.Repository
                         }
                     }
                 }
+
                 return await context.SaveChangesAsync();
                 //await base.UpdateAsync(breweries);
 
