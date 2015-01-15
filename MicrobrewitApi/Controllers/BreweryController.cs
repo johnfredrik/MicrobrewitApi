@@ -140,7 +140,7 @@ namespace Microbrewit.Api.Controllers
             var breweriesES = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
             var breweriesDto = Mapper.Map<IList<Brewery>,IList<BreweryDto>>(breweriesES);
             await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
-            return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweryPosts);
+            return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweriesDto);
         }
 
      
