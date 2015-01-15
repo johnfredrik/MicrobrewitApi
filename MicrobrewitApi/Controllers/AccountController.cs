@@ -5,7 +5,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using AutoMapper;
 using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Repository.Repository;
 using Microsoft.AspNet.Identity;
 using Microbrewit.Repository;
@@ -28,21 +30,15 @@ namespace Microbrewit.Api.Controllers
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(UserModel userModel)
+        public async Task<IHttpActionResult> Register(UserPostDto userPostDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var userModel = Mapper.Map<UserPostDto, UserModel>(userPostDto);
+            var user = Mapper.Map<UserPostDto, User>(userPostDto);
             IdentityResult result = await _repo.RegisterUser(userModel);
-            var user = new User
-            {
-                Username = userModel.UserName,
-                Email = userModel.Email,
-                Settings = userModel.Settings,
-
-            };
             await _userRepository.AddAsync(user);
             IHttpActionResult errorResult = GetErrorResult(result);
 
@@ -52,6 +48,27 @@ namespace Microbrewit.Api.Controllers
             }
 
             return Ok();
+        }
+
+        // PUT api/User/5
+        [Route("{username}")]
+        public async Task<IHttpActionResult> PutUser(string username, UserPostDto userPostDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!username.Equals(userPostDto.Username))
+            {
+                return BadRequest();
+            }
+            var userModel = Mapper.Map<UserPostDto, UserModel>(userPostDto);
+            var user = Mapper.Map<UserPostDto, User>(userPostDto);
+            
+            await _userRepository.UpdateAsync(user);
+
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         protected override void Dispose(bool disposing)
