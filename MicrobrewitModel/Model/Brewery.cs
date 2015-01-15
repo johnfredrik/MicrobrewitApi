@@ -14,6 +14,8 @@ namespace Microbrewit.Model
         public string Type { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
 
         public ICollection<BreweryMember> Members { get; set; }
         public ICollection<BreweryBeer> Beers { get; set; }
