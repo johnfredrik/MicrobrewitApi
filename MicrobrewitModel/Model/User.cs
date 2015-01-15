@@ -13,6 +13,8 @@ namespace Microbrewit.Model
         public string Email { get; set; }
         public string Settings { get; set; }
         public string Gravatar { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         public ICollection<BreweryMember> Breweries { get; set; }
         public ICollection<UserBeer> Beers { get; set; }
