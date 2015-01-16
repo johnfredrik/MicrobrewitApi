@@ -28,12 +28,21 @@ namespace Microbrewit.Repository.Repository
             {
                 UserName = userModel.UserName,
                 Email = userModel.Email,
-                
             };
-            
+
             var result = await _userManager.CreateAsync(user, userModel.Password);
 
             return result;
+        }
+
+        public async Task<IdentityResult> UpdateUser(UserModel userModel)
+        {
+            var user = _userManager.FindByName(userModel.UserName);
+            if (user == null) return new IdentityResult("User not found");
+
+            if (!user.Email.Equals(userModel.Email)) user.Email = userModel.Email;
+            return await _userManager.UpdateAsync(user);
+
         }
 
         public async Task<IdentityUser> FindUser(string userName, string password)

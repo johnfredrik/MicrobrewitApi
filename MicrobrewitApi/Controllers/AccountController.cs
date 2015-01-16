@@ -52,19 +52,20 @@ namespace Microbrewit.Api.Controllers
 
         // PUT api/User/5
         [Route("{username}")]
-        public async Task<IHttpActionResult> PutUser(string username, UserPostDto userPostDto)
+        public async Task<IHttpActionResult> PutUser(string username, UserPutDto userPutDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!username.Equals(userPostDto.Username))
+            if (!username.Equals(userPutDto.Username))
             {
                 return BadRequest();
             }
-            var userModel = Mapper.Map<UserPostDto, UserModel>(userPostDto);
-            var user = Mapper.Map<UserPostDto, User>(userPostDto);
+            var userModel = Mapper.Map<UserPutDto, UserModel>(userPutDto);
+            await _repo.UpdateUser(userModel);
+            var user = Mapper.Map<UserPutDto, User>(userPutDto);
             
             await _userRepository.UpdateAsync(user);
 
