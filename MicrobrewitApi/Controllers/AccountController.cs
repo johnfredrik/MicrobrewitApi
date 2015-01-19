@@ -1,33 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Net;
-using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using AutoMapper;
+using log4net;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Repository;
 using Microbrewit.Repository.Repository;
 using Microsoft.AspNet.Identity;
-using Microbrewit.Repository;
+using Microsoft.Data.OData.Metadata;
 
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("Account")]
     public class AccountController : ApiController
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly string MailService = ConfigurationManager.AppSettings["mailService"];
         private AuthRepository _repo = null;
         private IUserRepository _userRepository = null;
+        private Elasticsearch.ElasticSearch _elasticsearch = null;
 
         public AccountController()
         {
             _repo = new AuthRepository();
             _userRepository = new UserRepository();
+            _elasticsearch = new Elasticsearch.ElasticSearch();
 
         }
 
         // POST api/Account/Register
+        /// <summary>
+        /// Register user account to microbrew.it
+        /// </summary>
+        /// <param name="userPostDto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [Route("Register")]
         public async Task<IHttpActionResult> Register(UserPostDto userPostDto)
@@ -39,15 +50,115 @@ namespace Microbrewit.Api.Controllers
             var userModel = Mapper.Map<UserPostDto, UserModel>(userPostDto);
             var user = Mapper.Map<UserPostDto, User>(userPostDto);
             IdentityResult result = await _repo.RegisterUser(userModel);
-            await _userRepository.AddAsync(user);
-            IHttpActionResult errorResult = GetErrorResult(result);
+            if (result.Succeeded)
+            {
+                var dbUser = await _repo.FindUser(userModel.UserName, userModel.Password);
+                await _elasticsearch.UpdateUserElasticSearch(Mapper.Map<User, UserDto>(user));
+                await _userRepository.AddAsync(user);
 
+                var code = await _repo.GenerateEmailConfirmationTokenAsync(dbUser.Id);
+                var callbackUrl = string.Format("{0}/account/confirm?userid={1}&code={2}", MailService, HttpUtility.UrlEncode(dbUser.Id),
+                    HttpUtility.UrlEncode(code));
+
+                try
+                {
+                    await _repo.SendEmailAsync(dbUser.Id,
+                        "Confirm your account",
+                        "Please confirm your account by clicking this link: <a href=\""
+                        + callbackUrl + "\">link</a>");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            }
+
+            IHttpActionResult errorResult = GetErrorResult(result);
             if (errorResult != null)
             {
                 return errorResult;
             }
+            return Ok(Mapper.Map<User, UserDto>(user));
+        }
 
-            return Ok();
+        /// <summary>
+        /// To resend a confirm mail request.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        [Route("resend")]
+        [HttpGet]
+        public async Task<IHttpActionResult> ReSendConfirmationMail(string username)
+        {
+            var dbUser = await _repo.FindByNameAsync(username);
+            if (dbUser != null)
+            {
+                var code = await _repo.GenerateEmailConfirmationTokenAsync(dbUser.Id);
+                var callbackUrl = string.Format("{0}/account/confirm?userid={1}&code={2}", MailService, HttpUtility.UrlEncode(dbUser.Id),
+                    HttpUtility.UrlEncode(code));
+
+                try
+                {
+                    await _repo.SendEmailAsync(dbUser.Id,
+                        "Confirm your account",
+                        "Please confirm your account by clicking this link: <a href=\""
+                        + callbackUrl + "\">link</a>");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [Route("forgot")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ForgotPassWord(ForgotPassword model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _repo.FindByEmailAsync(model.Email);
+                if (user == null || !(await _repo.IsEmailConfirmedAsync(user.Id)))
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return Ok("Request sent");
+                }
+
+                var code = await _repo.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = string.Format("http://http://microbrew.it/account/resetpassword?id={0}&code={1}", HttpUtility.UrlEncode(user.Id), HttpUtility.UrlEncode(code));
+                await _repo.SendEmailAsync(user.Id, "Reset Password",
+                "<a href=\"" + callbackUrl + "\">link</a>");
+                return Ok("Request sent");
+            }
+            return BadRequest("Invalid request");
+        }
+
+        [Route("reset")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ResetPassword(ResetPassword model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _repo.FindByEmailAsync(model.Email);
+                if (user == null || !(await _repo.IsEmailConfirmedAsync(user.Id)))
+                {
+                    return BadRequest();
+                }
+                var result = await _repo.ResetPasswordAsync(user.Id, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                IHttpActionResult errorResult = GetErrorResult(result);
+
+                if (errorResult != null)
+                {
+                    return errorResult;
+                }
+            }
+            return BadRequest();
         }
 
         // PUT api/User/5
@@ -64,12 +175,42 @@ namespace Microbrewit.Api.Controllers
                 return BadRequest();
             }
             var userModel = Mapper.Map<UserPutDto, UserModel>(userPutDto);
-            await _repo.UpdateUser(userModel);
-            var user = Mapper.Map<UserPutDto, User>(userPutDto);
-            
-            await _userRepository.UpdateAsync(user);
+            var result = await _repo.UpdateUser(userModel);
+            if (result.Succeeded)
+            {
+                var user = Mapper.Map<UserPutDto, User>(userPutDto);
+                await _userRepository.UpdateAsync(user);
+            }
+            IHttpActionResult errorResult = GetErrorResult(result);
+            if (errorResult != null)
+            {
+                return errorResult;
+            }
 
             return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [Route("Confirm")]
+        [HttpGet]
+        public async Task<IHttpActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return BadRequest("wrong");
+            }
+
+            var result = await _repo.ConfirmEmailAsync(userId, code);
+            if (result.Succeeded)
+            {
+                return Ok("ConfirmEmail");
+            }
+            IHttpActionResult errorResult = GetErrorResult(result);
+
+            if (errorResult != null)
+            {
+                return errorResult;
+            }
+            return BadRequest();
         }
 
         protected override void Dispose(bool disposing)
