@@ -50,10 +50,8 @@ namespace Microbrewit.Api.Elasticsearch
             var node = new Uri("http://localhost:9200");
             var settings = new ConnectionConfiguration(node);
             var client = new ElasticsearchClient(settings);
-
-            //var queryString = "{\"query\" : { \"match\": { \"name\" : {\"query\" : \"" + query + "\", and \"operator\" : \"and\"}}}}";
-            var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"filter\":{\"dataType\":hop\",\"dataType\":fermentable\",\"dataType\":yeasts\",\"dataType\":other\",} \"match\": {\"name\": {\"query\": \" " + query + " \"}}}}";
-           
+            
+            var queryString = "{\"from\": " + from +", \"size\": " + size +", \"filter\": { \"or\": [{\"term\": { \"dataType\": \"hop\"}},{\"term\": {\"dataType\": \"fermentable\"}},{\"term\": {\"dataType\": \"yeasts\"}},{\"term\": {\"dataType\": \"other\"}}]},\"query\": {\"match\": {\"name\": {\"query\": \"" + query +"\"}}}}";
             var res = await client.SearchAsync<string>("mb", queryString);
             return res.Response;
         }
