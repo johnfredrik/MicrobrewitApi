@@ -20,6 +20,7 @@ namespace Microbrewit.Api.Automapper
                 .ForMember(dto => dto.Breweries, conf => conf.MapFrom(rec => rec.Breweries))
                 .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
                 .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<UserGeoLocationResolver>())
+                .ForMember(dto => dto.EmailConfirmed, conf => conf.ResolveUsing<UserEmailConfirmedResolver>())
                 .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings));
 
 
