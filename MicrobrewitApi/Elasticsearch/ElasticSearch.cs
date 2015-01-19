@@ -323,10 +323,25 @@ namespace Microbrewit.Api.Elasticsearch
         {
             foreach (var user in users)
             {
-                // Adds an analayzer to the name property in FermentableDto object.
-                _client.Map<UserDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Username).Analyzer("autocomplete"))));
-                var index = _client.Index<UserDto>(user);
+               await  UpdateUserElasticSearch(user);
             }
+        }
+
+        public async Task UpdateUserElasticSearch(UserDto user)
+        {
+            // Adds an analayzer to the name property in FermentableDto object.
+            await _client.MapAsync<UserDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Username).Analyzer("autocomplete"))));
+            var index = _client.Index<UserDto>(user);
+        }
+
+        public async Task<IEnumerable<UserDto>> GetUsersAsync(int from, int size)
+        {
+            var result = await _client.SearchAsync<UserDto>(s => s
+                                                .Filter(f => f.Term(t => t.DataType, "user"))
+                                                .Filter(f => f.Term(t => t.EmailConfirmed,"true"))
+                                                .Size(_bigNumber)
+                                                );
+            return result.Documents;
         }
 
         public async Task<IEnumerable<UserDto>> SearchUsers(string query, int from, int size)
