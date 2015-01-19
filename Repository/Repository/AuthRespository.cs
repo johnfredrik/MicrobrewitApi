@@ -7,6 +7,8 @@ using Microbrewit.Model;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microbrewit.Repository.Interface;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace Microbrewit.Repository.Repository
 {
@@ -18,8 +20,18 @@ namespace Microbrewit.Repository.Repository
 
         public AuthRepository()
         {
+            var provider = new DpapiDataProtectionProvider("Microbrew.it");
             _ctx = new AuthContext();
-            _userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(_ctx));
+            //_userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(_ctx));
+            _userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(_ctx))
+            {
+                EmailService = new EmailService()
+            };
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser>(provider.Create("ASP.NET Identity"))
+            {
+                //Sets the lifespan of the confirm email token and the reset password token.
+                TokenLifespan = TimeSpan.FromMinutes(1),
+            };
         }
 
         public async Task<IdentityResult> RegisterUser(UserModel userModel)
@@ -51,6 +63,7 @@ namespace Microbrewit.Repository.Repository
 
             return user;
         }
+
 
         public Client FindClient(string clientId)
         {
@@ -110,6 +123,57 @@ namespace Microbrewit.Repository.Repository
             _ctx.Dispose();
             _userManager.Dispose();
 
+        }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(string userId, string code)
+        {
+            return await _userManager.ConfirmEmailAsync(userId, code);
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(string userId)
+        {
+            return _userManager.GenerateEmailConfirmationToken(userId);
+        }
+
+        public async Task SendEmailAsync(string id, string subject, string body)
+        {
+            await _userManager.SendEmailAsync(id,subject,body);
+        }
+
+        public async Task<IdentityUser> FindByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<bool> IsEmailConfirmedAsync(string id)
+        {
+            return await _userManager.IsEmailConfirmedAsync(id);
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(string id)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(id);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(string userId, string token, string password)
+        {
+            return await _userManager.ResetPasswordAsync(userId, token, password);
+        }
+
+
+        public async Task<IdentityUser> FindByNameAsync(string username)
+        {
+            return await _userManager.FindByNameAsync(username);
+        }
+
+        public IdentityUser FindUserByName(string username)
+        {
+            return _userManager.FindByName(username);
+        }
+
+        public bool IsEmailConfirmed(string id)
+        {
+            return _userManager.IsEmailConfirmed(id);
         }
     }
 }
