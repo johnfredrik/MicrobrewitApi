@@ -1,23 +1,8 @@
-﻿using Microbrewit.Model;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Routing;
-using AutoMapper;
-using Microbrewit.Api.Automapper;
-using System.Net.Http.Formatting;
-using WebApiContrib.Formatting.Jsonp;
-using System.Web.Mvc;
-using Microbrewit.HelpPage;
-using System.Web.Optimization;
-using Microbrewit.Model.Migrations;
+﻿using System.Web;
 
 namespace Microbrewit.Api
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         protected void Application_Start()
         {

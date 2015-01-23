@@ -1,32 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Microbrewit.Api.Automapper;
-using Microbrewit.Model;
-using Microbrewit.Repository;
-using log4net;
-using Microbrewit.Api.Controllers;
-using System.Net.Http;
 using System.IO;
-using Microbrewit.Model.DTOs;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Web.Http.Results;
-using Newtonsoft.Json;
-using System.Net;
-using Nest;
-using Microbrewit.Api.Elasticsearch;
-using Elasticsearch;
 using Elasticsearch.Net;
 using Elasticsearch.Net.Connection;
+using log4net;
+using Microbrewit.Api.Controllers;
+using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
+using Microbrewit.Repository;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Automapper;
+using Nest;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace Microbrewit.Test
 {
     [TestFixture]
     public class YeastControllerTest
     {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IYeastRepository _repository;
         private MicrobrewitContext _context;
         private YeastController _controller;

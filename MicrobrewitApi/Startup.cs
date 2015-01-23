@@ -3,14 +3,12 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Microbrewit.Api.Automapper;
 using Microbrewit.Api.Provider;
 using Microbrewit.HelpPage;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
-using Microsoft.Owin.Security.DataProtection;
+using Microsoft.Owin.Cors;
+using Microbrewit.Service;
+using Microbrewit.Service.Automapper;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
@@ -57,7 +55,7 @@ namespace Microbrewit.Api
             ConfigureOAuth(app);
             //WebApiConfig.Register(HttpConfiguration);
             //WebApiConfig.Register(config);
-            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+            app.UseCors(CorsOptions.AllowAll);
             app.UseWebApi(HttpConfiguration);
             //app.UseWebApi(config);
         }

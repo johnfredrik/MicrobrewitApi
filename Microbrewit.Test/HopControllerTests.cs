@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using NUnit.Framework;
-using Microbrewit.Repository;
-using Microbrewit.Model;
-using Microbrewit.Api.Automapper;
-using Microbrewit.Api.Controllers;
-using log4net;
-using Microbrewit.Model.DTOs;
-using System.Web.Http.Results;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Results;
+using log4net;
+using Microbrewit.Api.Controllers;
+using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
+using Microbrewit.Repository;
+using Microbrewit.Service.Automapper;
 using Newtonsoft.Json;
-using AutoMapper;
+using NUnit.Framework;
 
 namespace Microbrewit.Test
 {
     [TestFixture]
     public class HopControllerTests
     {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IHopRepository _repository;
         private MicrobrewitContext _context;
         private HopController _controller;
@@ -91,7 +89,7 @@ namespace Microbrewit.Test
             var hop = hopCompleteDto.Content.Hops[0];
             hop.Notes = "Something hoppy";
             hop.BetaHigh = 99;
-            var response = await _controller.PutHop(hop.Id, hop) as System.Web.Http.HttpResponseException;
+            var response = await _controller.PutHop(hop.Id, hop) as HttpResponseException;
             
             var result = await _controller.GetHop(first.Id) as OkNegotiatedContentResult<HopCompleteDto>;
             var updatedHop = result.Content.Hops[0];

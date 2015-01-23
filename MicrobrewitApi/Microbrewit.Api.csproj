@@ -306,55 +306,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="AuthorizationManager.cs" />
-    <Compile Include="Automapper\BeerProfile.cs" />
-    <Compile Include="Automapper\BeerStyleProfile.cs" />
-    <Compile Include="Automapper\BoilStepProfile.cs" />
-    <Compile Include="Automapper\BrewerProfile.cs" />
-    <Compile Include="Automapper\BreweryProfile.cs" />
-    <Compile Include="Automapper\CustomResolvers\BeerBrewerResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\BeerStyleResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\BreweryMemberGeoLocationResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\UserEmailConfirmedResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\UserGeoLocationResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\BreweryMemberResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\BreweryGeoLocationResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\RecipeBoilStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\RecipeFermentationStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\FermentableBoilStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\FermentableSupplierResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopFermentationStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\RecipeMashStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\YeastFermentationStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\OtherFermentationStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\OtherBoilStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\OtherMashStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopMashStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopFlavoursResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopPostOriginResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopBoilStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\SetHopFromNullResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\SubBeerStyleResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\SubstitutResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\YeastSupplierResolver.cs" />
-    <Compile Include="Automapper\FermentableProfile.cs" />
-    <Compile Include="Automapper\FermentationStepProfile.cs" />
-    <Compile Include="Automapper\MashStepProfile.cs" />
-    <Compile Include="Automapper\OriginProfile.cs" />
-    <Compile Include="Automapper\GlassProfile.cs" />
-    <Compile Include="Automapper\OtherProfile.cs" />
-    <Compile Include="Automapper\ResolveRecipeId.cs" />
-    <Compile Include="Automapper\SupplierProfile.cs" />
-    <Compile Include="Automapper\UserProfile.cs" />
-    <Compile Include="Automapper\YeastsProfile.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BeerController.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="Controllers\BreweryController.cs" />
-    <Compile Include="Automapper\HopProfile.cs" />
-    <Compile Include="Automapper\RecipeProfile.cs" />
     <Compile Include="Controllers\FermentableController.cs" />
     <Compile Include="Controllers\GlassController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -366,7 +321,6 @@
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\YeastController.cs" />
-    <Compile Include="Automapper\AutoMapperConfiguration.cs" />
     <Compile Include="Elasticsearch\ElasticSearch.cs" />
     <Compile Include="ErrorHandler\GlobalExceptionHandler.cs" />
     <Compile Include="ErrorHandler\Log4NetExceptionLogger.cs" />
@@ -418,6 +372,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microbrewit.Service\Microbrewit.Service.csproj">
+      <Project>{576495eb-393a-4fcc-a672-2fc2ac3b04dd}</Project>
+      <Name>Microbrewit.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MicrobrewitModel\Microbrewit.Model.csproj">
       <Project>{a7be6b77-35e4-4164-8f31-db0f21451d3d}</Project>
       <Name>Microbrewit.Model</Name>

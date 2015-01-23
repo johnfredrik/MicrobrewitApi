@@ -1,24 +1,23 @@
-﻿using log4net;
-using Microbrewit.Api.Automapper;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Web.Http.Results;
+using log4net;
 using Microbrewit.Api.Controllers;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
-using NUnit.Framework;
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
+using Microbrewit.Service.Automapper;
 using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace Microbrewit.Test
 {
     public class BreweryControllerTest
     {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IBreweryRepository _repository;
         private MicrobrewitContext _context;
         private BreweryController _controller;

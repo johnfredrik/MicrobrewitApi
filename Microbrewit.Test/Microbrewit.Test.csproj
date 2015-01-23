@@ -113,6 +113,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microbrewit.Service\Microbrewit.Service.csproj">
+      <Project>{576495eb-393a-4fcc-a672-2fc2ac3b04dd}</Project>
+      <Name>Microbrewit.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MicrobrewitApi\Microbrewit.Api.csproj">
       <Project>{5f9484ca-694f-4ddf-bfa8-81359e14efc8}</Project>
       <Name>Microbrewit.Api</Name>
