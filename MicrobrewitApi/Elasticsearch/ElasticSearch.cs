@@ -51,7 +51,7 @@ namespace Microbrewit.Api.Elasticsearch
             var settings = new ConnectionConfiguration(node);
             var client = new ElasticsearchClient(settings);
             
-            var queryString = "{\"from\": " + from +", \"size\": " + size +", \"filter\": { \"or\": [{\"term\": { \"dataType\": \"hop\"}},{\"term\": {\"dataType\": \"fermentable\"}},{\"term\": {\"dataType\": \"yeasts\"}},{\"term\": {\"dataType\": \"other\"}}]},\"query\": {\"match\": {\"name\": {\"query\": \"" + query +"\"}}}}";
+            var queryString = "{\"from\": " + from +", \"size\": " + size +", \"filter\": { \"or\": [{\"term\": { \"dataType\": \"hop\"}},{\"term\": {\"dataType\": \"fermentable\"}},{\"term\": {\"dataType\": \"yeast\"}},{\"term\": {\"dataType\": \"other\"}}]},\"query\": {\"match\": {\"name\": {\"query\": \"" + query +"\"}}}}";
             var res = await client.SearchAsync<string>("mb", queryString);
             return res.Response;
         }
@@ -491,6 +491,11 @@ namespace Microbrewit.Api.Elasticsearch
                         .Term(t => t.DataType,"beer")
                         ))));
             return result.Documents;
+        }
+
+        public async Task DeleteYeast(int id)
+        {
+            await _client.DeleteAsync<YeastDto>(id);
         }
     }
 }
