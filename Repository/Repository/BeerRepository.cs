@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 
 namespace Microbrewit.Repository
 {
@@ -21,14 +22,19 @@ namespace Microbrewit.Repository
                     var originalBeer = context.Beers.SingleOrDefault(b => b.Id == beer.Id);
                     SetChanges(context, originalBeer, beer);
 
-                    var originalABV = context.ABVs.SingleOrDefault(a => a.Id == beer.ABV.Id);
-                    SetChanges(context, originalABV, beer.ABV);
+                    var originalAbv = context.ABVs.SingleOrDefault(a => a.Id == beer.ABV.Id);
+                    if(originalAbv != null)
+                        SetChanges(context, originalAbv, beer.ABV);
 
-                    var originalSRM = context.SRMs.SingleOrDefault(s => s.Id == beer.SRM.Id);
-                    SetChanges(context, originalSRM, beer.SRM);
+                    var originalSrm = context.SRMs.SingleOrDefault(s => s.Id == beer.SRM.Id);
+                    if(originalSrm != null)
+                        SetChanges(context, originalSrm, beer.SRM);
 
-                    var originalIBU = context.IBUs.SingleOrDefault(i => i.Id == beer.IBU.Id);
+                    var originalIbu = context.IBUs.SingleOrDefault(i => i.Id == beer.IBU.Id);
+                    if (originalIbu == null)
+                        SetChanges(context,originalIbu,beer.IBU);
 
+                    // Brewers
                     foreach (var userBeer in beer.Brewers)
                     {
                         var originalUserBeer = context.UserBeers.SingleOrDefault(u => u.Username.Equals(userBeer.Username) && u.BeerId == beer.Id);
@@ -41,7 +47,7 @@ namespace Microbrewit.Repository
                             context.UserBeers.Add(userBeer);
                         }
                     }
-
+                    // Brewery
                     foreach (var breweryBeer in beer.Breweries)
                     {
                         var originalBreweryBeer = context.BreweryBeers.SingleOrDefault(b => b.BreweryId == breweryBeer.BreweryId && b.BeerId == beer.Id);
@@ -54,7 +60,7 @@ namespace Microbrewit.Repository
                             context.BreweryBeers.Add(breweryBeer);
                         }
                     }
-
+                    // Recipe 
                     var originalRecipe = context.Recipes.SingleOrDefault(r => r.Id == beer.Recipe.Id);
                     if (originalRecipe == null)
                     {
@@ -62,102 +68,110 @@ namespace Microbrewit.Repository
                     }
                     else
                     {
-
                         SetChanges(context, originalRecipe, beer.Recipe);
-
-                        // Updates changes to the fermentation steps
-                        foreach (var step in beer.Recipe.FermentationSteps)
+                        // Fermentation Step
+                        foreach (var fermentationStep in beer.Recipe.FermentationSteps)
                         {
-                            var originalStep = context.FermentationSteps.SingleOrDefault(s => s.StepNumber == step.StepNumber && s.RecipeId == step.RecipeId);
-                            if (originalStep == null)
+                            var originalFermentationStep = context.FermentationSteps.SingleOrDefault(s =>
+                                s.StepNumber == fermentationStep.StepNumber &&
+                                s.RecipeId == fermentationStep.RecipeId);
+                            if (originalFermentationStep == null)
                             {
-                                context.FermentationSteps.Add(step);
+                                context.FermentationSteps.Add(fermentationStep);
                             }
                             else
                             {
-                                SetChanges(context, originalStep, step);
-
-                                foreach (var fermentableStep in step.Fermentables)
+                                SetChanges(context, originalFermentationStep, fermentationStep);
+                                //Fermentable
+                                foreach (var fermentable in fermentationStep.Fermentables)
                                 {
-                                    var originalFermentableStep = context.FermentationStepFermentables
-                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId && f.RecipeId == fermentableStep.RecipeId);
-                                    if (originalFermentableStep != null)
+                                    var originalFermentable = context.FermentationStepFermentables
+                                        .SingleOrDefault(f => f.StepNumber == fermentable.StepNumber && f.FermentableId == fermentable.FermentableId && f.RecipeId == fermentable.RecipeId);
+                                    if (originalFermentable != null)
                                     {
-                                        SetChanges(context, originalFermentableStep, fermentableStep);
+                                        SetChanges(context, originalFermentable, fermentable);
                                     }
                                     else
                                     {
-                                        context.FermentationStepFermentables.Add(fermentableStep);
+                                        context.FermentationStepFermentables.Add(fermentable);
                                     }
                                 }
-                                foreach (var hopStep in step.Hops)
+                                //Hop
+                                foreach (var hop in fermentationStep.Hops)
                                 {
-                                    var originalHopStep = context.FermentationStepHops
-                                        .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId && h.RecipeId == hopStep.RecipeId);
-                                    if (originalHopStep != null)
+                                    var originalHop = context.FermentationStepHops
+                                        .SingleOrDefault(h => h.StepNumber == hop.StepNumber && h.HopId == hop.HopId && h.RecipeId == hop.RecipeId);
+                                    if (originalHop != null)
                                     {
-                                        SetChanges(context, originalHopStep, hopStep);
+                                        SetChanges(context, originalHop, hop);
                                     }
                                     else
                                     {
-                                        context.FermentationStepHops.Add(hopStep);
+                                        context.FermentationStepHops.Add(hop);
                                     }
                                 }
-                                foreach (var otherStep in step.Others)
+                                //Other
+                                foreach (var other in fermentationStep.Others)
                                 {
-                                    var originalOtherStep = context.FermentationStepOthers
-                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId && o.RecipeId == otherStep.RecipeId);
-                                    if (originalOtherStep != null)
+                                    var originalOther = context.FermentationStepOthers
+                                        .SingleOrDefault(o => o.StepNumber == other.StepNumber && o.OtherId == other.OtherId && o.RecipeId == other.RecipeId);
+                                    if (originalOther != null)
                                     {
-                                        SetChanges(context, originalOtherStep, otherStep);
+                                        SetChanges(context, originalOther, other);
                                     }
                                     else
                                     {
-                                        context.FermentationStepOthers.Add(otherStep);
+                                        context.FermentationStepOthers.Add(other);
                                     }
                                 }
-                                foreach (var yeastStep in step.Yeasts)
+                                //Yeast
+                                foreach (var yeast in fermentationStep.Yeasts)
                                 {
-                                    var originalYeastStep = context.FermentationStepYeasts
-                                        .SingleOrDefault(y => y.StepNumber == yeastStep.StepNumber && y.YeastId == yeastStep.YeastId && y.RecipeId == yeastStep.RecipeId);
-                                    if (originalYeastStep != null)
+                                    var originalYeast = context.FermentationStepYeasts
+                                        .SingleOrDefault(y => y.StepNumber == yeast.StepNumber && y.YeastId == yeast.YeastId && y.RecipeId == yeast.RecipeId);
+                                    if (originalYeast != null)
                                     {
-                                        SetChanges(context, originalYeastStep, yeastStep);
+                                        SetChanges(context, originalYeast, yeast);
                                     }
                                     else
                                     {
-                                        context.FermentationStepYeasts.Add(yeastStep);
+                                        context.FermentationStepYeasts.Add(yeast);
                                     }
                                 }
                             }
                         }
 
-                        // Updates changes to the boil steps
-                        foreach (var step in beer.Recipe.BoilSteps)
+                        // Boil step
+                        foreach (var boilStep in beer.Recipe.BoilSteps)
                         {
-                            var originalStep = context.BoilSteps.SingleOrDefault(s => s.RecipeId == step.RecipeId && s.StepNumber == step.StepNumber);
-                            if (originalStep == null)
+                            var originalBoilStep = context.BoilSteps.SingleOrDefault(s => s.RecipeId == boilStep.RecipeId && s.StepNumber == boilStep.StepNumber);
+                            if (originalBoilStep == null)
                             {
-                                context.BoilSteps.Add(step);
+                                context.BoilSteps.Add(boilStep);
                             }
                             else
                             {
-                                SetChanges(context, originalStep, step);
-
-                                foreach (var fermentableStep in step.Fermentables)
+                                SetChanges(context, originalBoilStep, boilStep);
+                                //Fermentable
+                                foreach (var fermentable in boilStep.Fermentables)
                                 {
-                                    var originalFermentableStep = context.BoilStepFermentables
-                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId);
-                                    if (originalFermentableStep != null)
+                                    var originalFermentable = context.BoilStepFermentables
+                                        .SingleOrDefault(f =>
+                                            f.StepNumber == fermentable.StepNumber &&
+                                            f.FermentableId == fermentable.FermentableId &&
+                                            f.RecipeId == boilStep.RecipeId);
+
+                                    if (originalFermentable != null)
                                     {
-                                        SetChanges(context, originalFermentableStep, fermentableStep);
+                                        SetChanges(context, originalFermentable, fermentable);
                                     }
                                     else
                                     {
-                                        context.BoilStepFermentables.Add(fermentableStep);
+                                        context.BoilStepFermentables.Add(fermentable);
                                     }
                                 }
-                                foreach (var hopStep in step.Hops)
+                                //Hop
+                                foreach (var hopStep in boilStep.Hops)
                                 {
                                     var originalHopStep = context.BoilStepHops
                                         .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId && h.RecipeId == hopStep.RecipeId);
@@ -170,10 +184,11 @@ namespace Microbrewit.Repository
                                         context.BoilStepHops.Add(hopStep);
                                     }
                                 }
-                                foreach (var otherStep in step.Others)
+                                //Other
+                                foreach (var otherStep in boilStep.Others)
                                 {
                                     var originalOtherStep = context.BoilStepOthers
-                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId);
+                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId && o.RecipeId == otherStep.RecipeId);
                                     if (originalOtherStep != null)
                                     {
                                         SetChanges(context, originalOtherStep, otherStep);
@@ -196,12 +211,12 @@ namespace Microbrewit.Repository
                             }
                             else
                             {
-
                                 SetChanges(context, originalStep, step);
+                                //Fermentable
                                 foreach (var fermentableStep in step.Fermentables)
                                 {
                                     var originalFermentableStep = context.MashStepFermentables
-                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId);
+                                        .SingleOrDefault(f => f.StepNumber == fermentableStep.StepNumber && f.FermentableId == fermentableStep.FermentableId && f.RecipeId == step.RecipeId);
                                     if (originalFermentableStep != null)
                                     {
                                         SetChanges(context, originalFermentableStep, fermentableStep);
@@ -211,10 +226,11 @@ namespace Microbrewit.Repository
                                         context.MashStepFermentables.Add(fermentableStep);
                                     }
                                 }
+                                //Hop
                                 foreach (var hopStep in step.Hops)
                                 {
                                     var originalHopStep = context.MashStepHops
-                                        .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId);
+                                        .SingleOrDefault(h => h.StepNumber == hopStep.StepNumber && h.HopId == hopStep.HopId && h.RecipeId == step.RecipeId);
                                     if (originalHopStep != null)
                                     {
                                         SetChanges(context, originalHopStep, hopStep);
@@ -224,10 +240,11 @@ namespace Microbrewit.Repository
                                         context.MashStepHops.Add(hopStep);
                                     }
                                 }
+                                //Other
                                 foreach (var otherStep in step.Others)
                                 {
                                     var originalOtherStep = context.MashStepOthers
-                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId);
+                                        .SingleOrDefault(o => o.StepNumber == otherStep.StepNumber && o.OtherId == otherStep.OtherId && o.RecipeId == step.RecipeId);
                                     if (originalOtherStep != null)
                                     {
                                         SetChanges(context, originalOtherStep, otherStep);
@@ -242,9 +259,6 @@ namespace Microbrewit.Repository
                     }
                 }
                 context.SaveChanges();
-
-                //base.Update(items);
-
             }
         }
 
@@ -269,29 +283,53 @@ namespace Microbrewit.Repository
                 IQueryable<Beer> dbQuery = context.Set<Beer>();
 
                 //Apply eager loading
-                foreach (string navigationProperty in navigationProperties)
-                {
-                    dbQuery = dbQuery.Include<Beer>(navigationProperty);
-                }
+                dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Beer>(navigationProperty));
                 return await dbQuery.OrderByDescending(b => b.CreatedDate).Skip(from).Take(size).ToListAsync();
             }
         }
 
 
-        public async Task<IList<Beer>> GetAllUserBeer(string username, params string[] navigationProperties)
+
+
+        public async Task<IList<Beer>> GetAllUserBeerAsync(string username, params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {
                 var dbQuery = from beer in context.Beers
-                             join userBeers in context.UserBeers on beer.Id equals userBeers.BeerId
-                             where userBeers.Username.Equals(username)
-                             select beer;
+                              join userBeers in context.UserBeers on beer.Id equals userBeers.BeerId
+                              where userBeers.Username.Equals(username)
+                              select beer;
 
-                foreach (string navigationProperty in navigationProperties)
-                {
-                    dbQuery = dbQuery.Include<Beer>(navigationProperty);
-                }
+                dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Beer>(navigationProperty));
                 return await dbQuery.ToListAsync();
+            }
+        }
+
+        public IList<Beer> GetAllUserBeer(string username, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var dbQuery = from beer in context.Beers
+                              join userBeers in context.UserBeers on beer.Id equals userBeers.BeerId
+                              where userBeers.Username.Equals(username)
+                              select beer;
+
+                dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Beer>(navigationProperty));
+                return dbQuery.ToList();
+            }
+        }
+
+        public IList<Beer> GetAllBreweryBeers(int breweryId, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var dbQuery = from beer in context.Beers
+                              join breweryBeer in context.BreweryBeers on beer.Id equals breweryBeer.BeerId
+                              where breweryBeer.BreweryId.Equals(breweryId)
+                              select beer;
+
+                dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Beer>(navigationProperty));
+                return dbQuery.ToList();
             }
         }
     }
