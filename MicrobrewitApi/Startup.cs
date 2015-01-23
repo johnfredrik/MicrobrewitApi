@@ -6,14 +6,18 @@ using System.Web.Routing;
 using Microbrewit.Api.Automapper;
 using Microbrewit.Api.Provider;
 using Microbrewit.HelpPage;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
 namespace Microbrewit.Api
 {
-     public class Startup
-     {
+    public class Startup
+    {
         public static HttpConfiguration HttpConfiguration { get; private set; }
 
         public Startup()
@@ -21,34 +25,33 @@ namespace Microbrewit.Api
             HttpConfiguration = new HttpConfiguration();
         }
 
-         public void Configuration(IAppBuilder app)
-         {
+        public void Configuration(IAppBuilder app)
+        {
             //HttpConfiguration config = new HttpConfiguration();
             // Add this code, if not present.
-             // Add this code, if not present.
-             AreaRegistration.RegisterAllAreas();
+            // Add this code, if not present.
+            AreaRegistration.RegisterAllAreas();
 
-             //GlobalConfiguration.Configuration.AddJsonpFormatter();
+            //GlobalConfiguration.Configuration.AddJsonpFormatter();
 
-             GlobalConfiguration.Configure(WebApiConfig.Register);
-             //GlobalConfiguration.Configuration.EnableCors();
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            //GlobalConfiguration.Configuration.EnableCors();
 
-             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-             RouteConfig.RegisterRoutes(RouteTable.Routes);
-             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-             AutoMapperConfiguration.Configure();
+            AutoMapperConfiguration.Configure();
 
-           // HttpConfiguration config = new HttpConfiguration();
- 
+            // HttpConfiguration config = new HttpConfiguration();
+
             //HttpConfiguration.AddJsonpFormatter();
 
-            
             HttpConfiguration.EnableCors();
 
-            
-            
-           
+
+
+
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<MicrobrewitContext, Configuration>());
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<AuthContext, Model.AuthMigration.Configuration>());
             ConfigureOAuth(app);
@@ -57,22 +60,22 @@ namespace Microbrewit.Api
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             app.UseWebApi(HttpConfiguration);
             //app.UseWebApi(config);
-         }
+        }
 
-         public void ConfigureOAuth(IAppBuilder app)
-         {
-             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions
-             {
-                 AllowInsecureHttp = true,
-                 TokenEndpointPath = new PathString("/token"),
-                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
-                 Provider = new SimpleAuthorizationServerProvider(),
-                 RefreshTokenProvider = new SimpleRefreshTokenProvider()
-             };
+        public void ConfigureOAuth(IAppBuilder app)
+        {
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
+                Provider = new SimpleAuthorizationServerProvider(),
+                RefreshTokenProvider = new SimpleRefreshTokenProvider()
+            };
 
-             app.UseOAuthAuthorizationServer(OAuthServerOptions);
-             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
 
-         }
-     }
+        }
+    }
 }
