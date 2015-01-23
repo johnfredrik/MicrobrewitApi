@@ -34,14 +34,14 @@ namespace Microbrewit.Api.Automapper.CustomResolvers
                     var fermentableStepDto = new FermentableStepDto();
                     
                     fermentableStepDto.FermentableId = item.FermentableId;
-                    fermentableStepDto.Number = item.StepNumber;
+                    fermentableStepDto.StepNumber = item.StepNumber;
                     fermentableStepDto.Amount = item.Amount;
                     fermentableStepDto.Supplier = fermentable.Supplier;
                     fermentableStepDto.Type = fermentable.Type;
                     fermentableStepDto.Name = fermentable.Name;
                     fermentableStepDto.PPG = fermentable.PPG;
                     fermentableStepDto.RecipeId = item.RecipeId;
-                    fermentableStepDto.Number = item.StepNumber;
+                    fermentableStepDto.StepNumber = item.StepNumber;
                         
                     if(item.Lovibond == 0)
                     {
