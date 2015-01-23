@@ -109,5 +109,13 @@ namespace Microbrewit.Repository
                 await context.SaveChangesAsync();
             }
         }
+
+        public IList<BreweryMember> GetBreweryMemberships(string username)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return context.BreweryMembers.Where(b => b.MemberUsername.Equals(username)).ToList();
+            }
+        }
     }
 }
