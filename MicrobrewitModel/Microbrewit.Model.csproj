@@ -88,6 +88,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
@@ -114,6 +115,8 @@
     <Compile Include="DTOs\BreweryCompleteDto.cs" />
     <Compile Include="DTOs\BreweryDto.cs" />
     <Compile Include="DTOs\DTOUser.cs" />
+    <Compile Include="DTOs\ForgotPassword.cs" />
+    <Compile Include="DTOs\GeoLocationDto.cs" />
     <Compile Include="DTOs\GlassDto.cs" />
     <Compile Include="DTOs\HopPostComplete.cs" />
     <Compile Include="DTOs\LinksBrewery.cs" />
@@ -153,12 +156,14 @@
     <Compile Include="DTOs\RecipeDto.cs" />
     <Compile Include="DTOs\RecipeSimpleCompleteDto.cs" />
     <Compile Include="DTOs\RecipeSimpleDto.cs" />
+    <Compile Include="DTOs\ResetPassword.cs" />
     <Compile Include="DTOs\SRMDto.cs" />
     <Compile Include="DTOs\SupplierCompleteDto.cs" />
     <Compile Include="DTOs\SupplierDto.cs" />
     <Compile Include="DTOs\UserCompleteDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />
     <Compile Include="DTOs\UserPostDto.cs" />
+    <Compile Include="DTOs\UserPutDto.cs" />
     <Compile Include="DTOs\YeastCompleteDto.cs" />
     <Compile Include="DTOs\YeastDto.cs" />
     <Compile Include="DTOs\YeastLinks.cs" />
@@ -195,6 +200,22 @@
     <Compile Include="Migrations\201412191144003_CompositeKeyBoilStep.cs" />
     <Compile Include="Migrations\201412191144003_CompositeKeyBoilStep.Designer.cs">
       <DependentUpon>201412191144003_CompositeKeyBoilStep.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412201421165_MoveForedOfFromRecipeToBeer.cs" />
+    <Compile Include="Migrations\201412201421165_MoveForedOfFromRecipeToBeer.Designer.cs">
+      <DependentUpon>201412201421165_MoveForedOfFromRecipeToBeer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412201513308_RemovedTableForkedBeer.cs" />
+    <Compile Include="Migrations\201412201513308_RemovedTableForkedBeer.Designer.cs">
+      <DependentUpon>201412201513308_RemovedTableForkedBeer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201501131555578_BreweryLongLat.cs" />
+    <Compile Include="Migrations\201501131555578_BreweryLongLat.Designer.cs">
+      <DependentUpon>201501131555578_BreweryLongLat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201501150612006_UserLongLat.cs" />
+    <Compile Include="Migrations\201501150612006_UserLongLat.Designer.cs">
+      <DependentUpon>201501150612006_UserLongLat.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
@@ -316,6 +337,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201412191144003_CompositeKeyBoilStep.resx">
       <DependentUpon>201412191144003_CompositeKeyBoilStep.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412201421165_MoveForedOfFromRecipeToBeer.resx">
+      <DependentUpon>201412201421165_MoveForedOfFromRecipeToBeer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412201513308_RemovedTableForkedBeer.resx">
+      <DependentUpon>201412201513308_RemovedTableForkedBeer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201501131555578_BreweryLongLat.resx">
+      <DependentUpon>201501131555578_BreweryLongLat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201501150612006_UserLongLat.resx">
+      <DependentUpon>201501150612006_UserLongLat.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
