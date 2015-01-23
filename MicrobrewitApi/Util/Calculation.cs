@@ -94,12 +94,12 @@ namespace Microbrewit.Api.Util
         public static ABV CalculateABV(Recipe recipe)
         {
             var abv = new ABV();
-            abv.Standard = Math.Round(Formulas.MicrobrewitABV(recipe.OG, recipe.FG), 2);
             abv.Miller = Math.Round(Formulas.MillerABV(recipe.OG, recipe.FG), 2);
             abv.Simple = Math.Round(Formulas.SimpleABV(recipe.OG, recipe.FG), 2);
             abv.Advanced = Math.Round(Formulas.AdvancedABV(recipe.OG, recipe.FG), 2);
             abv.AdvancedAlternative = Math.Round(Formulas.AdvancedAlternativeABV(recipe.OG, recipe.FG), 2);
             abv.AlternativeSimple = Math.Round(Formulas.SimpleAlternativeABV(recipe.OG, recipe.FG), 2);
+            abv.Standard = Math.Round(Formulas.MicrobrewitABV(recipe.OG, recipe.FG), 2);
 
             return abv;
         }
