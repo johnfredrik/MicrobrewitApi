@@ -14,9 +14,12 @@ using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
 using System.Configuration;
+using System.IdentityModel.Services;
 using Newtonsoft.Json;
 using Microbrewit.Api.Elasticsearch;
 using log4net;
+using Thinktecture.IdentityModel.Authorization;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -113,10 +116,20 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <param name="yeastPosts">Takes a list of YeastDto objects in form of json</param>
         /// <returns>201 Created</returns>
+        [ClaimsAuthorize(Roles = "Admin")]
         [Route("")]
         [ResponseType(typeof(IList<YeastDto>))]
         public async Task<IHttpActionResult> PostYeast(IList<YeastDto> yeastPosts)
         {
+            try
+            {
+                ClaimsPrincipalPermission.CheckAccess("sub","write");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            var isAllowed = ClaimsAuthorization.CheckAccess("PostYeast","blehoo","admin");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -152,7 +165,7 @@ namespace Microbrewit.Api.Controllers
             var yeasts = await _yeastRespository.GetAllAsync("Supplier");
             var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
             // updated elasticsearch.
-            await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
+            await _elasticsearch.DeleteYeast(id);
 
             var yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
             return Ok(yeastDto);
