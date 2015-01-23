@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Security;
 using Microbrewit.Model;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -174,6 +175,11 @@ namespace Microbrewit.Repository.Repository
         public bool IsEmailConfirmed(string id)
         {
             return _userManager.IsEmailConfirmed(id);
+        }
+
+        public IList<string> GetUserRoles(string id)
+        {
+           return _userManager.GetRoles(id);
         }
     }
 }
