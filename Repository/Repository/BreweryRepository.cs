@@ -63,7 +63,6 @@ namespace Microbrewit.Repository
             context.Entry(original).CurrentValues.SetValues(updated);
         }
 
-
         public async Task<BreweryMember> GetBreweryMember(int breweryId, string username)
         {
             using (var context = new MicrobrewitContext())
@@ -90,7 +89,6 @@ namespace Microbrewit.Repository
                 return await context.BreweryMembers.Where(b => b.BreweryId == breweryId).ToListAsync();
             }
         }
-
 
         public async Task UpdateBreweryMember(BreweryMember breweryMember)
         {
