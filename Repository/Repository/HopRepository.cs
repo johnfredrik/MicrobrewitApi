@@ -83,5 +83,12 @@ namespace Microbrewit.Repository
             }
         }
 
+        public async Task<IList<HopForm>> GetHopFormsAsync()
+        {
+            using(var context = new MicrobrewitContext())
+            {
+                return await context.HopForms.ToListAsync();
+            }
+        }
     }
 }
