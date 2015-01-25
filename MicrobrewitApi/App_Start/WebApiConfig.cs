@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Web.Http.ExceptionHandling;
 using Microbrewit.Api.ErrorHandler;
+using Microbrewit.Service.Component;
+using Microbrewit.Service.Interface;
 
 namespace Microbrewit.Api
 {
@@ -26,6 +28,7 @@ namespace Microbrewit.Api
      
             //dependency injection
             var container = new UnityContainer();
+            // Repository
             container.RegisterType<IBeerRepository, BeerRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IBeerStyleRepository, BeerStyleRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IBreweryRepository, BreweryRepository>(new HierarchicalLifetimeManager());
@@ -38,7 +41,8 @@ namespace Microbrewit.Api
             container.RegisterType<IYeastRepository, YeastRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IUserCredentialRepository, UserCredentialRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IGlassRepository, GlassRepository>(new HierarchicalLifetimeManager());
-           
+            //Services
+            container.RegisterType<IHopService, HopService>(new HierarchicalLifetimeManager());
             
 
             config.DependencyResolver = new UnityResolver(container);
