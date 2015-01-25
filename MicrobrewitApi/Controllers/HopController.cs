@@ -17,6 +17,8 @@ using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 using System.Configuration;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -24,30 +26,20 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("hops")]
     public class HopController : ApiController
     {
-
-        private MicrobrewitContext db = new MicrobrewitContext();
-        private IHopRepository _hopRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
+        private IHopService _hopService;
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public HopController(IHopRepository hopRepository)
+        public HopController(IHopService hopService)
         {
-            this._hopRepository = hopRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _hopService = hopService;
         }
 
         // GET api/Hops
         [Route("")]
         public async Task<HopCompleteDto> GetHops(string custom = "false")
         {
-            IList<Hop> hops;
-            var hopsDto = await _elasticsearch.GetHops(custom);
-            if (!hopsDto.Any())
-            {
-                hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-                hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-            } 
-            var result = new HopCompleteDto() { Hops = hopsDto.OrderBy(h => h.Name).ToList() };
+            var hops = await _hopService.GetHopsAsync(custom);
+            var result = new HopCompleteDto() { Hops = hops.OrderBy(h => h.Name).ToList() };
             return result;
         }
 
@@ -59,14 +51,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetHop(int id)
         {
-            HopDto hopDto = null;
-            hopDto = await _elasticsearch.GetHop(id);
-            if (hopDto == null)
-            {
-                var hop = await _hopRepository.GetSingleAsync(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts");
-                hopDto = Mapper.Map<Hop, HopDto>(hop);
-            }
-
+            var hopDto = await _hopService.GetHopAsync(id);
             if (hopDto == null)
             {
                 return NotFound();
@@ -79,6 +64,7 @@ namespace Microbrewit.Api.Controllers
         }
 
         // PUT api/Hops/5
+        [ClaimsAuthorize("Put","Hop")]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutHop(int id, HopDto hopDto)
         {
@@ -91,88 +77,64 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            var hop = Mapper.Map<HopDto, Hop>(hopDto);
-            await _hopRepository.UpdateAsync(hop);
-            var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
+            await _hopService.UpdateHopAsync(hopDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/Hops
-
+        [ClaimsAuthorize("Post","Hop")]
         [Route("")]
-        [ResponseType(typeof(IList<HopDto>))]
-        public async Task<IHttpActionResult> PostHop(IList<HopDto> HopDtos)
+        [ResponseType(typeof(HopDto))]
+        public async Task<IHttpActionResult> PostHop(HopDto hopDto)
         {
-            Log.Debug("Hops Post");
             if (!ModelState.IsValid)
             {
                 Log.Debug("Invalid ModelState");
 
                 return BadRequest(ModelState);
             }
-            var hops = Mapper.Map<IList<HopDto>, Hop[]>(HopDtos);
-
-            await _hopRepository.AddAsync(hops);
-
-            var result = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-            var resultsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(result);
-            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
-            return CreatedAtRoute("DefaultApi", new { controller = "hops", }, resultsDto);
+            var result = await _hopService.AddHopAsync(hopDto);
+            return CreatedAtRoute("DefaultApi", new { controller = "hops", }, result);
         }
 
        
 
         // DELETE api/Hopd/5
+        [ClaimsAuthorize("Delete","Hop")]
         [Route("{id:int}")]
-        [ResponseType(typeof(Hop))]
+        [ResponseType(typeof(HopDto))]
         public async Task<IHttpActionResult> DeleteHop(int id)
         {
-            Hop hop = await _hopRepository.GetSingleAsync(h => h.Id == id);
+            var hop = await _hopService.DeleteHopAsync(id);
             if (hop == null)
             {
                 return NotFound();
             }
-
-            await _hopRepository.RemoveAsync(hop);
-            var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
             return Ok(hop);
         }
 
         [Route("forms")]
-        public IList<DTO> GetHopForm()
+        public async Task<IList<DTO>> GetHopForm()
         {
-            var hopforms = db.HopForms.ToList();
-            var hopformsDto = Mapper.Map<IList<HopForm>, IList<DTO>>(hopforms);
-            return hopformsDto;
+            return await _hopService.GetHopFroms();
         }
         
+        [ClaimsAuthorize("Reindex","Hop")]
         [Route("es")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateHopsElasticSearch()
         {
-            var hops = await _hopRepository.GetAllAsync("Flavours.Flavour", "Origin", "Substituts");
-            var hopsDto = Mapper.Map<IList<Hop>, IList<HopDto>>(hops);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateHopElasticSearch(hopsDto);
-           return Ok();
+            await _hopService.ReIndexHopsElasticSearch();
+            return Ok();
         }
 
         [HttpGet]
         [Route("")]
         public async Task<HopCompleteDto> GeHopsBySearch(string query, int from = 0, int size = 20)
         {
-            var hopDto = await _elasticsearch.SearchHops(query,from,size);
-
-            var result = new HopCompleteDto   ();
-            result.Hops = hopDto.ToList();
+            var result = new HopCompleteDto();
+            var hops =    await _hopService.SearchHop(query, from, size);
+            result.Hops = hops.ToList();
             return result;
         }
     }
