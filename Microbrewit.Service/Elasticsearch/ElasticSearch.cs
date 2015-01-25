@@ -126,14 +126,19 @@ namespace Microbrewit.Service.Elasticsearch
             return result.Source;
         }
 
-        public async Task UpdateHopElasticSearch(IList<HopDto> hops)
+        public async Task UpdateHopsAsync(IList<HopDto> hops)
         {
             foreach (var hop in hops)
             {
-                // Adds an analayzer to the name property in FermentableDto object.
-                _client.Map<HopDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
-                var index = _client.Index<HopDto>(hop);
+                UpdateHopAsync(hop);
             }
+        }
+
+        public async Task UpdateHopAsync(HopDto hop)
+        {
+            // Adds an analayzer to the name property in FermentableDto object.
+            _client.Map<HopDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+            var index = _client.Index<HopDto>(hop);
         }
 
         public async Task<IEnumerable<HopDto>> GetHops(string custom)
@@ -150,7 +155,7 @@ namespace Microbrewit.Service.Elasticsearch
             return res.Documents;
         }
 
-        public async Task<HopDto> GetHop(int id)
+        public async Task<HopDto> GetHopAsync(int id)
         {
             IGetRequest getRequest = new GetRequest("mb", "hop", id.ToString());
             var result = _client.Get<HopDto>(getRequest);
@@ -493,6 +498,11 @@ namespace Microbrewit.Service.Elasticsearch
         public async Task DeleteYeast(int id)
         {
             await _client.DeleteAsync<YeastDto>(id);
+        }
+
+        public async Task DeleteHop(int id)
+        {
+            await _client.DeleteAsync<HopDto>(id);
         }
     }
 }
