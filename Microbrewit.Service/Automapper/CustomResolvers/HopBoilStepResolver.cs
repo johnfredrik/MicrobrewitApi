@@ -27,7 +27,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                         AAValue = item.AAValue,
                         RecipeId = item.RecipeId
                     };
-                    var hop = _elasticsearch.GetHop(item.HopId).Result;
+                    var hop = _elasticsearch.GetHopAsync(item.HopId).Result;
                     if (hop == null)
                     {
                         hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(f => f.Id == item.HopId));
