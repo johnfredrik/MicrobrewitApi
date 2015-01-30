@@ -11,6 +11,8 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using Microbrewit.Repository.Repository;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
 using Microsoft.AspNet.Identity;
 using Microsoft.Data.OData.Metadata;
 
@@ -21,16 +23,13 @@ namespace Microbrewit.Api.Controllers
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly string MailService = ConfigurationManager.AppSettings["mailService"];
+        private readonly IUserService _userService;
         private AuthRepository _repo = null;
-        private IUserRepository _userRepository = null;
-        private Elasticsearch.ElasticSearch _elasticsearch = null;
 
-        public AccountController()
+        public AccountController(IUserService userService)
         {
+            _userService = userService;
             _repo = new AuthRepository();
-            _userRepository = new UserRepository();
-            _elasticsearch = new Elasticsearch.ElasticSearch();
-
         }
 
         // POST api/Account/Register
@@ -53,8 +52,7 @@ namespace Microbrewit.Api.Controllers
             if (result.Succeeded)
             {
                 var dbUser = await _repo.FindUser(userModel.UserName, userModel.Password);
-                await _elasticsearch.UpdateUserElasticSearch(Mapper.Map<User, UserDto>(user));
-                await _userRepository.AddAsync(user);
+                await _userService.UpdateAsync(Mapper.Map<User, UserDto>(user));
 
                 var code = await _repo.GenerateEmailConfirmationTokenAsync(dbUser.Id);
                 var callbackUrl = string.Format("{0}/account/confirm?userid={1}&code={2}", MailService, HttpUtility.UrlEncode(dbUser.Id),
@@ -178,8 +176,8 @@ namespace Microbrewit.Api.Controllers
             var result = await _repo.UpdateUser(userModel);
             if (result.Succeeded)
             {
-                var user = Mapper.Map<UserPutDto, User>(userPutDto);
-                await _userRepository.UpdateAsync(user);
+                var user = Mapper.Map<UserPutDto, UserDto>(userPutDto);
+                await _userService.UpdateAsync(user);
             }
             IHttpActionResult errorResult = GetErrorResult(result);
             if (errorResult != null)
