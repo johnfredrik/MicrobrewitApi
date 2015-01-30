@@ -6,45 +6,106 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web;
 using Microbrewit.Repository;
+using Microbrewit.Service.Component;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
+using Microbrewit.Service.Interface;
 using Claim = System.IdentityModel.Claims.Claim;
 
 namespace Microbrewit.Api
 {
     public class AuthorizationManager : ClaimsAuthorizationManager
     {
-        private IBeerRepository _beerRepository = new BeerRepository();
-        private IBreweryRepository _breweryRepository = new BreweryRepository();
+        private readonly IBreweryRepository _breweryRepository = new BreweryRepository();
+        private readonly IBreweryElasticsearch _breweryElasticsearch = new BreweryElasticsearch();
+        private readonly IBeerRepository _beerRepository= new BeerRepository();
+        private readonly IBeerElasticsearch _beerElasticsearch = new BeerElasticsearch();
+
+        //public AuthorizationManager(IBeerService beerService, IBreweryService breweryService)
+        //{
+        //    _beerService = beerService;
+        //    _breweryService = breweryService;
+        //    _breweryRepository = new BreweryRepository();
+        //}
 
         public override bool CheckAccess(AuthorizationContext context)
         {
-            if (!context.Principal.Identity.IsAuthenticated) return false;
+            var beerService = new BeerService(_beerElasticsearch,_beerRepository);
 
+            if (!context.Principal.Identity.IsAuthenticated) return false;
+            
+            var username = context.Principal.Identity.Name;
+            var memberships = _breweryRepository.GetMemberships(username);
             
 
             if (context.Action.Any(c => c.Value.Equals("Post")) && context.Resource.Any(c => c.Value.Equals("Beer")) && context.Principal.HasClaim(ClaimTypes.Role, "User"))
                 return true;
 
+            if (context.Action.Any(c => c.Value.Equals("Post")) && context.Resource.Any(c => c.Value.Equals("Brewery")) && context.Principal.HasClaim(ClaimTypes.Role, "User"))
+                return true;
+
             if (context.Action.Any(c => c.Value.Equals("Put")) && context.Resource.Any(c => c.Value.Equals("BeerId")))
             {
                 int beerId;
-                int.TryParse(context.Resource[1].Value, out beerId);
-                var username = context.Principal.Identity.Name;
+                var success = int.TryParse(context.Resource[1].Value, out beerId);
 
-                if (_beerRepository.GetAllUserBeer(username).Any(b => b.Id.Equals(beerId)))
+                if (success && beerService.GetAllUserBeer(username).Any(b => b.Id.Equals(beerId)))
                     return true;
 
 
-                if (_breweryRepository.GetBreweryMemberships(username).Where(m => m.Role.Equals("Admin"))
-                    .Any(b => _beerRepository.GetAllBreweryBeers(b.BreweryId).Any(beer => beer.Id == beerId)))
+                if (memberships.Where(m => m.Role.Equals("Admin"))
+                    .Any(b => beerService.GetAllBreweryBeers(b.BreweryId).Any(beer => beer.Id == beerId)))
                     return true;
-
-
             }
 
+            if (context.Action.Any(c => c.Value.Equals("Delete")) && context.Resource.Any(c => c.Value.Equals("BeerId")))
+            {
+                int beerId;
+                var success = int.TryParse(context.Resource[1].Value, out beerId);
+                if (success)
+                {
+                    var beer = beerService.GetSingle(beerId);
+                    if (beer.Brewers.Any(b => b.Username.Equals(username)))
+                        return true;
+                    if (memberships.Any(m => m.Role.Equals("Admin") && beer.Breweries.Any(b => b.Id == m.BreweryId)))
+                        return true;
+                }
+            }
 
-            if (context.Principal.HasClaim(ClaimTypes.Role, "Admin"))
+            if ((context.Action.Any(c => c.Value.Equals("Delete") || c.Value.Equals("Post") || c.Value.Equals("Put"))) && 
+                context.Resource.Any(c => c.Value.Equals("BreweryId")))
+            {
+                int breweryId;
+                var success = int.TryParse(context.Resource.Last().Value, out breweryId);
+                if (success && memberships.Any(m => m.Role.Equals("Admin") && m.BreweryId == breweryId))
+                {
+                    return true;
+                }   
+            }
+
+            if (context.Action.Any(c => c.Value.Equals("Post")) && context.Principal.HasClaim(ClaimTypes.Role, "Admin") &&
+                context.Resource.Any(r => r.Value.Equals("Hop") || r.Value.Equals("Yeast") || r.Value.Equals("Fermentable")
+                    || r.Value.Equals("Other") || r.Value.Equals("Supplier") || r.Value.Equals("Origin") || r.Value.Equals("BeerStyle")
+                    || r.Value.Equals("Glass")))
+                return true;
+            
+            if (context.Action.Any(c => c.Value.Equals("Delete")) && context.Principal.HasClaim(ClaimTypes.Role, "Admin") &&
+                context.Resource.Any(r => r.Value.Equals("Hop") || r.Value.Equals("Yeast") || r.Value.Equals("Fermentable")
+                    || r.Value.Equals("Other") || r.Value.Equals("Supplier") || r.Value.Equals("Origin") || r.Value.Equals("BeerStyle")
+                    || r.Value.Equals("Glass")))
                 return true;
 
+            if (context.Action.Any(c => c.Value.Equals("Put")) && context.Principal.HasClaim(ClaimTypes.Role, "Admin") &&
+                context.Resource.Any(r => r.Value.Equals("Hop") || r.Value.Equals("Yeast") || r.Value.Equals("Fermentable")
+                    || r.Value.Equals("Other") || r.Value.Equals("Supplier") || r.Value.Equals("Origin") || r.Value.Equals("BeerStyle")
+                    || r.Value.Equals("Glass")))
+                return true;
+
+            if (context.Action.Any(c => c.Value.Equals("Reindex")) && context.Principal.HasClaim(ClaimTypes.Role, "Admin") &&
+                context.Resource.Any(r => r.Value.Equals("Hop") || r.Value.Equals("Yeast") || r.Value.Equals("Fermentable")
+                    || r.Value.Equals("Other") || r.Value.Equals("Supplier") || r.Value.Equals("Origin") || r.Value.Equals("BeerStyle")
+                    || r.Value.Equals("Glass") || r.Value.Equals("User")))
+                return true;
 
             return false;
         }
