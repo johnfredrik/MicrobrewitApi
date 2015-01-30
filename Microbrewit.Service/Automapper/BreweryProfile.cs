@@ -24,6 +24,11 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role))
                 .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Member.Gravatar));
 
+            Mapper.CreateMap<BreweryMember, BreweryMemberDto>()
+                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.MemberUsername))
+                .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role))
+                .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Member.Gravatar));
+
             Mapper.CreateMap<BreweryMember, BreweryDto>()
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Brewery.Name))
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Brewery.Id))
@@ -44,7 +49,7 @@ namespace Microbrewit.Service.Automapper
                  .ForMember(dto => dto.Latitude, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude))
                 .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude));
 
-            Mapper.CreateMap<DTOUser, BreweryMember>()
+            Mapper.CreateMap<BreweryMemberDto, BreweryMember>()
                .ForMember(dto => dto.MemberUsername, conf => conf.MapFrom(rec => rec.Username))
                .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role));
         }
