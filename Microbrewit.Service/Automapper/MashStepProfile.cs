@@ -10,10 +10,10 @@ namespace Microbrewit.Service.Automapper
         protected override void Configure()
         {
             Mapper.CreateMap<MashStep, MashStepDto>()
-                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
-                .ForMember(dto => dto.Hops, conf => conf.ResolveUsing<HopMashStepResolver>())
-                .ForMember(dto => dto.Fermentables, conf => conf.ResolveUsing<FermentableMashStepResolver>())
-                .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherMashStepResolver>());
+               .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
+               .ForMember(dto => dto.Hops, conf => conf.ResolveUsing<HopMashStepResolver>())
+               .ForMember(dto => dto.Fermentables, conf => conf.ResolveUsing<FermentableMashStepResolver>())
+               .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherMashStepResolver>());
 
             Mapper.CreateMap<MashStepHop, HopStepDto>()
                 .ForMember(dto => dto.HopId, conf => conf.MapFrom(rec => rec.HopId))
@@ -28,12 +28,12 @@ namespace Microbrewit.Service.Automapper
 
             Mapper.CreateMap<MashStepFermentable, FermentableStepDto>()
                 .ForMember(dto => dto.FermentableId, conf => conf.MapFrom(rec => rec.FermentableId))
-                 .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
-                 .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
+                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
+                .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Fermentable.Name))
                 .ForMember(dto => dto.Lovibond, conf => conf.MapFrom(rec => rec.Fermentable.EBC))
                 .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.Fermentable.PPG))
-                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Fermentable.SupplierId))
+                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Fermentable.Supplier))
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Fermentable.Type))
                 .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
 
@@ -59,20 +59,17 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.AAAmount, conf => conf.MapFrom(rec => rec.Amount))
                 .ForMember(dto => dto.AAValue, conf => conf.MapFrom(rec => rec.AAValue));
 
-
             Mapper.CreateMap<FermentableStepDto, MashStepFermentable>()
                 .ForMember(dto => dto.FermentableId, conf => conf.MapFrom(rec => rec.FermentableId))
                 .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
-                 .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
-                 .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
+                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
+                .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                 .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
 
             Mapper.CreateMap<OtherStepDto, MashStepOther>()
                .ForMember(dto => dto.OtherId, conf => conf.MapFrom(rec => rec.OtherId))
                .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount));
-
-
         }
     }
 }
