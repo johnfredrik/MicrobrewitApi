@@ -13,5 +13,6 @@ namespace Microbrewit.Repository
         Flavour AddFlavour(string name);
         HopForm GetForm(Expression<Func<HopForm, bool>> where, params string[] navigationProperties);
         Task<IList<HopForm>> GetHopFormsAsync();
+        IList<HopForm> GetHopForms();
     }
 }
