@@ -12,7 +12,7 @@ namespace Microbrewit.Model.DTOs
     [ElasticType(Name = "origin")]
     public class OriginDto
     {
-        [JsonProperty(PropertyName = "otherId")]
+        [JsonProperty(PropertyName = "originId")]
         public int Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         [Required]
