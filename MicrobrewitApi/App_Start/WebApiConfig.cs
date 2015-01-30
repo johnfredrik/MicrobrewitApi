@@ -16,6 +16,8 @@ using Newtonsoft.Json.Serialization;
 using System.Web.Http.ExceptionHandling;
 using Microbrewit.Api.ErrorHandler;
 using Microbrewit.Service.Component;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 using Microbrewit.Service.Interface;
 
 namespace Microbrewit.Api
@@ -43,7 +45,30 @@ namespace Microbrewit.Api
             container.RegisterType<IGlassRepository, GlassRepository>(new HierarchicalLifetimeManager());
             //Services
             container.RegisterType<IHopService, HopService>(new HierarchicalLifetimeManager());
-            
+            container.RegisterType<IYeastService, YeastService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IFermentableService, FermentableService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOtherService, OtherService>(new HierarchicalLifetimeManager());
+            container.RegisterType<ISupplierService, SupplierService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOriginService, OriginService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerStyleService, BeerStyleService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBreweryService, BreweryService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IGlassService, GlassService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IUserService, UserService>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerService, BeerService>(new HierarchicalLifetimeManager());
+
+            //Elasticsearch
+            container.RegisterType<IHopElasticsearch, HopElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IYeastElasticsearch, YeastElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IFermentableElasticsearch, FermentableElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOtherElasticsearch, OtherElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<ISupplierElasticsearch, SupplierElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<ISearchElasticsearch, SearchElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOriginElasticsearch, OriginElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerStyleElasticsearch, BeerStyleElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBreweryElasticsearch, BreweryElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IGlassElasticsearch, GlassElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IUserElasticsearch, UserElasticsearch>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerElasticsearch, BeerElasticsearch>(new HierarchicalLifetimeManager());
 
             config.DependencyResolver = new UnityResolver(container);
             //// Web API routes
