@@ -9,13 +9,11 @@ namespace Microbrewit.Repository
 {
     public interface IBreweryRepository : IGenericDataRepository<Brewery>
     {
-        Task<BreweryMember> GetBreweryMember(int breweryId,string username);
-        Task<IList<BreweryMember>> GetBreweryMembers(int breweryId);
-        Task DeleteBreweryMember(int breweryId, string username);
-        Task UpdateBreweryMember(BreweryMember breweryMember);
-        Task PostBreweryMember(BreweryMember breweryMember);
-
-        IList<BreweryMember> GetBreweryMemberships(string username);
-
+        Task<BreweryMember> GetSingleMemberAsync(int breweryId,string username);
+        Task<IList<BreweryMember>> GetAllMembersAsync(int breweryId);
+        Task DeleteMember(int breweryId, string username);
+        Task UpdateMemberAsync(BreweryMember breweryMember);
+        Task AddMemberAsync(BreweryMember breweryMember);
+        IList<BreweryMember> GetMemberships(string username);
     }
 }
