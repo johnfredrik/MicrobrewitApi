@@ -321,7 +321,6 @@
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\YeastController.cs" />
-    <Compile Include="Elasticsearch\ElasticSearch.cs" />
     <Compile Include="ErrorHandler\GlobalExceptionHandler.cs" />
     <Compile Include="ErrorHandler\Log4NetExceptionLogger.cs" />
     <Compile Include="Global.asax.cs">
