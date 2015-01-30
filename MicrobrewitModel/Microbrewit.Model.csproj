@@ -114,6 +114,7 @@
     <Compile Include="DTOs\BeerDto.cs" />
     <Compile Include="DTOs\BreweryCompleteDto.cs" />
     <Compile Include="DTOs\BreweryDto.cs" />
+    <Compile Include="DTOs\BreweryMemberDto.cs" />
     <Compile Include="DTOs\DTOUser.cs" />
     <Compile Include="DTOs\ForgotPassword.cs" />
     <Compile Include="DTOs\GeoLocationDto.cs" />
