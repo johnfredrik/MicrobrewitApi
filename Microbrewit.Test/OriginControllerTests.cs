@@ -8,6 +8,10 @@ using Microbrewit.Api.Controllers;
 using Microbrewit.Model;
 using Microbrewit.Repository;
 using Microbrewit.Service.Automapper;
+using Microbrewit.Service.Component;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
+using Microbrewit.Service.Interface;
 using NUnit.Framework;
 
 namespace Microbrewit.Test
@@ -18,6 +22,8 @@ namespace Microbrewit.Test
         private IOriginRespository _repository;
         private MicrobrewitContext _context;
         private OriginController _controller;
+        private IOriginElasticsearch _originElasticsearch;
+        private IOriginService _originService;
         private const string JSONPATH = @"..\..\JSON\";
 
         [TestFixtureSetUp]
@@ -26,9 +32,11 @@ namespace Microbrewit.Test
             TestUtil.DeleteDataInDatabase();
             TestUtil.InsertDataDatabase();
             AutoMapperConfiguration.Configure();
+            _originElasticsearch = new OriginElasticsearch();
             _context = new MicrobrewitContext();
             _repository = new OriginRepository();
-            _controller = new OriginController(_repository);
+            _originService = new OriginService(_originElasticsearch,_repository);
+            _controller = new OriginController(_originService);
         }
 
         [TestFixtureTearDown]

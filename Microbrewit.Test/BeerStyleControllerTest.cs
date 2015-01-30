@@ -9,6 +9,10 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using Microbrewit.Service.Automapper;
+using Microbrewit.Service.Component;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
+using Microbrewit.Service.Interface;
 using NUnit.Framework;
 
 namespace Microbrewit.Test
@@ -19,6 +23,8 @@ namespace Microbrewit.Test
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IBeerStyleRepository _repository;
         private MicrobrewitContext _context;
+        private IBeerStyleElasticsearch _beerStyleElasticsearch;
+        private IBeerStyleService _beerStyleService;
         private BeerStyleController _controller;
         private const string JSONPATH = @"..\..\JSON\";
 
@@ -29,8 +35,10 @@ namespace Microbrewit.Test
             TestUtil.InsertDataDatabase();
             AutoMapperConfiguration.Configure();
             _context = new MicrobrewitContext();
+            _beerStyleElasticsearch = new BeerStyleElasticsearch();
             _repository = new BeerStyleRepository();
-            _controller = new BeerStyleController(_repository);
+            _beerStyleService = new BeerStyleService(_beerStyleElasticsearch,_repository);
+            _controller = new BeerStyleController(_beerStyleService);
         }
 
         [TestFixtureTearDown]
@@ -67,9 +75,7 @@ namespace Microbrewit.Test
         public async Task PostBeerStyleReturns201CreatedWithObject()
         {
             var beerStyle = new BeerStyleDto() { Name = "Lager" };
-            var beerStyles = new List<BeerStyleDto>();
-            beerStyles.Add(beerStyle);
-            var response = await _controller.PostBeerStyle(beerStyles) as CreatedAtRouteNegotiatedContentResult<BeerStyleCompleteDto>;
+            var response = await _controller.PostBeerStyle(beerStyle) as CreatedAtRouteNegotiatedContentResult<BeerStyleCompleteDto>;
             Assert.IsInstanceOf<CreatedAtRouteNegotiatedContentResult<BeerStyleCompleteDto>>(response);
             Assert.True(response.Content.BeerStyles.Any());
         }
