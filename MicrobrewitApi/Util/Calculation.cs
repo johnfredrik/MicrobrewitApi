@@ -8,12 +8,15 @@ using Newtonsoft.Json;
 using Microbrewit.Model.DTOs;
 using System.Configuration;
 using Microbrewit.Repository;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Api.Util
 {
     public static class Calculation
     {
-        private static Elasticsearch.ElasticSearch _elasticsearch = new Elasticsearch.ElasticSearch();
+        private static IFermentableElasticsearch _elasticsearch = new FermentableElasticsearch();
         private static IFermentableRepository _fermentableRepository = new FermentableRepository();
 
         public static SRM CalculateSRM(Recipe recipe)
@@ -67,7 +70,7 @@ namespace Microbrewit.Api.Util
                 {
                     if (fermentable.PPG <= 0)
                     {
-                        var esFermentable = _elasticsearch.GetFermentable(fermentable.FermentableId).Result;
+                        var esFermentable = _elasticsearch.GetSingleAsync(fermentable.FermentableId).Result;
                         if (esFermentable != null && esFermentable.PPG > 0)
                         {
                             fermentable.PPG = esFermentable.PPG;
