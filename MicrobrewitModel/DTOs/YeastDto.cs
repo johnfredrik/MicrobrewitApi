@@ -9,7 +9,7 @@ using System.Web;
 
 namespace Microbrewit.Model.DTOs
 {
-    [ElasticType(Name = "yeast")]
+    [ElasticType(Name = "yeast",IdProperty = "Id")]
     public class YeastDto
     {
         [JsonProperty(PropertyName = "yeastId")]
