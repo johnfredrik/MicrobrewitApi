@@ -90,5 +90,13 @@ namespace Microbrewit.Repository
                 return await context.HopForms.ToListAsync();
             }
         }
+
+        public IList<HopForm> GetHopForms()
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return context.HopForms.ToList();
+            }
+        }
     }
 }
