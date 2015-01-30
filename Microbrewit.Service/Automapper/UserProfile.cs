@@ -32,11 +32,15 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.ConfirmPassword, conf => conf.MapFrom(rec => rec.ConfirmPassword))
                 .ForMember(dto => dto.Email, conf => conf.MapFrom(rec => rec.Email));
 
-            Mapper.CreateMap<UserPutDto, User>()
+            Mapper.CreateMap<UserPostDto, UserDto>()
+                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
+                .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings))
+                .ForMember(dto => dto.GeoLocation, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude));
+
+            Mapper.CreateMap<UserPutDto, UserDto>()
             .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
             .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings))
-            .ForMember(dto => dto.Latitude, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude))
-            .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude));
+            .ForMember(dto => dto.GeoLocation, conf => conf.MapFrom(rec => rec.GeoLocation));
 
             Mapper.CreateMap<UserPutDto, UserModel>()
                 .ForMember(dto => dto.UserName, conf => conf.MapFrom(rec => rec.Username))
