@@ -148,10 +148,9 @@ namespace Microbrewit.Repository
             IQueryable<T> dbQuery = context.Set<T>();
 
             //Apply eager loading
-            foreach (string navigationProperty in navigationProperties)
-                dbQuery = dbQuery.Include<T>(navigationProperty);
+            dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<T>(navigationProperty));
 
-            return await dbQuery.SingleOrDefaultAsync(where);
+                return await dbQuery.SingleOrDefaultAsync(where);
             }
         }
 
@@ -199,7 +198,15 @@ namespace Microbrewit.Repository
             {
                 context.Entry(item).State = EntityState.Modified;
             }
-            return await context.SaveChangesAsync();
+                try
+                {
+                    return await context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
            
             }
         }
@@ -213,7 +220,14 @@ namespace Microbrewit.Repository
             {
                 context.Entry(item).State = EntityState.Deleted;
             }
-            await context.SaveChangesAsync();
+                try
+                {
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
             }
         }
 
