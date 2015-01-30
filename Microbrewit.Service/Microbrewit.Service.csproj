@@ -149,10 +149,55 @@
     <Compile Include="Automapper\SupplierProfile.cs" />
     <Compile Include="Automapper\UserProfile.cs" />
     <Compile Include="Automapper\YeastsProfile.cs" />
+    <Compile Include="Component\BeerService.cs" />
+    <Compile Include="Component\UserService.cs" />
     <Compile Include="Component\HopService.cs" />
-    <Compile Include="Elasticsearch\ElasticSearch.cs" />
+    <Compile Include="Component\FermentableService.cs" />
+    <Compile Include="Component\BeerStyleService.cs" />
+    <Compile Include="Component\OriginService.cs" />
+    <Compile Include="Component\GlassService.cs" />
+    <Compile Include="Component\OtherService.cs" />
+    <Compile Include="Component\SupplierService.cs" />
+    <Compile Include="Component\BreweryService.cs" />
+    <Compile Include="Component\YeastService.cs" />
+    <Compile Include="Elasticsearch\Component\FermentableElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\BeerElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\HopElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\BeerStyleElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\OriginElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\GlassElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\UserElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\OtherElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\SearchElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\SupplierElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\BreweryElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Component\YeastElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IFermentableElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IBeerStyleElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IBeerElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IGlassElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IUserElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\ISearchElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IOtherElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IHopElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\ISupplierElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IOriginElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IBreweryElasticsearch.cs" />
+    <Compile Include="Elasticsearch\Interface\IYeastElasticsearch.cs" />
+    <Compile Include="Interface\IBeerService.cs" />
+    <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Interface\IHopService.cs" />
+    <Compile Include="Interface\IFermentableService.cs" />
+    <Compile Include="Interface\IBeerStyleService.cs" />
+    <Compile Include="Interface\IOriginService.cs" />
+    <Compile Include="Interface\IGlassService.cs" />
+    <Compile Include="Interface\IOtherService.cs" />
+    <Compile Include="Interface\ISupplierService.cs" />
+    <Compile Include="Interface\IBreweryService.cs" />
+    <Compile Include="Interface\IYeastService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Calculation.cs" />
+    <Compile Include="Util\Formulas.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -168,6 +213,7 @@
       <Name>Microbrewit.Repository</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
