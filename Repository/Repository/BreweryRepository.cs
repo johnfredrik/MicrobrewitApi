@@ -63,7 +63,7 @@ namespace Microbrewit.Repository
             context.Entry(original).CurrentValues.SetValues(updated);
         }
 
-        public async Task<BreweryMember> GetBreweryMember(int breweryId, string username)
+        public async Task<BreweryMember> GetSingleMemberAsync(int breweryId, string username)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -71,7 +71,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task DeleteBreweryMember(int breweryId, string username)
+        public async Task DeleteMember(int breweryId, string username)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -82,7 +82,7 @@ namespace Microbrewit.Repository
             
         }
 
-        public async Task<IList<BreweryMember>> GetBreweryMembers(int breweryId)
+        public async Task<IList<BreweryMember>> GetAllMembersAsync(int breweryId)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -90,7 +90,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task UpdateBreweryMember(BreweryMember breweryMember)
+        public async Task UpdateMemberAsync(BreweryMember breweryMember)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -99,7 +99,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task PostBreweryMember(BreweryMember breweryMember)
+        public async Task AddMemberAsync(BreweryMember breweryMember)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -108,7 +108,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public IList<BreweryMember> GetBreweryMemberships(string username)
+        public IList<BreweryMember> GetMemberships(string username)
         {
             using (var context = new MicrobrewitContext())
             {
