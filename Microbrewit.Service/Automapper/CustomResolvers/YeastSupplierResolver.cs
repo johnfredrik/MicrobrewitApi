@@ -5,16 +5,15 @@ using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
-    public class YeastSupplierResolver : ValueResolver<YeastDto, int>
+    public class YeastSupplierResolver : ValueResolver<YeastDto, int?>
     {
-        protected override int ResolveCore(YeastDto source)
+        protected override int? ResolveCore(YeastDto source)
         {
             using (var context = new MicrobrewitContext())
             {
-                 Supplier supplier = null;
                 if (source.Supplier != null)
                 {
-                    supplier = context.Suppliers.SingleOrDefault(s => s.Id == source.Supplier.Id || s.Name.Equals(source.Supplier.Name));
+                    var supplier = context.Suppliers.SingleOrDefault(s => s.Id == source.Supplier.Id || s.Name.Equals(source.Supplier.Name));
 
                     if (supplier == null)
                     {
@@ -25,9 +24,9 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                         context.Suppliers.Add(supplier);
                         context.SaveChanges();
                     }
+                    return supplier.Id;
                 }
-
-                return supplier.Id;
+                return null;
             }
         }
     }

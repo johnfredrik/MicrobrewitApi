@@ -3,36 +3,37 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
-using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
     public class FermentableMashStepResolver : ValueResolver<MashStep, IList<FermentableStepDto>>
     {
-        private ElasticSearch _elasticsearch = new ElasticSearch();
-        private IFermentableRepository _fermentableRepository = new FermentableRepository();
+        private readonly IFermentableElasticsearch _fermentableElasticsearch = new FermentableElasticsearch();
+        private readonly IFermentableRepository _fermentableRepository = new FermentableRepository();
 
         protected override IList<FermentableStepDto> ResolveCore(MashStep step)
         {
             var fermentableStepDtoList = new List<FermentableStepDto>();
                 foreach (var item in step.Fermentables)
                 {
-                    var fermentable = _elasticsearch.GetFermentable(item.FermentableId).Result;
+                    var fermentable = _fermentableElasticsearch.GetSingle(item.FermentableId);
                     if (fermentable == null)
                     {
                         fermentable = Mapper.Map<Fermentable, FermentableDto>(_fermentableRepository.GetSingle(f => f.Id == item.FermentableId));
                     }
-                    var fermentableStepDto = new FermentableStepDto();
-                    
-                    fermentableStepDto.FermentableId = item.FermentableId;
-                    fermentableStepDto.StepNumber = item.StepNumber;
-                    fermentableStepDto.Amount = item.Amount;
-                    fermentableStepDto.Supplier = fermentable.Supplier;
-                    fermentableStepDto.Type = fermentable.Type;
-                    fermentableStepDto.Name = fermentable.Name;
-                    fermentableStepDto.PPG = fermentable.PPG;
-                    fermentableStepDto.RecipeId = item.RecipeId;
-
+                    var fermentableStepDto = new FermentableStepDto
+                    {
+                        FermentableId = item.FermentableId,
+                        StepNumber = item.StepNumber,
+                        Amount = item.Amount,
+                        Supplier = fermentable.Supplier,
+                        Type = fermentable.Type,
+                        Name = fermentable.Name,
+                        PPG = fermentable.PPG,
+                        RecipeId = item.RecipeId
+                    };
                     if(item.Lovibond == 0)
                     {
                         fermentableStepDto.Lovibond = item.Lovibond;

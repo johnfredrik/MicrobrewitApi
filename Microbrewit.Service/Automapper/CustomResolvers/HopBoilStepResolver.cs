@@ -4,12 +4,14 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
     public class HopBoilStepResolver : ValueResolver<BoilStep, IList<HopStepDto>>
     {
-        private ElasticSearch _elasticsearch = new ElasticSearch();
+        private IHopElasticsearch _hopElasticsearch = new HopElasticsearch();
         private IHopRepository _hopRepository = new HopRepository();
 
 
@@ -27,7 +29,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                         AAValue = item.AAValue,
                         RecipeId = item.RecipeId
                     };
-                    var hop = _elasticsearch.GetHopAsync(item.HopId).Result;
+                    var hop = _hopElasticsearch.GetSingle(item.HopId);
                     if (hop == null)
                     {
                         hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(f => f.Id == item.HopId));

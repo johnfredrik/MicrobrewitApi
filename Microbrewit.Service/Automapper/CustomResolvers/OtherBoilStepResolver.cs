@@ -4,12 +4,14 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
     public class OtherBoilStepResolver : ValueResolver<BoilStep, IList<OtherStepDto>>
     {
-        private ElasticSearch _elasticsearch = new ElasticSearch();
+        private IOtherElasticsearch _otherElasticsearch = new OtherElasticsearch();
         private IOtherRepository _otherRepository = new OtherRepository();
 
         protected override IList<OtherStepDto> ResolveCore(BoilStep step)
@@ -24,7 +26,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     Amount = item.Amount,
                     RecipeId = item.RecipeId,
                 };
-                var other = _elasticsearch.GetOther(item.OtherId).Result;
+                var other = _otherElasticsearch.GetSingle(item.OtherId);
                 if (other == null)
                 {
                     other = Mapper.Map<Other, OtherDto>(_otherRepository.GetSingle(f => f.Id == item.OtherId));

@@ -3,12 +3,14 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
     public class BeerStyleResolver : ValueResolver<Beer, DTO>
     {
-        private ElasticSearch _elasticsearch = new ElasticSearch();
+        private IBeerStyleElasticsearch _beerStyleElasticsearch = new BeerStyleElasticsearch();
         private IBeerStyleRepository _beerstyleRespository = new BeerStyleRepository();
 
         protected override DTO ResolveCore(Beer beer)
@@ -16,7 +18,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
             var dto = new DTO();
             if (beer.BeerStyleId != null)
             {
-                var beerStyle = _elasticsearch.GetBeerStyle((int)beer.BeerStyleId).Result;
+                var beerStyle = _beerStyleElasticsearch.GetSingle((int)beer.BeerStyleId);
                 if (beerStyle == null)
                 {
                     beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(_beerstyleRespository.GetSingle(f => f.Id == beer.BeerStyleId));
