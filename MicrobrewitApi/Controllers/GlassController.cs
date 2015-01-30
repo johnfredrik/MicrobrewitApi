@@ -10,19 +10,20 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("glasses")]
     public class GlassController : ApiController
     {
-        private IGlassRepository _glassRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
+        private readonly IGlassService _glassService;
 
-        public GlassController(IGlassRepository glassRepository)
+        public GlassController(IGlassService glassService)
         {
-            this._glassRepository = glassRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _glassService = glassService;
         }
 
         /// <summary>
@@ -32,14 +33,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<GlassCompleteDto> GetGlasses()
         {
-            var glassesDto = await _elasticsearch.GetGlasses();
-            if (glassesDto == null)
-            {
-                var glasses = await _glassRepository.GetAllAsync();
-                glassesDto = Mapper.Map<IList<Glass>, IList<GlassDto>>(glasses);
-            }
-            var result = new GlassCompleteDto();
-            result.Glasses = glassesDto.OrderBy(g => g.Name).ToList();
+            var glassesDto = await _glassService.GetAllAsync();
+            var result = new GlassCompleteDto {Glasses = glassesDto.OrderBy(g => g.Name).ToList()};
             return result;
         }
 
@@ -54,12 +49,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(GlassCompleteDto))]
         public async Task<IHttpActionResult> GetGlass(int id)
         {
-            var glassDto = await _elasticsearch.GetGlass(id);
-            if (glassDto == null)
-            {
-                var glass = await _glassRepository.GetSingleAsync(g => g.Id == id);
-                glassDto = Mapper.Map<Glass, GlassDto>(glass);
-            }
+            var glassDto = await _glassService.GetSingleAsync(id);
             var result = new GlassCompleteDto() { Glasses = new List<GlassDto>() };
             result.Glasses.Add(glassDto);
             return Ok(result);
@@ -74,6 +64,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id"></param>
         /// <param name="glassDto"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Put","Glass")]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutGlass(int id, GlassDto glassDto)
         {
@@ -86,13 +77,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            var other = Mapper.Map<GlassDto, Glass>(glassDto);
-            await _glassRepository.UpdateAsync(other);
-
-            var glass = await _glassRepository.GetSingleAsync(g => g.Id == id);
-            var glassEs = Mapper.Map<Glass, GlassDto>(glass);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateGlassElasticSearch(glassEs);
+            await _glassService.UpdateAsync(glassDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -101,27 +86,18 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <param name="glassDtos"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Post", "Glass")]
         [Route("")]
-        [ResponseType(typeof(GlassCompleteDto))]
-        public async Task<IHttpActionResult> PostGlass(IList<GlassDto> glassDtos)
+        [ResponseType(typeof(GlassDto))]
+        public async Task<IHttpActionResult> PostGlass(GlassDto glassDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var glasses = Mapper.Map<IList<GlassDto>, Glass[]>(glassDtos);
-            await _glassRepository.AddAsync(glasses);
 
-            //var result = Mapper.Map<IList<Glass>, IList<GlassDto>>(_glassRepository.GetAll());
-
-            var glassEs = await _glassRepository.GetAllAsync();
-            var glassDto = Mapper.Map<IList<Glass>, IList<GlassDto>>(glassEs);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateGlassesElasticSearch(glassDto);
-
-            var response = new GlassCompleteDto() { Glasses = new List<GlassDto>() };
-            response.Glasses = glassDtos;
-            return CreatedAtRoute("DefaultApi", new { controller = "others", }, response);
+            await _glassService.AddAsync(glassDto);
+            return CreatedAtRoute("DefaultApi", new { controller = "others", }, glassDto);
         }
 
         /// <summary>
@@ -132,44 +108,36 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Glass id</param>
         /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi = true)]
+        [ClaimsAuthorize("Delete", "Glass")]
         [Route("{id:int}")]
-        [ResponseType(typeof(OtherCompleteDto))]
+        [ResponseType(typeof(GlassDto))]
         public async Task<IHttpActionResult> DeleteGlass(int id)
         {
-            var glass = await _glassRepository.GetSingleAsync(o => o.Id == id);
+            var glass = await _glassService.DeleteAsync(id);
             if (glass == null)
             {
                 return NotFound();
             }
-            await _glassRepository.RemoveAsync(glass);
-
-            //TODO: DELETE from elasticsearch/
-
-            var response = new GlassCompleteDto() { Glasses = new List<GlassDto>() };
-            response.Glasses.Add(Mapper.Map<Glass, GlassDto>(glass));
-            return Ok(response);
+            return Ok(glass);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ClaimsAuthorize("Reindex","Glass")]
         [Route("es")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateGlassElasticSearch()
         {
-            var glasses = await _glassRepository.GetAllAsync();
-            var glassesDto = Mapper.Map<IList<Glass>, IList<GlassDto>>(glasses);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateGlassesElasticSearch(glassesDto);
-
+            await _glassService.ReIndexElasticSearch();
             return Ok();
         }
+
 
         [HttpGet]
         [Route("")]
         public async Task<GlassCompleteDto> GetGlassBySearch(string query, int from = 0, int size = 20)
         {
-            var glassesDto = await _elasticsearch.SearchByGlass(query, from, size);
-
-            var result = new GlassCompleteDto();
-            result.Glasses = glassesDto.ToList();
+            var glassesDto = await _glassService.SearchAsync(query, from, size);
+            var result = new GlassCompleteDto {Glasses = glassesDto.ToList()};
             return result;
         }
     }

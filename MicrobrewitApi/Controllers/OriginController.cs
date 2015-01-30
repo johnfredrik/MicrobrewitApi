@@ -14,6 +14,9 @@ using log4net;
 using Microbrewit.Repository;
 using AutoMapper;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -21,13 +24,11 @@ namespace Microbrewit.Api.Controllers
     public class OriginController : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private IOriginRespository _originRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
+        private IOriginService _originService;
 
-        public OriginController(IOriginRespository originRepository)
+        public OriginController(IOriginService originService)
         {
-            this._originRepository = originRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _originService = originService;
         }
 
 
@@ -37,17 +38,10 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<OriginCompleteDto> GetOrigins()
+        public async Task<OriginCompleteDto> GetOrigins(string custom = "false")
         {
-            var originDto = await _elasticsearch.GetOrigins();
-            if (originDto.Count() <= 0)
-            {
-
-                var origins = await _originRepository.GetAllAsync();
-                originDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
-            }
-            
-            var originsComplete = new OriginCompleteDto { Origins = originDto.OrderBy(o => o.Name).ToList() };
+            var originDto = await _originService.GetAllAsync(custom);
+            var originsComplete = new OriginCompleteDto { Origins = originDto.ToList()};
             return originsComplete;
         }
 
@@ -62,18 +56,12 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Origin))]
         public async Task<IHttpActionResult> GetOrigin(int id)
         {
-            var originDto = await _elasticsearch.GetOrigin(id);
-            if (originDto == null)
-            {
-                var origin = await _originRepository.GetSingleAsync(o => o.Id == id);
-                originDto = Mapper.Map<Origin, OriginDto>(origin);
-            }
+            var originDto = await _originService.GetSingleAsync(id);
             if (originDto == null)
             {
                 return NotFound();
             }
             var originsComplete = new OriginCompleteDto { Origins = new List<OriginDto>() };
-            
             originsComplete.Origins.Add(originDto);
             return  Ok(originsComplete);
         }
@@ -86,8 +74,9 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Origin id</param>
         /// <param name="origin"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Put","Origin")]
         [Route("{id:int}")]
-        public async Task<IHttpActionResult> PutOrigin(int id, Origin origin)
+        public async Task<IHttpActionResult> PutOrigin(int id, OriginDto origin)
         {
             if (!ModelState.IsValid)
             {
@@ -98,13 +87,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-
-            await _originRepository.UpdateAsync(origin);
-            var origins = await _originRepository.GetAllAsync();
-            var originsDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOriginElasticSearch(originsDto);
-
+            await _originService.UpdateAsync(origin);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -113,27 +96,19 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <response code="200">OK</response>
         /// <response code="400">Bad Request</response>
-        /// <param name="originPosts"></param>
+        /// <param name="origin"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Post", "Origin")]
         [Route("")]
-        [ResponseType(typeof(OriginCompleteDto))]
-        public async Task<IHttpActionResult> PostOrigin(IList<OriginDto> originPosts)
+        [ResponseType(typeof(Origin))]
+        public async Task<IHttpActionResult> PostOrigin(OriginDto origin)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var origins = Mapper.Map<IList<OriginDto>, Origin[]>(originPosts); ;
-            await _originRepository.AddAsync(origins);
-
-            var originsEs = await _originRepository.GetAllAsync();
-            var originsDto = Mapper.Map<IList<Origin>,IList<OriginDto>>(originsEs);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOriginElasticSearch(originsDto);
-
-            var originsComplete = new OriginCompleteDto { Origins = originPosts };
-
-            return CreatedAtRoute("DefaultApi", new { controller= "origins", }, originsComplete);
+            var result = await _originService.AddAsync(origin);
+            return CreatedAtRoute("DefaultApi", new { controller= "origins", }, result);
         }
 
         /// <summary>
@@ -143,24 +118,18 @@ namespace Microbrewit.Api.Controllers
         /// <response code="404">Not Found</response>
         /// <param name="id">Origin id</param>
         /// <returns></returns>
+        [ClaimsAuthorize("Delete","Origin")]
         [Route("{id:int}")]
-        [ResponseType(typeof(OriginCompleteDto))]
+        [ResponseType(typeof(OriginDto))]
         public async Task<IHttpActionResult> DeleteOrigin(int id)
         {
-           
-            Origin origin = _originRepository.GetSingle(o => o.Id == id);
+
+            var origin = await _originService.DeleteAsync(id);
             if (origin == null)
             {
                 return NotFound();
             }
-            var originDto = Mapper.Map<Origin, OriginDto>(origin);
-            await _originRepository.RemoveAsync(origin);
-            var origins = await _originRepository.GetAllAsync();
-            var originsDto = Mapper.Map<IList<Origin>,IList<OriginDto>>(origins);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOriginElasticSearch(originsDto);
-            var originsComplete = new OriginCompleteDto { Origins = new List<OriginDto> { originDto } };
-            return Ok(originsComplete);
+            return Ok(origin);
         }
         /// <summary>
         /// Updates elasticsearch with data from the database.
@@ -170,11 +139,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> UpdateOriginElasticSearch()
         {
-             var origins = await _originRepository.GetAllAsync();
-             var originsDto = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
-             // updated elasticsearch.
-             await _elasticsearch.UpdateOriginElasticSearch(originsDto);
-
+             await _originService.ReIndexElasticSearch();
              return Ok();
         }
         /// <summary>
@@ -188,7 +153,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<IList<OriginDto>> GetOriginBySearch(string query, int from = 0, int size = 20)
         {
-            var result = await _elasticsearch.SearchOrigins(query,from, size);
+            var result = await _originService.SearchAsync(query, from, size);
             return result.ToList();
         }
      

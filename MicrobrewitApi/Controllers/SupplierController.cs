@@ -13,19 +13,20 @@ using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using AutoMapper;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("suppliers")]
     public class SupplierController : ApiController
     {
-        private readonly ISupplierRepository _supplierRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
+        private ISupplierService _supplierService;
 
-        public SupplierController(ISupplierRepository supplierRepository)
+        public SupplierController(ISupplierService supplierService)
         {
-            this._supplierRepository = supplierRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _supplierService = supplierService;
         }
 
         /// <summary>
@@ -34,16 +35,10 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<SupplierCompleteDto> GetSuppliers()
+        public async Task<SupplierCompleteDto> GetSuppliers(string custom = "false")
         {
-            var suppliersDto = await _elasticsearch.GetSuppliers();
-            if (!suppliersDto.Any())
-            {
-                var suppliers = await _supplierRepository.GetAllAsync("Origin");
-                suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
-            }
-            var result = new SupplierCompleteDto();
-            result.Suppliers = suppliersDto.OrderBy(s => s.Name).ToList();
+            var suppliersDto = await _supplierService.GetAllAsync(custom);
+            var result = new SupplierCompleteDto {Suppliers = suppliersDto.OrderBy(s => s.Name).ToList()};
             return result;
         }
 
@@ -58,12 +53,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(Supplier))]
         public async Task<IHttpActionResult> GetSupplier(int id)
         {
-            var supplierDto = await _elasticsearch.GetSupplier(id);
-            if (supplierDto == null)
-            {
-                var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id,"Origin");
-                supplierDto = Mapper.Map<Supplier, SupplierDto>(supplier);
-            }
+            var supplierDto = await _supplierService.GetSingleAsync(id);
             if (supplierDto == null)
             {
                 return NotFound();
@@ -81,6 +71,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Supplier id</param>
         /// <param name="supplierDto">Supplier transfer object</param>
         /// <returns></returns>
+        [ClaimsAuthorize("Put","Supplier")]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutSupplier(int id, SupplierDto supplierDto)
         {
@@ -93,14 +84,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
-            await _supplierRepository.UpdateAsync(supplier);
-
-            var suppliers = await _supplierRepository.GetAllAsync("Origin");
-            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
-
+            await _supplierService.UpdateAsync(supplierDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -111,26 +95,17 @@ namespace Microbrewit.Api.Controllers
         /// <response code="201">Created</response>
         /// <response code="400">Bad Request</response>
         /// <returns></returns>
+        [ClaimsAuthorize("Post", "Supplier")]
         [Route("")]
-        [ResponseType(typeof(SupplierCompleteDto))]
-        public async Task<IHttpActionResult> PostSupplier(IList<SupplierDto> supplierDtos)
+        [ResponseType(typeof(SupplierDto))]
+        public async Task<IHttpActionResult> PostSupplier(SupplierDto supplierDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var suppliers = Mapper.Map<IList<SupplierDto>, Supplier[]>(supplierDtos);
-            await _supplierRepository.AddAsync(suppliers);
-
-            var suppliersES = await _supplierRepository.GetAllAsync("Origin");
-            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliersES);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
-
-            var response = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
-            response.Suppliers = supplierDtos;
-
-            return CreatedAtRoute("DefaultApi", new {controller = "others"}, response);
+            var result = await _supplierService.AddAsync(supplierDto);
+            return CreatedAtRoute("DefaultApi", new {controller = "others"}, result);
         }
 
         /// <summary>
@@ -141,43 +116,25 @@ namespace Microbrewit.Api.Controllers
         /// <response code="404">Not Found</response>
         /// <param name="id"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Delete", "Supplier")]
         [Route("{id}")]
-        [ResponseType(typeof(SupplierCompleteDto))]
+        [ResponseType(typeof(SupplierDto))]
         public async Task<IHttpActionResult> DeleteSupplier(int id)
         {
-           var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id);
+            var supplier = await _supplierService.DeleteAsync(id);
             if (supplier == null)
             {
                 return NotFound();
             }
-
-            try
-            {
-                await _supplierRepository.RemoveAsync(supplier);
-
-                var suppliers = await _supplierRepository.GetAllAsync("Origin");
-                var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
-                // updated elasticsearch.
-                await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                 return BadRequest(dbUpdateException.InnerException.InnerException.Message.ToString());    
-            } 
-            var response = new SupplierCompleteDto() { Suppliers = new List<SupplierDto>() };
-            response.Suppliers.Add(Mapper.Map<Supplier, SupplierDto>(supplier));
-            return Ok(response);
+            return Ok(supplier);
         }
 
-
+        [ClaimsAuthorize("Reindex", "Supplier")]    
         [Route("es")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateSupplierElasticSearch()
         {
-            var suppliers = await _supplierRepository.GetAllAsync("Origin");
-            var suppliersDto = Mapper.Map<IList<Supplier>, IList<SupplierDto>>(suppliers);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateSupplierElasticSearch(suppliersDto);
+            await _supplierService.ReIndexElasticSearch();
             return Ok();
         }
 
@@ -185,10 +142,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<SupplierCompleteDto> GetSuppliersBySearch(string query, int from = 0, int size = 20)
         {
-            var supplierDto = await _elasticsearch.SearchSuppliers(query,from,size);
-
-            var result = new SupplierCompleteDto();
-            result.Suppliers = supplierDto.ToList();
+            var supplierDto = await _supplierService.SearchAsync(query,from,size);
+            var result = new SupplierCompleteDto {Suppliers = supplierDto.ToList()};
             return result;
         }
     }

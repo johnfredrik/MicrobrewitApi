@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+using System.IdentityModel.Services;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper;
+using log4net;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
-using AutoMapper;
-using System.Configuration;
-using System.IdentityModel.Services;
-using Newtonsoft.Json;
-using Microbrewit.Api.Elasticsearch;
-using log4net;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Interface;
+using Microbrewit.Service.Interface;
 using Thinktecture.IdentityModel.Authorization;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
@@ -26,15 +23,15 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("yeasts")]
     public class YeastController : ApiController
     {
-        private IYeastRepository _yeastRespository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private IYeastService _yeastService;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public YeastController(IYeastRepository yeastRepository)
+        public YeastController(IYeastService yeastService)
         {
-            this._yeastRespository = yeastRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _yeastService = yeastService;
         }
+
+
         /// <summary>
         /// Gets all yeasts.
         /// </summary>
@@ -42,15 +39,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<YeastCompleteDto> GetYeasts(string custom = "false")
         {
-            var yeastsDto = await _elasticsearch.GetAllYeasts(custom);
-            if (!yeastsDto.Any())
-            {
-                var yeasts = await _yeastRespository.GetAllAsync("Supplier");
-                yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
-            }
-            var result = new YeastCompleteDto();
-            result.Yeasts = yeastsDto.OrderBy(y => y.Name).ToList();
-            return result;
+            var yeasts = await _yeastService.GetAllAsync(custom);
+            return new YeastCompleteDto{Yeasts = yeasts.ToList()};
         }
 
         /// <summary>
@@ -65,12 +55,13 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> GetYeast(int id)
         {
 
-            var yeastDto = await _elasticsearch.GetYeast(id);
-            if (yeastDto == null)
-            {
-                var yeast = await _yeastRespository.GetSingleAsync(y => y.Id == id, "Supplier");
-                yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
-            }
+            //var yeastDto = await _elasticsearch.GetYeast(id);
+            //if (yeastDto == null)
+            //{
+            //    var yeast = await _yeastRespository.GetSingleAsync(y => y.Id == id, "Supplier");
+            //    yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
+            //}
+            var yeastDto = await _yeastService.GetSingleAsync(id);
             if (yeastDto == null)
             {
                 return NotFound();
@@ -86,6 +77,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Yeast Id</param>
         /// <param name="yeastDto">Json of the YeastDto object</param>
         /// <returns>No Content 204</returns>
+        [ClaimsAuthorize("Put","Yeast")]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutYeast(int id, YeastDto yeastDto)
         {
@@ -98,15 +90,15 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
+            await _yeastService.UpdateAsync(yeastDto);
 
+            //var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
+            //await _yeastRespository.UpdateAsync(yeast);
 
-            var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
-            await _yeastRespository.UpdateAsync(yeast);
-
-            var yeasts = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
+            //var yeasts = await _yeastRespository.GetAllAsync("Supplier");
+            //var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
+            //// updated elasticsearch.
+            //await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -114,35 +106,27 @@ namespace Microbrewit.Api.Controllers
         /// <summary>
         /// Inserts new yeast.
         /// </summary>
-        /// <param name="yeastPosts">Takes a list of YeastDto objects in form of json</param>
+        /// <param name="yeastDto">Takes a list of YeastDto objects in form of json</param>
         /// <returns>201 Created</returns>
-        [ClaimsAuthorize(Roles = "Admin")]
+        [ClaimsAuthorize("Post","Yeast")]
         [Route("")]
-        [ResponseType(typeof(IList<YeastDto>))]
-        public async Task<IHttpActionResult> PostYeast(IList<YeastDto> yeastPosts)
+        [ResponseType(typeof(YeastDto))]
+        public async Task<IHttpActionResult> PostYeast(YeastDto yeastDto)
         {
-            try
-            {
-                ClaimsPrincipalPermission.CheckAccess("sub","write");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            var isAllowed = ClaimsAuthorization.CheckAccess("PostYeast","blehoo","admin");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var yeasts = Mapper.Map<IList<YeastDto>, Yeast[]>(yeastPosts);
-            await _yeastRespository.AddAsync(yeasts);
+            //var yeasts = Mapper.Map<IList<YeastDto>, Yeast[]>(yeastPosts);
+            //await _yeastRespository.AddAsync(yeasts);
 
-            var yeastsES = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsES);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
+            //var yeastsES = await _yeastRespository.GetAllAsync("Supplier");
+            //var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeastsES);
+            //// updated elasticsearch.
+            //await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
+            var result = await _yeastService.AddAsync(yeastDto);
 
-            return CreatedAtRoute("DefaultApi", new { controller = "yeasts", }, yeastPosts);
+            return CreatedAtRoute("DefaultApi", new { controller = "yeasts", }, result);
         }
 
         /// <summary>
@@ -150,37 +134,40 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <param name="id">Yeast id</param>
         /// <returns>200 OK</returns>
+        [ClaimsAuthorize("Delete","Yeast")]
         [Route("{id:int}")]
         [ResponseType(typeof(YeastDto))]
         public async Task<IHttpActionResult> DeleteYeast(int id)
         {
-            Yeast yeast = await _yeastRespository.GetSingleAsync(y => y.Id == id);
+            //Yeast yeast = await _yeastRespository.GetSingleAsync(y => y.Id == id);
+            var yeast = await _yeastService.DeleteAsync(id);
             if (yeast == null)
             {
                 return NotFound();
             }
 
-            _yeastRespository.Remove(yeast);
+            //_yeastRespository.Remove(yeast);
 
-            var yeasts = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
-            // updated elasticsearch.
-            await _elasticsearch.DeleteYeast(id);
+            //var yeasts = await _yeastRespository.GetAllAsync("Supplier");
+            //var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
+            //// updated elasticsearch.
+            //await _elasticsearch.DeleteYeast(id);
 
-            var yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
-            return Ok(yeastDto);
+            //var yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
+            return Ok(yeast);
         }
 
+        [ClaimsAuthorize("Reindex","Yeast")]
         [HttpGet]
         [Route("es")]
-        public async Task<IHttpActionResult> UpdateRedisYeast()
+        public async Task<IHttpActionResult> UpdateElasticSearchYeast()
         {
             // Updates yeasts in the redis store.
-            var yeasts = await _yeastRespository.GetAllAsync("Supplier");
-            var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
+            //var yeasts = await _yeastRespository.GetAllAsync("Supplier");
+            //var yeastsDto = Mapper.Map<IList<Yeast>, IList<YeastDto>>(yeasts);
             // updated elasticsearch.
-            await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
-
+            //await _elasticsearch.UpdateYeastsElasticSearch(yeastsDto);
+            await _yeastService.ReIndexElasticSearch();
             return Ok();
         }
         /// <summary>
@@ -194,11 +181,9 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<YeastCompleteDto> GetYeastsBySearch(string query, int from = 0, int size = 20)
         {
-            var yeastsDto = await _elasticsearch.SearchYeasts(query,from,size);
-            
-            var result = new YeastCompleteDto();
-            result.Yeasts = yeastsDto.ToList();
-            return result;
+            //var yeastsDto = await _elasticsearch.SearchYeasts(query,from,size);
+            var yeastsDto = await _yeastService.SearchAsync(query, from, size);
+            return new YeastCompleteDto {Yeasts = yeastsDto.ToList()};
         }
     }
 }

@@ -14,7 +14,11 @@ using Microbrewit.Model.DTOs;
 using AutoMapper;
 using Microbrewit.Repository;
 using System.Configuration;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
+using Microsoft.Data.OData.Metadata;
 using Newtonsoft.Json;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -22,14 +26,11 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("others")]
     public class OtherController : ApiController
     {
-        private IOtherRepository _otherRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
-       
-        public OtherController(IOtherRepository otherRepository)
+        private IOtherService _otherService;
+
+        public OtherController(IOtherService otherService)
         {
-            
-            this._otherRepository = otherRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _otherService = otherService;
         }
 
         /// <summary>
@@ -40,15 +41,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<OtherCompleteDto> GetOthers(string custom = "false")
         {
-            var othersDto = await _elasticsearch.GetOthers(custom);
-            if (!othersDto.Any())
-            {
-            var others = await _otherRepository.GetAllAsync();
-            othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
-
-            }
-            var result = new OtherCompleteDto();
-            result.Others = othersDto.OrderBy(o => o.Name).ToList();
+            var other = await _otherService.GetAllAsync(custom);
+            var result = new OtherCompleteDto {Others = other.ToList()};
             return result;
         }
 
@@ -64,20 +58,13 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(OtherCompleteDto))]
         public async Task<IHttpActionResult> GetOther(int id)
         {
-            var otherDto = await _elasticsearch.GetOther(id);
-            if (otherDto == null)
-            {
-                var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
-                otherDto = Mapper.Map<Other, OtherDto>(other);
-
-            }
+            var otherDto = await _otherService.GetSingleAsync(id);
             if (otherDto == null)
             {
                 return NotFound();
             }
             var response = new OtherCompleteDto() { Others = new List<OtherDto>() };
             response.Others.Add(otherDto);
-
             return Ok(response);
         }
 
@@ -90,6 +77,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id"></param>
         /// <param name="otherDto"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Put", "Other")]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutOther(int id, OtherDto otherDto)
         {
@@ -102,41 +90,25 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            var other = Mapper.Map<OtherDto, Other>(otherDto);
-            await _otherRepository.UpdateAsync(other);
-
-            var others = await _otherRepository.GetAllAsync();
-            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
+            await _otherService.UpdateAsync(otherDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
         /// <summary>
         /// Add new other.
         /// </summary>
-        /// <param name="otherDtos"></param>
+        /// <param name="otherDto"></param>
         /// <returns></returns>
+        [ClaimsAuthorize("Post", "Other")]
         [Route("")]
-        [ResponseType(typeof(OtherCompleteDto))]
-        public async Task<IHttpActionResult> PostOther(IList<OtherDto> otherDtos)
+        [ResponseType(typeof(OtherDto))]
+        public async Task<IHttpActionResult> PostOther(OtherDto otherDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var others = Mapper.Map<IList<OtherDto>, Other[]>(otherDtos);
-            await _otherRepository.AddAsync(others);
-
-            var result = Mapper.Map<IList<Other>, IList<OtherDto>>(_otherRepository.GetAll());
-
-            var othersEs = await _otherRepository.GetAllAsync();
-            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(othersEs);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
-
-            var response = new OtherCompleteDto() { Others = new List<OtherDto>() };
-            response.Others = otherDtos;
-            return CreatedAtRoute("DefaultApi", new { controller = "others", }, response);
+            var result = await _otherService.AddAsync(otherDto);
+            return CreatedAtRoute("DefaultApi", new { controller = "others", }, result);
         }
 
         
@@ -148,36 +120,26 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Other id</param>
         /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi=true)]
+        [ClaimsAuthorize("Delete", "Other")]
         [Route("{id:int}")]
         [ResponseType(typeof(OtherCompleteDto))]
         public async Task<IHttpActionResult> DeleteOther(int id)
         {
-            var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
+            var other = await _otherService.GetSingleAsync(id);
             if (other == null)
             {
                 return NotFound();
             }
-            await _otherRepository.RemoveAsync(other);
-
-            var others = await _otherRepository.GetAllAsync();
-            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
-
-            var response = new OtherCompleteDto(){Others = new List<OtherDto>()};
-            response.Others.Add(Mapper.Map<Other,OtherDto>(other));
-            return Ok(response);
+            return Ok(other);
         }
 
         [Route("es")]
+        [ClaimsAuthorize("Reindex","Other")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateOtherElasticSearch()
         {
-            var others = await _otherRepository.GetAllAsync();
-            var othersDto = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateOtherElasticSearch(othersDto);
 
+            await _otherService.ReIndexElasticSearch();   
             return Ok();
         }
 
@@ -185,10 +147,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<OtherCompleteDto> GetOthersBySearch(string query, int from = 0, int size = 20)
         {
-            var othersDto = await _elasticsearch.SearchOthers(query,from,size);
-
-            var result = new OtherCompleteDto();
-            result.Others = othersDto.ToList();
+            var othersDto = await _otherService.SearchAsync(query, from, size);
+            var result = new OtherCompleteDto {Others = othersDto.ToList()};
             return result;
         }
     }

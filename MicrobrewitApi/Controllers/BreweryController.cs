@@ -13,21 +13,21 @@ using Microbrewit.Model;
 using Microbrewit.Repository;
 using AutoMapper;
 using Microbrewit.Model.DTOs;
-using Microbrewit.Api.Redis;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("breweries")]
     public class BreweryController : ApiController
     {
-        private MicrobrewitContext db = new MicrobrewitContext();
-        private IBreweryRepository _breweryRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
+        private IBreweryService _breweryService;
 
-        public BreweryController(IBreweryRepository breweryRepository)
+        public BreweryController(IBreweryService breweryService)
         {
-            this._breweryRepository = breweryRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _breweryService = breweryService;
         }
 
         /// <summary>
@@ -38,31 +38,11 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<BreweryCompleteDto> GetBreweries()
         {
-            var breweriesDto = await _elasticsearch.GetBreweries();
-            if (breweriesDto.Count() <= 0)
-            {
-                var brewery = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-                breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(brewery);
-            }
-            var result = new BreweryCompleteDto();
-            result.Breweries = breweriesDto.OrderBy(b => b.Name).ToList();
+            var breweriesDto = await _breweryService.GetAllAsync();
+            var result = new BreweryCompleteDto {Breweries = breweriesDto.OrderBy(b => b.Name).ToList()};
             return result;
         }
 
-        /// <summary>
-        /// Updates breweries to elasticsearch.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("update")]
-        public async Task<IHttpActionResult> UpdateBrewery()
-        {
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
-
-            return Ok();
-        }
 
         /// <summary>
         /// Get brewery by id.
@@ -75,13 +55,7 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BreweryCompleteDto))]
         public async Task<IHttpActionResult> GetBrewery(int id)
         {
-            var breweryDto = await _elasticsearch.GetBrewery(id);
-            if(breweryDto == null)
-            {
-                var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == id, "Members.Member", "Beers");
-                breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
-            }
-
+            var breweryDto = await _breweryService.GetSingleAsync(id);
             if (breweryDto == null)
             {
                 return NotFound();
@@ -102,6 +76,12 @@ namespace Microbrewit.Api.Controllers
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutBrewery(int id, BreweryDto breweryDto)
         {
+            // Checks if login user is allowed to change brewery.
+            var isAllowed = ClaimsAuthorization.CheckAccess("Post", "BreweryId", id.ToString());
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -111,11 +91,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-           
-            var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
-            var response = await _breweryRepository.UpdateAsync(brewery);
-
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            await _breweryService.UpdateAsync(breweryDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -124,23 +100,19 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <response code="201">Created</response>
         /// <response code="400">Bad Request</response>
-        /// <param name="breweryPosts">List of brewery objects</param>
+        /// <param name="brewery">List of brewery objects</param>
         /// <returns></returns>
+        [ClaimsAuthorize("Post", "Brewery")]
         [Route("")]
-        [ResponseType(typeof(IList<BreweryDto>))]
-        public async Task<IHttpActionResult> PostBrewery(IList<BreweryDto> breweryPosts)
+        [ResponseType(typeof(BreweryDto))]
+        public async Task<IHttpActionResult> PostBrewery(BreweryDto brewery)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var breweries = Mapper.Map<IList<BreweryDto>, Brewery[]>(breweryPosts);
-            await _breweryRepository.AddAsync(breweries);
-            var breweriesES = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>,IList<BreweryDto>>(breweriesES);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
-            return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, breweriesDto);
+            var result = await _breweryService.AddAsync(brewery);
+            return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, result);
         }
 
      
@@ -155,17 +127,17 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BreweryDto))]
         public async Task<IHttpActionResult> DeleteBrewery(int id)
         {
-            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == id);
+            var isAllowed = ClaimsAuthorization.CheckAccess("Post", "BreweryId", id.ToString());
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
+            var brewery = await _breweryService.DeleteAsync(id);
             if (brewery == null)
             {
                 return NotFound();
             }
-            await _breweryRepository.RemoveAsync(brewery);
-            var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
-            return Ok(breweryDto);
+            return Ok(brewery);
         }
 
         /// <summary>
@@ -177,18 +149,23 @@ namespace Microbrewit.Api.Controllers
         /// <param name="username">Username for member</param>
         /// <returns>Deleted brewery member</returns>
         [Route("{id:int}/members/{username}")]
-        [ResponseType(typeof(BreweryMember))]
+        [ResponseType(typeof(BreweryMemberDto))]
         public async Task<IHttpActionResult> DeleteBreweryMember(int id, string username)
         {
-            var breweryMember = await _breweryRepository.GetBreweryMember(id, username);
+            var isAllowed = ClaimsAuthorization.CheckAccess("Delete", "BreweryId", id.ToString());
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
+            var breweryMember = await _breweryService.DeleteMember(id, username);
             if (breweryMember == null)
             {
                 return NotFound();
             }
-            await _breweryRepository.DeleteBreweryMember(breweryMember.BreweryId, breweryMember.MemberUsername);
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
+            //await _breweryRepository.DeleteBreweryMember(breweryMember.BreweryId, breweryMember.MemberUsername);
+            //var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            //var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
+            //await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
             return Ok(breweryMember);
         }
 
@@ -201,15 +178,14 @@ namespace Microbrewit.Api.Controllers
         /// <param name="username">Member username</param>
         /// <returns>Returns brewery member</returns>
         [Route("{id:int}/members/{username}")]
-        [ResponseType(typeof(BreweryMember))]
+        [ResponseType(typeof(BreweryMemberDto))]
         public async Task<IHttpActionResult> GetBreweryMember(int id,string username)
         {
-            var breweryMember = await _breweryRepository.GetBreweryMember(id,username);
+            var breweryMember = await _breweryService.GetBreweryMember(id,username);
             if (breweryMember == null)
             {
                 return NotFound();
             }
-            
             return Ok(breweryMember);
         }
 
@@ -220,10 +196,10 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Brewery id</param>
         /// <returns>Returns list of brewery members</returns>
         [Route("{id:int}/members")]
-        [ResponseType(typeof(IList<BreweryMember>))]
+        [ResponseType(typeof(IList<BreweryMemberDto>))]
         public async Task<IHttpActionResult> GetBreweryMembers(int id)
         {
-            var breweryMembers = await _breweryRepository.GetBreweryMembers(id);
+            var breweryMembers = await _breweryService.GetAllMembers(id);
             return Ok(breweryMembers);
         }
 
@@ -236,40 +212,41 @@ namespace Microbrewit.Api.Controllers
         /// <param name="username">Member username</param>
         /// <returns></returns>
         [Route("{id:int}/members/{username}")]
-        public async Task<IHttpActionResult> PutBreweryMember(int id,string username, BreweryMember breweryMember)
+        public async Task<IHttpActionResult> PutBreweryMember(int id, string username, BreweryMemberDto breweryMember)
         {
+            var isAllowed = ClaimsAuthorization.CheckAccess("Put", "BreweryId", id.ToString());
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != breweryMember.BreweryId || username != breweryMember.MemberUsername)
+            if (username != breweryMember.Username)
             {
                 return BadRequest();
             }
-
-            await _breweryRepository.UpdateBreweryMember(breweryMember);
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
+            await _breweryService.UpdateBreweryMember(id,breweryMember);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         [Route("{id:int}/members")]
-        [ResponseType(typeof(BreweryMember))]
-        public async Task<IHttpActionResult> PostBreweryMember(int id, BreweryMember breweryMember)
+        [ResponseType(typeof(BreweryMemberDto))]
+        public async Task<IHttpActionResult> PostBreweryMember(int id, BreweryMemberDto breweryMember)
         {
+            var isAllowed = ClaimsAuthorization.CheckAccess("Post", "BreweryId", id.ToString());
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-
-            await _breweryRepository.PostBreweryMember(breweryMember);
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
-            return CreatedAtRoute("DefaultApi", new { controller = "breweries/members" }, breweryMember);
+            var result = await _breweryService.AddBreweryMember(id,breweryMember);
+            return Ok(result);
         }
 
         /// <summary>
@@ -280,9 +257,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> UpdateBreweryElasticSearch()
         {
-            var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
+            await _breweryService.ReIndexElasticSearch();
             return Ok();
         }
       
@@ -298,10 +273,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<BreweryCompleteDto> GetBreweriesBySearch(string query, int from = 0, int size = 20)
         {
-            var breweriesDto = await _elasticsearch.SearchBreweries(query, from, size);
-
-            var result = new BreweryCompleteDto();
-            result.Breweries = breweriesDto.ToList();
+            var breweriesDto = await _breweryService.SearchAsync(query, from, size);
+            var result = new BreweryCompleteDto {Breweries = breweriesDto.ToList()};
             return result;
         }
 

@@ -19,45 +19,39 @@ using System.Security.Principal;
 using AutoMapper;
 using StackExchange.Redis;
 using System.Text;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("users")]
     public class UserController : ApiController
     {
-        private IUserRepository _userRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
-        private readonly IUserCredentialRepository _userCredentialsRepsoitory;
+        private readonly IUserService _userService;
+
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public UserController(IUserRepository userRepository, IUserCredentialRepository userCredentialsRepsoitory)
+        public UserController(IUserService userService)
         {
-            this._userRepository = userRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
-            this._userCredentialsRepsoitory = userCredentialsRepsoitory;
+            _userService = userService;
         }
 
         // GET api/User
         [Route("")]
-        public async Task<UserCompleteDto> GetUsers(int from = 0, int size = 1000)
+        public async Task<UserCompleteDto> GetUsers()
         {
-            var users = await _elasticsearch.GetUsersAsync(from,size);
-            if(!users.Any())
-            {
-                var temp = _userRepository.GetAll("Breweries.Brewery","Beers.Beer");
-                users = Mapper.Map<IList<User>, IList<UserDto>>(temp);
-            }
-            var result = new UserCompleteDto();
-            result.Users = users.ToList();
+            var users = await _userService.GetAllAsync();
+            var result = new UserCompleteDto {Users = users.ToList()};
             return result;
         }
 
         // GET api/User/5
         [Route("{username}")]
         [ResponseType(typeof(User))]
-        public IHttpActionResult GetUser(string username)
+        public async Task<IHttpActionResult> GetUser(string username)
         {
-            var user = Mapper.Map<User, UserDto>(_userRepository.GetSingle(u => u.Username.Equals(username), "Breweries.Brewery", "Beers.Beer"));
+            var user = await _userService.GetSingleAsync(username);
             if (user == null)
             {
                 return NotFound();
@@ -65,21 +59,6 @@ namespace Microbrewit.Api.Controllers
             var result = new UserCompleteDto() { Users = new List<UserDto>() };
             result.Users.Add(user);
             return Ok(result);
-        }
-
-        /// <summary>
-        /// Updates users to elasticsearch.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("update")]
-        public async Task<IHttpActionResult> UpdateBrewery()
-        {
-            var users = await _userRepository.GetAllAsync("Breweries.Brewery", "Beers.Beer");
-            var usersDto = Mapper.Map<IList<User>, IList<UserDto>>(users);
-            await _elasticsearch.UpdateUsersElasticSearch(usersDto);
-
-            return Ok();
         }
 
         /// <summary>
@@ -93,10 +72,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<UserCompleteDto> GetUsersBySearch(string query, int from = 0, int size = 20)
         {
-            var usersDto = await _elasticsearch.SearchUsers(query, from, size);
-
-            var result = new UserCompleteDto();
-            result.Users = usersDto.ToList();
+            var usersDto = await _userService.SearchAsync(query, from, size);
+            var result = new UserCompleteDto {Users = usersDto.ToList()};
             return result;
         }
 
@@ -104,15 +81,12 @@ namespace Microbrewit.Api.Controllers
         /// Updates elasticsearch with data from the database.
         /// </summary>
         /// <returns>200 OK</returns>
+        [ClaimsAuthorize("Reindex","User")]
         [Route("es")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateUsersElasticSearch()
         {
-            var users = await _userRepository.GetAllAsync();
-            var userDto = Mapper.Map<IList<User>, IList<UserDto>>(users);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateUsersElasticSearch(userDto);
-
+            await _userService.ReIndexElasticSearch();
             return Ok();
         }
     }

@@ -1,40 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Model;
-using Microbrewit.Api;
-using Microbrewit.Repository;
-using AutoMapper;
 using log4net;
+using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
-using Newtonsoft.Json;
-using System.Configuration;
+using Microbrewit.Service.Interface;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
 {
-   // [TokenValidationAttribute]
+    /// <summary>
+    /// Fermentable Controller
+    /// </summary>
     [RoutePrefix("fermentables")]
     public class FermentableController : ApiController
-    { 
-        private MicrobrewitContext db = new MicrobrewitContext();
-        private IFermentableRepository _fermentableRepository;
-        private Elasticsearch.ElasticSearch _elasticsearch;
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    {
+        private IFermentableService _fermentableService;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public FermentableController(IFermentableRepository fermentableRepository)
+        public FermentableController(IFermentableService fermentableService)
         {
-            this._fermentableRepository = fermentableRepository;
-            this._elasticsearch = new Elasticsearch.ElasticSearch();
+            _fermentableService = fermentableService;
         }
-      
+
         /// <summary>
         /// Gets all fermentables.
         /// </summary>
@@ -43,16 +35,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<FermentablesCompleteDto> GetFermentables(string custom = "false")
         {
-            var fermentablesDto = await _elasticsearch.GetFermentables(custom);
-            if (!fermentablesDto.Any())
-            {
-                var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin","SubFermentables");
-                fermentablesDto = Mapper.Map<IList<Fermentable>,IList<FermentableDto>>(fermentables);
-
-            }
-            var result = new FermentablesCompleteDto();
-            result.Fermentables = fermentablesDto.OrderBy(f => f.Name).ToList();
-            return result;
+            var fermentables = await _fermentableService.GetAllAsync(custom);
+            return new FermentablesCompleteDto { Fermentables = fermentables.ToList() };
         }
 
         /// <summary>
@@ -66,13 +50,8 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(FermentablesCompleteDto))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-            var fermentableDto = await _elasticsearch.GetFermentable(id);
-            if (fermentableDto == null)
-            {
-                var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id, "Supplier.Origin", "SubFermentables"); 
-                fermentableDto = Mapper.Map<Fermentable, FermentableDto>(fermentable);
 
-            }
+            var fermentableDto = await _fermentableService.GetSingleAsync(id);
             if (fermentableDto == null)
             {
                 return NotFound();
@@ -90,6 +69,7 @@ namespace Microbrewit.Api.Controllers
         /// <response code="204">No Content</response>
         /// <response code="400">Bad Request</response>
         /// <returns></returns>
+        [ClaimsAuthorize("Put","Fermentable")]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutFermentable(int id, FermentableDto fermentableDto)
         {
@@ -102,14 +82,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-
-            var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
-            await _fermentableRepository.UpdateAsync(fermentable);
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin","SubFermentables");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
-
+            await _fermentableService.UpdateAsync(fermentableDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -120,23 +93,17 @@ namespace Microbrewit.Api.Controllers
         /// <response code="400">Bad Request</response>
         /// <param name="fermentableDtos">List of fermentable transfer objects</param>
         /// <returns></returns>
+        [ClaimsAuthorize("Post", "Fermentable")]
         [Route("")]
-        [ResponseType(typeof(IList<FermentableDto>))]
-        public async Task<IHttpActionResult> PostFermentable(IList<FermentableDto> fermentableDtos)
+        [ResponseType(typeof(FermentableDto))]
+        public async Task<IHttpActionResult> PostFermentable(FermentableDto fermentableDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var fermentablePost = Mapper.Map<IList<FermentableDto>, Fermentable[]>(fermentableDtos);
-            await _fermentableRepository.AddAsync(fermentablePost);
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
-
-            return CreatedAtRoute("DefaultApi", new { controller = "fermetables", }, fermentableDtos);
+            var result = await _fermentableService.AddAsync(fermentableDto);
+            return CreatedAtRoute("DefaultApi", new { controller = "fermetables", }, result);
         }
 
         /// <summary>
@@ -146,37 +113,25 @@ namespace Microbrewit.Api.Controllers
         /// <response code="404">Not Found</response>
         /// <param name="id">Fermentable id</param>
         /// <returns></returns>
+        [ClaimsAuthorize("Delete", "Fermentable")]
         [Route("{id:int}")]
         [ResponseType(typeof(Fermentable))]
         public async Task<IHttpActionResult> DeleteFermentable(int id)
         {
-            var fermentable = await _fermentableRepository.GetSingleAsync(f => f.Id == id);
+            var fermentable = await _fermentableService.DeleteAsync(id);
             if (fermentable == null)
             {
                 return NotFound();
             }
-            //Removes fermentable from database.
-            await _fermentableRepository.RemoveAsync(fermentable);
-
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
-
-            var response = new FermentablesCompleteDto() { Fermentables = new List<FermentableDto>() };
-            response.Fermentables.Add(Mapper.Map<Fermentable, FermentableDto>(fermentable));
-            return Ok(response);
+            return Ok(fermentable);
         }
 
+        [ClaimsAuthorize("Reindex", "Fermentable")]
         [HttpGet]
         [Route("es")]
         public async Task<IHttpActionResult> UpdateFermentableElasticSearch()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
-            var fermentablesDto = Mapper.Map<IList<Fermentable>, IList<FermentableDto>>(fermentables);
-            // updated elasticsearch.
-            await _elasticsearch.UpdateFermentableElasticSearch(fermentablesDto);
-
+            await _fermentableService.ReIndexElasticsearch();
             return Ok();
         }
 
@@ -184,11 +139,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<FermentablesCompleteDto> GetFermentablesBySearch(string query, int from = 0, int size = 20)
         {
-            var fermentablesDto = await _elasticsearch.SearchFermentables(query,from,size);
-
-            var result = new FermentablesCompleteDto();
-            result.Fermentables = fermentablesDto.ToList();
-            return result;
+            var fermentablesDto = await _fermentableService.SearchAsync(query, from, size);
+            return new FermentablesCompleteDto { Fermentables = fermentablesDto.ToList() };
         }
     }
 }

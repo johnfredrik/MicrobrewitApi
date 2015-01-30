@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Model;
-using System.Linq.Expressions;
 using log4net;
-using Newtonsoft.Json;
 using Microbrewit.Model.DTOs;
-using AutoMapper;
-using Microbrewit.Repository;
-using System.Configuration;
 using Microbrewit.Service.Interface;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
@@ -27,7 +17,7 @@ namespace Microbrewit.Api.Controllers
     public class HopController : ApiController
     {
         private IHopService _hopService;
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public HopController(IHopService hopService)
         {
@@ -56,10 +46,8 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-         
             var result = new HopCompleteDto() { Hops = new List<HopDto>() };
             result.Hops.Add(hopDto);
-
             return Ok(result);
         }
 
@@ -89,8 +77,6 @@ namespace Microbrewit.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Log.Debug("Invalid ModelState");
-
                 return BadRequest(ModelState);
             }
             var result = await _hopService.AddHopAsync(hopDto);
@@ -116,7 +102,7 @@ namespace Microbrewit.Api.Controllers
         [Route("forms")]
         public async Task<IList<DTO>> GetHopForm()
         {
-            return await _hopService.GetHopFroms();
+            return await _hopService.GetHopFromsAsync();
         }
         
         [ClaimsAuthorize("Reindex","Hop")]
