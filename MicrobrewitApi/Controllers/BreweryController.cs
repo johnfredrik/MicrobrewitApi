@@ -23,7 +23,8 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("breweries")]
     public class BreweryController : ApiController
     {
-        private IBreweryService _breweryService;
+        private readonly IBreweryService _breweryService;
+        private readonly string _blobPath = "https://microbrewit.blob.core.windows.net/images/";
 
         public BreweryController(IBreweryService breweryService)
         {
@@ -39,7 +40,7 @@ namespace Microbrewit.Api.Controllers
         public async Task<BreweryCompleteDto> GetBreweries()
         {
             var breweriesDto = await _breweryService.GetAllAsync();
-            var result = new BreweryCompleteDto {Breweries = breweriesDto.OrderBy(b => b.Name).ToList()};
+            var result = new BreweryCompleteDto { Breweries = breweriesDto.OrderBy(b => b.Name).ToList() };
             return result;
         }
 
@@ -115,7 +116,7 @@ namespace Microbrewit.Api.Controllers
             return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, result);
         }
 
-     
+
 
         /// <summary>
         /// Deletes brewery by id.
@@ -162,10 +163,6 @@ namespace Microbrewit.Api.Controllers
             {
                 return NotFound();
             }
-            //await _breweryRepository.DeleteBreweryMember(breweryMember.BreweryId, breweryMember.MemberUsername);
-            //var breweries = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
-            //var breweriesDto = Mapper.Map<IList<Brewery>, IList<BreweryDto>>(breweries);
-            //await _elasticsearch.UpdateBreweryElasticSearch(breweriesDto);
             return Ok(breweryMember);
         }
 
@@ -179,9 +176,9 @@ namespace Microbrewit.Api.Controllers
         /// <returns>Returns brewery member</returns>
         [Route("{id:int}/members/{username}")]
         [ResponseType(typeof(BreweryMemberDto))]
-        public async Task<IHttpActionResult> GetBreweryMember(int id,string username)
+        public async Task<IHttpActionResult> GetBreweryMember(int id, string username)
         {
-            var breweryMember = await _breweryService.GetBreweryMember(id,username);
+            var breweryMember = await _breweryService.GetBreweryMember(id, username);
             if (breweryMember == null)
             {
                 return NotFound();
@@ -228,7 +225,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
-            await _breweryService.UpdateBreweryMember(id,breweryMember);
+            await _breweryService.UpdateBreweryMember(id, breweryMember);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -245,7 +242,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _breweryService.AddBreweryMember(id,breweryMember);
+            var result = await _breweryService.AddBreweryMember(id, breweryMember);
             return Ok(result);
         }
 
@@ -253,6 +250,7 @@ namespace Microbrewit.Api.Controllers
         /// Updates elasticsearch with database data.
         /// </summary>
         /// <returns></returns>
+        [ClaimsAuthorize("Reindex", "BeerStyle")]
         [Route("es")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateBreweryElasticSearch()
@@ -260,7 +258,7 @@ namespace Microbrewit.Api.Controllers
             await _breweryService.ReIndexElasticSearch();
             return Ok();
         }
-      
+
 
         /// <summary>
         /// Searches in breweries.
@@ -274,8 +272,37 @@ namespace Microbrewit.Api.Controllers
         public async Task<BreweryCompleteDto> GetBreweriesBySearch(string query, int from = 0, int size = 20)
         {
             var breweriesDto = await _breweryService.SearchAsync(query, from, size);
-            var result = new BreweryCompleteDto {Breweries = breweriesDto.ToList()};
-            return result;
+            return new BreweryCompleteDto { Breweries = breweriesDto.ToList() };
+        }
+
+        [Route("{id:int}/upload")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UploadFile(int id)
+        {
+
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+            var brewery = await _breweryService.GetSingleAsync(id);
+            if (brewery == null) return NotFound();
+            MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+            var avatar = provider.Contents.SingleOrDefault(p => p.Headers.ContentDisposition.Name.Contains("avatar"));
+            var headerImage =
+                provider.Contents.SingleOrDefault(p => p.Headers.ContentDisposition.Name.Contains("headerImage"));
+            if (avatar != null)
+            {
+                var fileName = avatar.Headers.ContentDisposition.FileName;
+                brewery.Avatar = _blobPath + fileName;
+            }
+            if (headerImage != null)
+            {
+                var fileName = headerImage.Headers.ContentDisposition.FileName;
+                brewery.HeaderImage = _blobPath + fileName;
+            }
+            await _breweryService.UpdateAsync(brewery);
+            return Ok();
         }
 
     }

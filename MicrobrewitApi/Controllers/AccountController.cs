@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
@@ -23,6 +25,7 @@ namespace Microbrewit.Api.Controllers
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly string MailService = ConfigurationManager.AppSettings["mailService"];
+        private readonly string _blobPath = "https://microbrewit.blob.core.windows.net/images/";
         private readonly IUserService _userService;
         private AuthRepository _repo = null;
 
@@ -210,6 +213,37 @@ namespace Microbrewit.Api.Controllers
             }
             return BadRequest();
         }
+
+        [Route("{username}/upload")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UploadFile(string username)
+        {
+
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+            var userDto = await _userService.GetSingleAsync(username);
+            if (userDto == null) return NotFound();
+            MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+            var avatar = provider.Contents.SingleOrDefault(p => p.Headers.ContentDisposition.Name.Contains("avatar"));
+            var headerImage =
+                provider.Contents.SingleOrDefault(p => p.Headers.ContentDisposition.Name.Contains("headerImage"));
+            if (avatar != null)
+            {
+                var fileName = avatar.Headers.ContentDisposition.FileName;
+                userDto.Avatar = _blobPath + fileName;
+            }
+            if (headerImage != null)
+            {
+                var fileName = headerImage.Headers.ContentDisposition.FileName;
+                userDto.HeaderImage = _blobPath + fileName;
+            }
+            await _userService.UpdateAsync(userDto);
+            return Ok();
+        }
+
 
         protected override void Dispose(bool disposing)
         {
