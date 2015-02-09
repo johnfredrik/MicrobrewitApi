@@ -9,6 +9,6 @@ namespace Microbrewit.Repository
 {
     public interface IUserRepository : IGenericDataRepository<User>
     {
-       
+        IEnumerable<UserSocial> GetUserSocials(string username);
     }
 }

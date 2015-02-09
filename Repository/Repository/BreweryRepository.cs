@@ -29,6 +29,7 @@ namespace Microbrewit.Repository
                 {
                     brewery.UpdatedDate = DateTime.Now;
                     var originalBrewery = context.Breweries.Include(b => b.Members).SingleOrDefault(b => b.Id == brewery.Id);
+                    brewery.CreatedDate = originalBrewery.CreatedDate;
                     SetChanges(context, originalBrewery, brewery);
                     foreach (var member in brewery.Members)
                     {
@@ -43,9 +44,29 @@ namespace Microbrewit.Repository
                             context.BreweryMembers.Add(member);
                         }
                     }
+                    foreach (var brewerySocial in brewery.Socials)
+                    {
+                        var existingBrewerySocial = context.BrewerySocials.SingleOrDefault(s => s.BreweryId == brewerySocial.BreweryId && s.SocialId == brewerySocial.SocialId);
+                        if (existingBrewerySocial != null)
+                        {
+                            SetChanges(context, existingBrewerySocial, brewerySocial);
+                        }
+                        else
+                        {
+                            context.BrewerySocials.Add(brewerySocial);
+                        }
+                    }
                 }
 
-                return await context.SaveChangesAsync();
+                try
+                {
+                    return await context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
                 //await base.UpdateAsync(breweries);
 
             }
@@ -113,6 +134,14 @@ namespace Microbrewit.Repository
             using (var context = new MicrobrewitContext())
             {
                 return context.BreweryMembers.Where(b => b.MemberUsername.Equals(username)).ToList();
+            }
+        }
+
+        public IList<BrewerySocial> GetBrewerySocials(int breweryId)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return context.BrewerySocials.Where(b => b.BreweryId == breweryId).ToList();
             }
         }
     }
