@@ -34,6 +34,12 @@ namespace Microbrewit.Model.DTOs
         public string ConfirmPassword { get; set; }
          [JsonProperty(PropertyName = "geoLocation")]
         public GeoLocationDto GeoLocation { get; set; }
+         [JsonProperty(PropertyName = "headerImage")]
+         public string HeaderImage { get; set; }
+         [JsonProperty(PropertyName = "avatar")]
+         public string Avatar { get; set; }
+         [JsonProperty(PropertyName = "socials")]
+         public Dictionary<string, string> Socials { get; set; }
 
 
         
