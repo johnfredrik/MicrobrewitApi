@@ -139,10 +139,10 @@ namespace Microbrewit.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public async Task<IList<BeerStyleDto>> GetBeerBySearch(string query, int from = 0, int size = 20)
+        public async Task<BeerStyleCompleteDto> GetBeerBySearch(string query, int from = 0, int size = 20)
         {
             var result = await _beerStyleService.SearchAsync(query, from, size);
-            return result.ToList();
+            return new BeerStyleCompleteDto {BeerStyles = result.ToList()};
         }
 
 
