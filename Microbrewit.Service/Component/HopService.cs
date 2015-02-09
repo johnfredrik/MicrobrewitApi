@@ -32,7 +32,7 @@ namespace Microbrewit.Service.Component
             return hopsDto;
         }
 
-        public async Task<HopDto> GetHopAsync(int id)
+        public async Task<HopDto> GetSingleAsync(int id)
         {
             var hopDto = await _hopElasticsearch.GetSingleAsync(id);
             if (hopDto != null) return hopDto;
@@ -91,6 +91,15 @@ namespace Microbrewit.Service.Component
         {
             var hopforms = _hopRepository.GetHopForms();
             return Mapper.Map<IList<HopForm>, IList<DTO>>(hopforms);
+        }
+
+        public HopDto GetSingle(int id)
+        {
+            var hopDto = _hopElasticsearch.GetSingle(id);
+            if (hopDto != null) return hopDto;
+            var hop = _hopRepository.GetSingle(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts");
+            hopDto = Mapper.Map<Hop, HopDto>(hop);
+            return hopDto;
         }
     }
 }
