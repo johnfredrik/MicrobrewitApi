@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Microbrewit.Api.Util;
 using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
+using Microbrewit.Repository;
 using Microbrewit.Repository.Repository;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
@@ -13,7 +15,6 @@ using Microsoft.Owin.Security.OAuth;
 
 namespace Microbrewit.Api.Provider
 {
-
 
     public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
@@ -86,6 +87,7 @@ namespace Microbrewit.Api.Provider
             if (allowedOrigin == null) allowedOrigin = "*";
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
+            
 
             using (AuthRepository _repo = new AuthRepository())
             {
@@ -97,7 +99,9 @@ namespace Microbrewit.Api.Provider
                     return;
                 }
                 var roles = _repo.GetUserRoles(user.Id);
+  
 
+                
                 var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                 identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
                 identity.AddClaim(new Claim("sub", context.UserName));
@@ -115,7 +119,7 @@ namespace Microbrewit.Api.Provider
                         "as:client_id", (context.ClientId == null) ? string.Empty : context.ClientId
                     },
                     { 
-                        "userName", context.UserName
+                        "username", context.UserName
                     }
                 });
 
