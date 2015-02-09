@@ -50,7 +50,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Supplier id</param>
         /// <returns></returns>
         [Route("{id:int}")]
-        [ResponseType(typeof(Supplier))]
+        [ResponseType(typeof(SupplierCompleteDto))]
         public async Task<IHttpActionResult> GetSupplier(int id)
         {
             var supplierDto = await _supplierService.GetSingleAsync(id);

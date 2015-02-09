@@ -53,7 +53,7 @@ namespace Microbrewit.Api.Controllers
         /// <param name="id">Origin id</param>
         /// <returns></returns>
         [Route("{id:int}")]
-        [ResponseType(typeof(Origin))]
+        [ResponseType(typeof(OriginCompleteDto))]
         public async Task<IHttpActionResult> GetOrigin(int id)
         {
             var originDto = await _originService.GetSingleAsync(id);
@@ -151,10 +151,10 @@ namespace Microbrewit.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public async Task<IList<OriginDto>> GetOriginBySearch(string query, int from = 0, int size = 20)
+        public async Task<OriginCompleteDto> GetOriginBySearch(string query, int from = 0, int size = 20)
         {
             var result = await _originService.SearchAsync(query, from, size);
-            return result.ToList();
+            return new OriginCompleteDto {Origins = result.ToList()};
         }
      
     }
