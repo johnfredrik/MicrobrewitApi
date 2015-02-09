@@ -16,13 +16,22 @@ namespace Microbrewit.Service.Component
 {
     public class BeerService : IBeerService
     {
+        private IUserService _userService;
         private IBeerElasticsearch _beerElasticsearch;
         private IBeerRepository _beerRepository;
+        private IBreweryService _breweryService;
 
         public BeerService(IBeerElasticsearch beerElasticsearch, IBeerRepository beerRepository)
         {
             _beerElasticsearch = beerElasticsearch;
             _beerRepository = beerRepository;
+        }
+        public BeerService(IBeerElasticsearch beerElasticsearch, IBeerRepository beerRepository, IUserService userService,IBreweryService breweryService)
+        {
+            _beerElasticsearch = beerElasticsearch;
+            _beerRepository = beerRepository;
+            _userService = userService;
+            _breweryService = breweryService;
         }
 
         public async Task<IEnumerable<BeerDto>> GetAllAsync(int from, int size)
@@ -113,6 +122,9 @@ namespace Microbrewit.Service.Component
                 "ABV", "IBU", "SRM", "Brewers.User", "Breweries");
             var mappedResult = Mapper.Map<Beer, BeerDto>(result);
             await _beerElasticsearch.UpdateAsync(mappedResult);
+            // elasticsearch relation managing
+            await _userService.ReIndexBeerRelationElasticSearch(beerDto);
+            await _breweryService.ReIndexBeerRelationElasticSearch(beerDto);
             return mappedResult;
 
         }
@@ -122,7 +134,11 @@ namespace Microbrewit.Service.Component
             var beer = await _beerRepository.GetSingleAsync(o => o.Id == id);
             var beerDto = await _beerElasticsearch.GetSingleAsync(id);
             if(beer != null) await _beerRepository.RemoveAsync(beer);
-            if (beerDto != null) await _beerElasticsearch.DeleteAsync(id);
+            if (beerDto == null) return beerDto;
+            await _beerElasticsearch.DeleteAsync(id);
+            // elasticsearch relation managing
+            await _userService.ReIndexBeerRelationElasticSearch(beerDto);
+            await _breweryService.ReIndexBeerRelationElasticSearch(beerDto);
             return beerDto;
         }
 
@@ -155,6 +171,9 @@ namespace Microbrewit.Service.Component
                 "ABV", "IBU", "SRM", "Brewers.User", "Breweries");
             var mappedResult = Mapper.Map<Beer, BeerDto>(result);
             await _beerElasticsearch.UpdateAsync(mappedResult);
+            // elasticsearch relation managing
+            await _userService.ReIndexBeerRelationElasticSearch(mappedResult);
+            await _breweryService.ReIndexBeerRelationElasticSearch(mappedResult);
         }
 
         public async Task<IEnumerable<BeerDto>> SearchAsync(string query, int @from, int size)
