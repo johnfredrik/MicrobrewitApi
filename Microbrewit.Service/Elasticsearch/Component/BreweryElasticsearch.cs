@@ -100,7 +100,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
                                .Filter(fl => fl
                                     .Bool(b => b
                                         .Must(m => m
-                                            .Term("userName",username)
+                                            .Term("username",username)
                         ))))))));
             var breweryMemberDtos = from brewery in breweryDto.Documents
                 from member in brewery.Members

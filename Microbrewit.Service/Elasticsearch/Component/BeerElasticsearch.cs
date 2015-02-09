@@ -93,7 +93,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
                 .Query(q => q
                 .Filtered(f => f
                     .Query(q2 => q2
-                    .Term("brewers.userName", username))
+                    .Term("brewers.username", username))
                     .Filter(filter => filter
                         .Term(t => t.DataType, "beer")
                         ))));
@@ -106,7 +106,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
                 .Query(q => q
                 .Filtered(f => f
                     .Query(q2 => q2
-                    .Term("brewers.userName", username))
+                    .Term("brewers.username", username))
                     .Filter(filter => filter
                         .Term(t => t.DataType, "beer")
                         ))));
