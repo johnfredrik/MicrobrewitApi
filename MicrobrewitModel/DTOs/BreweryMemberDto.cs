@@ -13,7 +13,7 @@ namespace Microbrewit.Model.DTOs
     public class BreweryMemberDto
     {
         [Required]
-        [JsonProperty(PropertyName = "userName")]
+        [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
         [JsonProperty(PropertyName = "gravatar")]
         public string Gravatar { get; set; }
