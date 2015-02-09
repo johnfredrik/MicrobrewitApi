@@ -112,9 +112,16 @@
     <Compile Include="Automapper\CustomResolvers\BeerBrewerResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\UserDtoBreweryMemberResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\UserDtoUserBeerResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\UserPostDtoSocialResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\UserDtoSocialResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\BreweryDtoSocialResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BreweryGeoLocationResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BreweryMemberGeoLocationResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BreweryMemberResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\UserSocialResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\BrewerySocialResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
