@@ -179,10 +179,10 @@ namespace Microbrewit.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        public async Task<IList<BeerDto>> GetBeerBySearch(string query, int from = 0, int size = 20)
+        public async Task<BeerCompleteDto> GetBeerBySearch(string query, int from = 0, int size = 20)
         {
-            var result = await _beerService.SearchAsync(query, from, size);
-            return result.ToList();
+            var beerDtos = await _beerService.SearchAsync(query, from, size);
+            return new BeerCompleteDto {Beers = beerDtos.ToList()};
         }
 
         /// <summary>
@@ -193,10 +193,10 @@ namespace Microbrewit.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("last")]
-        public async Task<IEnumerable<BeerDto>> GetLastAddedBeers(int from = 0, int size = 20)
+        public async Task<BeerCompleteDto> GetLastAddedBeers(int from = 0, int size = 20)
         {
             var beerDto = await _beerService.GetLastAsync(from, size);
-            return beerDto;
+            return new BeerCompleteDto{ Beers = beerDto.ToList()};
         }
     }
 }
