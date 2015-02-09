@@ -7,7 +7,7 @@ namespace Microbrewit.Service.Interface
     public interface IHopService
     {
         Task<IEnumerable<HopDto>> GetHopsAsync(string custom);
-        Task<HopDto> GetHopAsync(int id);
+        Task<HopDto> GetSingleAsync(int id);
         Task<HopDto> AddHopAsync(HopDto hopsDto);
         Task<HopDto> DeleteHopAsync(int id);
         Task UpdateHopAsync(HopDto hopDto);
@@ -15,5 +15,6 @@ namespace Microbrewit.Service.Interface
         Task ReIndexHopsElasticSearch();
         Task<IList<DTO>> GetHopFromsAsync();
         IEnumerable<DTO> GetHopFroms();
+        HopDto GetSingle(int id);
     }
 }
