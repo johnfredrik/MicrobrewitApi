@@ -16,7 +16,8 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
                 .ForMember(dto => dto.Members, conf => conf.MapFrom(rec => rec.Members))
                 .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
-                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>());
+                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>())
+                .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<BrewerySocialResolver>());
 
 
             Mapper.CreateMap<BreweryMember, DTOUser>()
@@ -47,11 +48,13 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.Members, conf => conf.ResolveUsing<BreweryMemberResolver>())
                 .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
                  .ForMember(dto => dto.Latitude, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude))
-                .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude));
+                .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude))
+                .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<BreweryDtoSocialResolver>());
 
             Mapper.CreateMap<BreweryMemberDto, BreweryMember>()
                .ForMember(dto => dto.MemberUsername, conf => conf.MapFrom(rec => rec.Username))
                .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role));
+
         }
     }
 }
