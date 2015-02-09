@@ -16,7 +16,7 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("hops")]
     public class HopController : ApiController
     {
-        private IHopService _hopService;
+        private readonly IHopService _hopService;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public HopController(IHopService hopService)
@@ -41,7 +41,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetHop(int id)
         {
-            var hopDto = await _hopService.GetHopAsync(id);
+            var hopDto = await _hopService.GetSingleAsync(id);
             if (hopDto == null)
             {
                 return NotFound();
@@ -118,10 +118,8 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<HopCompleteDto> GeHopsBySearch(string query, int from = 0, int size = 20)
         {
-            var result = new HopCompleteDto();
-            var hops =    await _hopService.SearchHop(query, from, size);
-            result.Hops = hops.ToList();
-            return result;
+            var hops = await _hopService.SearchHop(query, from, size);
+            return new HopCompleteDto{Hops = hops.ToList()};
         }
     }
 }
