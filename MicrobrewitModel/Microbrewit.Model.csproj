@@ -218,6 +218,14 @@
     <Compile Include="Migrations\201501150612006_UserLongLat.Designer.cs">
       <DependentUpon>201501150612006_UserLongLat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201502060634282_BrewerySocialBreweryExtention.cs" />
+    <Compile Include="Migrations\201502060634282_BrewerySocialBreweryExtention.Designer.cs">
+      <DependentUpon>201502060634282_BrewerySocialBreweryExtention.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502061230125_UserSocialUserExtention.cs" />
+    <Compile Include="Migrations\201502061230125_UserSocialUserExtention.Designer.cs">
+      <DependentUpon>201502061230125_UserSocialUserExtention.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
@@ -230,6 +238,7 @@
     <Compile Include="ModelBuilder\BreweryBeerConfiguration.cs" />
     <Compile Include="ModelBuilder\BreweryConfiguration.cs" />
     <Compile Include="ModelBuilder\BreweryMemberConfiguration.cs" />
+    <Compile Include="ModelBuilder\UserSocialConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepFermentableConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepOtherConfiguration.cs" />
@@ -246,6 +255,7 @@
     <Compile Include="ModelBuilder\OtherConfiguration.cs" />
     <Compile Include="ModelBuilder\RecipeConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepHopConfiguration.cs" />
+    <Compile Include="ModelBuilder\BrewerySocialConfiguration.cs" />
     <Compile Include="ModelBuilder\SRMConfiguration.cs" />
     <Compile Include="ModelBuilder\SubstitutConfiguration.cs" />
     <Compile Include="ModelBuilder\SupplierConfiguration.cs" />
@@ -266,6 +276,7 @@
     <Compile Include="Model\Brewery.cs" />
     <Compile Include="Model\BreweryBeer.cs" />
     <Compile Include="Model\BreweryMember.cs" />
+    <Compile Include="Model\BrewerySocial.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Fermentable.cs" />
     <Compile Include="Model\FermentationStep.cs" />
@@ -300,6 +311,7 @@
     <Compile Include="Model\UserBeer.cs" />
     <Compile Include="Model\UserCredentials.cs" />
     <Compile Include="Model\UserModel.cs" />
+    <Compile Include="Model\UserSocial.cs" />
     <Compile Include="Model\Yeast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -350,6 +362,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201501150612006_UserLongLat.resx">
       <DependentUpon>201501150612006_UserLongLat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502060634282_BrewerySocialBreweryExtention.resx">
+      <DependentUpon>201502060634282_BrewerySocialBreweryExtention.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502061230125_UserSocialUserExtention.resx">
+      <DependentUpon>201502061230125_UserSocialUserExtention.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

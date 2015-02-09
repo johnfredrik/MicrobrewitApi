@@ -16,10 +16,14 @@ namespace Microbrewit.Model
         public DateTime UpdatedDate { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
+        public string Website { get; set; }
+        public string Established { get; set; }
+        public string HeaderImage { get; set; }
+        public string Avatar { get; set; }
 
         public ICollection<BreweryMember> Members { get; set; }
         public ICollection<BreweryBeer> Beers { get; set; }
-
+        public ICollection<BrewerySocial> Socials { get; set; }
 
     }
 }
