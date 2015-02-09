@@ -29,7 +29,7 @@ namespace Microbrewit.Service.Component
         {
             var brewerysDto = await _breweryElasticsearch.GetAllAsync();
             if (brewerysDto .Any()) return brewerysDto ;
-            var brewerys = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            var brewerys = await _breweryRepository.GetAllAsync("Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             brewerysDto = Mapper.Map<IEnumerable<Brewery>, IEnumerable<BreweryDto>>(brewerys);
             return brewerysDto;
         }
@@ -38,7 +38,7 @@ namespace Microbrewit.Service.Component
         {
             var breweryDto = await _breweryElasticsearch.GetSingleAsync(id);
             if (breweryDto != null) return breweryDto;
-            var brewery = await _breweryRepository.GetSingleAsync(y => y.Id == id, "Members.Member", "Beers");
+            var brewery = await _breweryRepository.GetSingleAsync(y => y.Id == id, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
             return breweryDto;
         }
@@ -47,7 +47,7 @@ namespace Microbrewit.Service.Component
         {
             var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
             await _breweryRepository.AddAsync(brewery);
-            var result = await _breweryRepository.GetSingleAsync(y => y.Id == brewery.Id, "Members.Member", "Beers");
+            var result = await _breweryRepository.GetSingleAsync(y => y.Id == brewery.Id, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var mappedResult = Mapper.Map<Brewery,BreweryDto>(result);
             await _breweryElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -67,7 +67,7 @@ namespace Microbrewit.Service.Component
         {
             var brewery = Mapper.Map<BreweryDto, Brewery>(breweryDto);
             await _breweryRepository.UpdateAsync(brewery);
-            var result = await _breweryRepository.GetSingleAsync(h => h.Id == breweryDto.Id, "Members.Member", "Beers");
+            var result = await _breweryRepository.GetSingleAsync(h => h.Id == breweryDto.Id, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var mappedResult = Mapper.Map<Brewery, BreweryDto>(result);
             await _breweryElasticsearch.UpdateAsync(mappedResult);
         }
@@ -79,9 +79,20 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexElasticSearch()
         {
-            var brewerys = await _breweryRepository.GetAllAsync("Members.Member", "Beers");
+            var brewerys = await _breweryRepository.GetAllAsync("Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var brewerysDto = Mapper.Map<IEnumerable<Brewery>, IEnumerable<BreweryDto>>(brewerys);
             await _breweryElasticsearch.UpdateAllAsync(brewerysDto);
+        }
+
+        public async Task ReIndexBeerRelationElasticSearch(BeerDto beerDto)
+        {
+            foreach (var dtoBrewery in beerDto.Breweries)
+            {
+                var brewery = dtoBrewery;
+                var result = await _breweryRepository.GetSingleAsync(h => h.Id == brewery.Id, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
+                var mappedResult = Mapper.Map<Brewery, BreweryDto>(result);
+                await _breweryElasticsearch.UpdateAsync(mappedResult);
+            }
         }
 
         public async Task<BreweryMemberDto> GetBreweryMember(int breweryId, string username)
@@ -104,7 +115,7 @@ namespace Microbrewit.Service.Component
         {
             var breweryMemberDto = await _breweryElasticsearch.GetSingleMemberAsync(breweryId, username);
             await _breweryRepository.DeleteMember(breweryId,username);
-            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == breweryId, "Members.Member", "Beers");
+            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == breweryId, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
             await _breweryElasticsearch.UpdateAsync(breweryDto);
             return breweryMemberDto;
@@ -115,7 +126,7 @@ namespace Microbrewit.Service.Component
             var breweryMember = Mapper.Map<BreweryMemberDto, BreweryMember>(breweryMemberDto);
             breweryMember.BreweryId = breweryId;
             await _breweryRepository.UpdateMemberAsync(breweryMember);
-            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == breweryId,"Members.Member","Beers");
+            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == breweryId, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
             await _breweryElasticsearch.UpdateAsync(breweryDto);
         }
@@ -125,7 +136,7 @@ namespace Microbrewit.Service.Component
             var breweryMember = Mapper.Map<BreweryMemberDto, BreweryMember>(breweryMemberDto);
             breweryMember.BreweryId = breweryId;
             await _breweryRepository.AddMemberAsync(breweryMember);
-            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == breweryId, "Members.Member", "Beers");
+            var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == breweryId, "Members.Member", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
             await _breweryElasticsearch.UpdateAsync(breweryDto);
             return breweryDto.Members.SingleOrDefault(b => b.Username.Equals(breweryMemberDto.Username));
