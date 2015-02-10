@@ -36,7 +36,11 @@ namespace Microbrewit.Api
             
             var username = context.Principal.Identity.Name;
             var memberships = _breweryRepository.GetMemberships(username);
-            
+
+
+            if ((context.Action.Any((c => c.Value == "Put")) || context.Action.Any(c => c.Value == "Upload") || context.Action.Any(c => c.Value == "Resend")) 
+                && context.Resource.Any(c => c.Value == "Users") && context.Principal.HasClaim(ClaimTypes.Role, "User") && username == context.Resource[1].Value)
+                return true;
 
             if (context.Action.Any(c => c.Value.Equals("Post")) && context.Resource.Any(c => c.Value.Equals("Beer")) && context.Principal.HasClaim(ClaimTypes.Role, "User"))
                 return true;
@@ -72,7 +76,7 @@ namespace Microbrewit.Api
                 }
             }
 
-            if ((context.Action.Any(c => c.Value.Equals("Delete") || c.Value.Equals("Post") || c.Value.Equals("Put"))) && 
+            if ((context.Action.Any(c => c.Value == "Delete" || c.Value == "Post" || c.Value == "Put" || c.Value == "Upload")) && 
                 context.Resource.Any(c => c.Value.Equals("BreweryId")))
             {
                 int breweryId;
@@ -104,7 +108,7 @@ namespace Microbrewit.Api
             if (context.Action.Any(c => c.Value.Equals("Reindex")) && context.Principal.HasClaim(ClaimTypes.Role, "Admin") &&
                 context.Resource.Any(r => r.Value.Equals("Hop") || r.Value.Equals("Yeast") || r.Value.Equals("Fermentable")
                     || r.Value.Equals("Other") || r.Value.Equals("Supplier") || r.Value.Equals("Origin") || r.Value.Equals("BeerStyle")
-                    || r.Value.Equals("Glass") || r.Value.Equals("User")))
+                    || r.Value.Equals("Glass") || r.Value.Equals("User") || r.Value.Equals("Beer")))
                 return true;
 
             return false;

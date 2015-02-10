@@ -163,6 +163,7 @@ namespace Microbrewit.Api.Controllers
         /// Updates elasticsearch with data from the database.
         /// </summary>
         /// <returns>200 OK</returns>
+        [ClaimsAuthorize("Reindex","Beer")]
         [Route("es")]
         [HttpGet]
         public async Task<IHttpActionResult> UpdateBeersElasticSearch()

@@ -279,7 +279,11 @@ namespace Microbrewit.Api.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> UploadFile(int id)
         {
-
+            var isAllowed = ClaimsAuthorization.CheckAccess("Upload", "BreweryId", id.ToString());
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);

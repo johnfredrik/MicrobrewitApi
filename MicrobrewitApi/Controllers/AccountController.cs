@@ -17,6 +17,8 @@ using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Interface;
 using Microsoft.AspNet.Identity;
 using Microsoft.Data.OData.Metadata;
+using Thinktecture.IdentityModel.Authorization;
+using Thinktecture.IdentityModel.Authorization.Mvc;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -91,6 +93,11 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> ReSendConfirmationMail(string username)
         {
+            var isAllowed = ClaimsAuthorization.CheckAccess("Resend", "User", username);
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             var dbUser = await _repo.FindByNameAsync(username);
             if (dbUser != null)
             {
@@ -166,6 +173,11 @@ namespace Microbrewit.Api.Controllers
         [Route("{username}")]
         public async Task<IHttpActionResult> PutUser(string username, UserPutDto userPutDto)
         {
+            var isAllowed = ClaimsAuthorization.CheckAccess("Put", "User", username);
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -195,6 +207,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> ConfirmEmail(string userId, string code)
         {
+           
             if (userId == null || code == null)
             {
                 return BadRequest("wrong");
@@ -218,7 +231,11 @@ namespace Microbrewit.Api.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> UploadFile(string username)
         {
-
+            var isAllowed = ClaimsAuthorization.CheckAccess("Upload", "User", username);
+            if (!isAllowed)
+            {
+                return StatusCode(HttpStatusCode.Unauthorized);
+            }
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
