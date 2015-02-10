@@ -53,14 +53,14 @@ namespace Microbrewit.Repository.Repository
             var user = _userManager.FindByName(userModel.UserName);
             if (user == null) return new IdentityResult("User not found");
 
-            if (!user.Email.Equals(userModel.Email)) user.Email = userModel.Email;
+            if (userModel.Email != null && !user.Email.Equals(userModel.Email)) user.Email = userModel.Email;
             return await _userManager.UpdateAsync(user);
 
         }
 
-        public async Task<IdentityUser> FindUser(string userName, string password)
+        public async Task<IdentityUser> FindUser(string username, string password)
         {
-            IdentityUser user = await _userManager.FindAsync(userName, password);
+            IdentityUser user = await _userManager.FindAsync(username, password);
 
             return user;
         }
