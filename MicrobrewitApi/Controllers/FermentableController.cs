@@ -19,7 +19,7 @@ namespace Microbrewit.Api.Controllers
     [RoutePrefix("fermentables")]
     public class FermentableController : ApiController
     {
-        private IFermentableService _fermentableService;
+        private readonly IFermentableService _fermentableService;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public FermentableController(IFermentableService fermentableService)
@@ -50,7 +50,6 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(FermentablesCompleteDto))]
         public async Task<IHttpActionResult> GetFermentable(int id)
         {
-
             var fermentableDto = await _fermentableService.GetSingleAsync(id);
             if (fermentableDto == null)
             {
