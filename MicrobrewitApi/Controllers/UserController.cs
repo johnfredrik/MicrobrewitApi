@@ -29,6 +29,7 @@ namespace Microbrewit.Api.Controllers
     public class UserController : ApiController
     {
         private readonly IUserService _userService;
+       
 
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -48,7 +49,7 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/User/5
         [Route("{username}")]
-        [ResponseType(typeof(User))]
+        [ResponseType(typeof(UserCompleteDto))]
         public async Task<IHttpActionResult> GetUser(string username)
         {
             var user = await _userService.GetSingleAsync(username);
@@ -73,8 +74,7 @@ namespace Microbrewit.Api.Controllers
         public async Task<UserCompleteDto> GetUsersBySearch(string query, int from = 0, int size = 20)
         {
             var usersDto = await _userService.SearchAsync(query, from, size);
-            var result = new UserCompleteDto {Users = usersDto.ToList()};
-            return result;
+            return new UserCompleteDto {Users = usersDto.ToList()};
         }
 
         /// <summary>
