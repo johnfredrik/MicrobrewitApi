@@ -39,7 +39,7 @@ namespace Microbrewit.Api
 
 
             if ((context.Action.Any((c => c.Value == "Put")) || context.Action.Any(c => c.Value == "Upload") || context.Action.Any(c => c.Value == "Resend")) 
-                && context.Resource.Any(c => c.Value == "Users") && context.Principal.HasClaim(ClaimTypes.Role, "User") && username == context.Resource[1].Value)
+                && context.Resource.Any(c => c.Value == "User") && context.Principal.HasClaim(ClaimTypes.Role, "User") && username == context.Resource[1].Value)
                 return true;
 
             if (context.Action.Any(c => c.Value.Equals("Post")) && context.Resource.Any(c => c.Value.Equals("Beer")) && context.Principal.HasClaim(ClaimTypes.Role, "User"))
@@ -81,7 +81,7 @@ namespace Microbrewit.Api
             {
                 int breweryId;
                 var success = int.TryParse(context.Resource.Last().Value, out breweryId);
-                if (success && memberships.Any(m => m.Role.Equals("Admin") && m.BreweryId == breweryId))
+                if (success && memberships.Any(m => m.Role != null && m.Role.Equals("Admin") && m.BreweryId == breweryId))
                 {
                     return true;
                 }   
