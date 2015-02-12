@@ -18,5 +18,7 @@ namespace Microbrewit.Service.Interface
         Task ReIndexElasticSearch();
 
         Task ReIndexBeerRelationElasticSearch(BeerDto beerDto);
+        Task ReIndexBreweryRelationElasticSearch(BreweryDto breweryDto);
+        Task ReIndexUserElasticSearch(string username);
     }
 }
