@@ -1,59 +1,69 @@
-﻿using AutoMapper;
+﻿using System.Configuration;
+using System.Linq;
+using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Automapper.CustomResolvers;
+using VDS.RDF;
 
 namespace Microbrewit.Service.Automapper
 {
     public class BreweryProfile : Profile
     {
+        private string _imagePath = ConfigurationManager.AppSettings["imagePath"];
+
         protected override void Configure()
         {
             Mapper.CreateMap<Brewery, BreweryDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
-                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                .ForMember(dto => dto.Description, conf => conf.MapFrom(rec => rec.Description))
-                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
-                .ForMember(dto => dto.Members, conf => conf.MapFrom(rec => rec.Members))
-                .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
-                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>())
-                .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<BrewerySocialResolver>());
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Description, conf => conf.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Members, conf => conf.MapFrom(src => src.Members))
+                .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
+                .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Avatar != null && src.Avatar.Any()) ? _imagePath + "avatar/" + src.Avatar : null))
+                .ForMember(dest => dest.HeaderImage, conf => conf.MapFrom(src => (src.HeaderImage != null && src.HeaderImage.Any()) ? _imagePath + "header/" + src.HeaderImage : null))
+                .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>())
+                .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<BrewerySocialResolver>());
 
 
             Mapper.CreateMap<BreweryMember, DTOUser>()
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.MemberUsername))
-                .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role))
-                .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Member.Gravatar));
+                .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.MemberUsername))
+                .ForMember(dest => dest.Role, conf => conf.MapFrom(src => src.Role))
+                .ForMember(dest => dest.Gravatar, conf => conf.MapFrom(src => src.Member.Gravatar));
 
             Mapper.CreateMap<BreweryMember, BreweryMemberDto>()
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.MemberUsername))
-                .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role))
-                .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Member.Gravatar));
+                .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.MemberUsername))
+                .ForMember(dest => dest.Role, conf => conf.MapFrom(src => src.Role))
+                .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Member.Avatar != null && src.Member.Avatar.Any()) ? _imagePath + "avatar/" + src.Member.Avatar : null))
+                .ForMember(dest => dest.Gravatar, conf => conf.MapFrom(src => src.Member.Gravatar));
 
             Mapper.CreateMap<BreweryMember, BreweryDto>()
-                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Brewery.Name))
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Brewery.Id))
-                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<BreweryMemberGeoLocationResolver>())
-                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Brewery.Type));
+                .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Brewery.Name))
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Brewery.Id))
+                .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryMemberGeoLocationResolver>())
+                .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Brewery.Type));
 
             Mapper.CreateMap<Beer, DTO>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
-                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Name));
 
             Mapper.CreateMap<BreweryDto, Brewery>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
-                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                .ForMember(dto => dto.Description, conf => conf.MapFrom(rec => rec.Description))
-                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
-                .ForMember(dto => dto.Members, conf => conf.ResolveUsing<BreweryMemberResolver>())
-                .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
-                 .ForMember(dto => dto.Latitude, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude))
-                .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude))
-                .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<BreweryDtoSocialResolver>());
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Description, conf => conf.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Members, conf => conf.ResolveUsing<BreweryMemberResolver>())
+                .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
+                .ForMember(dest => dest.Latitude, conf => conf.MapFrom(src => src.GeoLocation.Latitude))
+                .ForMember(dest => dest.Longitude, conf => conf.MapFrom(src => src.GeoLocation.Longitude))
+                .ForMember(dest => dest.Avatar, conf => conf.ResolveUsing<BreweryAvatarResolver>())
+                .ForMember(dest => dest.HeaderImage, conf => conf.ResolveUsing<BrewerHeaderImageResolver>())
+                .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<BreweryDtoSocialResolver>());
 
             Mapper.CreateMap<BreweryMemberDto, BreweryMember>()
-               .ForMember(dto => dto.MemberUsername, conf => conf.MapFrom(rec => rec.Username))
-               .ForMember(dto => dto.Role, conf => conf.MapFrom(rec => rec.Role));
+               .ForMember(dest => dest.MemberUsername, conf => conf.MapFrom(src => src.Username))
+               .ForMember(dest => dest.Role, conf => conf.MapFrom(src => src.Role));
 
         }
     }

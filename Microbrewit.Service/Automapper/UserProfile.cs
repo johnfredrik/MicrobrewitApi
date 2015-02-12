@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Configuration;
+using System.Linq;
+using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Automapper.CustomResolvers;
@@ -7,71 +9,71 @@ namespace Microbrewit.Service.Automapper
 {
     public class UserProfile : Profile
     {
+        private string _imagePath = ConfigurationManager.AppSettings["imagePath"];
+
         protected override void Configure()
         {
             Mapper.CreateMap<User, UserDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Gravatar))
-                .ForMember(dto => dto.Breweries, conf => conf.MapFrom(rec => rec.Breweries))
-                .ForMember(dto => dto.Beers, conf => conf.MapFrom(rec => rec.Beers))
-                .ForMember(dto => dto.Avatar, conf => conf.MapFrom(rec => rec.Avatar))
-                .ForMember(dto => dto.HeaderImage, conf => conf.MapFrom(rec => rec.HeaderImage))
-                .ForMember(dto => dto.GeoLocation, conf => conf.ResolveUsing<UserGeoLocationResolver>())
-                .ForMember(dto => dto.EmailConfirmed, conf => conf.ResolveUsing<UserEmailConfirmedResolver>())
-                .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<UserSocialResolver>())
-                .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings));
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Gravatar, conf => conf.MapFrom(src => src.Gravatar))
+                .ForMember(dest => dest.Breweries, conf => conf.MapFrom(src => src.Breweries))
+                .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
+                .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Avatar != null && src.Avatar.Any()) ? _imagePath + "avatar/" + src.Avatar : null))
+                .ForMember(dest => dest.HeaderImage, conf => conf.MapFrom(src => (src.HeaderImage != null && src.HeaderImage.Any()) ? _imagePath + "header/" + src.HeaderImage : null))
+                .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<UserGeoLocationResolver>())
+                .ForMember(dest => dest.EmailConfirmed, conf => conf.ResolveUsing<UserEmailConfirmedResolver>())
+                .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<UserSocialResolver>())
+                .ForMember(dest => dest.Settings, conf => conf.MapFrom(src => src.Settings));
 
 
             Mapper.CreateMap<UserPostDto, User>()
-               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-               .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings))
-               .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<UserPostDtoSocialResolver>())
-               .ForMember(dto => dto.HeaderImage, conf => conf.MapFrom(rec => rec.HeaderImage))
-               .ForMember(dto => dto.Avatar, conf => conf.MapFrom(rec => rec.Avatar))
-               .ForMember(dto => dto.Latitude, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude))
-               .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude));
+               .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Username))
+               .ForMember(dest => dest.Settings, conf => conf.MapFrom(src => src.Settings))
+               .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<UserPostDtoSocialResolver>())
+               .ForMember(dest => dest.Latitude, conf => conf.MapFrom(src => src.GeoLocation.Latitude))
+               .ForMember(dest => dest.Longitude, conf => conf.MapFrom(src => src.GeoLocation.Longitude));
 
             Mapper.CreateMap<UserPostDto, UserModel>()
-                .ForMember(dto => dto.UserName, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Password, conf => conf.MapFrom(rec => rec.Password))
-                .ForMember(dto => dto.ConfirmPassword, conf => conf.MapFrom(rec => rec.ConfirmPassword))
-                .ForMember(dto => dto.Email, conf => conf.MapFrom(rec => rec.Email));
+                .ForMember(dest => dest.UserName, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Password, conf => conf.MapFrom(src => src.Password))
+                .ForMember(dest => dest.ConfirmPassword, conf => conf.MapFrom(src => src.ConfirmPassword))
+                .ForMember(dest => dest.Email, conf => conf.MapFrom(src => src.Email));
 
             Mapper.CreateMap<UserPostDto, UserDto>()
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings))
-                .ForMember(dto => dto.GeoLocation, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude));
+                .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Settings, conf => conf.MapFrom(src => src.Settings))
+                .ForMember(dest => dest.GeoLocation, conf => conf.MapFrom(src => src.GeoLocation.Latitude));
 
             Mapper.CreateMap<UserPutDto, UserDto>()
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings))
-                .ForMember(dto => dto.Socials, conf => conf.MapFrom(rec => rec.Socials))
-                .ForMember(dto => dto.HeaderImage, conf => conf.MapFrom(rec => rec.HeaderImage))
-                .ForMember(dto => dto.Avatar, conf => conf.MapFrom(rec => rec.Avatar))
-                .ForMember(dto => dto.GeoLocation, conf => conf.MapFrom(rec => rec.GeoLocation));
+                .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Settings, conf => conf.MapFrom(src => src.Settings))
+                .ForMember(dest => dest.Socials, conf => conf.MapFrom(src => src.Socials))
+                .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => src.Avatar))
+                .ForMember(dest => dest.HeaderImage, conf => conf.MapFrom(src => src.HeaderImage))
+                .ForMember(dest => dest.GeoLocation, conf => conf.MapFrom(src => src.GeoLocation));
 
             Mapper.CreateMap<UserPutDto, UserModel>()
-                .ForMember(dto => dto.UserName, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Email, conf => conf.MapFrom(rec => rec.Email));
+                .ForMember(dest => dest.UserName, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Email, conf => conf.MapFrom(src => src.Email));
 
             Mapper.CreateMap<UserDto, User>()
-               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Id))
-               .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-               .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Gravatar))
-               .ForMember(dto => dto.Breweries, conf => conf.ResolveUsing<UserDtoBreweryMemberResolver>())
-               .ForMember(dto => dto.Beers, conf => conf.ResolveUsing<UserDtoUserBeerResolver>())
-               .ForMember(dto => dto.Latitude, conf => conf.MapFrom(rec => rec.GeoLocation.Latitude))
-               .ForMember(dto => dto.Longitude, conf => conf.MapFrom(rec => rec.GeoLocation.Longitude))
-               .ForMember(dto => dto.Avatar, conf => conf.MapFrom(rec => rec.Avatar))
-               .ForMember(dto => dto.HeaderImage, conf => conf.MapFrom(rec => rec.HeaderImage))
-               .ForMember(dto => dto.Socials, conf => conf.ResolveUsing<UserDtoSocialResolver>())
-               .ForMember(dto => dto.Settings, conf => conf.MapFrom(rec => rec.Settings));
+               .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Id))
+               .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Username))
+               .ForMember(dest => dest.Gravatar, conf => conf.MapFrom(src => src.Gravatar))
+               .ForMember(dest => dest.Breweries, conf => conf.ResolveUsing<UserDtoBreweryMemberResolver>())
+               .ForMember(dest => dest.Beers, conf => conf.ResolveUsing<UserDtoUserBeerResolver>())
+               .ForMember(dest => dest.Latitude, conf => conf.MapFrom(src => src.GeoLocation.Latitude))
+               .ForMember(dest => dest.Longitude, conf => conf.MapFrom(src => src.GeoLocation.Longitude))
+               .ForMember(dest => dest.Avatar, conf => conf.ResolveUsing<UserAvatarResolver>())
+               .ForMember(dest => dest.HeaderImage, conf => conf.ResolveUsing<UserHeaderImageResolver>())
+               .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<UserDtoSocialResolver>())
+               .ForMember(dest => dest.Settings, conf => conf.MapFrom(src => src.Settings));
 
 
             Mapper.CreateMap<User, DTOUser>()
-                .ForMember(dto => dto.Username, conf => conf.MapFrom(rec => rec.Username))
-                .ForMember(dto => dto.Gravatar, conf => conf.MapFrom(rec => rec.Gravatar));
+                .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Gravatar, conf => conf.MapFrom(src => src.Gravatar));
         }
 
 
