@@ -17,6 +17,8 @@ namespace Microbrewit.Model.DTOs
         public string Username { get; set; }
         [JsonProperty(PropertyName = "gravatar")]
         public string Gravatar { get; set; }
+        [JsonProperty(PropertyName = "avatar")]
+        public string Avatar { get; set; }
         [JsonProperty(PropertyName = "role")]
         public string Role { get; set; }
         [JsonProperty(PropertyName = "dataType")]
