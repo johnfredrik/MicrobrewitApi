@@ -250,12 +250,12 @@ namespace Microbrewit.Api.Controllers
             if (avatar != null)
             {
                 var fileName = avatar.Headers.ContentDisposition.FileName;
-                userDto.Avatar = _blobPath + fileName;
+                userDto.Avatar = fileName;
             }
             if (headerImage != null)
             {
                 var fileName = headerImage.Headers.ContentDisposition.FileName;
-                userDto.HeaderImage = _blobPath + fileName;
+                userDto.HeaderImage = fileName;
             }
             await _userService.UpdateAsync(userDto);
             return Ok();
