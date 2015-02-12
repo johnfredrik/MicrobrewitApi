@@ -298,12 +298,12 @@ namespace Microbrewit.Api.Controllers
             if (avatar != null)
             {
                 var fileName = avatar.Headers.ContentDisposition.FileName;
-                brewery.Avatar = _blobPath + fileName;
+                brewery.Avatar = fileName;
             }
             if (headerImage != null)
             {
                 var fileName = headerImage.Headers.ContentDisposition.FileName;
-                brewery.HeaderImage = _blobPath + fileName;
+                brewery.HeaderImage = fileName;
             }
             await _breweryService.UpdateAsync(brewery);
             return Ok();
