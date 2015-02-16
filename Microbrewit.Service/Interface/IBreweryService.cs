@@ -18,6 +18,7 @@ namespace Microbrewit.Service.Interface
         Task<IEnumerable<BreweryDto>> SearchAsync(string query, int from, int size);
         Task ReIndexElasticSearch();
         Task ReIndexBeerRelationElasticSearch(BeerDto beerDto);
+        Task ReIndexUserRelationElasticSearch(UserDto userDto);
 
 
         Task<BreweryMemberDto> GetBreweryMember(int breweryId, string username);
