@@ -13,8 +13,10 @@ namespace Microbrewit.Repository
     {
         public Task AddAsync(params Brewery[] breweries)
         {
+
             foreach (var brewery in breweries)
             {
+                brewery.Origin = null;
                 brewery.CreatedDate = DateTime.Now;
                 brewery.UpdatedDate = DateTime.Now;
             }
@@ -56,6 +58,7 @@ namespace Microbrewit.Repository
                             context.BrewerySocials.Add(brewerySocial);
                         }
                     }
+                    brewery.Origin = null;
                 }
 
                 try
@@ -134,6 +137,14 @@ namespace Microbrewit.Repository
             using (var context = new MicrobrewitContext())
             {
                 return context.BreweryMembers.Where(b => b.MemberUsername.Equals(username)).ToList();
+            }
+        }
+
+        public IList<BreweryMember> GetMembers(int breweryId)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return context.BreweryMembers.Where(bm => bm.BreweryId == breweryId).ToList();
             }
         }
 

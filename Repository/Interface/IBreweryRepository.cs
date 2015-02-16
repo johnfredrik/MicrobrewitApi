@@ -15,6 +15,7 @@ namespace Microbrewit.Repository
         Task UpdateMemberAsync(BreweryMember breweryMember);
         Task AddMemberAsync(BreweryMember breweryMember);
         IList<BreweryMember> GetMemberships(string username);
+        IList<BreweryMember> GetMembers(int breweryId);
         IList<BrewerySocial> GetBrewerySocials(int breweryId);
     }
 }
