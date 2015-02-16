@@ -20,6 +20,9 @@ namespace Microbrewit.Model
         public string Established { get; set; }
         public string HeaderImage { get; set; }
         public string Avatar { get; set; }
+        public int OriginId { get; set; }
+        public Origin Origin { get; set; }
+        public string Address { get; set; }
 
         public ICollection<BreweryMember> Members { get; set; }
         public ICollection<BreweryBeer> Beers { get; set; }
