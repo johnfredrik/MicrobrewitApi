@@ -27,6 +27,10 @@ namespace Microbrewit.Model.DTOs
         public IEnumerable<BreweryMemberDto> Members { get; set; }
         [JsonProperty(PropertyName = "beers")]
         public IEnumerable<BeerDto> Beers { get; set; }
+        [JsonProperty(PropertyName = "origin")]
+        public DTO Origin { get; set; }
+        [JsonProperty(PropertyName = "address")]
+        public string Address { get; set; }
         [JsonProperty(PropertyName = "geoLocation")]
         public GeoLocationDto GeoLocation { get; set; }
         [JsonProperty(PropertyName = "website")]
