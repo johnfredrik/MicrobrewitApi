@@ -23,7 +23,6 @@ namespace Microbrewit.Service.Elasticsearch.Component
         public SupplierElasticsearch()
         {
             string url = WebConfigurationManager.AppSettings["elasticsearch"];
-            Log.Debug("Elasticsearch Url: " + url);
             this._node = new Uri(url);
             this._settings = new ConnectionSettings(_node, defaultIndex: "mb");
             this._client = new ElasticClient(_settings);

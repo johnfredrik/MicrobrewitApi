@@ -66,7 +66,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             await _client.MapAsync<BreweryDto>(d => d.Properties(p => p
                .String(s => s.Name(n => n.Name).Analyzer("autocomplete"))
-               .NestedObject<BreweryMemberDto>(no => no.Name("members"))
+               //.NestedObject<BreweryMemberDto>(no => no.Name("members"))
                ));
             await _client.IndexManyAsync(brewerys);
         }
