@@ -323,6 +323,7 @@
     <Compile Include="Controllers\BeerController.cs" />
     <Compile Include="Controllers\BeerStyleController.cs" />
     <Compile Include="Controllers\BreweryController.cs" />
+    <Compile Include="Controllers\DiscourseController.cs" />
     <Compile Include="Controllers\FermentableController.cs" />
     <Compile Include="Controllers\GlassController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
