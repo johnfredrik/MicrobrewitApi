@@ -11,7 +11,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
         protected override IList<UserBeer> ResolveCore(UserDto userDto)
         {
             var userBeers = new List<UserBeer>();
-            if (!userDto.Beers.Any()) return userBeers;
+            if (userDto.Beers == null || !userDto.Beers.Any()) return userBeers;
             foreach (var beerDto in userDto.Beers)
             {
                 var userBeer = new UserBeer
