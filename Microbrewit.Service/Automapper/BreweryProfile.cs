@@ -4,7 +4,6 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Automapper.CustomResolvers;
-using VDS.RDF;
 
 namespace Microbrewit.Service.Automapper
 {
@@ -21,6 +20,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Type))
                 .ForMember(dest => dest.Members, conf => conf.MapFrom(src => src.Members))
                 .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
+                .ForMember(dest => dest.Origin, conf => conf.MapFrom(src => src.Origin))
                 .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Avatar != null && src.Avatar.Any()) ? _imagePath + "avatar/" + src.Avatar : null))
                 .ForMember(dest => dest.HeaderImage, conf => conf.MapFrom(src => (src.HeaderImage != null && src.HeaderImage.Any()) ? _imagePath + "header/" + src.HeaderImage : null))
                 .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>())
@@ -55,6 +55,8 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Type))
                 .ForMember(dest => dest.Members, conf => conf.ResolveUsing<BreweryMemberResolver>())
                 .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
+                .ForMember(dest => dest.OriginId, conf => conf.MapFrom(src => src.Origin.Id))
+                .ForMember(dest => dest.Address, conf => conf.MapFrom(src => src.Address))
                 .ForMember(dest => dest.Latitude, conf => conf.MapFrom(src => src.GeoLocation.Latitude))
                 .ForMember(dest => dest.Longitude, conf => conf.MapFrom(src => src.GeoLocation.Longitude))
                 .ForMember(dest => dest.Avatar, conf => conf.ResolveUsing<BreweryAvatarResolver>())
