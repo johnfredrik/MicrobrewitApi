@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.3.0\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Elasticsearch.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Elasticsearch.Net.1.2.2\lib\Elasticsearch.Net.dll</HintPath>
@@ -226,6 +229,14 @@
     <Compile Include="Migrations\201502061230125_UserSocialUserExtention.Designer.cs">
       <DependentUpon>201502061230125_UserSocialUserExtention.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201502120650565_BreweryOriginAddress.cs" />
+    <Compile Include="Migrations\201502120650565_BreweryOriginAddress.Designer.cs">
+      <DependentUpon>201502120650565_BreweryOriginAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502160639367_BreweryNameUniqueConstraint.cs" />
+    <Compile Include="Migrations\201502160639367_BreweryNameUniqueConstraint.Designer.cs">
+      <DependentUpon>201502160639367_BreweryNameUniqueConstraint.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
@@ -368,6 +379,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201502061230125_UserSocialUserExtention.resx">
       <DependentUpon>201502061230125_UserSocialUserExtention.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502120650565_BreweryOriginAddress.resx">
+      <DependentUpon>201502120650565_BreweryOriginAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502160639367_BreweryNameUniqueConstraint.resx">
+      <DependentUpon>201502160639367_BreweryNameUniqueConstraint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
