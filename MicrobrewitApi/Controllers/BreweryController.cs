@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -108,12 +109,38 @@ namespace Microbrewit.Api.Controllers
         [ResponseType(typeof(BreweryDto))]
         public async Task<IHttpActionResult> PostBrewery(BreweryDto brewery)
         {
+            if (brewery == null) return BadRequest();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _breweryService.AddAsync(brewery);
-            return CreatedAtRoute("DefaultApi", new { controller = "breweries" }, result);
+            try
+            {
+                var result = await _breweryService.AddAsync(brewery);
+                return CreatedAtRoute("DefaultApi", new {controller = "breweries"}, result);
+            }
+            catch (DbEntityValidationException exception)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = exception.EntityValidationErrors
+                    .SelectMany(x => x.ValidationErrors)
+                    .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                return BadRequest(string.Concat(exception.Message, " The validation errors are: ", fullErrorMessage));
+            }
+            catch (DbUpdateException exception)
+            {
+                
+                if (exception.ToString().Contains("IX_BreweryName"))
+                    ModelState.AddModelError("Name", "Duplicate brewery name not allowed.");
+
+                return BadRequest(ModelState);
+            }
+            
         }
 
 
@@ -290,7 +317,7 @@ namespace Microbrewit.Api.Controllers
             }
             var brewery = await _breweryService.GetSingleAsync(id);
             if (brewery == null) return NotFound();
-            MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider();
+            MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider(brewery);
             await Request.Content.ReadAsMultipartAsync(provider);
             var avatar = provider.Contents.SingleOrDefault(p => p.Headers.ContentDisposition.Name.Contains("avatar"));
             var headerImage =

@@ -11,14 +11,10 @@ using AutoMapper;
 using log4net;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
-using Microbrewit.Repository;
 using Microbrewit.Repository.Repository;
-using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Interface;
 using Microsoft.AspNet.Identity;
-using Microsoft.Data.OData.Metadata;
 using Thinktecture.IdentityModel.Authorization;
-using Thinktecture.IdentityModel.Authorization.Mvc;
 
 namespace Microbrewit.Api.Controllers
 {
@@ -93,6 +89,7 @@ namespace Microbrewit.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> ReSendConfirmationMail(string username)
         {
+            Log.Debug("Auth");
             var isAllowed = ClaimsAuthorization.CheckAccess("Resend", "User", username);
             if (!isAllowed)
             {
@@ -242,7 +239,7 @@ namespace Microbrewit.Api.Controllers
             }
             var userDto = await _userService.GetSingleAsync(username);
             if (userDto == null) return NotFound();
-            MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider();
+            MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider(userDto);
             await Request.Content.ReadAsMultipartAsync(provider);
             var avatar = provider.Contents.SingleOrDefault(p => p.Headers.ContentDisposition.Name.Contains("avatar"));
             var headerImage =
