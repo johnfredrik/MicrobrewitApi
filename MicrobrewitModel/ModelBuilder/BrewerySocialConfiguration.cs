@@ -14,6 +14,7 @@ namespace Microbrewit.Model.ModelBuilder
         {
             Property(b => b.SocialId).IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             HasKey(b => new {b.BreweryId, b.SocialId});
+
         }
     }
 }

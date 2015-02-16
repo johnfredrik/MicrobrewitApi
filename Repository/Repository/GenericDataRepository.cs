@@ -166,23 +166,20 @@ namespace Microbrewit.Repository
 
             try
             {
-                var result = await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             
             catch (DbEntityValidationException dbEx)
             {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                        Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                        throw dbEx;
-                    }
-                }
-            }
-            catch (Exception)
-            {
+                //foreach (var validationErrors in dbEx.EntityValidationErrors)
+                //{
+                //    foreach (var validationError in validationErrors.ValidationErrors)
+                //    {
+                //        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                //        Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                //        throw dbEx;
+                //    }
+                //}
                 throw;
             }
             }

@@ -4,8 +4,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Filters;
 
@@ -17,8 +15,9 @@ namespace Microbrewit.Api.ErrorHandler
         {
             if (actionExecutedContext.Exception is DbUpdateException)
             {
-                actionExecutedContext.Response = new HttpResponseMessage(HttpStatusCode.Conflict);
+                var error = "Error occurred:" + actionExecutedContext.Exception.InnerException.InnerException.Message;
+                actionExecutedContext.Response = new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
-        }
+        }
     }
 }

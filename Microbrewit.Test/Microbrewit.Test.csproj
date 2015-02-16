@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeerStyleControllerTest.cs" />
+    <Compile Include="BlobControllerTests.cs" />
     <Compile Include="BreweryControllerTest.cs" />
     <Compile Include="Calculations\AbvCalculationTests.cs" />
     <Compile Include="FermentableControllerTest.cs" />

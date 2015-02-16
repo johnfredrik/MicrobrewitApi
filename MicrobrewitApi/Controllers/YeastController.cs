@@ -39,6 +39,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<YeastCompleteDto> GetYeasts(string custom = "false")
         {
+            Log.Debug("Yeast");
             var yeasts = await _yeastService.GetAllAsync(custom);
             return new YeastCompleteDto{Yeasts = yeasts.ToList()};
         }

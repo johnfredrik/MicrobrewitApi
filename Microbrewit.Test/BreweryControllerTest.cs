@@ -37,7 +37,7 @@ namespace Microbrewit.Test
             AutoMapperConfiguration.Configure();
             _context = new MicrobrewitContext();
             _breweryElasticsearch = new BreweryElasticsearch();
-            _breweryService = new BreweryService(_repository,_breweryElasticsearch);
+           // _breweryService = new BreweryService(_repository,_breweryElasticsearch);
             _repository = new BreweryRepository();
             _controller = new BreweryController(_breweryService);
         }
