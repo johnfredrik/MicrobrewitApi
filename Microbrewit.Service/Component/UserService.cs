@@ -14,12 +14,15 @@ namespace Microbrewit.Service.Component
     {
         private readonly IUserElasticsearch _userElasticsearch;
         private readonly IUserRepository _userRepository;
-       // private readonly IBreweryService _breweryService;
-        public UserService(IUserElasticsearch userElasticsearch, IUserRepository userRepository)
+        private readonly IBreweryRepository _breweryRepository;
+        private readonly IBreweryElasticsearch _breweryElasticsearch;
+
+        public UserService(IUserElasticsearch userElasticsearch, IUserRepository userRepository, IBreweryElasticsearch breweryElasticsearch, IBreweryRepository breweryRepository)
         {
             _userElasticsearch = userElasticsearch;
             _userRepository = userRepository;
-           
+            _breweryElasticsearch = breweryElasticsearch;
+            _breweryRepository = breweryRepository;
         }
 
         public async Task<IEnumerable<UserDto>> GetAllAsync()
@@ -45,8 +48,8 @@ namespace Microbrewit.Service.Component
             var result = await _userRepository.GetSingleAsync(o => o.Username == user.Username, "Breweries.Brewery", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle", "Socials");
             var mappedResult = Mapper.Map<User, UserDto>(result);
             await _userElasticsearch.UpdateAsync(mappedResult);
-            //if (mappedResult.Breweries.Any())
-            //    await _breweryService.ReIndexUserRelationElasticSearch(mappedResult);
+            if (mappedResult.Breweries.Any())
+                await ReIndexUserRelationElasticSearch(mappedResult);
             return mappedResult;
 
         }
@@ -58,8 +61,8 @@ namespace Microbrewit.Service.Component
             if (user != null) await _userRepository.RemoveAsync(user);
             if (userDto == null) return userDto;
             await _userElasticsearch.DeleteAsync(username);
-            //if (userDto.Breweries.Any())
-            //    await _breweryService.ReIndexUserRelationElasticSearch(userDto);
+            if (userDto.Breweries.Any())
+                await ReIndexUserRelationElasticSearch(userDto);
             return userDto;
         }
 
@@ -70,8 +73,8 @@ namespace Microbrewit.Service.Component
             var result = await _userRepository.GetSingleAsync(o => o.Username == userDto.Username, "Breweries.Brewery", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle", "Socials");
             var mappedResult = Mapper.Map<User, UserDto>(result);
             await _userElasticsearch.UpdateAsync(mappedResult);
-            //if (mappedResult.Breweries.Any())
-            //    await _breweryService.ReIndexUserRelationElasticSearch(mappedResult);
+            if (mappedResult.Breweries.Any())
+                await ReIndexUserRelationElasticSearch(mappedResult);
         }
 
         public async Task<IEnumerable<UserDto>> SearchAsync(string query, int @from, int size)
@@ -112,6 +115,17 @@ namespace Microbrewit.Service.Component
             var result = await _userRepository.GetSingleAsync(o => o.Username == username, "Breweries.Brewery", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle", "Socials");
             if (result != null)
                 await _userElasticsearch.UpdateAsync(Mapper.Map<User, UserDto>(result));
+        }
+
+        private async Task ReIndexUserRelationElasticSearch(UserDto userDto)
+        {
+            foreach (var breweryDto in userDto.Breweries)
+            {
+                var brewery = breweryDto;
+                var result = await _breweryRepository.GetSingleAsync(h => h.Id == brewery.Id, "Members.Member", "Origin", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
+                var mappedResult = Mapper.Map<Brewery, BreweryDto>(result);
+                await _breweryElasticsearch.UpdateAsync(mappedResult);
+            }
         }
     }
 }
