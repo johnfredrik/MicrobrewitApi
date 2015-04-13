@@ -12,11 +12,13 @@ namespace Microbrewit.Service.Interface
         Task<IEnumerable<BeerDto>> GetAllAsync(int from, int size);
         Task<BeerDto> GetSingleAsync(int id);
         Task<BeerDto> AddAsync(BeerDto beerDto);
+        Task<BeerDto> AddAsync(BeerDto beerDto, string username);
         Task<BeerDto> DeleteAsync(int id);
         Task UpdateAsync(BeerDto beerDto);
         Task<IEnumerable<BeerDto>> SearchAsync(string query, int from, int size);
         Task<IEnumerable<BeerDto>> GetUserBeersAsync(string username); 
         Task ReIndexElasticSearch();
+        Task ReIndexSingleElasticSearchAsync(int beerId);
         Task<IEnumerable<BeerDto>> GetLastAsync(int @from, int size);
 
         IEnumerable<BeerDto> GetAllUserBeer(string username);
