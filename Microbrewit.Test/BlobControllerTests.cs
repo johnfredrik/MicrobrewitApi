@@ -25,7 +25,7 @@ namespace Microbrewit.Test
             
             _userElasticsearch = new UserElasticsearch();
             _userRepository = new UserRepository();
-            _userService = new UserService(_userElasticsearch,_userRepository,_breweryElasticsearch,_breweryRepository);
+           // _userService = new UserService(_userElasticsearch,_userRepository,_breweryElasticsearch,_breweryRepository);
             _blobController = new BlobController(_userService);
 
         }
