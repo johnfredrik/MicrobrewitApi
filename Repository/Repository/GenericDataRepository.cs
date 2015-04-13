@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
 using log4net;
+using Newtonsoft.Json;
 
 namespace Microbrewit.Repository
 {
@@ -164,24 +165,27 @@ namespace Microbrewit.Repository
                 context.Entry(item).State = EntityState.Added;
             }
 
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            
-            catch (DbEntityValidationException dbEx)
-            {
-                //foreach (var validationErrors in dbEx.EntityValidationErrors)
-                //{
-                //    foreach (var validationError in validationErrors.ValidationErrors)
-                //    {
-                //        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                //        Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                //        throw dbEx;
-                //    }
-                //}
-                throw;
-            }
+                try
+                {
+                    await context.SaveChangesAsync();
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    //foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    //{
+                    //    foreach (var validationError in validationErrors.ValidationErrors)
+                    //    {
+                    //        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                    //        Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                    //        throw dbEx;
+                    //    }
+                    //}
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
 
         }
@@ -193,7 +197,9 @@ namespace Microbrewit.Repository
 
             foreach (T item in items)
             {
+               
                 context.Entry(item).State = EntityState.Modified;
+                
             }
                 try
                 {
@@ -201,7 +207,6 @@ namespace Microbrewit.Repository
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     throw;
                 }
            
@@ -216,6 +221,7 @@ namespace Microbrewit.Repository
             foreach (T item in items)
             {
                 context.Entry(item).State = EntityState.Deleted;
+               
             }
                 try
                 {
@@ -223,6 +229,7 @@ namespace Microbrewit.Repository
                 }
                 catch (Exception e)
                 {
+                    Log.Debug(e);
                     throw;
                 }
             }
