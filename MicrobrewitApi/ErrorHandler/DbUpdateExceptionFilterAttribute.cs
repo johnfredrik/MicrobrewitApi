@@ -15,8 +15,12 @@ namespace Microbrewit.Api.ErrorHandler
         {
             if (actionExecutedContext.Exception is DbUpdateException)
             {
-                var error = "Error occurred:" + actionExecutedContext.Exception.InnerException.InnerException.Message;
-                actionExecutedContext.Response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                
+                var error = "Error occurred:" + actionExecutedContext.Exception.ToString();
+                
+                var httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                httpResponse.Content = new StringContent(actionExecutedContext.Exception.Message);
+                actionExecutedContext.Response = httpResponse;
             }
         }
     }
