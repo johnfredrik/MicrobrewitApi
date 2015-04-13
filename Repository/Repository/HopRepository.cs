@@ -5,18 +5,42 @@ using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq.Expressions;
 
 namespace Microbrewit.Repository
 {
-    public class HopRepository : GenericDataRepository<Hop>,IHopRepository
+    public class HopRepository : IHopRepository
     {
-        public override void Add(params Hop[] hops)
+        public IList<Hop> GetAll(params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {
-                foreach (Hop hop in hops)
-                {
+                IQueryable<Hop> dbQueryable = context.Set<Hop>();
+                dbQueryable = navigationProperties.Aggregate(dbQueryable, (current, navigationProperty) => current.Include(navigationProperty));
+                return dbQueryable.ToList();
+            }
+        }
+
+        public IList<Hop> GetList(Expression<Func<Hop, bool>> @where, params string[] navigationProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Hop GetSingle(Func<Hop, bool> @where, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                IQueryable<Hop> dbQueryable = context.Set<Hop>();
+                dbQueryable = navigationProperties.Aggregate(dbQueryable, (current, navigationProperty) => current.Include(navigationProperty));
+                return dbQueryable.SingleOrDefault(where);
+            }
+        }
+
+        public void Add(Hop hop)
+        {
+            using (var context = new MicrobrewitContext())
+            {
                     if (hop.OriginId > 0)
                     {
                         hop.Origin = null;
@@ -25,20 +49,57 @@ namespace Microbrewit.Repository
                     {
                         context.Entry(subs).State = EntityState.Unchanged;
                     }
-                    //context.Entry(hop).State = EntityState.Added;
-
-                }
-                base.Add(hops);
-                //context.SaveChanges();
+                 context.Hops.Add(hop);
+                 context.SaveChanges();
             }
         }
 
-        public async override Task AddAsync(params Hop[] hops)
+        public void Update(Hop hop)
         {
             using (var context = new MicrobrewitContext())
             {
-                foreach (Hop hop in hops)
-                {
+                var dbHop = context.Hops.SingleOrDefault(h => h.Id == hop.Id);
+                if(dbHop == null) throw new DbUpdateException("Hop does not exist.");
+                context.Entry(dbHop).CurrentValues.SetValues(hop);
+                context.SaveChanges();
+            }
+        }
+
+        public void Remove(Hop hop)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var dbHop = context.Hops.SingleOrDefault(h => h.Id == hop.Id);
+                if(dbHop == null) throw new DbUpdateException("Hop does not exist.");
+                context.Hops.Remove(dbHop);
+                context.SaveChanges();
+            }
+        }
+
+        public async Task<IList<Hop>> GetAllAsync(params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                IQueryable<Hop> dbQueryable = context.Set<Hop>();
+                dbQueryable = navigationProperties.Aggregate(dbQueryable, (current, navigationProperty) => current.Include(navigationProperty));
+                return await dbQueryable.ToListAsync();
+            }
+        }
+
+        public async Task<Hop> GetSingleAsync(Expression<Func<Hop, bool>> where, params string[] navigtionProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                IQueryable<Hop> dbQueryable = context.Set<Hop>();
+                dbQueryable = navigtionProperties.Aggregate(dbQueryable, (current, navigationProperty) => current.Include(navigationProperty));
+                return await dbQueryable.SingleOrDefaultAsync(where);
+            }
+        }
+
+        public async Task AddAsync(Hop hop)
+        {
+            using (var context = new MicrobrewitContext())
+            {
                     if (hop.OriginId > 0)
                     {
                         hop.Origin = null;
@@ -47,13 +108,33 @@ namespace Microbrewit.Repository
                     {
                         context.Entry(subs).State = EntityState.Unchanged;
                     }
-                    //context.Entry(hop).State = EntityState.Added;
-
-                }
-                await base.AddAsync(hops);
-                //context.SaveChanges();
+                context.Hops.Add(hop);
+                await context.SaveChangesAsync();
             }
         }
+
+        public async Task<int> UpdateAsync(Hop hop)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var dbHop = context.Hops.SingleOrDefault(h => h.Id == hop.Id);
+                if (dbHop == null) throw new DbUpdateException("Hop does not exist.");
+                context.Entry(dbHop).CurrentValues.SetValues(hop);
+                return await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveAsync(Hop hop)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var dbHop = context.Hops.SingleOrDefault(h => h.Id == hop.Id);
+                if (dbHop == null) throw new DbUpdateException("Hop does not exist.");
+                context.Entry(dbHop).CurrentValues.SetValues(hop);
+                await context.SaveChangesAsync();
+            }
+        }
+
         public Flavour AddFlavour(string name)
         {
             using (var context = new MicrobrewitContext())
