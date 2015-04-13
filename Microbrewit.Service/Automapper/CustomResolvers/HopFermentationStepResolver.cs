@@ -23,7 +23,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     var hopStepDto = new HopStepDto()
                     {
                         HopId = item.HopId,
-                        Number = item.StepNumber,
+                        StepNumber = item.StepNumber,
                         Amount = item.AAAmount,
                         AAValue = item.AAValue,
                         RecipeId = item.RecipeId,

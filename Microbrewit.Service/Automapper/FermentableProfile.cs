@@ -44,7 +44,14 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.SuperFermentableId, conf => conf.MapFrom(rec => rec.SuperFermentableId))
                 .ForMember(dto => dto.SubFermentables, conf => conf.MapFrom(rec => rec.SubFermentables))
                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
-          
+
+            Mapper.CreateMap<FermentableDto, FermentableStepDto>()
+              .ForMember(dto => dto.FermentableId, conf => conf.MapFrom(rec => rec.Id))
+              .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+              .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
+              .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
+              .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
+
             Mapper.CreateMap<DTO,Supplier>()
                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));

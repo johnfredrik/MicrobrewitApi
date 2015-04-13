@@ -26,7 +26,6 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>())
                 .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<BrewerySocialResolver>());
 
-
             Mapper.CreateMap<BreweryMember, DTOUser>()
                 .ForMember(dest => dest.Username, conf => conf.MapFrom(src => src.MemberUsername))
                 .ForMember(dest => dest.Role, conf => conf.MapFrom(src => src.Role))

@@ -40,6 +40,13 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.AlcoholTolerance, conf => conf.MapFrom(rec => rec.AlcoholTolerance))
                 .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier))
                 .ForMember(dto => dto.SupplierId, conf => conf.ResolveUsing<YeastSupplierResolver>());
+
+            Mapper.CreateMap<YeastDto, YeastStepDto>()
+                .ForMember(dto => dto.YeastId, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.ProductCode, conf => conf.MapFrom(rec => rec.ProductCode))
+                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))
+                .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Supplier));
         }
     }
 }

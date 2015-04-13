@@ -9,12 +9,12 @@ using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
-    public class HopMashStepResolver : ValueResolver<MashStep, IList<HopStepDto>>
+    public class HopSpargeStepResolver : ValueResolver<SpargeStep, IList<HopStepDto>>
     {
         private readonly IHopElasticsearch _hopElasticsearch = new HopElasticsearch();
         private readonly IHopRepository _hopRepository = new HopRepository();
 
-        protected override IList<HopStepDto> ResolveCore(MashStep step)
+        protected override IList<HopStepDto> ResolveCore(SpargeStep step)
         {
             var hopStepDtoList = new List<HopStepDto>();
             foreach (var item in step.Hops)
@@ -23,8 +23,8 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 {
                     HopId = item.HopId,
                     StepNumber = item.StepNumber,
-                    Amount = item.AAAmount,
-                    AAValue = item.AAValue,
+                    Amount = item.AaAmount,
+                    AAValue = item.AaValue,
                     RecipeId = item.RecipeId,                    
                 };
                 var hop = _hopElasticsearch.GetSingle(item.HopId) ?? Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(f => f.Id == item.HopId));

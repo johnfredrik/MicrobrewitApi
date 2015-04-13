@@ -21,7 +21,8 @@ namespace Microbrewit.Service.Automapper
             Mapper.CreateMap<Beer, BeerDto>()
                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                .ForMember(dto => dto.ForkOf, conf => conf.MapFrom(rec => rec.ForkeOfId))
+                .ForMember(dto => dto.ForkOfId, conf => conf.MapFrom(rec => rec.ForkeOfId))
+                .ForMember(dto => dto.ForkOf, conf => conf.ResolveUsing<ForkOfResolver>())
                 .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
                 .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM))
@@ -32,7 +33,7 @@ namespace Microbrewit.Service.Automapper
 
             Mapper.CreateMap<Recipe, DTO>()
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Beer.Name))
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.RecipeId));
 
             Mapper.CreateMap<Brewery, DTO>()
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
@@ -51,7 +52,7 @@ namespace Microbrewit.Service.Automapper
                  .ForMember(dto => dto.BeerStyle, conf => conf.MapFrom(rec => rec.Beer.BeerStyle))
                  .ForMember(dto => dto.CreatedDate, conf => conf.MapFrom(rec => rec.Beer.CreatedDate))
                  .ForMember(dto => dto.UpdatedDate, conf => conf.MapFrom(rec => rec.Beer.UpdatedDate))
-                 .ForMember(dto => dto.ForkOf, conf => conf.MapFrom(rec => rec.Beer.ForkeOfId))
+                 .ForMember(dto => dto.ForkOfId, conf => conf.MapFrom(rec => rec.Beer.ForkeOfId))
                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.BeerId));
 
             Mapper.CreateMap<UserBeer , DTOUser>()
@@ -69,7 +70,7 @@ namespace Microbrewit.Service.Automapper
                  .ForMember(dto => dto.BeerStyle, conf => conf.MapFrom(rec => rec.Beer.BeerStyle))
                  .ForMember(dto => dto.CreatedDate, conf => conf.MapFrom(rec => rec.Beer.CreatedDate))
                  .ForMember(dto => dto.UpdatedDate, conf => conf.MapFrom(rec => rec.Beer.UpdatedDate))
-                 .ForMember(dto => dto.ForkOf, conf => conf.MapFrom(rec => rec.Beer.ForkeOfId))
+                 .ForMember(dto => dto.ForkOfId, conf => conf.MapFrom(rec => rec.Beer.ForkeOfId))
                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.BeerId));
 
             Mapper.CreateMap<ABV, ABVDto>()
@@ -93,9 +94,16 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
                 .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM))
                 .ForMember(dto => dto.Recipe, conf => conf.MapFrom(rec => rec.Recipe))
-                .ForMember(dto => dto.ForkeOfId, conf => conf.MapFrom(rec => rec.ForkOf))
+                .ForMember(dto => dto.ForkeOfId, conf => conf.MapFrom(rec => rec.ForkOfId))
                 .ForMember(dto => dto.Breweries, conf => conf.MapFrom(rec => rec.Breweries))
                 .ForMember(dto => dto.Brewers, conf => conf.ResolveUsing<BeerBrewerResolver>());
+
+            Mapper.CreateMap<BeerDto, BeerSimpleDto>()
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
+                .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
+                .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
+                 .ForMember(dto => dto.BeerStyle, conf => conf.MapFrom(rec => rec.BeerStyle))
+                .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM));
 
 
             Mapper.CreateMap<ABVDto, ABV>()

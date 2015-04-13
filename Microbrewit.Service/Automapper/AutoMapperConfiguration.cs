@@ -24,6 +24,8 @@ namespace Microbrewit.Service.Automapper
                conf.AddProfile(new BreweryProfile());
                conf.AddProfile(new OriginProfile());
                conf.AddProfile(new GlassProfile());
+               conf.AddProfile(new SpargeStepProfile());
+               conf.AddProfile(new BeerXmlProfile());
            });
         }
 
