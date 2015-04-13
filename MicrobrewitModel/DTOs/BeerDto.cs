@@ -24,11 +24,13 @@ namespace Microbrewit.Model.DTOs
             public IBUDto IBU { get; set; }
             [JsonProperty(PropertyName = "srm")]
             public SRMDto SRM { get; set; }
+            [JsonProperty(PropertyName = "forkOfId")]
+            public int? ForkOfId { get; set; }
             [JsonProperty(PropertyName = "forkOf")]
-            public int? ForkOf { get; set; }
+            public BeerSimpleDto ForkOf { get; set; }
             [Required]
             [JsonProperty(PropertyName = "beerStyle")]
-            public DTO BeerStyle { get; set; }
+            public BeerStyleSimpleDto BeerStyle { get; set; }
             [JsonProperty(PropertyName = "recipe")]
             public RecipeDto Recipe { get; set; }
             [JsonProperty(PropertyName = "createdDate")]
@@ -36,7 +38,7 @@ namespace Microbrewit.Model.DTOs
             [JsonProperty(PropertyName = "updatedDate")]
             public DateTime UpdatedDate { get; set; }
             [JsonProperty(PropertyName = "breweries")]
-            public IList<DTO> Breweries { get; set; }
+            public IList<BrewerySimpleDto> Breweries { get; set; }
             [JsonProperty(PropertyName = "brewers")]
             public IList<DTOUser> Brewers { get; set; }
             [JsonProperty(PropertyName = "dataType")]

@@ -9,7 +9,7 @@ namespace Microbrewit.Model.DTOs
     public class RecipeSimpleDto
     {
         [JsonProperty(PropertyName = "recipeId")]
-        public int Id { get; set; }
+        public int RecipeId { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "notes")]

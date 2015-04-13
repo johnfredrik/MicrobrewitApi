@@ -14,7 +14,7 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "beerStyle")]
-        public DTO BeerStyle { get; set; }
+        public BeerStyleSimpleDto BeerStyle { get; set; }
         [JsonProperty(PropertyName = "abv")]
         public ABVDto ABV { get; set; }
         [JsonProperty(PropertyName = "ibu")]
