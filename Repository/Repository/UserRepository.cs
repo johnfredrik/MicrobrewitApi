@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
 using System.Security.Cryptography;
+using log4net;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Model.ModelBuilder;
 
 namespace Microbrewit.Repository
@@ -27,6 +30,54 @@ namespace Microbrewit.Repository
             using (var context = new MicrobrewitContext())
             {
                 return context.UserSocials.Where(s => s.Username == username).ToList();
+            }
+        }
+
+        public async Task<IEnumerable<UserBeer>> GetAllUserBeersAsync(string username)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                return await context.UserBeers.Where(u => u.Username == username).ToListAsync();
+            }
+        }
+
+        public async Task<bool> ConfirmBreweryMemberAsync(string username, NotificationDto notificationDto)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var breweryMember = await
+                            context.BreweryMembers.SingleOrDefaultAsync(
+                                b => b.BreweryId == notificationDto.Id && b.MemberUsername == username);
+                if (breweryMember == null) return false;
+                if (notificationDto.Value)
+                {
+                    breweryMember.Confirmed = true;
+                }
+                else
+                {
+                    context.BreweryMembers.Remove(breweryMember);
+                }
+                await context.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> ConfirmUserBeerAsync(string username, NotificationDto notificationDto)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                var userBeer = await context.UserBeers.SingleOrDefaultAsync(b => b.BeerId == notificationDto.Id && b.Username == username);
+                if (userBeer == null) return false;
+                if (notificationDto.Value)
+                {
+                    userBeer.Confirmed = true;
+                }
+                else
+                {
+                    context.UserBeers.Remove(userBeer);
+                }
+                await context.SaveChangesAsync();
+                return true;
             }
         }
 
