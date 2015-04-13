@@ -89,6 +89,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         public async Task<IEnumerable<BeerDto>> GetUserBeersAsync(string username)
         {
             var result = await _client.SearchAsync<BeerDto>(s => s
+                .Size(BigNumber)
                 .Query(q => q
                 .Filtered(f => f
                     .Query(q2 => q2
@@ -102,6 +103,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         public IEnumerable<BeerDto> GetUserBeers(string username)
         {
             var result = _client.Search<BeerDto>(s => s
+                .Size(BigNumber)
                 .Query(q => q
                 .Filtered(f => f
                     .Query(q2 => q2
@@ -115,6 +117,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         public IEnumerable<BeerDto> GetAllBreweryBeers(int breweryId)
         {
             var result = _client.Search<BeerDto>(s => s
+                .Size(BigNumber)
                 .Query(q => q
                 .Filtered(f => f
                     .Query(q2 => q2

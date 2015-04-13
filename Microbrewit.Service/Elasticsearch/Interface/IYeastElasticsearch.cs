@@ -19,5 +19,6 @@ namespace Microbrewit.Service.Elasticsearch.Interface
         Task UpdateAllAsync(IEnumerable<YeastDto> yeasts);
         Task DeleteAsync(int id);
         YeastDto GetSingle(int id);
+        IEnumerable<YeastDto> Search(string query, int from, int size);
     }
 }

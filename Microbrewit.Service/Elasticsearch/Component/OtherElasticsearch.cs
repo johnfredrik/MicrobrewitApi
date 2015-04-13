@@ -81,5 +81,16 @@ namespace Microbrewit.Service.Elasticsearch.Component
             var result = _client.Get<OtherDto>(getRequest);
             return result.Source;
         }
+
+        public IEnumerable<OtherDto> Search(string query, int @from, int size)
+        {
+            var searchResults =  _client.Search<OtherDto>(s => s
+                                                .From(from)
+                                                .Size(size)
+                                                .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                          .Query(query))));
+
+            return searchResults.Documents;
+        }
     }
 }

@@ -21,5 +21,6 @@ namespace Microbrewit.Service.Elasticsearch.Interface
 
         FermentableDto GetSingle(int id);
         IEnumerable<FermentableDto> GetAll(string custom);
+        IEnumerable<FermentableDto> Search(string query, int from, int size);
     }
 }

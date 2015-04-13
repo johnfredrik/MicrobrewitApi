@@ -20,7 +20,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         private Uri _node;
         private ConnectionSettings _settings;
         private ElasticClient _client;
-        private int _bigNumber = 10000;
+        private const int BigNumber = 10000;
 
         public BreweryElasticsearch()
         {
@@ -41,7 +41,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public async Task<IEnumerable<BreweryDto>> GetAllAsync()
         {
-            var res = await _client.SearchAsync<BreweryDto>(s => s.Size(_bigNumber).Filter(f => f.Term(t => t.DataType, "brewery")));
+            var res = await _client.SearchAsync<BreweryDto>(s => s.Size(BigNumber).Filter(f => f.Term(t => t.DataType, "brewery")));
             return res.Documents;
         }
 
@@ -91,6 +91,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         public IEnumerable<BreweryMemberDto> GetMemberships(string username)
         {
             var breweryDto =_client.Search<BreweryDto>(s => s
+                .Size(BigNumber)
                 .Query(q => q
                     .Filtered(f => f
                         .Query(qu => qu.MatchAll())

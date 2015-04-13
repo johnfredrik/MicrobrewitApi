@@ -19,5 +19,6 @@ namespace Microbrewit.Service.Elasticsearch.Interface
         Task<IBulkResponse> UpdateAllAsync(IEnumerable<OtherDto> others);
         Task<IDeleteResponse> DeleteAsync(int id);
         OtherDto GetSingle(int id);
+        IEnumerable<OtherDto> Search(string query, int from, int size);
     }
 }

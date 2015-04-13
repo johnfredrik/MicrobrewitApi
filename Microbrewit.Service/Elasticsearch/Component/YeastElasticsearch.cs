@@ -82,6 +82,16 @@ namespace Microbrewit.Service.Elasticsearch.Component
             var result = _client.Get<YeastDto>(getRequest);
             return (YeastDto)result.Source;
         }
+
+        public IEnumerable<YeastDto> Search(string query, int @from, int size)
+        {
+            var fields = new List<string> { "name", "productCode" };
+            var searchResults = _client.Search<YeastDto>(s => s
+                                                .From(from)
+                                                .Size(size)
+                                                .Query(q => q.MultiMatch(m => m.OnFields(fields).Query(query))));
+            return searchResults.Documents;
+        }
     }
 
 }

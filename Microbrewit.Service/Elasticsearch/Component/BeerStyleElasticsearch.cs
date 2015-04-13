@@ -17,7 +17,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         private Uri _node;
         private ConnectionSettings _settings;
         private ElasticClient _client;
-        private int _bigNumber = 10000;
+        private const int BigNumber = 10000;
         private readonly string _url ;
 
         public BeerStyleElasticsearch()
@@ -38,7 +38,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             var result = await _client.SearchAsync<BeerStyleDto>(s => s
                 .Filter(f => f.Term(t => t.DataType, "beerstyle"))
-                .Size(_bigNumber)
+                .Size(BigNumber)
                 );
             return result.Documents;
         }
@@ -76,6 +76,16 @@ namespace Microbrewit.Service.Elasticsearch.Component
             IGetRequest getRequest = new GetRequest("mb", "beerStyle", id.ToString());
             var result = _client.Get<BeerStyleDto>(getRequest);
             return result.Source;
+        }
+
+        public IEnumerable<BeerStyleDto> Search(string query, int @from, int size)
+        {
+            var searchResults =  _client.Search<BeerStyleDto>(s => s
+                                               .From(from)
+                                               .Size(size)
+                                               .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                         .Query(query))));
+            return searchResults.Documents;
         }
     }
 }

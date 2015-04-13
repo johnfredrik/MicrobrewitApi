@@ -89,5 +89,17 @@ namespace Microbrewit.Service.Elasticsearch.Component
             var result = _client.Get<HopDto>(getRequest);
             return result.Source;
         }
+
+        public IEnumerable<HopDto> Search(string query, int @from, int size)
+        {
+            var searchResults = _client.Search<HopDto>(s => s
+                                               .From(from)
+                                               .Size(size)
+                                               .Filter(f => f.Term(t => t.DataType, "hop"))
+                                               .Query(q => q.Match(m => m.OnField(f => f.Name)
+                                                                         .Query(query))));
+
+            return searchResults.Documents;
+        }
     }
 }

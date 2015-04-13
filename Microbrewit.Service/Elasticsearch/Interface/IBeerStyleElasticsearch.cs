@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.Internal;
 using Microbrewit.Model;
+using Microbrewit.Model.BeerXml;
 using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Service.Elasticsearch.Interface
@@ -18,5 +19,6 @@ namespace Microbrewit.Service.Elasticsearch.Interface
         Task UpdateAllAsync(IEnumerable<BeerStyleDto> beerStyleDtos);
         Task DeleteAsync(int id);
         BeerStyleDto GetSingle(int id);
+        IEnumerable<BeerStyleDto> Search(string query, int from, int size);
     }
 }

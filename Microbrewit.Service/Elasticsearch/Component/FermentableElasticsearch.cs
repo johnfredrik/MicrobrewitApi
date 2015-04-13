@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
+using AutoMapper.Internal;
 using log4net;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
@@ -85,6 +86,16 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             var res = _client.Search<FermentableDto>(s => s.Size(_bigNumber).Filter(f => f.Term(t => t.DataType, "fermentable") && f.Term(t => t.Custom, custom)));
             return res.Documents;
+        }
+
+        public IEnumerable<FermentableDto> Search(string query, int @from, int size)
+        {
+            var fields = new List<string> { "name" };
+            var searchResults =  _client.Search<FermentableDto>(s => s
+                                                .From(from)
+                                                .Size(size)
+                                                .Query(q => q.MultiMatch(m => m.OnFields(fields).Query(query))));
+            return searchResults.Documents;
         }
     }
 
