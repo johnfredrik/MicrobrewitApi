@@ -26,7 +26,7 @@ namespace Microbrewit.Api.Util
 
         private static double ConvertLitersToGallons(double liters)
         {
-            return liters * 0.26417;
+            return liters * 0.264172;
         }
 
         private static double ConvertGramsToPounds(double grams)
@@ -37,13 +37,15 @@ namespace Microbrewit.Api.Util
         /// The Morey Equation.
         /// Good for beer color < 50 SRM
         /// </summary>
-        /// <param name="weight"></param>
+        /// <param name="weight">Weight in grams</param>
         /// <param name="lovibond"></param>
         /// <param name="postBoilVolume"></param>
         /// <returns>SRM</returns>
         public static double Morey(double weight, double lovibond, double postBoilVolume)
         {
-            return 1.4922 * Math.Pow(MaltColourUnits(weight, lovibond, postBoilVolume), 0.6859);
+            var weightPounds = ConvertGramsToPounds(weight);
+            var volumeInGallons = ConvertLitersToGallons(postBoilVolume);
+            return 1.4922 * Math.Pow(MaltColourUnits(weightPounds, lovibond, volumeInGallons), 0.6859);
         }
         /// <summary>
         /// Daniels Equation
@@ -138,7 +140,7 @@ namespace Microbrewit.Api.Util
 
         public static double MaltOG(double weight, int ppg, double efficiency, int volume)
         {
-            return  ((ConvertGramsToPounds(weight) * ppg * efficiency/100)/ ConvertLitersToGallons(30));
+            return ((ConvertGramsToPounds(weight) * ppg * (efficiency / 100)) / ConvertLitersToGallons(volume));
         }
         /// <summary>
         /// Dave Miller formula of 1988
