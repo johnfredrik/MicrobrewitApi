@@ -89,10 +89,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeerServiceTests.cs" />
     <Compile Include="BeerStyleControllerTest.cs" />
     <Compile Include="BlobControllerTests.cs" />
     <Compile Include="BreweryControllerTest.cs" />
     <Compile Include="Calculations\AbvCalculationTests.cs" />
+    <Compile Include="Calculations\IbuCalculationTests.cs" />
+    <Compile Include="Calculations\SrmCalculationTests.cs" />
     <Compile Include="FermentableControllerTest.cs" />
     <Compile Include="HopControllerTests.cs" />
     <Compile Include="OriginControllerTests.cs" />
