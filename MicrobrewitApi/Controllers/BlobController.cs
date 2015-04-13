@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 using Microbrewit.Service.Interface;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -15,6 +16,7 @@ using Thinktecture.IdentityModel.Authorization.Mvc;
 namespace Microbrewit.Api.Controllers
 {
     //[ClaimsAuthorize("Blob")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [RoutePrefix("blob")]
     public class BlobController : ApiController
     {
