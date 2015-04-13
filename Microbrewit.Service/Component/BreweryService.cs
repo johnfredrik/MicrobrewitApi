@@ -161,12 +161,11 @@ namespace Microbrewit.Service.Component
             return breweryDto.Members.SingleOrDefault(b => b.Username.Equals(breweryMemberDto.Username));
         }
 
-        public IEnumerable<BreweryMemberDto> GetMemberships(string username)
+        public IEnumerable<BreweryMember> GetMemberships(string username)
         {
-            var breweryMemberDtos =  _breweryElasticsearch.GetMemberships(username);
-            if (breweryMemberDtos != null) return breweryMemberDtos;
-            var breweryMemberships = _breweryRepository.GetMemberships(username);
-            return Mapper.Map<IList<BreweryMember>, IEnumerable<BreweryMemberDto>>(breweryMemberships);
+            //var breweryMemberDtos =  _breweryElasticsearch.GetMemberships(username);
+            //if (breweryMemberDtos != null) return breweryMemberDtos;
+            return _breweryRepository.GetMemberships(username);
         }
 
         public BeerDto GetSingle(int beerId)
