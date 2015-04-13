@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Model;
-using Microbrewit.Model.DTOs;
-using Microbrewit.Api.Util;
-using Microbrewit.Repository;
 using log4net;
-using System.Web;
-using System.Security.Principal;
-using AutoMapper;
-using StackExchange.Redis;
-using System.Text;
-using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Interface;
+using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
@@ -31,7 +20,7 @@ namespace Microbrewit.Api.Controllers
         private readonly IUserService _userService;
        
 
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public UserController(IUserService userService)
         {
@@ -87,6 +76,32 @@ namespace Microbrewit.Api.Controllers
         public async Task<IHttpActionResult> UpdateUsersElasticSearch()
         {
             await _userService.ReIndexElasticSearch();
+            return Ok();
+        }
+
+        [Route("{username}/notifications")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserNotifications(string username)
+        {
+            var notifications = await _userService.GetUserNotificationsAsync(username);
+            return Ok(notifications);
+        }
+
+        [Route("{username}/notifications/{id}")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserNotifications(string username,int id)
+        {
+            var notifications = await _userService.GetUserNotificationsAsync(username);
+            return Ok(notifications);
+        }
+
+        [Route("{username}/notifications")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateUserNoTifications(string username, NotificationDto notificationDto)
+        {
+
+            var changed = await _userService.UpdateNotification(username, notificationDto);
+            if (!changed) return BadRequest();
             return Ok();
         }
     }
