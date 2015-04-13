@@ -11,6 +11,7 @@ namespace Microbrewit.Model
     {
         public string Username { get; set; }
         public int BeerId { get; set; }
+        public bool Confirmed { get; set; }
 
         public User User { get; set; }
         public Beer Beer { get; set; }

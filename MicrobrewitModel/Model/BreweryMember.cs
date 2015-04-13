@@ -12,6 +12,7 @@ namespace Microbrewit.Model
         public string Role { get; set; }
         public string MemberUsername { get; set; }
         public int BreweryId { get; set; }
+        public bool Confirmed { get; set; }
 
         public User Member { get; set; }
         public Brewery Brewery { get; set; }

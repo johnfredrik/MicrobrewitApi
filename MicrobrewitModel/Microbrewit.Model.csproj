@@ -106,16 +106,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthMigration\201411100758453_Initial.cs" />
+    <Compile Include="AuthMigration\201411100758453_Initial.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="AuthMigration\201411100758453_Initial.Designer.cs">
       <DependentUpon>201411100758453_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="AuthMigration\Configuration.cs" />
+    <Compile Include="AuthMigration\Configuration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BeerXml\Equipment.cs" />
+    <Compile Include="BeerXml\Fermentable.cs" />
+    <Compile Include="BeerXml\Hop.cs" />
+    <Compile Include="BeerXml\Mash.cs" />
+    <Compile Include="BeerXml\MashStep.cs" />
+    <Compile Include="BeerXml\Misc.cs" />
+    <Compile Include="BeerXml\Recipe.cs" />
+    <Compile Include="BeerXml\Recipes.cs" />
+    <Compile Include="BeerXml\Style.cs" />
+    <Compile Include="BeerXml\Water.cs" />
+    <Compile Include="BeerXml\Yeast.cs" />
     <Compile Include="Calculations.cs" />
     <Compile Include="DTOs\ABVDto.cs" />
     <Compile Include="DTOs\BeerCompleteDto.cs" />
     <Compile Include="DTOs\BeerDto.cs" />
+    <Compile Include="DTOs\BeerStyleSimpleDto.cs" />
     <Compile Include="DTOs\BreweryCompleteDto.cs" />
+    <Compile Include="DTOs\BrewerySimpleDto.cs" />
     <Compile Include="DTOs\BreweryDto.cs" />
     <Compile Include="DTOs\BreweryMemberDto.cs" />
     <Compile Include="DTOs\DTOUser.cs" />
@@ -150,6 +167,7 @@
     <Compile Include="DTOs\Login.cs" />
     <Compile Include="DTOs\MashStepDto.cs" />
     <Compile Include="DTOs\Meta.cs" />
+    <Compile Include="DTOs\NotificationDto.cs" />
     <Compile Include="DTOs\OriginCompleteDto.cs" />
     <Compile Include="DTOs\OriginDto.cs" />
     <Compile Include="DTOs\OtherCompleteDto.cs" />
@@ -161,6 +179,7 @@
     <Compile Include="DTOs\RecipeSimpleCompleteDto.cs" />
     <Compile Include="DTOs\RecipeSimpleDto.cs" />
     <Compile Include="DTOs\ResetPassword.cs" />
+    <Compile Include="DTOs\SpargeStepDto.cs" />
     <Compile Include="DTOs\SRMDto.cs" />
     <Compile Include="DTOs\SupplierCompleteDto.cs" />
     <Compile Include="DTOs\SupplierDto.cs" />
@@ -237,6 +256,22 @@
     <Compile Include="Migrations\201502160639367_BreweryNameUniqueConstraint.Designer.cs">
       <DependentUpon>201502160639367_BreweryNameUniqueConstraint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201502231224098_ConfirmedUserBeerBreweryMember.cs" />
+    <Compile Include="Migrations\201502231224098_ConfirmedUserBeerBreweryMember.Designer.cs">
+      <DependentUpon>201502231224098_ConfirmedUserBeerBreweryMember.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503040929002_SpargeStep.cs" />
+    <Compile Include="Migrations\201503040929002_SpargeStep.Designer.cs">
+      <DependentUpon>201503040929002_SpargeStep.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503071325162_TotalBoilTime.cs" />
+    <Compile Include="Migrations\201503071325162_TotalBoilTime.Designer.cs">
+      <DependentUpon>201503071325162_TotalBoilTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503120624259_SpargeStepHop-FirstWort.cs" />
+    <Compile Include="Migrations\201503120624259_SpargeStepHop-FirstWort.Designer.cs">
+      <DependentUpon>201503120624259_SpargeStepHop-FirstWort.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBuilder\ABVConfiguration.cs" />
     <Compile Include="ModelBuilder\BeerConfiguration.cs" />
@@ -249,6 +284,10 @@
     <Compile Include="ModelBuilder\BreweryBeerConfiguration.cs" />
     <Compile Include="ModelBuilder\BreweryConfiguration.cs" />
     <Compile Include="ModelBuilder\BreweryMemberConfiguration.cs" />
+    <Compile Include="ModelBuilder\SpargeStepHopConfiguration.cs" />
+    <Compile Include="ModelBuilder\SpargeStepConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ModelBuilder\UserSocialConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepConfiguration.cs" />
     <Compile Include="ModelBuilder\FermentationStepFermentableConfiguration.cs" />
@@ -315,6 +354,8 @@
     <Compile Include="Model\Recipe.cs" />
     <Compile Include="Model\FermentationStepHop.cs" />
     <Compile Include="Model\RefreshToken.cs" />
+    <Compile Include="Model\SpargeStep.cs" />
+    <Compile Include="Model\SpargeStepHop.cs" />
     <Compile Include="Model\SRM.cs" />
     <Compile Include="Model\Substitut.cs" />
     <Compile Include="Model\Supplier.cs" />
@@ -385,6 +426,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201502160639367_BreweryNameUniqueConstraint.resx">
       <DependentUpon>201502160639367_BreweryNameUniqueConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502231224098_ConfirmedUserBeerBreweryMember.resx">
+      <DependentUpon>201502231224098_ConfirmedUserBeerBreweryMember.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503040929002_SpargeStep.resx">
+      <DependentUpon>201503040929002_SpargeStep.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503071325162_TotalBoilTime.resx">
+      <DependentUpon>201503071325162_TotalBoilTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503120624259_SpargeStepHop-FirstWort.resx">
+      <DependentUpon>201503120624259_SpargeStepHop-FirstWort.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

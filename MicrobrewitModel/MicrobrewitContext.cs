@@ -45,7 +45,9 @@ namespace Microbrewit.Model
         public DbSet<Beer> Beers { get; set; }
         public DbSet<BrewerySocial> BrewerySocials { get; set; }
         public DbSet<UserSocial> UserSocials { get; set; }
-      //  public DbSet<Substitut> Substituts { get; set; }
+        public DbSet<SpargeStep> SpargeSteps { get; set; }
+        public DbSet<SpargeStepHop> SpargeStepHops { get; set; }
+        //public DbSet<Substitut> Substituts { get; set; }
 
  
         public MicrobrewitContext()
@@ -96,6 +98,8 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new GlassConfiguration());
             modelBuilder.Configurations.Add(new BrewerySocialConfiguration());
             modelBuilder.Configurations.Add(new UserSocialConfiguration());
+            modelBuilder.Configurations.Add(new SpargeStepConfiguration());
+            modelBuilder.Configurations.Add(new SpargeStepHopConfiguration());
         }
    
     }
