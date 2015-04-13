@@ -1,36 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Model;
-using Microbrewit.Api.Util;
-using Microbrewit.Model.DTOs;
-using Microbrewit.Repository;
 using AutoMapper;
-using System.Diagnostics;
-using System.Drawing;
 using log4net;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
-using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Api.ErrorHandler;
+using Microbrewit.Model.BeerXml;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Interface;
+using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Authorization;
 using Thinktecture.IdentityModel.Authorization.WebApi;
-using Thinktecture.IdentityModel.Constants;
-using Thinktecture.IdentityModel.Tokens.Http;
+using Thinktecture.IdentityModel.Extensions;
 
 namespace Microbrewit.Api.Controllers
 {
     [RoutePrefix("beers")]
     public class BeerController : ApiController
     {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IBeerService _beerService;
 
         public BeerController(IBeerService beerService)
@@ -110,6 +102,7 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest();
             }
+            Log.Debug(JsonConvert.SerializeObject(beerDto));
             await _beerService.UpdateAsync(beerDto);
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -131,7 +124,10 @@ namespace Microbrewit.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var beer = await _beerService.AddAsync(beerDto);
+            var username = HttpContext.Current.User.Identity.Name;
+            if (username == null) return BadRequest("Missing user");
+            var beer = await _beerService.AddAsync(beerDto, username);
+            if (beer == null) return BadRequest();
             return CreatedAtRoute("DefaultApi", new { controller = "beers" }, beer);
         }
 
@@ -198,6 +194,26 @@ namespace Microbrewit.Api.Controllers
         {
             var beerDto = await _beerService.GetLastAsync(from, size);
             return new BeerCompleteDto{ Beers = beerDto.ToList()};
+        }
+
+        //[HttpPost]
+        //[Route("beerxml")]
+        //public async Task<Recipe> PostBeerXml([FromBody] Recipe recipe)
+        //{
+        //    var context = HttpContext.Current;
+        //     return recipe;
+        //}
+
+        [HttpPost]
+        [Route("beerxml")]
+        [DbUpdateExceptionFilter]
+        public async Task<IHttpActionResult> PostBeerXml([FromBody] RecipesComplete value)
+        {
+            if (value == null) return BadRequest();
+            var beersDto = Mapper.Map<IList<Recipe>, IList<BeerDto>>(value.Recipes);
+            var context = HttpContext.Current;
+        
+            return Ok(new BeerCompleteDto{Beers = beersDto});
         }
     }
 }
