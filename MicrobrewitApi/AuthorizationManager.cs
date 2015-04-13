@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
+using log4net;
 using Microbrewit.Repository;
 using Microbrewit.Service.Component;
 using Microbrewit.Service.Elasticsearch.Component;
@@ -16,6 +18,7 @@ namespace Microbrewit.Api
         private readonly IBreweryElasticsearch _breweryElasticsearch = new BreweryElasticsearch();
         private readonly IBeerRepository _beerRepository= new BeerRepository();
         private readonly IBeerElasticsearch _beerElasticsearch = new BeerElasticsearch();
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public override bool CheckAccess(AuthorizationContext context)
         {
@@ -44,7 +47,6 @@ namespace Microbrewit.Api
             {
                 int beerId;
                 var success = int.TryParse(context.Resource[1].Value, out beerId);
-
                 if (success && beerService.GetAllUserBeer(username).Any(b => b.Id.Equals(beerId)))
                     return true;
 
