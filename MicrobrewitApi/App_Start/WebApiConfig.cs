@@ -94,8 +94,9 @@ namespace Microbrewit.Api
             //settings.Formatting = Formatting.Indented;
             //settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
-            var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
-            config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);          
+            //var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
+            //config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);   
+            config.Formatters.XmlFormatter.UseXmlSerializer = true;
         }
     }
 }
