@@ -26,6 +26,6 @@ namespace Microbrewit.Service.Interface
         Task<BreweryMemberDto> DeleteMember(int breweryId, string username);
         Task UpdateBreweryMember(int breweryId,BreweryMemberDto breweryMember);
         Task<BreweryMemberDto> AddBreweryMember(int breweryId, BreweryMemberDto breweryMember);
-        IEnumerable<BreweryMemberDto> GetMemberships(string username);
+        IEnumerable<BreweryMember> GetMemberships(string username);
     }
 }
