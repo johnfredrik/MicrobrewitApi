@@ -87,7 +87,7 @@ namespace Microbrewit.Api.Provider
             if (allowedOrigin == null) allowedOrigin = "*";
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
-            
+
 
             using (AuthRepository _repo = new AuthRepository())
             {
@@ -99,14 +99,16 @@ namespace Microbrewit.Api.Provider
                     return;
                 }
                 var roles = _repo.GetUserRoles(user.Id);
-  
 
-                
+
+
                 var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                 identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
                 identity.AddClaim(new Claim("sub", context.UserName));
+                if (user.Email != null)
+                    identity.AddClaim(new Claim("email", user.Email));
                 identity.AddClaim(new Claim(ClaimTypes.Role, "User"));
-                //if(roles.Any()) identity.AddClaim(new Claim(ClaimTypes.Role, roles.FirstOrDefault()));
+                identity.AddClaim(new Claim("id", user.Id));
                 foreach (var role in roles)
                 {
 
