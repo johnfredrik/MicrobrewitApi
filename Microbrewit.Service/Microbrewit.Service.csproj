@@ -110,11 +110,15 @@
     <Compile Include="Automapper\AutoMapperConfiguration.cs" />
     <Compile Include="Automapper\BeerProfile.cs" />
     <Compile Include="Automapper\BeerStyleProfile.cs" />
+    <Compile Include="Automapper\BeerXmlProfile.cs" />
     <Compile Include="Automapper\BoilStepProfile.cs" />
     <Compile Include="Automapper\BrewerProfile.cs" />
     <Compile Include="Automapper\BreweryProfile.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerBrewerResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleLinksResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\BeerXmlBeerStyleSimpleResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\BeerXmlResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\ForkOfResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BeerStyleResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BreweryAvatarResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\BreweryDtoSocialResolver.cs" />
@@ -130,6 +134,7 @@
     <Compile Include="Automapper\CustomResolvers\HopBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopFlavoursResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopSpargeStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopPostOriginResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\OtherBoilStepResolver.cs" />
@@ -156,6 +161,7 @@
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\GlassProfile.cs" />
     <Compile Include="Automapper\HopProfile.cs" />
+    <Compile Include="Automapper\SpargeStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />
     <Compile Include="Automapper\OriginProfile.cs" />
     <Compile Include="Automapper\OtherProfile.cs" />
