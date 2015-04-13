@@ -14,9 +14,7 @@ namespace Microbrewit.Api.Service.Util
 
         public static SRM CalculateSRM(Recipe recipe)
         {
-            var srm = new SRM();
-            
-
+            var srm = new SRM{Id = recipe.RecipeId};
             foreach (var mashStep in recipe.MashSteps)
             {
                 foreach (var fermentable in mashStep.Fermentables)
@@ -34,7 +32,8 @@ namespace Microbrewit.Api.Service.Util
         public static IBU CalculateIBU(Recipe recipe)
         {
             var og = recipe.OG;
-            var ibu = new IBU();
+            var ibu = new IBU {Id = recipe.RecipeId};
+           
             var tinseth = 0.0;
             var rager = 0.0;
             foreach (var boilStep in recipe.BoilSteps)
@@ -48,6 +47,7 @@ namespace Microbrewit.Api.Service.Util
                     rager += Formulas.RangerIbu(hop.Amount, ragerUtilisation, hop.AAValue, recipe.Volume, og);
                 }
             }
+            
             ibu.Tinseth = Math.Round(tinseth, 1);
             ibu.Standard = Math.Round(tinseth, 1);
             ibu.Rager = Math.Round(rager, 1);
@@ -87,6 +87,7 @@ namespace Microbrewit.Api.Service.Util
         {
             var abv = new ABV
             {
+                Id = recipe.RecipeId,
                 Miller = Math.Round(Formulas.MillerABV(recipe.OG, recipe.FG), 2),
                 Simple = Math.Round(Formulas.SimpleABV(recipe.OG, recipe.FG), 2),
                 Advanced = Math.Round(Formulas.AdvancedABV(recipe.OG, recipe.FG), 2),

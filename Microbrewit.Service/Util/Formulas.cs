@@ -24,15 +24,21 @@ namespace Microbrewit.Api.Service.Util
             return (lovibond * grainWeight) / volumeGallons;
         }
 
-        private static double ConvertLitersToGallons(double liters)
+        public static double ConvertLitersToGallons(double liters)
         {
             return liters * 0.26417;
         }
 
-        private static double ConvertGramsToPounds(double grams)
+        public static double ConvertGramsToPounds(double grams)
         {
             return (grams / 1000) * 2.2046;
         }
+
+        public static double FahrenheitToCelsius(double fahrenheit)
+        {
+            return (fahrenheit - 32)/2;
+        }
+
         /// <summary>
         /// The Morey Equation.
         /// Good for beer color < 50 SRM
@@ -122,7 +128,7 @@ namespace Microbrewit.Api.Service.Util
 
         public static double RangerUtilisation(int boilTime)
         {
-            return (18.11 + 13.86 * Tanh((boilTime - 31.32)/18.27))/100;
+            return (18.11 + 13.86 * Math.Tanh((boilTime - 31.32)/18.27))/100;
         }
 
         public static double RangerIbu(double weight, double utilisation, double alphaAcid, int boilVolume, double boilGravity)
@@ -138,7 +144,7 @@ namespace Microbrewit.Api.Service.Util
 
         public static double MaltOG(double weight, int ppg, double efficiency, int volume)
         {
-            return  ((ConvertGramsToPounds(weight) * ppg * efficiency/100)/ ConvertLitersToGallons(30));
+            return ((ConvertGramsToPounds(weight) * ppg * (efficiency / 100)) / ConvertLitersToGallons(volume));
         }
         /// <summary>
         /// Dave Miller formula of 1988
@@ -196,6 +202,16 @@ namespace Microbrewit.Api.Service.Util
         public static double MicrobrewitABV(double og, double fg)
         {
             return ((SimpleAlternativeABV(og, fg) + AdvancedAlternativeABV(og, fg) + AdvancedABV(og, fg) + SimpleABV(og, fg) + MillerABV(og, fg)) / 5);
+        }
+
+        public static double ConvertPoundsToGrams(double pounds)
+        {
+            return Math.Round(pounds/0.0022046,0);
+        }
+
+        public static double ConvertOuncesToGrams(double ounces)
+        {
+            return Math.Round(ounces/0.035274, 0);
         }
     }
 }
