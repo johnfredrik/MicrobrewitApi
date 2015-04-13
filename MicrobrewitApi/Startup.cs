@@ -3,8 +3,10 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Xml.Serialization;
 using Microbrewit.Api.Provider;
 using Microbrewit.HelpPage;
+using Microbrewit.Model.BeerXml;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microbrewit.Service;
@@ -47,7 +49,10 @@ namespace Microbrewit.Api
 
             HttpConfiguration.EnableCors();
 
-
+            var xml = GlobalConfiguration.Configuration.Formatters.XmlFormatter;
+            //xml.Indent = true;
+            xml.UseXmlSerializer = true;
+            //xml.SetSerializer<Hop>(new XmlSerializer(typeof(Hop)));
 
 
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<MicrobrewitContext, Configuration>());
