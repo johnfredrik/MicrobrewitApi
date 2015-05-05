@@ -9,7 +9,7 @@ using Microbrewit.Repository;
 using Microbrewit.Repository.Repository;
 using NUnit.Framework;
 
-namespace Microbrewit.Test
+namespace Microbrewit.Test.Repository
 {
     [TestFixture]
     public class HopReposityTests
