@@ -125,6 +125,7 @@
     <Compile Include="Repository\BreweryRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\GenericDataRepository.cs" />
+    <Compile Include="Repository\GlassDapperRepository.cs" />
     <Compile Include="Repository\GlassRepository.cs" />
     <Compile Include="Repository\HopDapperRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
