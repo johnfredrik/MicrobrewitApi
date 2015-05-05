@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Repository\HopReposityTests.cs" />
     <Compile Include="Repository\OriginRepositoryTests.cs" />
+    <Compile Include="Repository\OtherRepositoryTests.cs" />
     <Compile Include="Services\HopServiceTests.cs" />
     <Compile Include="Services\BeerServiceTests.cs" />
     <Compile Include="BeerStyleControllerTest.cs" />

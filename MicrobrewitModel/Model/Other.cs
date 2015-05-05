@@ -9,7 +9,7 @@ namespace Microbrewit.Model
 {
     public class Other
     {
-        public int Id { get; set; }
+        public int OtherId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public bool Custom { get; set; }

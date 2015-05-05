@@ -44,7 +44,7 @@ namespace Microbrewit.Service.Component
         {
             var other = Mapper.Map<OtherDto, Other>(otherDto);
             await _otherRepository.AddAsync(other);
-            var result = await _otherRepository.GetSingleAsync(other.Id);
+            var result = await _otherRepository.GetSingleAsync(other.OtherId);
             var mappedResult = Mapper.Map<Other, OtherDto>(result);
             await _otherElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;

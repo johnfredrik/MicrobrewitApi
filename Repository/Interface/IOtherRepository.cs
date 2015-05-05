@@ -11,9 +11,9 @@ namespace Microbrewit.Repository
     {
         IList<Other> GetAll(params string[] navigationProperties);
         Other GetSingle(int id, params string[] navigationProperties);
-        void Add(Other origin);
-        void Update(Other origin);
-        void Remove(Other origin);
+        void Add(Other other);
+        void Update(Other other);
+        void Remove(Other other);
 
         //Async methods
         Task<IList<Other>> GetAllAsync(params string[] navigationProperties);

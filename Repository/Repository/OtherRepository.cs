@@ -46,16 +46,16 @@ namespace Microbrewit.Repository
 
                 item = dbQuery
                     .AsNoTracking() //Don't track any changes for the selected item
-                    .FirstOrDefault(o => o.Id == id); //Apply where clause
+                    .FirstOrDefault(o => o.OtherId == id); //Apply where clause
             }
             return item;
         }
 
-        public void Add(Other origin)
+        public void Add(Other other)
         {
             using (var context = new MicrobrewitContext())
             {
-                context.Entry(origin).State = EntityState.Added;
+                context.Entry(other).State = EntityState.Added;
                 try
                 {
                     context.SaveChanges();
@@ -74,20 +74,20 @@ namespace Microbrewit.Repository
             }
         }
 
-        public virtual void Update(Other origin)
+        public virtual void Update(Other other)
         {
             using (var context = new MicrobrewitContext())
             {
-                context.Entry(origin).State = EntityState.Modified;
+                context.Entry(other).State = EntityState.Modified;
                 context.SaveChanges();
             }
         }
 
-        public virtual void Remove(Other origin)
+        public virtual void Remove(Other other)
         {
             using (var context = new MicrobrewitContext())
             {
-                context.Entry(origin).State = EntityState.Deleted;
+                context.Entry(other).State = EntityState.Deleted;
                 context.SaveChanges();
             }
         }
@@ -118,7 +118,7 @@ namespace Microbrewit.Repository
                 //Apply eager loading
                 dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Other>(navigationProperty));
 
-                return await dbQuery.SingleOrDefaultAsync(o => o.Id == id);
+                return await dbQuery.SingleOrDefaultAsync(o => o.OtherId == id);
             }
         }
 

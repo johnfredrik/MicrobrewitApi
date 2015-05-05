@@ -11,9 +11,9 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public OtherConfiguration()
         {
-            Property(o => o.Id).IsRequired().HasColumnName("OtherId");
+            Property(o => o.OtherId).IsRequired();
             Property(o => o.Name).IsRequired().HasMaxLength(255);
-            this.HasKey(o => o.Id);
+            this.HasKey(o => o.OtherId);
         
             this.HasMany(other => other.MashSteps).WithRequired(mashStepOther => mashStepOther.Other).HasForeignKey(mashStepOther => mashStepOther.OtherId);
             this.HasMany(other => other.BoilSteps).WithRequired(boilStepOther => boilStepOther.Other).HasForeignKey(boilStepOther => boilStepOther.OtherId);
