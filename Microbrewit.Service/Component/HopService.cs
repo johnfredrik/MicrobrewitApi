@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var hopDto = await _hopElasticsearch.GetSingleAsync(id);
             if (hopDto != null) return hopDto;
-            var hop = await _hopRepository.GetSingleAsync(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts");
+            var hop = await _hopRepository.GetSingleAsync(id, "Flavours.Flavour", "Origin", "Substituts");
             hopDto = Mapper.Map<Hop, HopDto>(hop);
             return hopDto;
         }
@@ -45,7 +45,7 @@ namespace Microbrewit.Service.Component
         {
             var hop = Mapper.Map<HopDto,Hop>(hopDto);
             await _hopRepository.AddAsync(hop);
-            var result = await _hopRepository.GetSingleAsync(h => h.Id == hop.Id,"Flavours.Flavour", "Origin", "Substituts");
+            var result = await _hopRepository.GetSingleAsync(hop.HopId,"Flavours.Flavour", "Origin", "Substituts");
             var mappedResult = Mapper.Map<Hop, HopDto>(result);
             await _hopElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -53,7 +53,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<HopDto> DeleteHopAsync(int id)
         {
-            var hop = await _hopRepository.GetSingleAsync(h => h.Id == id);
+            var hop = await _hopRepository.GetSingleAsync(id);
             var hopDto = await _hopElasticsearch.GetSingleAsync(id);
             if(hop != null) await _hopRepository.RemoveAsync(hop);
             if (hopDto != null) await _hopElasticsearch.DeleteAsync(id);
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var hop = Mapper.Map<HopDto, Hop>(hopDto);
             await _hopRepository.UpdateAsync(hop);
-            var result = await _hopRepository.GetSingleAsync(h => h.Id == hopDto.Id,"Flavours.Flavour", "Origin", "Substituts");
+            var result = await _hopRepository.GetSingleAsync(hopDto.Id,"Flavours.Flavour", "Origin", "Substituts");
             var mappedResult = Mapper.Map<Hop, HopDto>(result);
             await _hopElasticsearch.UpdateAsync(mappedResult);
         }
@@ -97,7 +97,7 @@ namespace Microbrewit.Service.Component
         {
             var hopDto = _hopElasticsearch.GetSingle(id);
             if (hopDto != null) return hopDto;
-            var hop = _hopRepository.GetSingle(h => h.Id == id, "Flavours.Flavour", "Origin", "Substituts");
+            var hop = _hopRepository.GetSingle(id, "Flavours.Flavour", "Origin", "Substituts");
             hopDto = Mapper.Map<Hop, HopDto>(hop);
             return hopDto;
         }

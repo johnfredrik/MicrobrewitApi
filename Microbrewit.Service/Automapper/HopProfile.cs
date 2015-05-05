@@ -10,7 +10,7 @@ namespace Microbrewit.Service.Automapper
         protected override void Configure()
         {
             Mapper.CreateMap<Hop, HopDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.HopId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.AALow, conf => conf.MapFrom(rec => rec.AALow))
                 .ForMember(dto => dto.AAHigh, conf => conf.MapFrom(rec => rec.AAHigh))
@@ -25,15 +25,15 @@ namespace Microbrewit.Service.Automapper
 
             Mapper.CreateMap<Hop, DTO>()
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.HopId));
 
-            Mapper.CreateMap<Substitut, DTO>()
-              .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Substitute.Name))
-               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.SubstitutId));
+            Mapper.CreateMap<Substitute, DTO>()
+              .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Sub.Name))
+               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.SubstituteId));
 
             Mapper.CreateMap<Origin, DTO>()
               .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.OriginId));
 
             Mapper.CreateMap<HopDto, Hop>()
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
@@ -52,7 +52,7 @@ namespace Microbrewit.Service.Automapper
 
            Mapper.CreateMap<DTO,Origin>()
                   .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
-                  .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id));
+                  .ForMember(dto => dto.OriginId, conf => conf.MapFrom(rec => rec.Id));
 
            Mapper.CreateMap<DTO, HopForm>()
                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))

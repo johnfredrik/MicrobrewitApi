@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Model
 {
-    public class Substitut
+    public class Substitute
     {
         public int HopId { get; set; }
-        public int SubstitutId { get; set; }
+        public int SubstituteId { get; set; }
 
         public Hop Hop { get; set; }
-        public Hop Substitute { get; set; }
+        public Hop Sub { get; set; }
     }
 }

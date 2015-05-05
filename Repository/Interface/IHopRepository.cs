@@ -11,21 +11,20 @@ namespace Microbrewit.Repository
     public interface IHopRepository
     {
         IList<Hop> GetAll(params string[] navigationProperties);
-        IList<Hop> GetList(Expression<Func<Hop, bool>> where, params string[] navigationProperties);
-        Hop GetSingle(Func<Hop, bool> where, params string[] navigationProperties);
+        Hop GetSingle(int id, params string[] navigationProperties);
         void Add(Hop item);
         void Update(Hop item);
-        void Remove(Hop item);
+        void Remove(Hop hop);
 
         //Async methods
         Task<IList<Hop>> GetAllAsync(params string[] navigationProperties);
-        Task<Hop> GetSingleAsync(Expression<Func<Hop, bool>> where, params string[] navigtionProperties);
+        Task<Hop> GetSingleAsync(int id, params string[] navigtionProperties);
         Task AddAsync(Hop item);
         Task<int> UpdateAsync(Hop item);
         Task RemoveAsync(Hop item);
 
         Flavour AddFlavour(string name);
-        HopForm GetForm(Expression<Func<HopForm, bool>> where, params string[] navigationProperties);
+        HopForm GetForm(int id);
         Task<IList<HopForm>> GetHopFormsAsync();
         IList<HopForm> GetHopForms();
     }

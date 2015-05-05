@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                                 context.Flavours.Add(flavour);
                                 context.SaveChanges();
                             }
-                            hopFlavor.FlavourId = flavour.Id;
+                            hopFlavor.FlavourId = flavour.FlavourId;
                             flavours.Add(hopFlavor);
                         }
                     

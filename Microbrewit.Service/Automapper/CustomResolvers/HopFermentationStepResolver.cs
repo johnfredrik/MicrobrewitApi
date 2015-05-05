@@ -31,13 +31,13 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     var hop = _hopElasticsearch.GetSingle(item.HopId);
                     if (hop == null)
                     {
-                        hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(f => f.Id == item.HopId));
+                        hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(item.HopId));
                     }
                     hopStepDto.Name = hop.Name;
                     hopStepDto.Origin = hop.Origin;
                     hopStepDto.Flavours = hop.Flavours;
                     hopStepDto.FlavourDescription = hop.FlavourDescription;
-                    hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(h => h.Id == item.HopFormId));
+                    hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(item.HopFormId));
                     hopStepDtoList.Add(hopStepDto);
                 }
                 return hopStepDtoList;

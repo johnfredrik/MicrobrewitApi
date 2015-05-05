@@ -11,8 +11,8 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public HopsConfiguration()
         {
-            this.HasKey(hop => hop.Id);
-            Property(hop => hop.Id).IsRequired().HasColumnName("HopId");
+            this.HasKey(hop => hop.HopId);
+            Property(hop => hop.HopId).IsRequired().HasColumnName("HopId");
             Property(hop => hop.Name).IsRequired().HasMaxLength(200);
 
 

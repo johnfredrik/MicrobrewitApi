@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public FlavourConfiguration()
         {
-            Property(f => f.Id).HasColumnName("FlavourId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(f => f.FlavourId).IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(f => f.Name).IsRequired().HasMaxLength(255);
          
         }
