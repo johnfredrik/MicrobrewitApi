@@ -8,7 +8,7 @@ namespace Microbrewit.Model
 {
     public class Glass
     {
-        public int Id { get; set; }
+        public int GlassId { get; set; }
         public string Name { get; set; }
 
         public ICollection<BeerStyleGlass> BeerStyles { get; set; }
