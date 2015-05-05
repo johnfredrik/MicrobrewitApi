@@ -12,15 +12,15 @@ namespace Microbrewit.Repository
     {
         IList<Origin> GetAll(params string[] navigationProperties);
         Origin GetSingle(int id, params string[] navigationProperties);
-        void Add(params Origin[] items);
-        void Update(params Origin[] items);
-        void Remove(params Origin[] items);
+        void Add(Origin origin);
+        void Update(Origin origin);
+        void Remove(Origin origin);
 
         //Async methods
         Task<IList<Origin>> GetAllAsync(params string[] navigationProperties);
-        Task<Origin> GetSingleAsync(Expression<Func<Origin, bool>> where, params string[] navigtionProperties);
-        Task AddAsync(params Origin[] items);
-        Task<int> UpdateAsync(params Origin[] items);
-        Task RemoveAsync(params Origin[] items);
+        Task<Origin> GetSingleAsync(int id, params string[] navigtionProperties);
+        Task AddAsync(Origin origin);
+        Task<int> UpdateAsync(Origin origin);
+        Task RemoveAsync(Origin origin);
     }
 }

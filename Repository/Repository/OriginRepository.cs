@@ -16,7 +16,7 @@ namespace Microbrewit.Repository
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public virtual IList<Origin> GetAll(params string[] navigationProperties)
+        public IList<Origin> GetAll(params string[] navigationProperties)
         {
             List<Origin> list;
             using (var context = new MicrobrewitContext())
@@ -36,7 +36,7 @@ namespace Microbrewit.Repository
 
 
 
-        public virtual Origin GetSingle(int id, params string[] navigationProperties)
+        public Origin GetSingle(int id, params string[] navigationProperties)
         {
             Origin item = null;
             using (var context = new MicrobrewitContext())
@@ -54,15 +54,11 @@ namespace Microbrewit.Repository
             return item;
         }
 
-        public virtual void Add(params Origin[] items)
+        public void Add(Origin origin)
         {
             using (var context = new MicrobrewitContext())
             {
-                foreach (Origin item in items)
-                {
-                    context.Entry(item).State = EntityState.Added;
-                }
-
+                context.Entry(origin).State = EntityState.Added;
                 try
                 {
                     context.SaveChanges();
@@ -81,26 +77,20 @@ namespace Microbrewit.Repository
             }
         }
 
-        public virtual void Update(params Origin[] items)
+        public virtual void Update(Origin origin)
         {
             using (var context = new MicrobrewitContext())
             {
-                foreach (Origin item in items)
-                {
-                    context.Entry(item).State = EntityState.Modified;
-                }
+                context.Entry(origin).State = EntityState.Modified;
                 context.SaveChanges();
             }
         }
 
-        public virtual void Remove(params Origin[] items)
+        public virtual void Remove(Origin origin)
         {
             using (var context = new MicrobrewitContext())
             {
-                foreach (Origin item in items)
-                {
-                    context.Entry(item).State = EntityState.Deleted;
-                }
+                context.Entry(origin).State = EntityState.Deleted;
                 context.SaveChanges();
             }
         }
@@ -121,7 +111,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public virtual async Task<Origin> GetSingleAsync(Expression<Func<Origin, bool>> where, params string[] navigationProperties)
+        public virtual async Task<Origin> GetSingleAsync(int id, params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {
@@ -131,20 +121,15 @@ namespace Microbrewit.Repository
                 //Apply eager loading
                 dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Origin>(navigationProperty));
 
-                return await dbQuery.SingleOrDefaultAsync(where);
+                return await dbQuery.SingleOrDefaultAsync(o => o.OriginId == id);
             }
         }
 
-        public virtual async Task AddAsync(params Origin[] items)
+        public virtual async Task AddAsync(Origin origin)
         {
             using (var context = new MicrobrewitContext())
             {
-
-                foreach (Origin item in items)
-                {
-                    context.Entry(item).State = EntityState.Added;
-                }
-
+                context.Entry(origin).State = EntityState.Added;
                 try
                 {
                     await context.SaveChangesAsync();
@@ -170,17 +155,11 @@ namespace Microbrewit.Repository
 
         }
 
-        public virtual async Task<int> UpdateAsync(params Origin[] items)
+        public virtual async Task<int> UpdateAsync(Origin origin)
         {
             using (var context = new MicrobrewitContext())
             {
-
-                foreach (Origin item in items)
-                {
-
-                    context.Entry(item).State = EntityState.Modified;
-
-                }
+                context.Entry(origin).State = EntityState.Modified;
                 try
                 {
                     return await context.SaveChangesAsync();
@@ -193,16 +172,12 @@ namespace Microbrewit.Repository
             }
         }
 
-        public virtual async Task RemoveAsync(params Origin[] items)
+        public virtual async Task RemoveAsync(Origin origin)
         {
             using (var context = new MicrobrewitContext())
             {
 
-                foreach (Origin item in items)
-                {
-                    context.Entry(item).State = EntityState.Deleted;
-
-                }
+                context.Entry(origin).State = EntityState.Deleted;
                 try
                 {
                     await context.SaveChangesAsync();
