@@ -137,7 +137,6 @@
     <Compile Include="Repository\UserCredentialRepository.cs" />
     <Compile Include="Repository\OriginRepository.cs" />
     <Compile Include="Repository\OtherRepository.cs" />
-    <Compile Include="Repository\RecipeRepository.cs" />
     <Compile Include="Repository\SupplierRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Repository\YeastRepository.cs" />

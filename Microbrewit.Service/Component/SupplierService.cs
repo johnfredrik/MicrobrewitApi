@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var supplierDto = await _supplierElasticsearch.GetSingleAsync(id);
             if (supplierDto != null) return supplierDto;
-            var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id, "Origin");
+            var supplier = await _supplierRepository.GetSingleAsync(id, "Origin");
             supplierDto = Mapper.Map<Supplier, SupplierDto>(supplier);
             return supplierDto;
         }
@@ -45,7 +45,7 @@ namespace Microbrewit.Service.Component
         {
             var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
             await _supplierRepository.AddAsync(supplier);
-            var result = await _supplierRepository.GetSingleAsync(s => s.Id == supplier.Id, "Origin");
+            var result = await _supplierRepository.GetSingleAsync(supplier.Id, "Origin");
             var mappedResult = Mapper.Map<Supplier, SupplierDto>(result);
             await _supplierElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -53,7 +53,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<SupplierDto> DeleteAsync(int id)
         {
-            var supplier = await _supplierRepository.GetSingleAsync(s => s.Id == id);
+            var supplier = await _supplierRepository.GetSingleAsync(id);
             var supplierDto = await _supplierElasticsearch.GetSingleAsync(id);
             if (supplier != null) await _supplierRepository.RemoveAsync(supplier);
             if (supplierDto != null) await _supplierElasticsearch.DeleteAsync(id);
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
             await _supplierRepository.UpdateAsync(supplier);
-            var result = await _supplierRepository.GetSingleAsync(s => s.Id == supplier.Id, "Origin");
+            var result = await _supplierRepository.GetSingleAsync(supplier.Id, "Origin");
             var mapperResult = Mapper.Map<Supplier, SupplierDto>(result);
             await _supplierElasticsearch.UpdateAsync(mapperResult);
         }
