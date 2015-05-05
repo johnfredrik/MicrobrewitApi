@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var otherDto = await _otherElasticsearch.GetSingleAsync(id);
             if (otherDto != null) return otherDto;
-            var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
+            var other = await _otherRepository.GetSingleAsync(id);
             return Mapper.Map<Other, OtherDto>(other);
         }
 
@@ -44,7 +44,7 @@ namespace Microbrewit.Service.Component
         {
             var other = Mapper.Map<OtherDto, Other>(otherDto);
             await _otherRepository.AddAsync(other);
-            var result = await _otherRepository.GetSingleAsync(o => o.Id == other.Id);
+            var result = await _otherRepository.GetSingleAsync(other.Id);
             var mappedResult = Mapper.Map<Other, OtherDto>(result);
             await _otherElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -53,7 +53,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<OtherDto> DeleteAsync(int id)
         {
-            var other = await _otherRepository.GetSingleAsync(o => o.Id == id);
+            var other = await _otherRepository.GetSingleAsync(id);
             var otherDto = await _otherElasticsearch.GetSingleAsync(id);
             if(other != null) await _otherRepository.RemoveAsync(other);
             if (otherDto != null) await _otherElasticsearch.DeleteAsync(id);
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var other = Mapper.Map<OtherDto, Other>(otherDto);
             await _otherRepository.UpdateAsync(other);
-            var result = await _otherRepository.GetSingleAsync(o => o.Id == otherDto.Id);
+            var result = await _otherRepository.GetSingleAsync(otherDto.Id);
             var mappedResult = Mapper.Map<Other, OtherDto>(result);
             await _otherElasticsearch.UpdateAsync(mappedResult);
         }

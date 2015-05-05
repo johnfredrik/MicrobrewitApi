@@ -34,8 +34,6 @@ namespace Microbrewit.Repository
             return list;
         }
 
-
-
         public Origin GetSingle(int id, params string[] navigationProperties)
         {
             Origin item = null;
