@@ -26,7 +26,7 @@ namespace Microbrewit.Service.Automapper
                
 
             Mapper.CreateMap<Supplier,DTO>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.SupplierId))
                  .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             Mapper.CreateMap<YeastDto,Yeast>()

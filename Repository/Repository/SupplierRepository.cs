@@ -46,7 +46,7 @@ namespace Microbrewit.Repository
 
                 item = dbQuery
                     .AsNoTracking() //Don't track any changes for the selected item
-                    .FirstOrDefault(s => s.Id == id); //Apply where clause
+                    .FirstOrDefault(s => s.SupplierId == id); //Apply where clause
             }
             return item;
         }
@@ -121,7 +121,7 @@ namespace Microbrewit.Repository
                 //Apply eager loading
                 dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Supplier>(navigationProperty));
 
-                return await dbQuery.SingleOrDefaultAsync(s => s.Id == id);
+                return await dbQuery.SingleOrDefaultAsync(s => s.SupplierId == id);
             }
         }
 

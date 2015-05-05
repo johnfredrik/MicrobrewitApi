@@ -45,7 +45,7 @@ namespace Microbrewit.Service.Component
         {
             var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
             await _supplierRepository.AddAsync(supplier);
-            var result = await _supplierRepository.GetSingleAsync(supplier.Id, "Origin");
+            var result = await _supplierRepository.GetSingleAsync(supplier.SupplierId, "Origin");
             var mappedResult = Mapper.Map<Supplier, SupplierDto>(result);
             await _supplierElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var supplier = Mapper.Map<SupplierDto, Supplier>(supplierDto);
             await _supplierRepository.UpdateAsync(supplier);
-            var result = await _supplierRepository.GetSingleAsync(supplier.Id, "Origin");
+            var result = await _supplierRepository.GetSingleAsync(supplier.SupplierId, "Origin");
             var mapperResult = Mapper.Map<Supplier, SupplierDto>(result);
             await _supplierElasticsearch.UpdateAsync(mapperResult);
         }
