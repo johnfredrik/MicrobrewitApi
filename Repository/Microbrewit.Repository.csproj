@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.40\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -122,6 +125,7 @@
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\GenericDataRepository.cs" />
     <Compile Include="Repository\GlassRepository.cs" />
+    <Compile Include="Repository\HopDapperRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
     <Compile Include="Interface\IHopRepository.cs" />
     <Compile Include="Interface\IRecipeRepositoy.cs" />
