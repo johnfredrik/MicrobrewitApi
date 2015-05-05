@@ -12,7 +12,7 @@ using Dapper;
 using log4net;
 using Microbrewit.Model;
 
-namespace Microbrewit.Repository.Repository
+namespace Microbrewit.Repository
 {
     public class HopDapperRepository : IHopRepository
     {
