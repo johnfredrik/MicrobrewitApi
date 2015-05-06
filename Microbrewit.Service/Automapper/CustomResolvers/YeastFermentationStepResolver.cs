@@ -30,7 +30,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     var yeast = _elasticsearch.GetSingle(item.YeastId);
                     if (yeast == null)
                     {
-                        yeast = Mapper.Map<Yeast, YeastDto>(_yeastRepository.GetSingle(f => f.Id == item.YeastId));
+                        yeast = Mapper.Map<Yeast, YeastDto>(_yeastRepository.GetSingle(item.YeastId));
                     }
                     yeastStepDto.Name = yeast.Name;
                     yeastStepDto.Supplier = yeast.Supplier;

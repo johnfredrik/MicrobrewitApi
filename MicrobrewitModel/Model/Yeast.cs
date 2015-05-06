@@ -10,7 +10,7 @@ namespace Microbrewit.Model
 {
     public class Yeast
     {
-        public int Id { get; set; }
+        public int YeastId { get; set; }
         public string Name { get; set; }
         public double? TemperatureHigh { get; set; }
         public double? TemperatureLow { get; set; }

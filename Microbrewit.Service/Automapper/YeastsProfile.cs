@@ -10,7 +10,7 @@ namespace Microbrewit.Service.Automapper
         protected override void Configure()
         {
             Mapper.CreateMap<Yeast, YeastDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.YeastId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.ProductCode, conf => conf.MapFrom(rec => rec.ProductCode))
                 .ForMember(dto => dto.TemperatureLow, conf => conf.MapFrom(rec => rec.TemperatureLow))
@@ -30,7 +30,7 @@ namespace Microbrewit.Service.Automapper
                  .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             Mapper.CreateMap<YeastDto,Yeast>()
-                 .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                 .ForMember(dto => dto.YeastId, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.ProductCode, conf => conf.MapFrom(rec => rec.ProductCode))
                 .ForMember(dto => dto.TemperatureLow, conf => conf.MapFrom(rec => rec.TemperatureLow))

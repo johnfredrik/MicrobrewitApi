@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var yeastDto = await _yeastElasticsearch.GetSingleAsync(id);
             if (yeastDto != null) return yeastDto;
-            var yeast = await _yeastRepository.GetSingleAsync(y => y.Id == id, "Supplier");
+            var yeast = await _yeastRepository.GetSingleAsync(id, "Supplier");
             yeastDto = Mapper.Map<Yeast, YeastDto>(yeast);
             return yeastDto;
         }
@@ -45,7 +45,7 @@ namespace Microbrewit.Service.Component
         {
             var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
             await _yeastRepository.AddAsync(yeast);
-            var result = await _yeastRepository.GetSingleAsync(y => y.Id == yeast.Id, "Supplier");
+            var result = await _yeastRepository.GetSingleAsync(yeast.YeastId, "Supplier");
             var mappedResult = Mapper.Map<Yeast,YeastDto>(result);
             await _yeastElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -54,7 +54,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<YeastDto> DeleteAsync(int id)
         {
-            var yeast = await _yeastRepository.GetSingleAsync(y => y.Id == id);
+            var yeast = await _yeastRepository.GetSingleAsync(id);
             var yeastDto = await _yeastElasticsearch.GetSingleAsync(id);
             if (yeast != null) await _yeastRepository.RemoveAsync(yeast);
             if (yeastDto != null) await _yeastElasticsearch.DeleteAsync(id);
@@ -65,7 +65,7 @@ namespace Microbrewit.Service.Component
         {
             var yeast = Mapper.Map<YeastDto, Yeast>(yeastDto);
             await _yeastRepository.UpdateAsync(yeast);
-            var result = await _yeastRepository.GetSingleAsync(h => h.Id == yeastDto.Id, "Supplier");
+            var result = await _yeastRepository.GetSingleAsync(yeastDto.Id, "Supplier");
             var mappedResult = Mapper.Map<Yeast, YeastDto>(result);
             await _yeastElasticsearch.UpdateAsync(mappedResult);
         }

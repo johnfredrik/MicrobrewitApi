@@ -129,6 +129,8 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
+                if (supplier.Origin != null)
+                    supplier.Origin = null;
                 context.Entry(supplier).State = EntityState.Added;
                 try
                 {
