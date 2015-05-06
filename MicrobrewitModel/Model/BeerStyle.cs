@@ -23,7 +23,7 @@ namespace Microbrewit.Model
         public double ABVHigh { get; set; }
         public string Comments { get; set; }
 
-
+        [Column("SuperStyleId")]
         public int? SuperStyleId { get; set; }
         public BeerStyle SuperStyle { get; set; }
         public ICollection<BeerStyle> SubStyles { get; set; }
