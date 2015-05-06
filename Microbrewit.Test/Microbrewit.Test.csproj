@@ -93,6 +93,7 @@
     <Compile Include="Repository\HopReposityTests.cs" />
     <Compile Include="Repository\OriginRepositoryTests.cs" />
     <Compile Include="Repository\GlassRepositoryTests.cs" />
+    <Compile Include="Repository\FermentableRepositoryTests.cs" />
     <Compile Include="Repository\YeastRepositoryTest.cs" />
     <Compile Include="Repository\SupplierRepositoryTests.cs" />
     <Compile Include="Repository\OtherRepositoryTests.cs" />

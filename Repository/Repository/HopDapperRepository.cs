@@ -23,14 +23,14 @@ namespace Microbrewit.Repository
         {
             using (var context = new SqlConnection(SqlConnection))
             {
-                var sql = @"SELECT * FROM Hops h LEFT JOIN Origins o ON h.HopId = o.OriginId";
+                var sql = @"SELECT * FROM Hops h LEFT JOIN Origins o ON h.OriginId = o.OriginId";
                 var hops = context.Query<Hop, Origin, Hop>(sql, (hop, origin) =>
                 {
                     hop.Origin = origin;
                     hop.Flavours = new List<HopFlavour>();
                     hop.Substituts = new List<Hop>();
                     return hop;
-                }, splitOn: "HopId,OriginId");
+                }, splitOn: "OriginId");
 
                 var hopFlavours = context.Query<HopFlavour>("SELECT * FROM HopFlavours WHERE HopId in @Ids",
                     new { Ids = hops.Select(h => h.HopId).Distinct() });
