@@ -14,7 +14,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
             {
                 foreach (var item in beerStyle.SubStyles)
                 {
-                    beerStyleLinks.SubBeerStyleIds.Add(item.Id);
+                    beerStyleLinks.SubBeerStyleIds.Add(item.BeerStyleId);
                 }
             }
             return beerStyleLinks;

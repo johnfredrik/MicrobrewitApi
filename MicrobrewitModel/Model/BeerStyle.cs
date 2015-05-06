@@ -9,7 +9,7 @@ namespace Microbrewit.Model
 {
     public class BeerStyle
     {
-        public int Id { get; set; }
+        public int BeerStyleId { get; set; }
         public string Name { get; set; }
         public double OGLow { get; set; }
         public double OGHigh { get; set; }

@@ -21,7 +21,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 var beerStyle = _beerStyleElasticsearch.GetSingle((int)beer.BeerStyleId);
                 if (beerStyle == null)
                 {
-                    beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(_beerstyleRespository.GetSingle(f => f.Id == beer.BeerStyleId));
+                    beerStyle = Mapper.Map<BeerStyle, BeerStyleDto>(_beerstyleRespository.GetSingle((int)beer.BeerStyleId));
                 }
                 beerStyleSimpleDto.Id = beerStyle.Id;
                 beerStyleSimpleDto.Name = beerStyle.Name;

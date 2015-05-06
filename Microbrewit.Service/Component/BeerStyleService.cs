@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var beerStyleDto = await _beerStyleElasticsearch.GetSingleAsync(id);
             if (beerStyleDto != null) return beerStyleDto;
-            var beerStyle = await _beerStyleRepository.GetSingleAsync(o => o.Id == id, "SubStyles", "SuperStyle");
+            var beerStyle = await _beerStyleRepository.GetSingleAsync(id, "SubStyles", "SuperStyle");
             return Mapper.Map<BeerStyle, BeerStyleDto>(beerStyle);
         }
 
@@ -44,7 +44,7 @@ namespace Microbrewit.Service.Component
         {
             var beerStyle = Mapper.Map<BeerStyleDto, BeerStyle>(otherDto);
             await _beerStyleRepository.AddAsync(beerStyle);
-            var result = await _beerStyleRepository.GetSingleAsync(o => o.Id == beerStyle.Id, "SubStyles", "SuperStyle");
+            var result = await _beerStyleRepository.GetSingleAsync(beerStyle.BeerStyleId, "SubStyles", "SuperStyle");
             var mappedResult = Mapper.Map<BeerStyle, BeerStyleDto>(result);
             await _beerStyleElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -53,7 +53,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<BeerStyleDto> DeleteAsync(int id)
         {
-            var beerStyle = await _beerStyleRepository.GetSingleAsync(o => o.Id == id);
+            var beerStyle = await _beerStyleRepository.GetSingleAsync(id);
             var beerStyleDto = await _beerStyleElasticsearch.GetSingleAsync(id);
             if(beerStyle != null) await _beerStyleRepository.RemoveAsync(beerStyle);
             if (beerStyleDto != null) await _beerStyleElasticsearch.DeleteAsync(id);
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var beerStyle = Mapper.Map<BeerStyleDto, BeerStyle>(beerStyleDto);
             await _beerStyleRepository.UpdateAsync(beerStyle);
-            var result = await _beerStyleRepository.GetSingleAsync(o => o.Id == beerStyleDto.Id, "SubStyles", "SuperStyle");
+            var result = await _beerStyleRepository.GetSingleAsync(beerStyleDto.Id, "SubStyles", "SuperStyle");
             var mappedResult = Mapper.Map<BeerStyle, BeerStyleDto>(result);
             await _beerStyleElasticsearch.UpdateAsync(mappedResult);
         }
