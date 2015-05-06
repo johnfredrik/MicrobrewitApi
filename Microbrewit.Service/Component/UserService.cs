@@ -68,7 +68,7 @@ namespace Microbrewit.Service.Component
         {
             var userDto = await _userElasticsearch.GetSingleAsync(username);
             if (userDto != null) return userDto;
-            var user = await _userRepository.GetSingleAsync(o => o.Username == username, _userInclude);
+            var user = await _userRepository.GetSingleAsync(username, _userInclude);
             return Mapper.Map<User, UserDto>(user);
         }
 
@@ -76,7 +76,7 @@ namespace Microbrewit.Service.Component
         {
             var user = Mapper.Map<UserDto, User>(userDto);
             await _userRepository.AddAsync(user);
-            var result = await _userRepository.GetSingleAsync(o => o.Username == user.Username, _userInclude);
+            var result = await _userRepository.GetSingleAsync(user.Username, _userInclude);
             var mappedResult = Mapper.Map<User, UserDto>(result);
             await _userElasticsearch.UpdateAsync(mappedResult);
             if (mappedResult.Breweries.Any())
@@ -87,7 +87,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<UserDto> DeleteAsync(string username)
         {
-            var user = await _userRepository.GetSingleAsync(o => o.Username == username);
+            var user = await _userRepository.GetSingleAsync(username);
             var userDto = await _userElasticsearch.GetSingleAsync(username);
             if (user != null) await _userRepository.RemoveAsync(user);
             if (userDto == null) return userDto;
@@ -101,7 +101,7 @@ namespace Microbrewit.Service.Component
         {
             var user = Mapper.Map<UserDto, User>(userDto);
             await _userRepository.UpdateAsync(user);
-            var result = await _userRepository.GetSingleAsync(o => o.Username == userDto.Username, _userInclude);
+            var result = await _userRepository.GetSingleAsync(userDto.Username, _userInclude);
             var mappedResult = Mapper.Map<User, UserDto>(result);
             await _userElasticsearch.UpdateAsync(mappedResult);
             if (mappedResult.Breweries.Any())
@@ -159,7 +159,7 @@ namespace Microbrewit.Service.Component
             foreach (var dtoUser in beerDto.Brewers)
             {
                 var user = dtoUser;
-                var result = await _userRepository.GetSingleAsync(o => o.Username == user.Username, _userInclude);
+                var result = await _userRepository.GetSingleAsync(user.Username, _userInclude);
                 await _userElasticsearch.UpdateAsync(Mapper.Map<User, UserDto>(result));
             }
         }
@@ -169,7 +169,7 @@ namespace Microbrewit.Service.Component
             foreach (var memberDto in brewerDto.Members)
             {
                 var member = memberDto;
-                var result = await _userRepository.GetSingleAsync(o => o.Username == member.Username, _userInclude);
+                var result = await _userRepository.GetSingleAsync(member.Username, _userInclude);
                 if (result != null)
                     await _userElasticsearch.UpdateAsync(Mapper.Map<User, UserDto>(result));
             }
@@ -177,7 +177,7 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexUserElasticSearch(string username)
         {
-            var result = await _userRepository.GetSingleAsync(o => o.Username == username, _userInclude);
+            var result = await _userRepository.GetSingleAsync(username, _userInclude);
             if (result != null)
                 await _userElasticsearch.UpdateAsync(Mapper.Map<User, UserDto>(result));
         }
