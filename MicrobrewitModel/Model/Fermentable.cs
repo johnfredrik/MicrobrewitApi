@@ -11,7 +11,7 @@ namespace Microbrewit.Model
     public class Fermentable
     {
         
-        public int Id { get; set; }
+        public int FermentableId { get; set; }
         public string Name { get; set; }
         public double EBC { get; set; }
         public double Lovibond { get; set; }

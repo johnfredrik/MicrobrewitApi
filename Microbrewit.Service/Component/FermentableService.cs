@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var fermentableDto = await _fermentableElasticsearch.GetSingleAsync(id);
             if (fermentableDto != null) return fermentableDto;
-            var fermentable = await _fermentableRepository.GetSingleAsync(y => y.Id == id, "Supplier.Origin", "SubFermentables");
+            var fermentable = await _fermentableRepository.GetSingleAsync(id, "Supplier.Origin", "SubFermentables");
             fermentableDto = Mapper.Map<Fermentable, FermentableDto>(fermentable);
             return fermentableDto;
         }
@@ -45,7 +45,7 @@ namespace Microbrewit.Service.Component
         {
             var fermantable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
             await _fermentableRepository.AddAsync(fermantable);
-            var result = await _fermentableRepository.GetSingleAsync(y => y.Id == fermantable.Id, "Supplier.Origin", "SubFermentables");
+            var result = await _fermentableRepository.GetSingleAsync(fermantable.FermentableId, "Supplier.Origin", "SubFermentables");
             var mappedResult = Mapper.Map<Fermentable,FermentableDto>(result);
             await _fermentableElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -54,7 +54,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<FermentableDto> DeleteAsync(int id)
         {
-            var fermentable = await _fermentableRepository.GetSingleAsync(y => y.Id == id);
+            var fermentable = await _fermentableRepository.GetSingleAsync(id);
             var fermentableDto = await _fermentableElasticsearch.GetSingleAsync(id);
             if (fermentable != null) await _fermentableRepository.RemoveAsync(fermentable);
             if (fermentableDto != null) await _fermentableElasticsearch.DeleteAsync(id);
@@ -65,7 +65,7 @@ namespace Microbrewit.Service.Component
         {
             var fermentable = Mapper.Map<FermentableDto, Fermentable>(fermentableDto);
             await _fermentableRepository.UpdateAsync(fermentable);
-            var result = await _fermentableRepository.GetSingleAsync(h => h.Id == fermentableDto.Id, "Supplier.Origin", "SubFermentables");
+            var result = await _fermentableRepository.GetSingleAsync(fermentableDto.Id, "Supplier.Origin", "SubFermentables");
             var mappedResult = Mapper.Map<Fermentable, FermentableDto>(result);
             await _fermentableElasticsearch.UpdateAsync(mappedResult);
         }

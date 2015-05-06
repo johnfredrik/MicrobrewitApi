@@ -8,15 +8,19 @@ using Microbrewit.Model.DTOs;
 
 namespace Microbrewit.Repository
 {
-    public interface IFermentableRepository : IGenericDataRepository<Fermentable> 
+    public interface IFermentableRepository 
     {
-        //Fermentable AddFermentable(FermentablePostDto fermentablePostDto);
-        //IList<Fermentable> GetFermentables();
-        //Fermentable GetFermentable(int fermentableId);
+        IList<Fermentable> GetAll(params string[] navigationProperties);
+        Fermentable GetSingle(int id, params string[] navigationProperties);
+        void Add(Fermentable fermentable);
+        void Update(Fermentable fermentable);
+        void Remove(Fermentable fermentable);
 
-        //IList<Grain> GetGrains();
-        //IList<Sugar> GetSugars();
-        //IList<DryExtract> GetDryExtracts();
-        //IList<LiquidExtract> GetLiquidExtracts();
+        //Async methods
+        Task<IList<Fermentable>> GetAllAsync(params string[] navigationProperties);
+        Task<Fermentable> GetSingleAsync(int id, params string[] navigtionProperties);
+        Task AddAsync(Fermentable fermentable);
+        Task<int> UpdateAsync(Fermentable fermentable);
+        Task RemoveAsync(Fermentable fermentable);
     }
 }

@@ -69,7 +69,7 @@ namespace Microbrewit.Api.Service.Util
                     }
                     else
                     {
-                        var efFermentable = _fermentableRepository.GetSingle(f => f.Id == fermentable.FermentableId);
+                        var efFermentable = _fermentableRepository.GetSingle(fermentable.FermentableId);
                         if (efFermentable != null && efFermentable.PPG != null)
                         {
                             fermentable.PPG = (int)efFermentable.PPG;

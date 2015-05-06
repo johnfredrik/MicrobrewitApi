@@ -11,7 +11,7 @@ namespace Microbrewit.Service.Automapper
         {
 
             Mapper.CreateMap<Fermentable, FermentableDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.FermentableId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.Lovibond, conf => conf.MapFrom(rec => rec.Lovibond))
                 .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
@@ -30,13 +30,13 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             Mapper.CreateMap<Fermentable, DTO>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.FermentableId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             Mapper.CreateMap<FermentableDto,FermentablesCompleteDto>();
 
             Mapper.CreateMap<FermentableDto, Fermentable>()
-               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+               .ForMember(dto => dto.FermentableId, conf => conf.MapFrom(rec => rec.Id))
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                .ForMember(dto => dto.PPG, conf => conf.MapFrom(rec => rec.PPG))
                .ForMember(dto => dto.Type, conf => conf.MapFrom(rec => rec.Type))

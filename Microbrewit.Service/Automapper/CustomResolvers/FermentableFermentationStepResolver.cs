@@ -23,7 +23,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     var fermentable = _fermentableElasticsearch.GetSingle(item.FermentableId);
                     if (fermentable == null)
                     {
-                        fermentable = Mapper.Map<Fermentable, FermentableDto>(_fermentableRepository.GetSingle(f => f.Id == item.FermentableId));
+                        fermentable = Mapper.Map<Fermentable, FermentableDto>(_fermentableRepository.GetSingle(item.FermentableId));
                     }
                     var fermentableStepDto = new FermentableStepDto();
                     
