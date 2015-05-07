@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.SqlClient;
 using System.Linq;
@@ -206,7 +207,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        private void UpdateHopSubstitute(SqlConnection context, SqlTransaction transaction, Hop hop)
+        private void UpdateHopSubstitute(DbConnection context, SqlTransaction transaction, Hop hop)
         {
             var hopSubstitutes = context.Query<Substitute>(@"SELECT * FROM Substitute WHERE HopId = @HopId",
                 new {hop.HopId}, transaction);
@@ -218,16 +219,16 @@ namespace Microbrewit.Repository
             context.Execute(@"INSERT Substitute(SubstituteId, HopId) VALUES(@SubstituteId,@HopId);", toAdd, transaction);
         }
 
-        private void UpdateHopFlavour(SqlConnection context, SqlTransaction transaction, Hop hop)
+        private void UpdateHopFlavour(DbConnection context, SqlTransaction transaction, Hop hop)
         {
             var hopFlavours = context.Query<HopFlavour>(@"SELECT * FROM HopFlavours WHERE HopId = @HopId", new {hop.HopId},
                 transaction);
 
-            var toDelete = hopFlavours.Where(h => hop.Flavours.All(f => f.HopId != h.HopId && f.FlavourId != h.FlavourId));
+            var toDelete = hopFlavours.Where(h => hop.Flavours.All(f => f.FlavourId != h.FlavourId));
             context.Execute("DELETE FROM HopFlavours WHERE HopId = @HopId",
                 toDelete.Select(h => new {h.HopId, h.FlavourId}), transaction);
                 
-            var toAdd = hop.Flavours.Where(h => hopFlavours.All(f => f.HopId != h.HopId && f.FlavourId != h.FlavourId));
+            var toAdd = hop.Flavours.Where(h => hopFlavours.All(f => f.FlavourId != h.FlavourId));
             context.Execute(@"INSERT HopFlavours(FlavourId, HopId) VALUES(@FlavourId,@HopId);", toAdd, transaction);
 
         }
