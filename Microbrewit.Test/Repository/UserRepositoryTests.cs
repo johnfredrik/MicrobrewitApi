@@ -5,6 +5,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Microbrewit.Model;
+using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
 using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Automapper.CustomResolvers;
@@ -352,5 +353,76 @@ namespace Microbrewit.Test.Repository
             var removed = _userRepository.GetSingle(newUser.Username);
             Assert.Null(removed);
         }
+
+        //GetUserSocials
+        [Test]
+        public void GetUserSocials_Return()
+        {
+            var userSocials = _userRepository.GetUserSocials("johnfredrik");
+            Assert.NotNull(userSocials);
+            Assert.True(userSocials.Any());
+        }
+
+        //GetUserBeersAsync
+        [Test]
+        public async Task GetUserBeersAsync_Return()
+        {
+            var userBeers = await _userRepository.GetAllUserBeersAsync("johnfredrik");
+            Assert.NotNull(userBeers);
+            Assert.True(userBeers.Any());
+        }
+
+        [Test]
+        public async Task ConfirmUserBeerAsync_Return_True()
+        {
+            var notification = new NotificationDto {Id = 26, Value = true};
+            var confirmed = await _userRepository.ConfirmUserBeerAsync("johnfredrik", notification);
+            Assert.True(confirmed);
+        }
+
+        [Test]
+        public async Task ConfirmUserBeerAsync_Return_False()
+        {
+            var notification = new NotificationDto { Id = 27, Value = false };
+            var confirmed = await _userRepository.ConfirmUserBeerAsync("johnfredrik", notification);
+            Assert.True(confirmed);
+        }
+
+
+        [Test]
+        public async Task ConfirmUserBeerAsync_WrongId_Return_False()
+        {
+            var notification = new NotificationDto { Id = int.MaxValue, Value = true };
+            var confirmed = await _userRepository.ConfirmUserBeerAsync("johnfredrik", notification);
+            Assert.False(confirmed);
+        }
+
+        //ConfirmBreweryMemberAsync
+        [Test]
+        public async Task ConfirmBreweryMemberAsync_Return_True()
+        {
+            var notification = new NotificationDto { Id = 13, Value = true };
+            var confirmed = await _userRepository.ConfirmBreweryMemberAsync("johnfredrik", notification);
+            Assert.True(confirmed);
+        }
+
+        [Test]
+        public async Task ConfirmBreweryMemberAsync_Return_False()
+        {
+            var notification = new NotificationDto { Id = 13, Value = false };
+            var confirmed = await _userRepository.ConfirmBreweryMemberAsync("johnfredrik", notification);
+            Assert.True(confirmed);
+        }
+
+
+        [Test]
+        public async Task ConfirmBreweryMemberAsync_WrongId_Return_False()
+        {
+            var notification = new NotificationDto { Id = int.MaxValue, Value = true };
+            var confirmed = await _userRepository.ConfirmBreweryMemberAsync("johnfredrik", notification);
+            Assert.False(confirmed);
+        }
+
+
     }
 }

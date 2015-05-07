@@ -18,22 +18,106 @@ namespace Microbrewit.Repository.Repository
 
         public IEnumerable<UserSocial> GetUserSocials(string username)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                return context.Query<UserSocial>("SELECT * FROM UserSocials WHERE Username = @Username",
+                    new {Username = username});
+            }
         }
 
-        public Task<IEnumerable<UserBeer>> GetAllUserBeersAsync(string username)
+        public async Task<IEnumerable<UserBeer>> GetAllUserBeersAsync(string username)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var userBeers = await context.QueryAsync<UserBeer, Beer, SRM, ABV, IBU, BeerStyle, UserBeer>(
+                    "SELECT * " +
+                    "FROM UserBeers ub " +
+                    "LEFT JOIN Beers b ON ub.BeerId = b.BeerId " +
+                    "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                    "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                    "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                    "WHERE ub.Username = @Username", (userBeer, beer, srm, abv, ibu, beerStyle) =>
+                    {
+                        userBeer.Beer = beer;
+                        if (srm != null)
+                            beer.SRM = srm;
+                        if (abv != null)
+                            beer.ABV = abv;
+                        if (ibu != null)
+                            beer.IBU = ibu;
+                        if (beerStyle != null)
+                            beer.BeerStyle = beerStyle;
+                        return userBeer;
+                    }, new { Username = username }, splitOn: "BeerId,SrmId,AbvId,IbuId,BeerStyleId");
+                return userBeers;
+            }
         }
 
-        public Task<bool> ConfirmBreweryMemberAsync(string username, NotificationDto notificationDto)
+        public async Task<bool> ConfirmBreweryMemberAsync(string username, NotificationDto notificationDto)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                using (var transaction = context.BeginTransaction())
+                {
+                    int result = 0;
+                    try
+                    {
+                        if (notificationDto.Value)
+                        {
+                            result = await context.ExecuteAsync(
+                                "Update BreweryMembers set Confirmed = @Confirmed WHERE MemberUsername = @Username and BreweryId = @BreweryId",
+                                new {Username = username, BreweryId = notificationDto.Id, Confirmed = true}, transaction);
+
+                        }
+                        else
+                        {
+                            result = await context.ExecuteAsync("DELETE FROM BreweryMembers  WHERE MemberUsername = @Username and BreweryId = @BreweryId",
+                                new { Username = username, BreweryId = notificationDto.Id}, transaction);
+                        }
+                        transaction.Commit();
+                        return result > 0;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.ToString());
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
 
-        public Task<bool> ConfirmUserBeerAsync(string username, NotificationDto notificationDto)
+        public async Task<bool> ConfirmUserBeerAsync(string username, NotificationDto notificationDto)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                using (var transaction = context.BeginTransaction())
+                {
+                    int result = 0;
+                    try
+                    {
+                        if (notificationDto.Value)
+                        {
+                          result = await context.ExecuteAsync("UPDATE UserBeers set Confirmed = @Confirmed WHERE Username = @Username and BeerId = @BeerId", 
+                                new {Confirmed = true, Username = username, BeerId = notificationDto.Id},
+                                transaction);
+                        }
+                        else
+                        {
+                           result = await context.ExecuteAsync("DELETE FROM UserBeers WHERE Username = @Username and BeerId = @BeerId;", new {Username = username, BeerId = notificationDto.Id},transaction);
+                        } 
+                        transaction.Commit();
+                        return result > 0;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.ToString());
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
 
         public IList<User> GetAll(params string[] navigationProperties)
