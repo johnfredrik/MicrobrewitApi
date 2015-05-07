@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,16 @@ namespace Microbrewit.Repository
     {
         private static readonly string SqlConnection =  ConfigurationManager.ConnectionStrings["MicrobrewitContext"].ConnectionString;
 
-        public static SqlConnection GetConnection()
+        public static DbConnection GetConnection()
         {
             return new SqlConnection(SqlConnection);
+        }
+
+        public static DbConnection GetOpenConnection()
+        {
+            var connection = new SqlConnection(SqlConnection);
+            connection.Open();
+            return connection;
         }
     }
 }
