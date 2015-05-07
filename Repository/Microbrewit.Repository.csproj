@@ -134,6 +134,7 @@
     <Compile Include="Interface\IHopRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\OriginDapperRepository.cs" />
+    <Compile Include="Repository\UserDapperRepository.cs" />
     <Compile Include="Repository\YeastDapperRepository.cs" />
     <Compile Include="Repository\SupplierDapperRepository.cs" />
     <Compile Include="Repository\OtherDapperRepository.cs" />
