@@ -14,7 +14,7 @@ namespace Microbrewit.Service.Automapper
         protected override void Configure()
         {
             Mapper.CreateMap<Brewery, BreweryDto>()
-                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.BreweryId))
                 .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, conf => conf.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Type))
@@ -39,7 +39,7 @@ namespace Microbrewit.Service.Automapper
 
             Mapper.CreateMap<BreweryMember, BreweryDto>()
                 .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Brewery.Name))
-                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Brewery.Id))
+                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Brewery.BreweryId))
                 .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryMemberGeoLocationResolver>())
                 .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Brewery.Type));
 
@@ -48,7 +48,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Name));
 
             Mapper.CreateMap<BreweryDto, Brewery>()
-                .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Id))
+                .ForMember(dest => dest.BreweryId, conf => conf.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, conf => conf.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Type))

@@ -2,76 +2,262 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 
 namespace Microbrewit.Repository
 {
-    public class BreweryRepository : GenericDataRepository<Brewery>, IBreweryRepository
+    public class BreweryRepository : IBreweryRepository
     {
-        public Task AddAsync(params Brewery[] breweries)
-        {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            foreach (var brewery in breweries)
+        public IList<Brewery> GetAll(params string[] navigationProperties)
+        {
+            List<Brewery> list;
+            using (var context = new MicrobrewitContext())
+            {
+                IQueryable<Brewery> dbQuery = context.Set<Brewery>();
+
+                //Apply eager loading
+                foreach (string navigationProperty in navigationProperties)
+                    dbQuery = dbQuery.Include<Brewery>(navigationProperty);
+
+                list = dbQuery
+                    .AsNoTracking()
+                    .ToList<Brewery>();
+            }
+            return list;
+        }
+
+        public Brewery GetSingle(int id, params string[] navigationProperties)
+        {
+            Brewery item = null;
+            using (var context = new MicrobrewitContext())
+            {
+                IQueryable<Brewery> dbQuery = context.Set<Brewery>();
+
+                //Apply eager loading
+                foreach (string navigationProperty in navigationProperties)
+                    dbQuery = dbQuery.Include<Brewery>(navigationProperty);
+
+                item = dbQuery
+                    .AsNoTracking() //Don't track any changes for the selected item
+                    .FirstOrDefault(s => s.BreweryId == id); //Apply where clause
+            }
+            return item;
+        }
+
+        public void Add(Brewery brewery)
+        {
+            using (var context = new MicrobrewitContext())
             {
                 brewery.Origin = null;
                 brewery.CreatedDate = DateTime.Now;
                 brewery.UpdatedDate = DateTime.Now;
+                context.Entry(brewery).State = EntityState.Added;
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                            Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                    }
+                }
             }
-            return base.AddAsync(breweries);
         }
 
-        public override async Task<int> UpdateAsync(params Brewery[] breweries)
+        public virtual void Update(Brewery brewery)
         {
             using (var context = new MicrobrewitContext())
             {
-                foreach (var brewery in breweries)
+                brewery.UpdatedDate = DateTime.Now;
+                var originalBrewery =
+                    context.Breweries.Include(b => b.Members).SingleOrDefault(b => b.BreweryId == brewery.BreweryId);
+                if (originalBrewery == null) return;
+                brewery.CreatedDate = originalBrewery.CreatedDate;
+                SetChanges(context, originalBrewery, brewery);
+                foreach (var member in brewery.Members)
                 {
-                    brewery.UpdatedDate = DateTime.Now;
-                    var originalBrewery = context.Breweries.Include(b => b.Members).SingleOrDefault(b => b.Id == brewery.Id);
-                    brewery.CreatedDate = originalBrewery.CreatedDate;
-                    SetChanges(context, originalBrewery, brewery);
-                    foreach (var member in brewery.Members)
+                    var existingMember = originalBrewery.Members.Any(m => m.MemberUsername.Equals(member.MemberUsername));
+                    if (existingMember)
                     {
-                        var existingMember = originalBrewery.Members.Any(m => m.MemberUsername.Equals(member.MemberUsername));
-                        if (existingMember)
-                        {
-                            var originalMember = originalBrewery.Members.SingleOrDefault(m => m.MemberUsername.Equals(member.MemberUsername));
-                            SetChanges(context, originalMember, member);
-                        }
-                        else
-                        {
-                            context.BreweryMembers.Add(member);
-                        }
+                        var originalMember =
+                            originalBrewery.Members.SingleOrDefault(m => m.MemberUsername.Equals(member.MemberUsername));
+                        SetChanges(context, originalMember, member);
                     }
-                    foreach (var brewerySocial in brewery.Socials)
+                    else
                     {
-                        var existingBrewerySocial = context.BrewerySocials.SingleOrDefault(s => s.BreweryId == brewerySocial.BreweryId && s.SocialId == brewerySocial.SocialId);
-                        if (existingBrewerySocial != null)
-                        {
-                            SetChanges(context, existingBrewerySocial, brewerySocial);
-                        }
-                        else
-                        {
-                            context.BrewerySocials.Add(brewerySocial);
-                        }
+                        context.BreweryMembers.Add(member);
                     }
-                    brewery.Origin = null;
                 }
+                foreach (var brewerySocial in brewery.Socials)
+                {
+                    var existingBrewerySocial =
+                        context.BrewerySocials.SingleOrDefault(
+                            s => s.BreweryId == brewerySocial.BreweryId && s.SocialId == brewerySocial.SocialId);
+                    if (existingBrewerySocial != null)
+                    {
+                        SetChanges(context, existingBrewerySocial, brewerySocial);
+                    }
+                    else
+                    {
+                        context.BrewerySocials.Add(brewerySocial);
+                    }
+                }
+                brewery.Origin = null;
+
 
                 try
                 {
-                    return await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
                 catch (Exception e)
                 {
 
                     throw;
                 }
-                //await base.UpdateAsync(breweries);
+            }
+        }
 
+        public virtual void Remove(Brewery brewery)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                context.Entry(brewery).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
+        }
+
+        public virtual async Task<IList<Brewery>> GetAllAsync(params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+
+                IQueryable<Brewery> dbQuery = context.Set<Brewery>();
+
+                //Apply eager loading
+                foreach (string navigationProperty in navigationProperties)
+                {
+                    dbQuery = dbQuery.Include<Brewery>(navigationProperty);
+                }
+                return await dbQuery.ToListAsync();
+            }
+        }
+
+        public virtual async Task<Brewery> GetSingleAsync(int id, params string[] navigationProperties)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+
+                IQueryable<Brewery> dbQuery = context.Set<Brewery>();
+
+                //Apply eager loading
+                dbQuery = navigationProperties.Aggregate(dbQuery, (current, navigationProperty) => current.Include<Brewery>(navigationProperty));
+
+                return await dbQuery.SingleOrDefaultAsync(s => s.BreweryId == id);
+            }
+        }
+
+        public virtual async Task AddAsync(Brewery brewery)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                context.Entry(brewery).State = EntityState.Added;
+                try
+                {
+                    await context.SaveChangesAsync();
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    //foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    //{
+                    //    foreach (var validationError in validationErrors.ValidationErrors)
+                    //    {
+                    //        Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                    //        Log.DebugFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                    //        throw dbEx;
+                    //    }
+                    //}
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
+        }
+
+        public virtual async Task<int> UpdateAsync(Brewery brewery)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+                brewery.UpdatedDate = DateTime.Now;
+                var originalBrewery =
+                    context.Breweries.Include(b => b.Members).SingleOrDefault(b => b.BreweryId == brewery.BreweryId);
+                if (originalBrewery == null) return -1;
+                brewery.CreatedDate = originalBrewery.CreatedDate;
+                SetChanges(context, originalBrewery, brewery);
+                foreach (var member in brewery.Members)
+                {
+                    var existingMember = originalBrewery.Members.Any(m => m.MemberUsername.Equals(member.MemberUsername));
+                    if (existingMember)
+                    {
+                        var originalMember =
+                            originalBrewery.Members.SingleOrDefault(m => m.MemberUsername.Equals(member.MemberUsername));
+                        SetChanges(context, originalMember, member);
+                    }
+                    else
+                    {
+                        context.BreweryMembers.Add(member);
+                    }
+                }
+                foreach (var brewerySocial in brewery.Socials)
+                {
+                    var existingBrewerySocial =
+                        context.BrewerySocials.SingleOrDefault(
+                            s => s.BreweryId == brewerySocial.BreweryId && s.SocialId == brewerySocial.SocialId);
+                    if (existingBrewerySocial != null)
+                    {
+                        SetChanges(context, existingBrewerySocial, brewerySocial);
+                    }
+                    else
+                    {
+                        context.BrewerySocials.Add(brewerySocial);
+                    }
+                }
+                brewery.Origin = null;
+                return await context.SaveChangesAsync();
+            }
+        }
+
+        public virtual async Task RemoveAsync(Brewery brewery)
+        {
+            using (var context = new MicrobrewitContext())
+            {
+
+                context.Entry(brewery).State = EntityState.Deleted;
+                try
+                {
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Log.Debug(e);
+                    throw;
+                }
             }
         }
 
@@ -99,11 +285,11 @@ namespace Microbrewit.Repository
         {
             using (var context = new MicrobrewitContext())
             {
-               var breweryMember = await context.BreweryMembers.SingleOrDefaultAsync(bm => bm.MemberUsername.Equals(username) && bm.BreweryId == breweryId);
-               context.BreweryMembers.Remove(breweryMember);
-               await context.SaveChangesAsync();
+                var breweryMember = await context.BreweryMembers.SingleOrDefaultAsync(bm => bm.MemberUsername.Equals(username) && bm.BreweryId == breweryId);
+                context.BreweryMembers.Remove(breweryMember);
+                await context.SaveChangesAsync();
             }
-            
+
         }
 
         public async Task<IList<BreweryMember>> GetAllMembersAsync(int breweryId)

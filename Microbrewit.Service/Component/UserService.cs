@@ -189,7 +189,7 @@ namespace Microbrewit.Service.Component
                 var changed = await _userRepository.ConfirmBreweryMemberAsync(username, notificationDto);
                 if (!changed) return false;
                 await ReIndexUserElasticSearch(username);
-                var brewery = await _breweryRepository.GetSingleAsync(b => b.Id == notificationDto.Id, _breweryInclude);
+                var brewery = await _breweryRepository.GetSingleAsync(notificationDto.Id, _breweryInclude);
                 if (brewery == null) return false;
                 var breweryDto = Mapper.Map<Brewery,BreweryDto>(brewery);
                 await _breweryElasticsearch.UpdateAsync(breweryDto);
@@ -214,7 +214,7 @@ namespace Microbrewit.Service.Component
             foreach (var breweryDto in userDto.Breweries)
             {
                 var brewery = breweryDto;
-                var result = await _breweryRepository.GetSingleAsync(h => h.Id == brewery.Id, "Members.Member", "Origin", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
+                var result = await _breweryRepository.GetSingleAsync(brewery.Id, "Members.Member", "Origin", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
                 var mappedResult = Mapper.Map<Brewery, BreweryDto>(result);
                 await _breweryElasticsearch.UpdateAsync(mappedResult);
             }
