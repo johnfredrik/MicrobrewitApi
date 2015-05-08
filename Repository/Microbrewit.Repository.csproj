@@ -139,7 +139,6 @@
     <Compile Include="Repository\YeastDapperRepository.cs" />
     <Compile Include="Repository\SupplierDapperRepository.cs" />
     <Compile Include="Repository\OtherDapperRepository.cs" />
-    <Compile Include="Repository\UserCredentialRepository.cs" />
     <Compile Include="Repository\OriginRepository.cs" />
     <Compile Include="Repository\OtherRepository.cs" />
     <Compile Include="Repository\SupplierRepository.cs" />
