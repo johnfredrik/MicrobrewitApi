@@ -11,7 +11,7 @@ namespace Microbrewit.Service.Automapper
         {
             // Creates a mapper for the beer class to a simpler beer class.
             Mapper.CreateMap<Beer, BeerSimpleDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.BeerId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
                 .ForMember(dto => dto.IBU, conf => conf.MapFrom(rec => rec.IBU))
@@ -19,7 +19,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.SRM, conf => conf.MapFrom(rec => rec.SRM));
                
             Mapper.CreateMap<Beer, BeerDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.BeerId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.ForkOfId, conf => conf.MapFrom(rec => rec.ForkeOfId))
                 .ForMember(dto => dto.ForkOf, conf => conf.ResolveUsing<ForkOfResolver>())

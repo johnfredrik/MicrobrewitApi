@@ -200,7 +200,7 @@ namespace Microbrewit.Service.Component
                 var changed = await _userRepository.ConfirmUserBeerAsync(username, notificationDto);
                 if (!changed) return false;
                 await ReIndexUserElasticSearch(username);
-                var beer = await _beerRepository.GetSingleAsync(b => b.Id == notificationDto.Id, _beerInclude);
+                var beer = await _beerRepository.GetSingleAsync(notificationDto.Id, _beerInclude);
                 if (beer == null) return false;
                 var beerDto = Mapper.Map<Beer, BeerDto>(beer);
                 await _beerElasticsearch.UpdateAsync(beerDto);
