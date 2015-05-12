@@ -12,8 +12,8 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public SRMConfiguration()
         {
-            Property(a => a.Id).IsRequired().HasColumnName("SrmId");
-            this.HasKey(a => a.Id);
+            Property(a => a.SrmId).IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            this.HasKey(a => a.SrmId);
           //  this.HasOptional(a => a.Beer).WithOptionalDependent(b => b.SRM);
         }
     }

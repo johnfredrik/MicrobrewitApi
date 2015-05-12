@@ -225,7 +225,7 @@ namespace Microbrewit.Repository
                 transaction);
 
             var toDelete = hopFlavours.Where(h => hop.Flavours.All(f => f.FlavourId != h.FlavourId));
-            context.Execute("DELETE FROM HopFlavours WHERE HopId = @HopId",
+            context.Execute("DELETE FROM HopFlavours WHERE HopId = @HopId and FlavourId = @FlavourId;",
                 toDelete.Select(h => new {h.HopId, h.FlavourId}), transaction);
                 
             var toAdd = hop.Flavours.Where(h => hopFlavours.All(f => f.FlavourId != h.FlavourId));

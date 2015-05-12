@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repository\BeerRepositoryTests.cs" />
     <Compile Include="Repository\BeerStyleReposityTests.cs" />
     <Compile Include="Repository\BreweryRepositoryTests.cs" />
     <Compile Include="Repository\HopReposityTests.cs" />

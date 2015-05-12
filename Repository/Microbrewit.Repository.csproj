@@ -120,6 +120,7 @@
     <Compile Include="Interface\IUserRepository.cs" />
     <Compile Include="Interface\IYeastRepository.cs" />
     <Compile Include="Repository\AuthRespository.cs" />
+    <Compile Include="Repository\BeerDapperRepository.cs" />
     <Compile Include="Repository\BeerRepository.cs" />
     <Compile Include="Repository\BreweryDapperRepository.cs" />
     <Compile Include="Repository\FermentableDapperRepository.cs" />

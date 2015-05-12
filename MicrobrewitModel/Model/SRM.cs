@@ -8,7 +8,7 @@ namespace Microbrewit.Model
 {
     public class SRM
     {
-        public int Id { get; set; }
+        public int SrmId { get; set; }
         public double Standard { get; set; }
         public double Mosher { get; set; }
         public double Daniels { get; set; }

@@ -269,19 +269,19 @@ namespace Microbrewit.Service.Component
             var abv = Calculation.CalculateABV(beer.Recipe);
             if (beer.ABV != null)
             {
-                abv.Id = beer.ABV.Id;
+                abv.AbvId = beer.ABV.AbvId;
             }
             beer.ABV = abv;
             var srm = Calculation.CalculateSRM(beer.Recipe);
             if (beer.SRM != null)
             {
-                srm.Id = beer.SRM.Id;
+                srm.SrmId = beer.SRM.SrmId;
             }
             beer.SRM = srm;
             var ibu = Calculation.CalculateIBU(beer.Recipe);
             if (beer.IBU != null)
             {
-                ibu.Id = beer.IBU.Id;
+                ibu.IbuId = beer.IBU.IbuId;
             }
             beer.IBU = ibu;
         }

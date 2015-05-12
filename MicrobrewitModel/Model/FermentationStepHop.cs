@@ -13,7 +13,7 @@ namespace Microbrewit.Model
         public int StepNumber { get; set; }
         public int RecipeId { get; set; }
         public int AAValue { get; set; }
-        public int AAAmount { get; set; }
+        public int Amount { get; set; }
         public int HopFormId { get; set; }
 
         public HopForm HopForm { get; private set; }

@@ -82,15 +82,15 @@ namespace Microbrewit.Repository
                 var originalBeer = context.Beers.SingleOrDefault(b => b.BeerId == beer.BeerId);
                 SetChanges(context, originalBeer, beer);
 
-                var originalAbv = context.ABVs.SingleOrDefault(a => a.Id == beer.ABV.Id);
+                var originalAbv = context.ABVs.SingleOrDefault(a => a.AbvId == beer.ABV.AbvId);
                 if (originalAbv != null)
                     SetChanges(context, originalAbv, beer.ABV);
 
-                var originalSrm = context.SRMs.SingleOrDefault(s => s.Id == beer.SRM.Id);
+                var originalSrm = context.SRMs.SingleOrDefault(s => s.SrmId == beer.SRM.SrmId);
                 if (originalSrm != null)
                     SetChanges(context, originalSrm, beer.SRM);
 
-                var originalIbu = context.IBUs.SingleOrDefault(i => i.Id == beer.IBU.Id);
+                var originalIbu = context.IBUs.SingleOrDefault(i => i.IbuId == beer.IBU.IbuId);
                 if (originalIbu == null)
                     SetChanges(context, originalIbu, beer.IBU);
 
@@ -399,7 +399,7 @@ namespace Microbrewit.Repository
 
                 if (newBeer.ABV != null)
                 {
-                    var dbAbv = context.ABVs.SingleOrDefault(a => a.Id == newBeer.ABV.Id);
+                    var dbAbv = context.ABVs.SingleOrDefault(a => a.AbvId == newBeer.ABV.AbvId);
                     if (dbAbv != null)
                     {
                         context.Entry(dbBeer.ABV).CurrentValues.SetValues(newBeer.ABV);
@@ -411,7 +411,7 @@ namespace Microbrewit.Repository
                 }
                 if (newBeer.SRM != null)
                 {
-                    var dbSrm = context.SRMs.SingleOrDefault(s => s.Id == newBeer.SRM.Id);
+                    var dbSrm = context.SRMs.SingleOrDefault(s => s.SrmId == newBeer.SRM.SrmId);
                     if (dbSrm != null)
                     {
                         context.Entry(dbBeer.SRM).CurrentValues.SetValues(newBeer.SRM);
@@ -424,7 +424,7 @@ namespace Microbrewit.Repository
 
                 if (newBeer.IBU != null)
                 {
-                    var dbIbu = context.IBUs.SingleOrDefault(i => i.Id == newBeer.IBU.Id);
+                    var dbIbu = context.IBUs.SingleOrDefault(i => i.IbuId == newBeer.IBU.IbuId);
                     if (dbIbu != null)
                     {
                         context.Entry(dbBeer.IBU).CurrentValues.SetValues(newBeer.IBU);

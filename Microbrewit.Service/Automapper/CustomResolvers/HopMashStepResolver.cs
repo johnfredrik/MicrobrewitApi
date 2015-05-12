@@ -23,7 +23,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 {
                     HopId = item.HopId,
                     StepNumber = item.StepNumber,
-                    Amount = item.AAAmount,
+                    Amount = item.Amount,
                     AAValue = item.AAValue,
                     RecipeId = item.RecipeId,                    
                 };

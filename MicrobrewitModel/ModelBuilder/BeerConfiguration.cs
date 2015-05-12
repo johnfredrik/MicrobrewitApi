@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BeerConfiguration()
         {
-            Property(beer => beer.BeerId).IsRequired().HasColumnName("BeerId");
+            Property(beer => beer.BeerId).IsRequired().HasColumnName("BeerId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(beer => beer.Name).IsRequired().HasMaxLength(255);
             this.HasKey(beer => beer.BeerId);
             this.HasOptional(beer => beer.BeerStyle).WithMany().HasForeignKey(beer => beer.BeerStyleId).WillCascadeOnDelete(false);

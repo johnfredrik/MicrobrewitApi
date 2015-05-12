@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Web.Http.ExceptionHandling;
 using Microbrewit.Api.ErrorHandler;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Component;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
@@ -31,17 +32,17 @@ namespace Microbrewit.Api
             //dependency injection
             var container = new UnityContainer();
             // Repository
-            container.RegisterType<IBeerRepository, BeerRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IBeerStyleRepository, BeerStyleRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IBreweryRepository, BreweryRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IFermentableRepository, FermentableRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IHopRepository, HopRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IOriginRespository, OriginRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IOtherRepository, OtherRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<ISupplierRepository, SupplierRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IUserRepository, UserRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IYeastRepository, YeastRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IGlassRepository, GlassRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerRepository, BeerDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBeerStyleRepository, BeerStyleDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IBreweryRepository, BreweryDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IFermentableRepository, FermentableDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IHopRepository, HopDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOriginRespository, OriginDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IOtherRepository, OtherDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<ISupplierRepository, SupplierDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IUserRepository, UserDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IYeastRepository, YeastDapperRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IGlassRepository, GlassDapperRepository>(new HierarchicalLifetimeManager());
             //Services
             container.RegisterType<IHopService, HopService>(new HierarchicalLifetimeManager());
             container.RegisterType<IYeastService, YeastService>(new HierarchicalLifetimeManager());
