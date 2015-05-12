@@ -201,9 +201,48 @@ namespace Microbrewit.Repository.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IList<Beer>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Beer>> GetAllAsync(params string[] navigationProperties)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var beers = await context.QueryAsync<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
+                    "SELECT * FROM Beers b " +
+                    "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                    "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
+                    "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                    "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId "
+                    , (beer, beerStyle, recipe, srm, abv, ibu) =>
+                    {
+                        if (beerStyle != null)
+                            beer.BeerStyle = beerStyle;
+                        if (recipe != null)
+                            beer.Recipe = recipe;
+                        if (srm != null)
+                            beer.SRM = srm;
+                        if (abv != null)
+                            beer.ABV = abv;
+                        if (ibu != null)
+                            beer.IBU = ibu;
+                        return beer;
+                    },
+                    splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId"
+                    );
+
+                foreach (var beer in beers)
+                {
+                    GetForkOf(context, beer);
+                    GetForks(context, beer);
+                    GetBreweries(context, beer);
+                    GetBrewers(context, beer);
+                    if (beer.Recipe != null)
+                    {
+                        GetRecipeSteps(context, beer.Recipe);
+                    }
+                }
+
+                return beers.ToList();
+            }
         }
 
         public Task<Beer> GetSingleAsync(int id, params string[] navigtionProperties)

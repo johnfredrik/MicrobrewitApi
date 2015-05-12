@@ -26,7 +26,7 @@ namespace Microbrewit.Service.Component
         public async Task<IEnumerable<SupplierDto>> GetAllAsync(string custom)
         {
             var supplierDtos = await _supplierElasticsearch.GetAllAsync(custom);
-            if (supplierDtos != null) return supplierDtos;
+            if (supplierDtos.Any()) return supplierDtos;
             var suppliers = await _supplierRepository.GetAllAsync("Origin");
             supplierDtos = Mapper.Map<IEnumerable<Supplier>, IEnumerable<SupplierDto>>(suppliers);
             return supplierDtos;

@@ -27,7 +27,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IFermentableElasticsearch _fermentableElasticsearch = new FermentableElasticsearch();
         private readonly IHopElasticsearch _hopElasticsearch = new HopElasticsearch();
-        private readonly IHopRepository _hopRepository = new HopRepository();
+        private readonly IHopRepository _hopRepository = new HopDapperRepository();
         private readonly IOtherElasticsearch _otherElasticsearch = new OtherElasticsearch();
         private readonly IYeastElasticsearch _yeastElasticsearch = new YeastElasticsearch();
 

@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
         public SubstituteConfiguration()
         {
             Property(sub => sub.SubstituteId).IsRequired();
-            this.HasKey(sub => new { SubstitutId = sub.SubstituteId, sub.HopId });
+            this.HasKey(sub => new {sub.SubstituteId, sub.HopId });
         }
     }
 

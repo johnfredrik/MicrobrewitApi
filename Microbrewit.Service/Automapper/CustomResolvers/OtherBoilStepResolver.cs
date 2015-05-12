@@ -3,6 +3,7 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
@@ -12,7 +13,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class OtherBoilStepResolver : ValueResolver<BoilStep, IList<OtherStepDto>>
     {
         private IOtherElasticsearch _otherElasticsearch = new OtherElasticsearch();
-        private IOtherRepository _otherRepository = new OtherRepository();
+        private IOtherRepository _otherRepository = new OtherDapperRepository();
 
         protected override IList<OtherStepDto> ResolveCore(BoilStep step)
         {

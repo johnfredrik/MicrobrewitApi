@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Linq;
 using AutoMapper;
+using Elasticsearch.Net.Providers;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Automapper.CustomResolvers;
@@ -42,6 +43,10 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.Brewery.BreweryId))
                 .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryMemberGeoLocationResolver>())
                 .ForMember(dest => dest.Type, conf => conf.MapFrom(src => src.Brewery.Type));
+
+            Mapper.CreateMap<BreweryBeer, BrewerySimpleDto>()
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.BreweryId))
+                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Brewery.Name));
 
             Mapper.CreateMap<Beer, DTO>()
                 .ForMember(dest => dest.Id, conf => conf.MapFrom(src => src.BeerId))

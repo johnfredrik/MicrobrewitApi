@@ -2,6 +2,7 @@
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
@@ -11,7 +12,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class ForkOfResolver : ValueResolver<Beer, BeerSimpleDto>
     {
         private readonly IBeerElasticsearch _beerElasticsearch = new BeerElasticsearch();
-        private readonly IBeerRepository _beerRespository = new BeerRepository();
+        private readonly IBeerRepository _beerRespository = new BeerDapperRepository();
 
         protected override BeerSimpleDto ResolveCore(Beer beer)
         {

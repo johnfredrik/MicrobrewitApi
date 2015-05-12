@@ -12,7 +12,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class HopBoilStepResolver : ValueResolver<BoilStep, IList<HopStepDto>>
     {
         private IHopElasticsearch _hopElasticsearch = new HopElasticsearch();
-        private IHopRepository _hopRepository = new HopRepository();
+        private IHopRepository _hopRepository = new HopDapperRepository();
 
 
         protected override IList<HopStepDto> ResolveCore(BoilStep step)

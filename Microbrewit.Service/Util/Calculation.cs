@@ -2,6 +2,7 @@
 using System.Linq;
 using Microbrewit.Model;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
 
@@ -10,7 +11,7 @@ namespace Microbrewit.Api.Service.Util
     public static class Calculation
     {
         private static IFermentableElasticsearch _fermentableElasticsearch = new FermentableElasticsearch();
-        private static IFermentableRepository _fermentableRepository = new FermentableRepository();
+        private static IFermentableRepository _fermentableRepository = new FermentableDapperRepository();
 
         public static SRM CalculateSRM(Recipe recipe)
         {

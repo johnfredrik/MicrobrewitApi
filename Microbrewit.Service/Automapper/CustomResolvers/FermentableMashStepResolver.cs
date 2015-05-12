@@ -3,6 +3,7 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
 
@@ -11,7 +12,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class FermentableMashStepResolver : ValueResolver<MashStep, IList<FermentableStepDto>>
     {
         private readonly IFermentableElasticsearch _fermentableElasticsearch = new FermentableElasticsearch();
-        private readonly IFermentableRepository _fermentableRepository = new FermentableRepository();
+        private readonly IFermentableRepository _fermentableRepository = new FermentableDapperRepository();
 
         protected override IList<FermentableStepDto> ResolveCore(MashStep step)
         {

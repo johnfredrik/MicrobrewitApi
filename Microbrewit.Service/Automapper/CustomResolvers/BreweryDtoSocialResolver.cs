@@ -7,12 +7,13 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
     public class BreweryDtoSocialResolver : ValueResolver<BreweryDto,IEnumerable<BrewerySocial>>
     {
-        readonly IBreweryRepository _breweryRepository = new BreweryRepository();
+        readonly IBreweryRepository _breweryRepository = new BreweryDapperRepository();
 
         protected override IEnumerable<BrewerySocial> ResolveCore(BreweryDto source)
         {
