@@ -14,7 +14,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public BreweryConfiguration()
         {
-            Property(b => b.Id).IsRequired().HasColumnName("BreweryId");
+            Property(b => b.BreweryId).IsRequired().HasColumnName("BreweryId");
             Property(b => b.Name).IsRequired().HasMaxLength(255).HasColumnAnnotation(IndexAnnotation.AnnotationName, new IndexAnnotation(new IndexAttribute("IX_BreweryName") {IsUnique = true}));
 
             HasRequired(s => s.Origin).WithMany().HasForeignKey(s => s.OriginId).WillCascadeOnDelete(false);

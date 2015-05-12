@@ -3,6 +3,7 @@ using AutoMapper;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Model.BeerXml;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
@@ -12,7 +13,6 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class BeerXmlBeerStyleSimpleResolver : ValueResolver<Recipe, BeerStyleSimpleDto>
     {
         private IBeerStyleElasticsearch _beerStyleElasticsearch = new BeerStyleElasticsearch();
-        private IBeerStyleRepository _beerstyleRespository = new BeerStyleRepository();
 
         protected override BeerStyleSimpleDto ResolveCore(Recipe recipe)
         {

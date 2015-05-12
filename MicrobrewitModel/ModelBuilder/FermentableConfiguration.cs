@@ -10,7 +10,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public FermentableConfiguration()
         {
-            Property(f => f.Id).IsRequired().HasColumnName("FermentableId");
+            Property(f => f.FermentableId).IsRequired().HasColumnName("FermentableId");
             Property(f => f.Name).IsRequired().HasMaxLength(200);
             Property(f => f.Type).IsRequired().HasMaxLength(60);
 

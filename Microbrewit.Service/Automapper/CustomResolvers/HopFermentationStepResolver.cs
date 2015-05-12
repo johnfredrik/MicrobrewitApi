@@ -12,7 +12,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class HopFermentationStepResolver : ValueResolver<FermentationStep, IList<HopStepDto>>
     {
         private readonly IHopElasticsearch _hopElasticsearch = new HopElasticsearch();
-        private readonly IHopRepository _hopRepository = new HopRepository();
+        private readonly IHopRepository _hopRepository = new HopDapperRepository();
 
         protected override IList<HopStepDto> ResolveCore(FermentationStep step)
         {
@@ -24,20 +24,20 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     {
                         HopId = item.HopId,
                         StepNumber = item.StepNumber,
-                        Amount = item.AAAmount,
+                        Amount = item.Amount,
                         AAValue = item.AAValue,
                         RecipeId = item.RecipeId,
                     };
                     var hop = _hopElasticsearch.GetSingle(item.HopId);
                     if (hop == null)
                     {
-                        hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(f => f.Id == item.HopId));
+                        hop = Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(item.HopId));
                     }
                     hopStepDto.Name = hop.Name;
                     hopStepDto.Origin = hop.Origin;
                     hopStepDto.Flavours = hop.Flavours;
                     hopStepDto.FlavourDescription = hop.FlavourDescription;
-                    hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(h => h.Id == item.HopFormId));
+                    hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(item.HopFormId));
                     hopStepDtoList.Add(hopStepDto);
                 }
                 return hopStepDtoList;

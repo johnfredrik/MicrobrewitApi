@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public YeastConfiguration()
         {
-            Property(y => y.Id).IsRequired().HasColumnName("YeastId");
+            Property(y => y.YeastId).IsRequired().HasColumnName("YeastId");
             Property(y => y.Name).IsRequired().HasMaxLength(255);        
 
             this.HasOptional(y => y.Supplier).WithMany().HasForeignKey(y => y.SupplierId);

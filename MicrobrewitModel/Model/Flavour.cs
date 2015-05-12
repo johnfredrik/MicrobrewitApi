@@ -8,7 +8,7 @@ namespace Microbrewit.Model
 {
     public class Flavour
     {
-        public int Id { get; set; }
+        public int FlavourId { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<HopFlavour> Hops { get; set; }

@@ -8,7 +8,7 @@ namespace Microbrewit.Model
 {
     public class Supplier
     {
-        public int Id { get; set; }
+        public int SupplierId { get; set; }
         public string Name { get; set; }
         public int OriginId { get; set; }
         public Origin Origin { get; set; }

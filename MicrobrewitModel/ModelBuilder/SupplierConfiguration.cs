@@ -12,7 +12,7 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public SupplierConfiguration()
         {
-            Property(s => s.Id).IsRequired().HasColumnName("SupplierId");
+            Property(s => s.SupplierId).IsRequired().HasColumnName("SupplierId");
             Property(s => s.Name).IsRequired().HasMaxLength(255);
 
             this.HasRequired(s => s.Origin).WithMany().HasForeignKey(s => s.OriginId);

@@ -75,7 +75,7 @@ namespace Microbrewit.Test
         public async Task GetYeastWithValidIdNotNullOrEmpty()
         {
             var first = _context.Yeasts.FirstOrDefault();
-            var yeast = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
+            var yeast = await _controller.GetYeast(first.YeastId) as OkNegotiatedContentResult<YeastCompleteDto>;
             Assert.NotNull(yeast);
         }
 
@@ -105,11 +105,11 @@ namespace Microbrewit.Test
         public async Task PutYeastGetsUpdated()
         {
             var first = _context.Yeasts.FirstOrDefault();
-            var yeastCompleteDto = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
+            var yeastCompleteDto = await _controller.GetYeast(first.YeastId) as OkNegotiatedContentResult<YeastCompleteDto>;
             var yeast = yeastCompleteDto.Content.Yeasts[0];
             yeast.Flocculation = "Medium";
             await _controller.PutYeast(yeast.Id,yeast);
-            var result = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
+            var result = await _controller.GetYeast(first.YeastId) as OkNegotiatedContentResult<YeastCompleteDto>;
             var updatedYeast = result.Content.Yeasts[0];
             Assert.AreEqual(yeast.Flocculation,updatedYeast.Flocculation);
         }
@@ -118,7 +118,7 @@ namespace Microbrewit.Test
         public async Task DeleteYeasteReturnsStatusCode200()
         {
             var first = _context.Yeasts.FirstOrDefault();
-            var yeastCompleteDto = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
+            var yeastCompleteDto = await _controller.GetYeast(first.YeastId) as OkNegotiatedContentResult<YeastCompleteDto>;
             var yeast = yeastCompleteDto.Content.Yeasts[0];
             var result = await _controller.DeleteYeast(yeast.Id) as OkNegotiatedContentResult<YeastDto>;
             Assert.IsInstanceOf<OkNegotiatedContentResult<YeastDto>>(result);
@@ -128,7 +128,7 @@ namespace Microbrewit.Test
         public async Task DeleteYeasteReturnsNotFound()
         {
             var first = _context.Yeasts.FirstOrDefault();
-            var yeastCompleteDto = await _controller.GetYeast(first.Id) as OkNegotiatedContentResult<YeastCompleteDto>;
+            var yeastCompleteDto = await _controller.GetYeast(first.YeastId) as OkNegotiatedContentResult<YeastCompleteDto>;
             var yeast = yeastCompleteDto.Content.Yeasts[0];
             await _controller.DeleteYeast(yeast.Id);
             var result = await _controller.GetYeast(yeast.Id);

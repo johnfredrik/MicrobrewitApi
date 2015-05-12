@@ -76,7 +76,7 @@ namespace Microbrewit.Api.Redis
 
                     foreach (var origin in origins)
                     {
-                        await redisClient.HashSetAsync("origin", origin.Id, JsonConvert.SerializeObject(origin), flags: CommandFlags.FireAndForget);
+                        await redisClient.HashSetAsync("origin", origin.OriginId, JsonConvert.SerializeObject(origin), flags: CommandFlags.FireAndForget);
                     }
 
                 }

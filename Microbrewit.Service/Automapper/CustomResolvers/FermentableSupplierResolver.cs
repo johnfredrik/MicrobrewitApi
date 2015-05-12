@@ -14,7 +14,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 Supplier supplier = null;
                 if (source.Supplier != null)
                 {
-                    supplier = context.Suppliers.SingleOrDefault(s => s.Id == source.Supplier.Id || s.Name.Equals(source.Supplier.Name));
+                    supplier = context.Suppliers.SingleOrDefault(s => s.SupplierId == source.Supplier.Id || s.Name.Equals(source.Supplier.Name));
 
                     if (supplier == null)
                     {
@@ -25,7 +25,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                         context.Suppliers.Add(supplier);
                         context.SaveChanges();
                     }
-                return supplier.Id;
+                return supplier.SupplierId;
                 }
                 else
                 {

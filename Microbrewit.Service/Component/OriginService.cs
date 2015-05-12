@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var originDto = await _originElasticsearch.GetSingleAsync(id);
             if (originDto != null) return originDto;
-            var origin = await _originRespository.GetSingleAsync(o => o.Id == id);
+            var origin = await _originRespository.GetSingleAsync(id);
             return Mapper.Map<Origin, OriginDto>(origin);
         }
 
@@ -44,7 +44,7 @@ namespace Microbrewit.Service.Component
         {
             var origin = Mapper.Map<OriginDto, Origin>(otherDto);
             await _originRespository.AddAsync(origin);
-            var result = await _originRespository.GetSingleAsync(o => o.Id == origin.Id);
+            var result = await _originRespository.GetSingleAsync(origin.OriginId);
             var mappedResult = Mapper.Map<Origin, OriginDto>(result);
             await _originElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -53,7 +53,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<OriginDto> DeleteAsync(int id)
         {
-            var origin = await _originRespository.GetSingleAsync(o => o.Id == id);
+            var origin = await _originRespository.GetSingleAsync(id);
             var originDto = await _originElasticsearch.GetSingleAsync(id);
             if(origin != null) await _originRespository.RemoveAsync(origin);
             if (originDto != null) await _originElasticsearch.DeleteAsync(id);
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var origin = Mapper.Map<OriginDto, Origin>(originDto);
             await _originRespository.UpdateAsync(origin);
-            var result = await _originRespository.GetSingleAsync(o => o.Id == originDto.Id);
+            var result = await _originRespository.GetSingleAsync(originDto.Id);
             var mappedResult = Mapper.Map<Origin, OriginDto>(result);
             await _originElasticsearch.UpdateAsync(mappedResult);
         }

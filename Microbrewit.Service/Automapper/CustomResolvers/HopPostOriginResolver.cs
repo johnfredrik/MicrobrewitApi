@@ -14,7 +14,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 Origin origin = null;
                 if (dto.Origin != null)
                 {
-                    origin = context.Origins.SingleOrDefault(o => o.Id == dto.Origin.Id || o.Name.Equals(dto.Origin.Name));
+                    origin = context.Origins.SingleOrDefault(o => o.OriginId == dto.Origin.Id || o.Name.Equals(dto.Origin.Name));
 
                     if (origin == null)
                     {
@@ -24,7 +24,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 
                     }
                 }
-               return origin.Id;
+               return origin.OriginId;
             }
 
         }

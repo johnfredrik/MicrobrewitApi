@@ -68,7 +68,7 @@ namespace Microbrewit.Service.Component
         {
             var beerDto = await _beerElasticsearch.GetSingleAsync(id);
             if (beerDto != null) return beerDto;
-            var beer = await _beerRepository.GetSingleAsync(o => o.Id == id,_include);
+            var beer = await _beerRepository.GetSingleAsync(id,_include);
             return Mapper.Map<Beer, BeerDto>(beer);
         }
 
@@ -84,7 +84,7 @@ namespace Microbrewit.Service.Component
             beer.UpdatedDate = DateTime.Now;
 
             await _beerRepository.AddAsync(beer);
-            var result = await _beerRepository.GetSingleAsync(o => o.Id == beer.Id,_include);
+            var result = await _beerRepository.GetSingleAsync( beer.BeerId,_include);
             var mappedResult = Mapper.Map<Beer, BeerDto>(result);
             await _beerElasticsearch.UpdateAsync(mappedResult);
             // elasticsearch relation managing
@@ -121,7 +121,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<BeerDto> DeleteAsync(int id)
         {
-            var beer = await _beerRepository.GetSingleAsync(o => o.Id == id);
+            var beer = await _beerRepository.GetSingleAsync(id);
             var beerDto = await _beerElasticsearch.GetSingleAsync(id);
             if(beer != null) await _beerRepository.RemoveAsync(beer);
             if (beerDto == null) return beerDto;
@@ -143,7 +143,7 @@ namespace Microbrewit.Service.Component
             }
             //Log.Debug(JsonConvert.SerializeObject(beer));
             await _beerRepository.UpdateAsync(beer);
-            var result = await _beerRepository.GetSingleAsync(o => o.Id == beerDto.Id,_include);
+            var result = await _beerRepository.GetSingleAsync(beerDto.Id,_include);
             var mappedResult = Mapper.Map<Beer, BeerDto>(result);
             await _beerElasticsearch.UpdateAsync(mappedResult);
             // elasticsearch relation managing
@@ -202,7 +202,7 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexSingleElasticSearchAsync(int beerId)
         {
-            var beer = await _beerRepository.GetSingleAsync(b => b.Id == beerId, _include);
+            var beer = await _beerRepository.GetSingleAsync(beerId, _include);
             if (beer == null) return;
             var beerDto = Mapper.Map<Beer, BeerDto>(beer);
             await _beerElasticsearch.UpdateAsync(beerDto);
@@ -256,7 +256,7 @@ namespace Microbrewit.Service.Component
         {
             var beerDto = _beerElasticsearch.GetSingle(beerId);
             if (beerDto != null) return beerDto;
-            var beer = _beerRepository.GetSingle(o => o.Id == beerId,_include);
+            var beer = _beerRepository.GetSingle(beerId,_include);
            
                 return Mapper.Map<Beer, BeerDto>(beer);
         }
@@ -269,19 +269,19 @@ namespace Microbrewit.Service.Component
             var abv = Calculation.CalculateABV(beer.Recipe);
             if (beer.ABV != null)
             {
-                abv.Id = beer.ABV.Id;
+                abv.AbvId = beer.ABV.AbvId;
             }
             beer.ABV = abv;
             var srm = Calculation.CalculateSRM(beer.Recipe);
             if (beer.SRM != null)
             {
-                srm.Id = beer.SRM.Id;
+                srm.SrmId = beer.SRM.SrmId;
             }
             beer.SRM = srm;
             var ibu = Calculation.CalculateIBU(beer.Recipe);
             if (beer.IBU != null)
             {
-                ibu.Id = beer.IBU.Id;
+                ibu.IbuId = beer.IBU.IbuId;
             }
             beer.IBU = ibu;
         }

@@ -20,7 +20,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 
                         if (sub.Id > 0)
                         {
-                            var hop = context.Hops.SingleOrDefault(h => h.Id == sub.Id);
+                            var hop = context.Hops.SingleOrDefault(h => h.HopId == sub.Id);
                             if (hop != null)
                             {
                                 hops.Add(hop);

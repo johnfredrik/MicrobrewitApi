@@ -28,7 +28,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Hop.Name))
                 .ForMember(dto => dto.Origin, conf => conf.MapFrom(rec => rec.Hop.Origin.Name))
-                .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.AAAmount))
+                .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount))
                 .ForMember(dto => dto.AAValue, conf => conf.MapFrom(rec => rec.AAValue))
                 .ForMember(dto => dto.Flavours, conf => conf.MapFrom(rec => rec.Hop.Flavours))
                 .ForMember(dto => dto.FlavourDescription, conf => conf.MapFrom(rec => rec.Hop.FlavourDescription));
@@ -58,7 +58,7 @@ namespace Microbrewit.Service.Automapper
                  .ForMember(dto => dto.Supplier, conf => conf.MapFrom(rec => rec.Yeast.Supplier));
 
             Mapper.CreateMap<Supplier, DTO>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.SupplierId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             // from web and to db
@@ -74,7 +74,7 @@ namespace Microbrewit.Service.Automapper
                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
                .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                .ForMember(dto => dto.HopFormId, conf => conf.MapFrom(rec => rec.HopForm.Id))
-               .ForMember(dto => dto.AAAmount, conf => conf.MapFrom(rec => rec.Amount))
+               .ForMember(dto => dto.Amount, conf => conf.MapFrom(rec => rec.Amount))
                .ForMember(dto => dto.AAValue, conf => conf.MapFrom(rec => rec.AAValue));
             
             Mapper.CreateMap<FermentableStepDto,FermentationStepFermentable>()

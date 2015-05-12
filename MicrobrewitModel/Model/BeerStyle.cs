@@ -9,7 +9,7 @@ namespace Microbrewit.Model
 {
     public class BeerStyle
     {
-        public int Id { get; set; }
+        public int BeerStyleId { get; set; }
         public string Name { get; set; }
         public double OGLow { get; set; }
         public double OGHigh { get; set; }
@@ -23,7 +23,7 @@ namespace Microbrewit.Model
         public double ABVHigh { get; set; }
         public string Comments { get; set; }
 
-
+        [Column("SuperStyleId")]
         public int? SuperStyleId { get; set; }
         public BeerStyle SuperStyle { get; set; }
         public ICollection<BeerStyle> SubStyles { get; set; }

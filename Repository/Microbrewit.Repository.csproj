@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.40\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -101,6 +104,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DapperHelper.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Interface\IAuthRepository.cs" />
     <Compile Include="Interface\IBeerRepository.cs" />
@@ -116,20 +120,28 @@
     <Compile Include="Interface\IUserRepository.cs" />
     <Compile Include="Interface\IYeastRepository.cs" />
     <Compile Include="Repository\AuthRespository.cs" />
+    <Compile Include="Repository\BeerDapperRepository.cs" />
     <Compile Include="Repository\BeerRepository.cs" />
+    <Compile Include="Repository\BreweryDapperRepository.cs" />
+    <Compile Include="Repository\FermentableDapperRepository.cs" />
+    <Compile Include="Repository\BeerStyleDapperRepository.cs" />
     <Compile Include="Repository\BeerStyleRepository.cs" />
     <Compile Include="Repository\BreweryRepository.cs" />
     <Compile Include="Repository\FermentableRepository.cs" />
     <Compile Include="Repository\GenericDataRepository.cs" />
+    <Compile Include="Repository\GlassDapperRepository.cs" />
     <Compile Include="Repository\GlassRepository.cs" />
+    <Compile Include="Repository\HopDapperRepository.cs" />
     <Compile Include="Repository\HopRepository.cs" />
     <Compile Include="Interface\IHopRepository.cs" />
-    <Compile Include="Interface\IRecipeRepositoy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\UserCredentialRepository.cs" />
+    <Compile Include="Repository\OriginDapperRepository.cs" />
+    <Compile Include="Repository\UserDapperRepository.cs" />
+    <Compile Include="Repository\YeastDapperRepository.cs" />
+    <Compile Include="Repository\SupplierDapperRepository.cs" />
+    <Compile Include="Repository\OtherDapperRepository.cs" />
     <Compile Include="Repository\OriginRepository.cs" />
     <Compile Include="Repository\OtherRepository.cs" />
-    <Compile Include="Repository\RecipeRepository.cs" />
     <Compile Include="Repository\SupplierRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Repository\YeastRepository.cs" />

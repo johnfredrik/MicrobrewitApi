@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace Microbrewit.Model.ModelBuilder
 {
-    
-        class SubstitutConfiguration : EntityTypeConfiguration<Substitut>
+    public class SubstituteConfiguration : EntityTypeConfiguration<Substitute>
+    {
+        public SubstituteConfiguration()
         {
-            public SubstitutConfiguration()
-            {
-                this.HasKey(sub => new { sub.SubstitutId, sub.HopId });
-
-            }
+            Property(sub => sub.SubstituteId).IsRequired();
+            this.HasKey(sub => new {sub.SubstituteId, sub.HopId });
         }
+    }
 
 }

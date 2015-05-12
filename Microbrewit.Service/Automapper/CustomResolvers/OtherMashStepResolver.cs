@@ -3,6 +3,7 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
@@ -12,7 +13,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class OtherMashStepResolver : ValueResolver<MashStep, IList<OtherStepDto>>
     {
         private readonly IOtherElasticsearch _otherElasticsearch = new OtherElasticsearch();
-        private readonly IOtherRepository _otherRepository = new OtherRepository();
+        private readonly IOtherRepository _otherRepository = new OtherDapperRepository();
 
         protected override IList<OtherStepDto> ResolveCore(MashStep step)
         {
@@ -29,7 +30,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 var other = _otherElasticsearch.GetSingle(item.OtherId);
                 if (other == null)
                 {
-                    other = Mapper.Map<Other, OtherDto>(_otherRepository.GetSingle(f => f.Id == item.OtherId));
+                    other = Mapper.Map<Other, OtherDto>(_otherRepository.GetSingle(item.OtherId));
                 }
                 otherStepDto.Name = other.Name;
                 otherStepDto.Type = other.Type;

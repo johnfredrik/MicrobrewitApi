@@ -8,7 +8,7 @@ namespace Microbrewit.Model
 {
     public class IBU
     {
-        public int Id { get; set; }
+        public int IbuId { get; set; }
         public double Standard { get; set; }
         public double Tinseth { get; set; }
         public double Rager { get; set; }

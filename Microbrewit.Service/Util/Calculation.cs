@@ -2,6 +2,7 @@
 using System.Linq;
 using Microbrewit.Model;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
 
@@ -10,11 +11,11 @@ namespace Microbrewit.Api.Service.Util
     public static class Calculation
     {
         private static IFermentableElasticsearch _fermentableElasticsearch = new FermentableElasticsearch();
-        private static IFermentableRepository _fermentableRepository = new FermentableRepository();
+        private static IFermentableRepository _fermentableRepository = new FermentableDapperRepository();
 
         public static SRM CalculateSRM(Recipe recipe)
         {
-            var srm = new SRM{Id = recipe.RecipeId};
+            var srm = new SRM{SrmId = recipe.RecipeId};
             foreach (var mashStep in recipe.MashSteps)
             {
                 foreach (var fermentable in mashStep.Fermentables)
@@ -32,7 +33,7 @@ namespace Microbrewit.Api.Service.Util
         public static IBU CalculateIBU(Recipe recipe)
         {
             var og = recipe.OG;
-            var ibu = new IBU {Id = recipe.RecipeId};
+            var ibu = new IBU {IbuId = recipe.RecipeId};
            
             var tinseth = 0.0;
             var rager = 0.0;
@@ -69,7 +70,7 @@ namespace Microbrewit.Api.Service.Util
                     }
                     else
                     {
-                        var efFermentable = _fermentableRepository.GetSingle(f => f.Id == fermentable.FermentableId);
+                        var efFermentable = _fermentableRepository.GetSingle(fermentable.FermentableId);
                         if (efFermentable != null && efFermentable.PPG != null)
                         {
                             fermentable.PPG = (int)efFermentable.PPG;
@@ -87,7 +88,7 @@ namespace Microbrewit.Api.Service.Util
         {
             var abv = new ABV
             {
-                Id = recipe.RecipeId,
+                AbvId = recipe.RecipeId,
                 Miller = Math.Round(Formulas.MillerABV(recipe.OG, recipe.FG), 2),
                 Simple = Math.Round(Formulas.SimpleABV(recipe.OG, recipe.FG), 2),
                 Advanced = Math.Round(Formulas.AdvancedABV(recipe.OG, recipe.FG), 2),

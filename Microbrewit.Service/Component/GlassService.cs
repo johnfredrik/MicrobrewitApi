@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Component
         {
             var glassDto = await _glassElasticsearch.GetSingleAsync(id);
             if (glassDto != null) return glassDto;
-            var glass = await _glassRepository.GetSingleAsync(o => o.Id == id);
+            var glass = await _glassRepository.GetSingleAsync(id);
             return Mapper.Map<Glass, GlassDto>(glass);
         }
 
@@ -44,7 +44,7 @@ namespace Microbrewit.Service.Component
         {
             var glass = Mapper.Map<GlassDto, Glass>(glassDto);
             await _glassRepository.AddAsync(glass);
-            var result = await _glassRepository.GetSingleAsync(o => o.Id == glass.Id);
+            var result = await _glassRepository.GetSingleAsync(glass.GlassId);
             var mappedResult = Mapper.Map<Glass, GlassDto>(result);
             await _glassElasticsearch.UpdateAsync(mappedResult);
             return mappedResult;
@@ -53,7 +53,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<GlassDto> DeleteAsync(int id)
         {
-            var glass = await _glassRepository.GetSingleAsync(o => o.Id == id);
+            var glass = await _glassRepository.GetSingleAsync(id);
             var glassDto = await _glassElasticsearch.GetSingleAsync(id);
             if(glass != null) await _glassRepository.RemoveAsync(glass);
             if (glassDto != null) await _glassElasticsearch.DeleteAsync(id);
@@ -64,7 +64,7 @@ namespace Microbrewit.Service.Component
         {
             var glass = Mapper.Map<GlassDto, Glass>(glassDto);
             await _glassRepository.UpdateAsync(glass);
-            var result = await _glassRepository.GetSingleAsync(o => o.Id == glassDto.Id);
+            var result = await _glassRepository.GetSingleAsync(glassDto.Id);
             var mappedResult = Mapper.Map<Glass, GlassDto>(result);
             await _glassElasticsearch.UpdateAsync(mappedResult);
         }

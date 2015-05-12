@@ -356,6 +356,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="UnityResolver .cs" />
     <Compile Include="Util\Calculation.cs" />
+    <Compile Include="Util\Extentions.cs" />
     <Compile Include="Util\Formulas.cs" />
     <Compile Include="Util\Encrypting.cs" />
     <Compile Include="Util\Helper.cs" />

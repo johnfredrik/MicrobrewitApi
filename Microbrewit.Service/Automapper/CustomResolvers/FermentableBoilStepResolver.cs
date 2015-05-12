@@ -3,6 +3,7 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Repository;
 using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Elasticsearch.Component;
 using Microbrewit.Service.Elasticsearch.Interface;
@@ -12,7 +13,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
     public class FermentableBoilStepResolver : ValueResolver<BoilStep, IList<FermentableStepDto>>
     {
         private IFermentableElasticsearch _fermentableElasticsearch = new FermentableElasticsearch();
-        private IFermentableRepository _fermentableRepository = new FermentableRepository();
+        private IFermentableRepository _fermentableRepository = new FermentableDapperRepository();
 
         protected override IList<FermentableStepDto> ResolveCore(BoilStep step)
         {
@@ -22,7 +23,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 var fermentable = _fermentableElasticsearch.GetSingle(item.FermentableId);
                 if (fermentable == null)
                 {
-                    fermentable = Mapper.Map<Fermentable,FermentableDto>(_fermentableRepository.GetSingle(f => f.Id == item.FermentableId));
+                    fermentable = Mapper.Map<Fermentable,FermentableDto>(_fermentableRepository.GetSingle(item.FermentableId));
                 }
                 var fermentableStepDto = new FermentableStepDto();
 

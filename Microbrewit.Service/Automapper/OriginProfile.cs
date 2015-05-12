@@ -9,11 +9,11 @@ namespace Microbrewit.Service.Automapper
         protected override void Configure()
         {
             Mapper.CreateMap<Origin, OriginDto>()
-                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+                .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.OriginId))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
 
             Mapper.CreateMap<OriginDto, Origin>()
-               .ForMember(dto => dto.Id, conf => conf.MapFrom(rec => rec.Id))
+               .ForMember(dto => dto.OriginId, conf => conf.MapFrom(rec => rec.Id))
                .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name));
         }
     }

@@ -99,6 +99,7 @@ namespace Microbrewit.Model
             modelBuilder.Configurations.Add(new BrewerySocialConfiguration());
             modelBuilder.Configurations.Add(new UserSocialConfiguration());
             modelBuilder.Configurations.Add(new SpargeStepConfiguration());
+            modelBuilder.Configurations.Add(new SubstituteConfiguration());
             modelBuilder.Configurations.Add(new SpargeStepHopConfiguration());
         }
    

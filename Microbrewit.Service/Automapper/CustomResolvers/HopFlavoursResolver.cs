@@ -8,7 +8,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 {
     public class HopFlavoursResolver : ValueResolver<HopDto, IList<HopFlavour>>
     {
-        private IHopRepository repository = new HopRepository();
+        private IHopRepository repository = new HopDapperRepository();
 
         protected override IList<HopFlavour> ResolveCore(HopDto dto)
         {
@@ -36,7 +36,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                                 context.Flavours.Add(flavour);
                                 context.SaveChanges();
                             }
-                            hopFlavor.FlavourId = flavour.Id;
+                            hopFlavor.FlavourId = flavour.FlavourId;
                             flavours.Add(hopFlavor);
                         }
                     

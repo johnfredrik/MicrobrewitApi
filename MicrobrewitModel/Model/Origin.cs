@@ -9,7 +9,7 @@ namespace Microbrewit.Model
 {
     public class Origin
     {    
-        public int Id { get; set; }
+        public int OriginId { get; set; }
         public string Name { get; set; }     
     }
 }

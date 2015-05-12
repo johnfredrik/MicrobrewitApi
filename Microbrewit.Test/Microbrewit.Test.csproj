@@ -89,7 +89,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BeerServiceTests.cs" />
+    <Compile Include="Repository\BeerRepositoryTests.cs" />
+    <Compile Include="Repository\BeerStyleReposityTests.cs" />
+    <Compile Include="Repository\BreweryRepositoryTests.cs" />
+    <Compile Include="Repository\HopReposityTests.cs" />
+    <Compile Include="Repository\OriginRepositoryTests.cs" />
+    <Compile Include="Repository\GlassRepositoryTests.cs" />
+    <Compile Include="Repository\FermentableRepositoryTests.cs" />
+    <Compile Include="Repository\UserRepositoryTests.cs" />
+    <Compile Include="Repository\YeastRepositoryTest.cs" />
+    <Compile Include="Repository\SupplierRepositoryTests.cs" />
+    <Compile Include="Repository\OtherRepositoryTests.cs" />
+    <Compile Include="Services\HopServiceTests.cs" />
+    <Compile Include="Services\BeerServiceTests.cs" />
     <Compile Include="BeerStyleControllerTest.cs" />
     <Compile Include="BlobControllerTests.cs" />
     <Compile Include="BreweryControllerTest.cs" />
@@ -136,6 +148,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -12,8 +12,8 @@ namespace Microbrewit.Model.ModelBuilder
     {
         public IBUConfiguration()
         {
-            Property(a => a.Id).IsRequired().HasColumnName("IbuId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            this.HasKey(a => a.Id);
+            Property(a => a.IbuId).IsRequired().HasColumnName("IbuId").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            this.HasKey(a => a.IbuId);
           //  this.HasOptional(a => a.Beer).WithOptionalDependent(b => b.IBU);
         }
     }

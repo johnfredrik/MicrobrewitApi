@@ -63,7 +63,7 @@ namespace Microbrewit.Test
         public async Task GetHopWithValidIdStatusCode200OKWithObject()
         {
             var first = _context.Hops.FirstOrDefault();
-            var hop = await _controller.GetHop(first.Id) as OkNegotiatedContentResult<HopCompleteDto>;
+            var hop = await _controller.GetHop(first.HopId) as OkNegotiatedContentResult<HopCompleteDto>;
             Assert.IsInstanceOf<OkNegotiatedContentResult<HopCompleteDto>>(hop);
         }
 
