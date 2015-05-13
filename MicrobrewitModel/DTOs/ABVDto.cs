@@ -11,7 +11,7 @@ namespace Microbrewit.Model.DTOs
     public class ABVDto
     {
         [JsonProperty(PropertyName = "abvId")]
-        public int Id { get; set; }
+        public int AbvId { get; set; }
         [JsonProperty(PropertyName = "standard")]
         public double Standard { get; set; }
         [JsonProperty(PropertyName = "miller")]

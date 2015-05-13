@@ -11,6 +11,7 @@ namespace Microbrewit.Service.Automapper
         {
             Mapper.CreateMap<MashStep, MashStepDto>()
                .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
+               .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                .ForMember(dto => dto.Hops, conf => conf.ResolveUsing<HopMashStepResolver>())
                .ForMember(dto => dto.Fermentables, conf => conf.ResolveUsing<FermentableMashStepResolver>())
                .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherMashStepResolver>());

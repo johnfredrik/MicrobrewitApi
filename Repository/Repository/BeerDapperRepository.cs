@@ -1021,7 +1021,7 @@ namespace Microbrewit.Repository.Repository
         private static void SetStepNumber(Recipe recipe)
         {
             var stepNumber = 1;
-            foreach (var mashStep in recipe.MashSteps.OrderByDescending(m => m.Length))
+            foreach (var mashStep in recipe.MashSteps)
             {
                 mashStep.StepNumber = stepNumber;
                 stepNumber++;

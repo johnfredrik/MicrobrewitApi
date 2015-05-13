@@ -11,6 +11,7 @@ namespace Microbrewit.Service.Automapper
         {
             Mapper.CreateMap<FermentationStep, FermentationStepDto>()
                  .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
+                 .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                  .ForMember(dto => dto.Hops, conf => conf.ResolveUsing<HopFermentationStepResolver>())
                  .ForMember(dto => dto.Fermentables, conf => conf.ResolveUsing<FermentableFermentationStepResolver>())
                  .ForMember(dto => dto.Others, conf => conf.ResolveUsing<OtherFermentationStepResolver>())
@@ -19,6 +20,7 @@ namespace Microbrewit.Service.Automapper
             Mapper.CreateMap<FermentationStepDto, FermentationStep>()
                 .ForMember(dto => dto.StepNumber, conf => conf.MapFrom(rec => rec.StepNumber))
                 .ForMember(dto => dto.Length, conf => conf.MapFrom(rec => rec.Length))
+                .ForMember(dto => dto.RecipeId, conf => conf.MapFrom(rec => rec.RecipeId))
                 .ForMember(dto => dto.Temperature, conf => conf.MapFrom(rec => rec.Temperature))
                 .ForMember(dto => dto.Notes, conf => conf.MapFrom(rec => rec.Notes));
 

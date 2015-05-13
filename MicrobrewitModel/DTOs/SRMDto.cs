@@ -11,7 +11,7 @@ namespace Microbrewit.Model.DTOs
     public class SRMDto
     {
         [JsonProperty(PropertyName = "srmId")]
-        public int Id { get; set; }
+        public int SrmId { get; set; }
         // Malt Calculate Units
         [JsonProperty(PropertyName = "standard")]
         public int Standard { get; set; }
