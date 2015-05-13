@@ -245,19 +245,132 @@ namespace Microbrewit.Repository.Repository
             }
         }
 
-        public Task<Beer> GetSingleAsync(int id, params string[] navigtionProperties)
+        public async Task<Beer> GetSingleAsync(int id, params string[] navigtionProperties)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var beers = await context.QueryAsync<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
+                    "SELECT * FROM Beers b " +
+                    "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                    "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
+                    "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                    "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                    "WHERE BeerId = @BeerId;"
+                    , (b, beerStyle, recipe, srm, abv, ibu) =>
+                    {
+                        if (beerStyle != null)
+                            b.BeerStyle = beerStyle;
+                        if (recipe != null)
+                            b.Recipe = recipe;
+                        if (srm != null)
+                            b.SRM = srm;
+                        if (abv != null)
+                            b.ABV = abv;
+                        if (ibu != null)
+                            b.IBU = ibu;
+                        return b;
+                    },
+                    new { BeerId = id },
+                    splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId"
+                    );
+                var beer = beers.SingleOrDefault();
+                if (beer == null) return null;
+                GetForkOf(context, beer);
+                GetForks(context, beer);
+                GetBreweries(context, beer);
+                GetBrewers(context, beer);
+                if (beer.Recipe != null)
+                {
+                    GetRecipeSteps(context, beer.Recipe);
+                }
+                return beer;
+            }
         }
 
-        public Task AddAsync(Beer beer)
+        public async Task AddAsync(Beer beer)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                using (var transaction = context.BeginTransaction())
+                {
+                    try
+                    {
+                        beer.CreatedDate = DateTime.Now;
+                        beer.UpdatedDate = DateTime.Now;
+                        var beerId = await context.QueryAsync<int>(
+                            "INSERT Beers(Name,BeerStyleId,CreatedDate,UpdatedDate,ForkeOfId) " +
+                            "VALUES(@Name,@BeerStyleId,@CreatedDate,@UpdatedDate,@ForkeOfId);" +
+                            "SELECT CAST(Scope_Identity() as int);", beer, transaction);
+                        beer.BeerId = beerId.SingleOrDefault();
+
+                        beer.SRM.SrmId = beer.BeerId;
+                        await context.ExecuteAsync("INSERT SRMs(SrmId,Standard,Mosher,Daniels,Morey) VALUES(@SrmId,@Standard,@Mosher,@Daniels,@Morey);",
+                            new { beer.SRM.SrmId, beer.SRM.Standard, beer.SRM.Mosher, beer.SRM.Daniels, beer.SRM.Morey }, transaction);
+
+                        beer.ABV.AbvId = beer.BeerId;
+                        await context.ExecuteAsync("INSERT ABVs(AbvId,Standard,Miller,Advanced,AdvancedAlternative,Simple,AlternativeSimple) " +
+                                        "VALUES(@AbvId,@Standard,@Miller,@Advanced,@AdvancedAlternative,@Simple,@AlternativeSimple);",
+                            new { AbvId = beer.BeerId, beer.ABV.Standard, beer.ABV.Miller, beer.ABV.Advanced, beer.ABV.AdvancedAlternative, beer.ABV.Simple, beer.ABV.AlternativeSimple }, transaction);
+
+                        beer.IBU.IbuId = beer.BeerId;
+                        await context.ExecuteAsync("INSERT IBUs(IbuId,Standard,Tinseth,Rager) " +
+                                        "VALUES(@IbuId,@Standard,@Tinseth,@Rager);",
+                            new { IbuId = beer.BeerId, beer.IBU.Standard, beer.IBU.Tinseth, beer.IBU.Rager }, transaction);
+
+                        if (beer.Recipe != null)
+                        {
+                            beer.Recipe.RecipeId = beer.BeerId;
+                            AddRecipe(beer.Recipe, context, transaction);
+                        }
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.ToString());
+                        transaction.Commit();
+                        throw;
+                    }
+                }
+            }
         }
 
-        public Task<int> UpdateAsync(Beer beer)
+        public async Task<int> UpdateAsync(Beer beer)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                using (var transaction = context.BeginTransaction())
+                {
+                    try
+                    {
+                        var result = await context.ExecuteAsync(
+                            "UPDATE Beers set Name = @Name, BeerStyleId = @BeerStyleId, UpdatedDate = @UpdatedDate, ForkeOfId = @ForkeOfId WHERE BeerId = @BeerId;",
+                            beer, transaction);
+
+                        await context.ExecuteAsync("UPDATE SRMs set Standard = @Standard, Mosher = @Mosher, Daniels = @Daniels, Morey = @Morey " +
+                                        "WHERE SrmId = @SrmId;",
+                            new { SrmId = beer.BeerId, beer.SRM.Standard, beer.SRM.Mosher, beer.SRM.Daniels, beer.SRM.Morey }, transaction);
+
+                        await context.ExecuteAsync("UPDATE ABVs set Standard = @Standard, Miller = @Miller, Advanced = @Advanced, AdvancedAlternative = @AdvancedAlternative, Simple = @Simple, AlternativeSimple = @AlternativeSimple " +
+                                        "WHERE AbvId = @AbvId;",
+                           new { AbvId = beer.BeerId, beer.ABV.Standard, beer.ABV.Miller, beer.ABV.Advanced, beer.ABV.AdvancedAlternative, beer.ABV.Simple, beer.ABV.AlternativeSimple }, transaction);
+
+                        await context.ExecuteAsync("UPDATE IBUs set Standard = @Standard,Tinseth =@Tinseth,Rager =@Rager WHERE IbuId = @IbuId;",
+                            new { IbuId = beer.BeerId, beer.IBU.Standard, beer.IBU.Tinseth, beer.IBU.Rager }, transaction);
+
+                        beer.Recipe.RecipeId = beer.BeerId;
+                        UpdateRecipe(context, transaction, beer.Recipe);
+                        transaction.Commit();
+                        return result;
+                    }
+                    catch (Exception exception)
+                    {
+                        Log.Error(exception.ToString());
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
 
         public Task RemoveAsync(Beer beer)
@@ -265,24 +378,185 @@ namespace Microbrewit.Repository.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IList<Beer>> GetLastAsync(int @from, int size, params string[] navigationProperties)
+        public async Task<IList<Beer>> GetLastAsync(int @from, int size, params string[] navigationProperties)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var beers =
+                    await
+                        context.QueryAsync<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
+                            "SELECT Top "+ size +" * FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY CreatedDate DESC) as ROW_NUM FROM Beers) AS b " +
+                            "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                            "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
+                            "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                            "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                            "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                            "WHERE ROW_NUM >= @From",
+                             (beer, beerStyle, recipe, srm, abv, ibu) =>
+                             {
+                                 if (beerStyle != null)
+                                     beer.BeerStyle = beerStyle;
+                                 if (recipe != null)
+                                     beer.Recipe = recipe;
+                                 if (srm != null)
+                                     beer.SRM = srm;
+                                 if (abv != null)
+                                     beer.ABV = abv;
+                                 if (ibu != null)
+                                     beer.IBU = ibu;
+                                 return beer;
+                             }, new { From = from, To = size }, splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId");
+
+                foreach (var beer in beers)
+                {
+                    GetForkOf(context, beer);
+                    GetForks(context, beer);
+                    GetBreweries(context, beer);
+                    GetBrewers(context, beer);
+                    if (beer.Recipe != null)
+                    {
+                        GetRecipeSteps(context, beer.Recipe);
+                    }
+                }
+
+                return beers.ToList();
+            }
         }
 
-        public Task<IList<Beer>> GetAllUserBeerAsync(string username, params string[] navigationProperties)
+        public async Task<IList<Beer>> GetAllUserBeerAsync(string username, params string[] navigationProperties)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var beers =
+                    await
+                        context.QueryAsync<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
+                            "SELECT * FROM Beers b " +
+                            "LEFT JOIN UserBeers ub ON ub.BeerId = b.BeerId " +
+                            "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                            "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
+                            "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                            "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                            "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                            "WHERE ub.Username = @Username;",
+                             (beer, beerStyle, recipe, srm, abv, ibu) =>
+                             {
+                                 if (beerStyle != null)
+                                     beer.BeerStyle = beerStyle;
+                                 if (recipe != null)
+                                     beer.Recipe = recipe;
+                                 if (srm != null)
+                                     beer.SRM = srm;
+                                 if (abv != null)
+                                     beer.ABV = abv;
+                                 if (ibu != null)
+                                     beer.IBU = ibu;
+                                 return beer;
+                             }, new { Username = username}, splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId");
+
+                foreach (var beer in beers)
+                {
+                    GetForkOf(context, beer);
+                    GetForks(context, beer);
+                    GetBreweries(context, beer);
+                    GetBrewers(context, beer);
+                    if (beer.Recipe != null)
+                    {
+                        GetRecipeSteps(context, beer.Recipe);
+                    }
+                }
+
+                return beers.ToList();
+            }
         }
 
         public IList<Beer> GetAllUserBeer(string username, params string[] navigationProperties)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var beers =
+                    context.Query<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
+                        "SELECT * FROM Beers b " +
+                        "LEFT JOIN UserBeers ub ON ub.BeerId = b.BeerId " +
+                        "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                        "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
+                        "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                        "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                        "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                        "WHERE ub.Username = @Username;",
+                        (beer, beerStyle, recipe, srm, abv, ibu) =>
+                        {
+                            if (beerStyle != null)
+                                beer.BeerStyle = beerStyle;
+                            if (recipe != null)
+                                beer.Recipe = recipe;
+                            if (srm != null)
+                                beer.SRM = srm;
+                            if (abv != null)
+                                beer.ABV = abv;
+                            if (ibu != null)
+                                beer.IBU = ibu;
+                            return beer;
+                        }, new {Username = username}, splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId");
+
+                foreach (var beer in beers)
+                {
+                    GetForkOf(context, beer);
+                    GetForks(context, beer);
+                    GetBreweries(context, beer);
+                    GetBrewers(context, beer);
+                    if (beer.Recipe != null)
+                    {
+                        GetRecipeSteps(context, beer.Recipe);
+                    }
+                }
+
+                return beers.ToList();
+            }
         }
 
         public IList<Beer> GetAllBreweryBeers(int breweryId, params string[] navigationProperties)
         {
-            throw new NotImplementedException();
+            using (var context = DapperHelper.GetOpenConnection())
+            {
+                var beers =
+                    context.Query<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
+                        "SELECT * FROM Beers b " +
+                        "LEFT JOIN BreweryBeers bb ON ub.BeerId = b.BeerId " +
+                        "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
+                        "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
+                        "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
+                        "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
+                        "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                        "WHERE bb.BreweryId = @BreweryId;",
+                        (beer, beerStyle, recipe, srm, abv, ibu) =>
+                        {
+                            if (beerStyle != null)
+                                beer.BeerStyle = beerStyle;
+                            if (recipe != null)
+                                beer.Recipe = recipe;
+                            if (srm != null)
+                                beer.SRM = srm;
+                            if (abv != null)
+                                beer.ABV = abv;
+                            if (ibu != null)
+                                beer.IBU = ibu;
+                            return beer;
+                        }, new {BreweryId = breweryId}, splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId");
+
+                foreach (var beer in beers)
+                {
+                    GetForkOf(context, beer);
+                    GetForks(context, beer);
+                    GetBreweries(context, beer);
+                    GetBrewers(context, beer);
+                    if (beer.Recipe != null)
+                    {
+                        GetRecipeSteps(context, beer.Recipe);
+                    }
+                }
+
+                return beers.ToList();
+            }
         }
 
         private void GetRecipeSteps(DbConnection context, Recipe recipe)

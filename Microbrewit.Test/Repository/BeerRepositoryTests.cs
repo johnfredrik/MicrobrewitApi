@@ -38,6 +38,21 @@ namespace Microbrewit.Test.Repository
         }
 
         [Test]
+        public async Task GetLastAsync_Returns_Value()
+        {
+            var beers = await _beerRepository.GetLastAsync(0,10);
+            Assert.AreEqual(10,beers.Count);
+        }
+
+        [Test]
+        public async Task GetAllUserBeersAsync_Returns_Value()
+        {
+            var beers = await _beerRepository.GetAllUserBeerAsync("johnfredrik");
+            Assert.True(beers.Any());
+            Assert.True(beers.All(b => b.Brewers.Any(u => u.Username == "johnfredrik")));
+        }
+
+        [Test]
         public void Add_Gets_Added()
         {
             var newBeer = new Beer
