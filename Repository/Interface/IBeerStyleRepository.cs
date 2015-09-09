@@ -16,7 +16,7 @@ namespace Microbrewit.Repository
         void Remove(BeerStyle beerStyle);
 
         //Async methods
-        Task<IList<BeerStyle>> GetAllAsync(params string[] navigationProperties);
+        Task<IList<BeerStyle>> GetAllAsync(int from, int size,params string[] navigationProperties);
         Task<BeerStyle> GetSingleAsync(int id, params string[] navigtionProperties);
         Task AddAsync(BeerStyle beerStyle);
         Task<int> UpdateAsync(BeerStyle beerStyle);

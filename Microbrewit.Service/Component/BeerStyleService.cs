@@ -24,11 +24,11 @@ namespace Microbrewit.Service.Component
             _beerStyleRepository = beerStyleRepository;
         }
 
-        public async  Task<IEnumerable<BeerStyleDto>> GetAllAsync()
+        public async  Task<IEnumerable<BeerStyleDto>> GetAllAsync(int from, int size)
         {
-            var beerStyleDtos = await _beerStyleElasticsearch.GetAllAsync();
+            var beerStyleDtos = await _beerStyleElasticsearch.GetAllAsync(from,size);
             if (beerStyleDtos.Any()) return beerStyleDtos;
-            var beerStyles = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+            var beerStyles = await _beerStyleRepository.GetAllAsync(from,size,"SubStyles", "SuperStyle");
             return Mapper.Map<IEnumerable<BeerStyle>, IEnumerable<BeerStyleDto>>(beerStyles);
         }
 
@@ -76,7 +76,7 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexElasticSearch()
         {
-            var beerStyles = await _beerStyleRepository.GetAllAsync("SubStyles", "SuperStyle");
+            var beerStyles = await _beerStyleRepository.GetAllAsync(0,int.MaxValue,"SubStyles", "SuperStyle");
             var beerStyleDtos = Mapper.Map<IList<BeerStyle>, IList<BeerStyleDto>>(beerStyles);
             await _beerStyleElasticsearch.UpdateAllAsync(beerStyleDtos);
         }

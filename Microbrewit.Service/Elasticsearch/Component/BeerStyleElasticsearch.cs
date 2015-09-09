@@ -35,11 +35,12 @@ namespace Microbrewit.Service.Elasticsearch.Component
             var index = await _client.IndexAsync<BeerStyleDto>(beerStyleDto);
         }
 
-        public async Task<IEnumerable<BeerStyleDto>> GetAllAsync()
+        public async Task<IEnumerable<BeerStyleDto>> GetAllAsync(int from, int size)
         {
             var result = await _client.SearchAsync<BeerStyleDto>(s => s
                 .Filter(f => f.Term(t => t.DataType, "beerstyle"))
-                .Size(BigNumber)
+                .Size(size)
+                .From(from)
                 );
             return result.Documents;
         }

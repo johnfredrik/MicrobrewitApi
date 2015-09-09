@@ -26,9 +26,10 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("")]
-        public async Task<BeerStyleCompleteDto> GetBeerStyles()
+        public async Task<BeerStyleCompleteDto> GetBeerStyles(int from = 0, int size = 20)
         {
-            var beerStylesDto = await _beerStyleService.GetAllAsync();
+            if (size > 1000) size = 1000;
+            var beerStylesDto = await _beerStyleService.GetAllAsync(from, size);
             var response = new BeerStyleCompleteDto() { BeerStyles = beerStylesDto.ToList()};
             return response;
         }

@@ -162,11 +162,11 @@ namespace Microbrewit.Repository.Repository
             }
         }
 
-        public async Task<IList<BeerStyle>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<BeerStyle>> GetAllAsync(int from, int size, params string[] navigationProperties)
         {
             using (var context = DapperHelper.GetConnection())
             {
-                var beerStyles = await context.QueryAsync<BeerStyle>("SELECT * FROM BeerStyles;");
+                var beerStyles = await context.QueryAsync<BeerStyle>("SELECT * FROM BeerStyles ORDER BY BeerStyleId OFFSET @From ROWS FETCH NEXT @Size ROWS ONLY;", new {From = from, Size = size});
                 foreach (var beerStyle in beerStyles)
                 {
                     if (beerStyle.SuperStyleId != null)

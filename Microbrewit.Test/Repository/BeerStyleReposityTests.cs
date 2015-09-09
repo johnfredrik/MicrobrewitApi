@@ -41,7 +41,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAll_Return_SubStyle()
         {
-            var beerStyles = await _beerStyleRepository.GetAllAsync();
+            var beerStyles = await _beerStyleRepository.GetAllAsync(0,int.MaxValue);
             Assert.NotNull(beerStyles.FirstOrDefault().SubStyles);
             Assert.True(beerStyles.FirstOrDefault().SubStyles.Any());
         }
@@ -49,7 +49,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_Return_Result()
         {
-            var beerStyles = await _beerStyleRepository.GetAllAsync();
+            var beerStyles = await _beerStyleRepository.GetAllAsync(0,20);
             Assert.NotNull(beerStyles);
             Assert.True(beerStyles.Any());
         }
@@ -57,7 +57,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_Return_SuperStyle()
         {
-            var beerStyles = await _beerStyleRepository.GetAllAsync();
+            var beerStyles = await _beerStyleRepository.GetAllAsync(0,20);
             var beerStyle = beerStyles.FirstOrDefault(b => b.SuperStyleId != null);
             Assert.NotNull(beerStyle.SuperStyle);
         }
@@ -65,7 +65,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_Return_SubStyle()
         {
-            var beerStyles = await _beerStyleRepository.GetAllAsync();
+            var beerStyles = await _beerStyleRepository.GetAllAsync(0,20);
             Assert.NotNull(beerStyles.FirstOrDefault().SubStyles);
             Assert.True(beerStyles.FirstOrDefault().SubStyles.Any());
         }
