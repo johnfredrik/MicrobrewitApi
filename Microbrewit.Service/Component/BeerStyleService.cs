@@ -71,6 +71,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<IEnumerable<BeerStyleDto>> SearchAsync(string query, int @from, int size)
         {
+            if (size > 1000) size = 1000;
             return await _beerStyleElasticsearch.SearchAsync(query,from,size);
         }
 
