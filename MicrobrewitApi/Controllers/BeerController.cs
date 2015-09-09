@@ -36,8 +36,9 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">It's all good!</response>
         /// <returns>Returns collection of all beers</returns>
         [Route("")]
-        public async Task<BeerCompleteDto> GetBeers(int from = 0, int size = 1000)
+        public async Task<BeerCompleteDto> GetBeers(int from = 0, int size = 20)
         {
+            if (size > 1000) size = 1000;
             var beers = await _beerService.GetAllAsync(from, size);
             var result = new BeerCompleteDto { Beers = beers.ToList() };
             return result;
@@ -178,6 +179,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<BeerCompleteDto> GetBeerBySearch(string query, int from = 0, int size = 20)
         {
+            if(size > 1000) size = 1000;
             var beerDtos = await _beerService.SearchAsync(query, from, size);
             return new BeerCompleteDto {Beers = beerDtos.ToList()};
         }
@@ -192,17 +194,10 @@ namespace Microbrewit.Api.Controllers
         [Route("last")]
         public async Task<BeerCompleteDto> GetLastAddedBeers(int from = 0, int size = 20)
         {
+            if (size > 1000) size = 1000;
             var beerDto = await _beerService.GetLastAsync(from, size);
             return new BeerCompleteDto{ Beers = beerDto.ToList()};
         }
-
-        //[HttpPost]
-        //[Route("beerxml")]
-        //public async Task<Recipe> PostBeerXml([FromBody] Recipe recipe)
-        //{
-        //    var context = HttpContext.Current;
-        //     return recipe;
-        //}
 
         [HttpPost]
         [Route("beerxml")]
