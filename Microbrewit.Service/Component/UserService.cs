@@ -56,9 +56,9 @@ namespace Microbrewit.Service.Component
             _beerElasticsearch = beerElasticsearch;
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllAsync()
+        public async Task<IEnumerable<UserDto>> GetAllAsync(int from, int size)
         {
-            var userDtos = await _userElasticsearch.GetAllAsync();
+            var userDtos = await _userElasticsearch.GetAllAsync(from, size);
             if (userDtos.Any()) return userDtos;
             var users = await _userRepository.GetAllAsync(_userInclude);
             return Mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);

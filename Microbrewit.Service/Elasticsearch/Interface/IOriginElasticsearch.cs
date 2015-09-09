@@ -13,7 +13,7 @@ namespace Microbrewit.Service.Elasticsearch.Interface
     {
         Task UpdateAsync(OriginDto originDto);
 
-        Task<IEnumerable<OriginDto>> GetAllAsync(string custom);
+        Task<IEnumerable<OriginDto>> GetAllAsync(int from, int size,string custom);
         Task<OriginDto> GetSingleAsync(int id);
         Task<IEnumerable<OriginDto>> SearchAsync(string query, int from, int size);
         Task UpdateAllAsync(IEnumerable<OriginDto> originDtos);

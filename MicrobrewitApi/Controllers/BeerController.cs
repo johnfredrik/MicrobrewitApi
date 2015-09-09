@@ -15,7 +15,6 @@ using Microbrewit.Service.Interface;
 using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Authorization;
 using Thinktecture.IdentityModel.Authorization.WebApi;
-using Thinktecture.IdentityModel.Extensions;
 
 namespace Microbrewit.Api.Controllers
 {

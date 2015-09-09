@@ -13,7 +13,7 @@ namespace Microbrewit.Service.Elasticsearch.Interface
     {
         Task UpdateAsync(BreweryDto breweryDto);
 
-        Task<IEnumerable<BreweryDto>> GetAllAsync();
+        Task<IEnumerable<BreweryDto>> GetAllAsync(int from, int size);
         Task<BreweryDto> GetSingleAsync(int id);
         Task<IEnumerable<BreweryDto>> SearchAsync(string query, int from, int size);
         Task UpdateAllAsync(IEnumerable<BreweryDto> breweryDtos);

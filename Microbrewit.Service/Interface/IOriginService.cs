@@ -9,7 +9,7 @@ namespace Microbrewit.Service.Interface
 {
     public interface IOriginService
     {
-        Task<IEnumerable<OriginDto>> GetAllAsync(string custom);
+        Task<IEnumerable<OriginDto>> GetAllAsync(int from, int size,string custom);
         Task<OriginDto> GetSingleAsync(int id);
         Task<OriginDto> AddAsync(OriginDto originDto);
         Task<OriginDto> DeleteAsync(int id);

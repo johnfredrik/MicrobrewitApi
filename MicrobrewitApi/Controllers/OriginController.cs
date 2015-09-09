@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microbrewit.Model;
 using log4net;
-using Microbrewit.Repository;
-using AutoMapper;
 using Microbrewit.Model.DTOs;
-using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Interface;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
@@ -38,9 +30,9 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<OriginCompleteDto> GetOrigins(string custom = "false")
+        public async Task<OriginCompleteDto> GetOrigins(int from = 0,int size = 20,string custom = "false")
         {
-            var originDto = await _originService.GetAllAsync(custom);
+            var originDto = await _originService.GetAllAsync(from, size, custom);
             var originsComplete = new OriginCompleteDto { Origins = originDto.ToList()};
             return originsComplete;
         }

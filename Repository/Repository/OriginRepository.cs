@@ -93,7 +93,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public virtual async Task<IList<Origin>> GetAllAsync(params string[] navigationProperties)
+        public virtual async Task<IList<Origin>> GetAllAsync(int from, int size,params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {

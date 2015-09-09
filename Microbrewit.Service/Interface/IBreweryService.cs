@@ -10,7 +10,7 @@ namespace Microbrewit.Service.Interface
 {
     public interface IBreweryService
     {
-        Task<IEnumerable<BreweryDto>> GetAllAsync();
+        Task<IEnumerable<BreweryDto>> GetAllAsync(int from, int size);
         Task<BreweryDto> GetSingleAsync(int id);
         Task<BreweryDto> AddAsync(BreweryDto breweryDto);
         Task<BreweryDto> DeleteAsync(int id);

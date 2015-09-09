@@ -300,9 +300,9 @@ namespace Microbrewit.Api.Controllers
 
         [Route("{id:int}/upload")]
         [HttpPost]
-        public async Task<IHttpActionResult> UploadFile(int id)
+        public async Task<IHttpActionResult> UploadFile(int breweryId)
         {
-            var isAllowed = ClaimsAuthorization.CheckAccess("Upload", "BreweryId", id.ToString());
+            var isAllowed = ClaimsAuthorization.CheckAccess("Upload", "BreweryId", breweryId.ToString());
             if (!isAllowed)
             {
                 return StatusCode(HttpStatusCode.Unauthorized);
@@ -311,7 +311,7 @@ namespace Microbrewit.Api.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
-            var brewery = await _breweryService.GetSingleAsync(id);
+            var brewery = await _breweryService.GetSingleAsync(breweryId);
             if (brewery == null) return NotFound();
             MultipartStreamProvider provider = new BlobStorageMultipartStreamProvider(brewery);
             await Request.Content.ReadAsMultipartAsync(provider);

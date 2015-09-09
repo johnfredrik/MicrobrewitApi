@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
-using AutoMapper;
-using Microbrewit.Repository;
-using System.Configuration;
-using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Interface;
-using Microsoft.Data.OData.Metadata;
-using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers

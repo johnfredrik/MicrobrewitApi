@@ -69,11 +69,11 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task<IList<Origin>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Origin>> GetAllAsync(int from, int size,params string[] navigationProperties)
         {
             using (var context = DapperHelper.GetConnection())
             {
-                var origins = await context.QueryAsync<Origin>(@"SELECT * FROM Origins");
+                var origins = await context.QueryAsync<Origin>(@"SELECT * FROM Origins ORDER BY OriginId OFFSET @From ROWS FETCH NEXT @Size ROWS ONLY;", new {From = from, Size = size});
                 return origins.ToList();
             }
         }

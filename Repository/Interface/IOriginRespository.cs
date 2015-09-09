@@ -17,7 +17,7 @@ namespace Microbrewit.Repository
         void Remove(Origin origin);
 
         //Async methods
-        Task<IList<Origin>> GetAllAsync(params string[] navigationProperties);
+        Task<IList<Origin>> GetAllAsync(int from, int size, params string[] navigationProperties);
         Task<Origin> GetSingleAsync(int id, params string[] navigtionProperties);
         Task AddAsync(Origin origin);
         Task<int> UpdateAsync(Origin origin);

@@ -24,11 +24,11 @@ namespace Microbrewit.Service.Component
             _originRespository = originRespository;
         }
 
-        public async  Task<IEnumerable<OriginDto>> GetAllAsync(string custom)
+        public async  Task<IEnumerable<OriginDto>> GetAllAsync(int from,int size,string custom)
         {
-            var originDtos = await _originElasticsearch.GetAllAsync(custom);
+            var originDtos = await _originElasticsearch.GetAllAsync(from,size,custom);
             if (originDtos.Any()) return originDtos;
-            var origins = await _originRespository.GetAllAsync();
+            var origins = await _originRespository.GetAllAsync(from,size);
             return Mapper.Map<IEnumerable<Origin>, IEnumerable<OriginDto>>(origins);
         }
 
@@ -76,7 +76,7 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexElasticSearch()
         {
-            var origins = await _originRespository.GetAllAsync();
+            var origins = await _originRespository.GetAllAsync(0,int.MaxValue);
             var originDtos = Mapper.Map<IList<Origin>, IList<OriginDto>>(origins);
             await _originElasticsearch.UpdateAllAsync(originDtos);
         }

@@ -35,11 +35,13 @@ namespace Microbrewit.Service.Elasticsearch.Component
             var index =  await _client.IndexAsync<OriginDto>(originDto);
         }
 
-        public async Task<IEnumerable<OriginDto>> GetAllAsync(string custom)
+        public async Task<IEnumerable<OriginDto>> GetAllAsync(int from, int size ,string custom)
         {
+            //TODO: Add filter for custom.
             var result = await _client.SearchAsync<OriginDto>(s => s
                 .Filter(f => f.Term(t => t.DataType, "origin"))
-                .Size(_bigNumber)
+                .Size(size)
+                .From(from)
                 );
             return result.Documents;
         }

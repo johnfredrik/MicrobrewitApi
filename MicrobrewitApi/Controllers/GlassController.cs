@@ -1,16 +1,10 @@
-﻿using AutoMapper;
-using Microbrewit.Model;
-using Microbrewit.Model.DTOs;
-using Microbrewit.Repository;
-using System;
+﻿using Microbrewit.Model.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Interface;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
