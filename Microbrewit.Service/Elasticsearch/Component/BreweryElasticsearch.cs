@@ -39,9 +39,12 @@ namespace Microbrewit.Service.Elasticsearch.Component
             await _client.IndexAsync(breweryDto);
         }
 
-        public async Task<IEnumerable<BreweryDto>> GetAllAsync()
+        public async Task<IEnumerable<BreweryDto>> GetAllAsync(int from, int size)
         {
-            var res = await _client.SearchAsync<BreweryDto>(s => s.Size(BigNumber).Filter(f => f.Term(t => t.DataType, "brewery")));
+            var res = await _client.SearchAsync<BreweryDto>(s => s
+                .Size(size)
+                .From(from)
+                .Filter(f => f.Term(t => t.DataType, "brewery")));
             return res.Documents;
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
@@ -10,11 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Microbrewit.Model;
-using Microbrewit.Repository;
-using AutoMapper;
 using Microbrewit.Model.DTOs;
-using Microbrewit.Service.Elasticsearch;
 using Microbrewit.Service.Interface;
 using Thinktecture.IdentityModel.Authorization;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -25,7 +18,7 @@ namespace Microbrewit.Api.Controllers
     public class BreweryController : ApiController
     {
         private readonly IBreweryService _breweryService;
-        private readonly string _blobPath = "https://microbrewit.blob.core.windows.net/images/";
+        //private readonly string _blobPath = "https://microbrewit.blob.core.windows.net/images/";
 
         public BreweryController(IBreweryService breweryService)
         {
@@ -38,9 +31,10 @@ namespace Microbrewit.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("")]
-        public async Task<BreweryCompleteDto> GetBreweries()
+        public async Task<BreweryCompleteDto> GetBreweries(int from = 0, int size = 20)
         {
-            var breweriesDto = await _breweryService.GetAllAsync();
+            if (size > 1000) size = 1000;
+            var breweriesDto = await _breweryService.GetAllAsync(from, size);
             var result = new BreweryCompleteDto { Breweries = breweriesDto.OrderBy(b => b.Name).ToList() };
             return result;
         }
@@ -233,7 +227,8 @@ namespace Microbrewit.Api.Controllers
         /// <response code="204">No Content</response>
         /// <response code="400">Bad Request</response>
         /// <param name="id">Brewery id</param>
-        /// <param name="username">Member username</param>
+        /// <param name="username">Brewery admin users username</param>
+        /// <param name="breweryMember">Member to be added</param>
         /// <returns></returns>
         [Route("{id:int}/members/{username}")]
         public async Task<IHttpActionResult> PutBreweryMember(int id, string username, BreweryMemberDto breweryMember)
@@ -298,6 +293,7 @@ namespace Microbrewit.Api.Controllers
         [Route("")]
         public async Task<BreweryCompleteDto> GetBreweriesBySearch(string query, int from = 0, int size = 20)
         {
+            if (size > 1000) size = 1000;
             var breweriesDto = await _breweryService.SearchAsync(query, from, size);
             return new BreweryCompleteDto { Breweries = breweriesDto.ToList() };
         }
