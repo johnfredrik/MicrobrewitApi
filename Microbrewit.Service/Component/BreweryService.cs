@@ -30,8 +30,8 @@ namespace Microbrewit.Service.Component
         public async Task<IEnumerable<BreweryDto>> GetAllAsync(int from, int size)
         {
             var brewerysDto = await _breweryElasticsearch.GetAllAsync(from,size);
-            if (brewerysDto .Any()) return brewerysDto ;
-            var brewerys = await _breweryRepository.GetAllAsync("Members.Member", "Beers", "Socials","Origin", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
+            //if (brewerysDto .Any()) return brewerysDto ;
+            var brewerys = await _breweryRepository.GetAllAsync(from, size, "Members.Member", "Beers", "Socials","Origin", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             brewerysDto = Mapper.Map<IEnumerable<Brewery>, IEnumerable<BreweryDto>>(brewerys);
             return brewerysDto;
         }
@@ -39,7 +39,7 @@ namespace Microbrewit.Service.Component
         public async Task<BreweryDto> GetSingleAsync(int id)
         {
             var breweryDto = await _breweryElasticsearch.GetSingleAsync(id);
-            //if (breweryDto != null) return breweryDto;
+            if (breweryDto != null) return breweryDto;
             var brewery = await _breweryRepository.GetSingleAsync(id, "Members.Member","Origin", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             breweryDto = Mapper.Map<Brewery, BreweryDto>(brewery);
             return breweryDto;
@@ -84,7 +84,7 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexElasticSearch()
         {
-            var brewerys = await _breweryRepository.GetAllAsync("Members.Member", "Origin", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
+            var brewerys = await _breweryRepository.GetAllAsync(0,int.MaxValue,"Members.Member", "Origin", "Beers", "Socials", "Beers.Beer.IBU", "Beers.Beer.ABV", "Beers.Beer.SRM", "Beers.Beer.BeerStyle");
             var brewerysDto = Mapper.Map<IEnumerable<Brewery>, IEnumerable<BreweryDto>>(brewerys);
             await _breweryElasticsearch.UpdateAllAsync(brewerysDto);
         }

@@ -34,7 +34,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_Returns()
         {
-            var breweries = await _breweryRepository.GetAllAsync();
+            var breweries = await _breweryRepository.GetAllAsync(0,20);
             Assert.NotNull(breweries);
             Assert.True(breweries.Any());
         }
@@ -85,7 +85,7 @@ namespace Microbrewit.Test.Repository
                 Avatar = "Something",
             };
             await _breweryRepository.AddAsync(newBrewery);
-            var breweries = await _breweryRepository.GetAllAsync();
+            var breweries = await _breweryRepository.GetAllAsync(0,20);
             Assert.True(breweries.Any(b => b.Name == newBrewery.Name));
         }
 

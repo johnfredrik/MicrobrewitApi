@@ -206,18 +206,20 @@ namespace Microbrewit.Repository.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Brewery>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Brewery>> GetAllAsync(int from, int size, params string[] navigationProperties)
         {
             using (var context = DapperHelper.GetOpenConnection())
             {
                 var breweries = await context.QueryAsync<Brewery, Origin, Brewery>(
                     "SELECT * FROM Breweries b " +
-                    "LEFT JOIN Origins o ON b.OriginId = o.OriginId;", (brewery, origin) =>
+                    "LEFT JOIN Origins o ON b.OriginId = o.OriginId " +
+                    "ORDER By BreweryId " +
+                    "OFFSET @From ROWS FETCH NEXT @Size ROWS ONLY;", (brewery, origin) =>
                     {
                         if (origin != null)
                             brewery.Origin = origin;
                         return brewery;
-                    }, splitOn: "OriginId");
+                    }, new { From = from, Size = size }, splitOn: "OriginId");
 
                 foreach (var brewery in breweries)
                 {
