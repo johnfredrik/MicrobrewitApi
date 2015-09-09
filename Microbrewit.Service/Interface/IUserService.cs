@@ -10,7 +10,7 @@ namespace Microbrewit.Service.Interface
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDto>> GetAllAsync();
+        Task<IEnumerable<UserDto>> GetAllAsync(int from, int size);
         Task<UserDto> GetSingleAsync(string username);
         Task<UserDto> AddAsync(User user);
         Task<UserDto> DeleteAsync(string username);

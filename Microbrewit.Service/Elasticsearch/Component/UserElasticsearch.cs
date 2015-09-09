@@ -37,12 +37,13 @@ namespace Microbrewit.Service.Elasticsearch.Component
             return await _client.IndexAsync<UserDto>(userDto);
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllAsync()
+        public async Task<IEnumerable<UserDto>> GetAllAsync(int from, int size)
         {
             var result = await _client.SearchAsync<UserDto>(s => s
                                                 .Filter(f => f.Term(t => t.DataType, "user"))
                                                 .Filter(f => f.Term(t => t.EmailConfirmed, "true"))
-                                                .Size(_bigNumber)
+                                                .Size(size)
+                                                .From(from)
                                                 );
             return result.Documents;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,8 +7,6 @@ using System.Web.Http.Description;
 using log4net;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Interface;
-using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Microbrewit.Api.Controllers
@@ -29,9 +26,10 @@ namespace Microbrewit.Api.Controllers
 
         // GET api/User
         [Route("")]
-        public async Task<UserCompleteDto> GetUsers()
+        public async Task<UserCompleteDto> GetUsers(int from = 0, int size = 20)
         {
-            var users = await _userService.GetAllAsync();
+            if (size > 1000) size = 1000;
+            var users = await _userService.GetAllAsync(from,size);
             var result = new UserCompleteDto {Users = users.ToList()};
             return result;
         }
