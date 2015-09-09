@@ -53,7 +53,7 @@ namespace Microbrewit.Test
             _yeastService = new YeastService(_repository,_yeastElasticsearch);
             _controller = new YeastController(_yeastService);
             _node = new Uri("http://localhost:9200");
-            _settings = new ConnectionSettings(_node, defaultIndex: "mb");
+            _settings = new ConnectionSettings(_node, defaultIndex: Setting.ElasticSearchIndex);
             _client = new ElasticClient(_settings);
         }
 
@@ -180,7 +180,7 @@ namespace Microbrewit.Test
             var client = new ElasticsearchClient(settings);
 
             var query = "{\"query\" : { \"term\": { \"name\" : \"safale\"}}}";
-            var res = client.Search<string>("mb", query);
+            var res = client.Search<string>(Setting.ElasticSearchIndex, query);
             dynamic json = JsonConvert.DeserializeObject(res.Response);
             var result = json.hits.hits; 
            

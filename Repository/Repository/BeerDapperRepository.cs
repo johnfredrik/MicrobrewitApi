@@ -318,6 +318,8 @@ namespace Microbrewit.Repository.Repository
                                         "VALUES(@IbuId,@Standard,@Tinseth,@Rager);",
                             new { IbuId = beer.BeerId, beer.IBU.Standard, beer.IBU.Tinseth, beer.IBU.Rager }, transaction);
 
+                        AddBrewers(beer, context, transaction);
+
                         if (beer.Recipe != null)
                         {
                             beer.Recipe.RecipeId = beer.BeerId;
@@ -328,11 +330,24 @@ namespace Microbrewit.Repository.Repository
                     catch (Exception e)
                     {
                         Log.Error(e.ToString());
-                        transaction.Commit();
+                        transaction.Rollback();
                         throw;
                     }
                 }
             }
+        }
+
+        private void AddBrewers(Beer beer, DbConnection context, DbTransaction transaction)
+        {
+            //TODO: FIX THIS.
+            if (beer.Brewers == null || !beer.Brewers.Any()) return;
+            //foreach (var userBeer in beer.Brewers)
+            //{
+            //    userBeer.Username = userBeer.Username.ToLower();
+            //}
+            var brewers = beer.Brewers.DistinctBy(u => u.Username.ToLower());
+            var distinct =  brewers.Select(b => new {beer.BeerId, b.Username, b.Confirmed});
+            context.Execute("INSERT UserBeers(BeerId,Username,Confirmed) VALUES(@BeerId,@Username,@Confirmed);", distinct, transaction);
         }
 
         public async Task<int> UpdateAsync(Beer beer)
@@ -343,6 +358,7 @@ namespace Microbrewit.Repository.Repository
                 {
                     try
                     {
+                        beer.UpdatedDate = DateTime.Now;
                         var result = await context.ExecuteAsync(
                             "UPDATE Beers set Name = @Name, BeerStyleId = @BeerStyleId, UpdatedDate = @UpdatedDate, ForkeOfId = @ForkeOfId WHERE BeerId = @BeerId;",
                             beer, transaction);
@@ -843,6 +859,13 @@ namespace Microbrewit.Repository.Repository
                 "VALUES(@Temperature,@Type,@Length,@Volume,@Notes,@RecipeId,@StepNumber)", mashStep, transaction);
             if (mashStep.Fermentables != null)
             {
+                var duplicates = mashStep.Fermentables.GroupBy(f => f.FermentableId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    mashStep.Fermentables = mashStep.Fermentables.GroupBy(o => o.FermentableId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT MashStepFermentables(RecipeId,StepNumber,FermentableId,Amount,Lovibond,PPG) " +
                     "VALUES(@RecipeId,@StepNumber,@FermentableId,@Amount,@Lovibond,@PPG);",
@@ -859,6 +882,13 @@ namespace Microbrewit.Repository.Repository
 
             if (mashStep.Hops != null)
             {
+                var duplicates = mashStep.Hops.GroupBy(f => f.HopId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    mashStep.Hops = mashStep.Hops.GroupBy(o => o.HopId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT MashStepHops(RecipeId,StepNumber,HopId,Amount,AAValue,HopFormId) " +
                     "VALUES(@RecipeId,@StepNumber,@HopId,@Amount,@AAValue,@HopFormId);",
@@ -875,6 +905,13 @@ namespace Microbrewit.Repository.Repository
 
             if (mashStep.Others != null)
             {
+                var duplicates = mashStep.Others.GroupBy(f => f.OtherId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    mashStep.Others = mashStep.Others.GroupBy(o => o.OtherId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT MashStepOthers(RecipeId,StepNumber,OtherId,Amount) " +
                     "VALUES(@RecipeId,@StepNumber,@OtherId,@Amount);",
@@ -894,8 +931,16 @@ namespace Microbrewit.Repository.Repository
                 "INSERT BoilSteps(Length,Volume,Notes,RecipeId,StepNumber)" +
                 "VALUES(@Length,@Volume,@Notes,@RecipeId,@StepNumber)", boilStep, transaction);
 
+
             if (boilStep.Fermentables != null)
             {
+                var duplicates = boilStep.Fermentables.GroupBy(f => f.FermentableId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    boilStep.Fermentables = boilStep.Fermentables.GroupBy(o => o.FermentableId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT BoilStepFermentables(RecipeId,StepNumber,FermentableId,Amount,Lovibond,PPG) " +
                     "VALUES(@RecipeId,@StepNumber,@FermentableId,@Amount,@Lovibond,@PPG);",
@@ -912,6 +957,13 @@ namespace Microbrewit.Repository.Repository
 
             if (boilStep.Hops != null)
             {
+                var duplicates = boilStep.Hops.GroupBy(f => f.HopId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    boilStep.Hops = boilStep.Hops.GroupBy(o => o.Hop)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT BoilStepHops(RecipeId,StepNumber,HopId,Amount,AAValue,HopFormId) " +
                     "VALUES(@RecipeId,@StepNumber,@HopId,@Amount,@AAValue,@HopFormId);",
@@ -928,6 +980,13 @@ namespace Microbrewit.Repository.Repository
 
             if (boilStep.Others != null)
             {
+                var duplicates = boilStep.Others.GroupBy(f => f.OtherId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    boilStep.Others = boilStep.Others.GroupBy(o => o.OtherId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT BoilStepOthers(RecipeId,StepNumber,OtherId,Amount) " +
                     "VALUES(@RecipeId,@StepNumber,@OtherId,@Amount);",
@@ -949,6 +1008,13 @@ namespace Microbrewit.Repository.Repository
 
             if (fermentationStep.Fermentables != null)
             {
+                var duplicates = fermentationStep.Fermentables.GroupBy(f => f.FermentableId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    fermentationStep.Fermentables = fermentationStep.Fermentables.GroupBy(o => o.FermentableId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT FermentationStepFermentables(RecipeId,StepNumber,FermentableId,Amount,Lovibond,PPG) " +
                     "VALUES(@RecipeId,@StepNumber,@FermentableId,@Amount,@Lovibond,@PPG);",
@@ -965,6 +1031,13 @@ namespace Microbrewit.Repository.Repository
 
             if (fermentationStep.Hops != null)
             {
+                var duplicates = fermentationStep.Hops.GroupBy(f => f.HopId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    fermentationStep.Hops = fermentationStep.Hops.GroupBy(o => o.HopId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT FermentationStepHops(RecipeId,StepNumber,HopId,Amount,AAValue,HopFormId) " +
                     "VALUES(@RecipeId,@StepNumber,@HopId,@Amount,@AAValue,@HopFormId);",
@@ -981,6 +1054,13 @@ namespace Microbrewit.Repository.Repository
 
             if (fermentationStep.Others != null)
             {
+                var duplicates = fermentationStep.Others.GroupBy(f => f.OtherId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    fermentationStep.Others = fermentationStep.Others.GroupBy(o => o.OtherId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT FermentationStepOthers(RecipeId,StepNumber,OtherId,Amount) " +
                     "VALUES(@RecipeId,@StepNumber,@OtherId,@Amount);",
@@ -995,6 +1075,13 @@ namespace Microbrewit.Repository.Repository
 
             if (fermentationStep.Yeasts != null)
             {
+                var duplicates = fermentationStep.Yeasts.GroupBy(f => f.YeastId).Where(g => g.Count() > 1).Select(g => g.Key);
+                if (duplicates.Any())
+                {
+                    fermentationStep.Yeasts = fermentationStep.Yeasts.GroupBy(o => o.YeastId)
+                        .Select(g => g.Skip(1).Aggregate(
+                        g.First(), (a, o) => { a.Amount += o.Amount; return a; })).ToList();
+                }
                 context.Execute(
                     "INSERT FermentationStepYeasts(RecipeId,StepNumber,YeastId,Amount) " +
                     "VALUES(@RecipeId,@StepNumber,@YeastId,@Amount);",

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using log4net;
+using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Elasticsearch.Interface;
 using Nest;
@@ -25,7 +26,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             string url = WebConfigurationManager.AppSettings["elasticsearch"];
             this._node = new Uri(url);
-            this._settings = new ConnectionSettings(_node, defaultIndex: "mb");
+            this._settings = new ConnectionSettings(_node, defaultIndex: Setting.ElasticSearchIndex);
             this._client = new ElasticClient(_settings);
         }
 
@@ -60,7 +61,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public async Task<HopDto> GetSingleAsync(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "hop", id.ToString());
+            IGetRequest getRequest = new GetRequest(Setting.ElasticSearchIndex, "hop", id.ToString());
             var result = await _client.GetAsync<HopDto>(getRequest);
             return result.Source;
         }
@@ -85,7 +86,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public HopDto GetSingle(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "hop", id.ToString());
+            IGetRequest getRequest = new GetRequest(Setting.ElasticSearchIndex, "hop", id.ToString());
             var result = _client.Get<HopDto>(getRequest);
             return result.Source;
         }

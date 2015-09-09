@@ -26,7 +26,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             string url = WebConfigurationManager.AppSettings["elasticsearch"];
             this._node = new Uri(url);
-            this._settings = new ConnectionSettings(_node, defaultIndex: "mb");
+            this._settings = new ConnectionSettings(_node, defaultIndex: Setting.ElasticSearchIndex);
             this._client = new ElasticClient(_settings);
         }
 
@@ -47,7 +47,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public async Task<YeastDto> GetSingleAsync(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "yeast", id.ToString());
+            IGetRequest getRequest = new GetRequest(Setting.ElasticSearchIndex, "yeast", id.ToString());
             var result = await _client.GetAsync<YeastDto>(getRequest);
             return (YeastDto)result.Source;
         }
@@ -78,7 +78,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public YeastDto GetSingle(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "yeast", id.ToString());
+            IGetRequest getRequest = new GetRequest(Setting.ElasticSearchIndex, "yeast", id.ToString());
             var result = _client.Get<YeastDto>(getRequest);
             return (YeastDto)result.Source;
         }

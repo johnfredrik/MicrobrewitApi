@@ -41,6 +41,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     foreach (var fermentableDto in mashStepDto.Fermentables)
                     {
                         var fermentable = Mapper.Map<FermentableStepDto, MashStepFermentable>(fermentableDto);
+                        if (fermentable == null) continue;
                         fermentable.StepNumber = mashStep.StepNumber;
                         mashStep.Fermentables.Add(fermentable);
                     }

@@ -20,7 +20,7 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
         [JsonProperty(PropertyName = "length")]
-        public int Length { get; set; }
+        public decimal Length { get; set; }
         [JsonProperty(PropertyName = "volume")]
         public int Volume { get; set; }
         [JsonProperty(PropertyName = "temperature")]

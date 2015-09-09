@@ -30,7 +30,7 @@ namespace Microbrewit.Model.BeerXml
         public string Asst_Brewer { get; set; }
         [DataMember]
         [XmlElement("BATCH_SIZE")]
-        public string BATCH_SIZE { get; set; }
+        public string BatchSize { get; set; }
         [DataMember]
         [XmlElement("BOIL_SIZE")]
         public string BoilSize { get; set; }

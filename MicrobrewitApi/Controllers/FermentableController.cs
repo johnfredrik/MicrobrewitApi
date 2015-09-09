@@ -72,11 +72,11 @@ namespace Microbrewit.Api.Controllers
         [Route("{id:int}")]
         public async Task<IHttpActionResult> PutFermentable(int id, FermentableDto fermentableDto)
         {
+            if (fermentableDto == null) return BadRequest();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
             if (id != fermentableDto.Id)
             {
                 return BadRequest();

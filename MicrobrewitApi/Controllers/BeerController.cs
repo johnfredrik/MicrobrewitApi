@@ -213,7 +213,8 @@ namespace Microbrewit.Api.Controllers
             var beersDto = Mapper.Map<IList<Recipe>, IList<BeerDto>>(value.Recipes);
             var context = HttpContext.Current;
         
-            return Ok(new BeerCompleteDto{Beers = beersDto});
+            //return Ok(new BeerCompleteDto{Beers = beersDto});
+            return Ok(beersDto.FirstOrDefault());
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Microbrewit.Model.DTOs
         public double Lovibond { get; set; }
         [JsonProperty(PropertyName = "ppg")]
         public int PPG { get; set; }
+        [Required]
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
         [JsonProperty(PropertyName = "dataType")]

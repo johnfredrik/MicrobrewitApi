@@ -22,7 +22,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.Members, conf => conf.MapFrom(src => src.Members))
                 .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
                 .ForMember(dest => dest.Origin, conf => conf.MapFrom(src => src.Origin))
-                .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Avatar != null && src.Avatar.Any()) ? _imagePath + "avatar/" + src.Avatar : null))
+                .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Avatar == null || !src.Avatar.Any()) ? null : src.Avatar.Contains("http://") ? src.Avatar : "avatar/" + src.Avatar))
                 .ForMember(dest => dest.HeaderImage, conf => conf.MapFrom(src => (src.HeaderImage != null && src.HeaderImage.Any()) ? _imagePath + "header/" + src.HeaderImage : null))
                 .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<BreweryGeoLocationResolver>())
                 .ForMember(dest => dest.Socials, conf => conf.ResolveUsing<BrewerySocialResolver>());

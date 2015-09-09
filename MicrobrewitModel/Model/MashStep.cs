@@ -12,7 +12,7 @@ namespace Microbrewit.Model
         public int StepNumber { get; set; }
         public int Temperature { get; set; }
         public string Type { get; set; }
-        public int Length { get; set; }
+        public decimal Length { get; set; }
         public int Volume { get; set; }
         public string Notes { get; set; }
         public int RecipeId { get; set; }

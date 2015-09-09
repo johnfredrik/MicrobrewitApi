@@ -33,6 +33,9 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 
         protected override RecipeDto ResolveCore(Recipe source)
         {
+            var boilSize = (int) double.Parse(source.BoilSize, CultureInfo.InvariantCulture);
+            var batchSize = (int)double.Parse(source.BatchSize, CultureInfo.InvariantCulture);
+
             var recipeDto = new RecipeDto
             {
                 MashSteps = new List<MashStepDto>(),
@@ -42,7 +45,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 Notes = source.Taste_Notes,
                 //Sets 60min as standard.
                 TotalBoilTime = (source.Boil_Time != null) ? double.Parse(source.Boil_Time, CultureInfo.InvariantCulture) : 60,
-                Volume = (int)double.Parse(source.BoilSize,CultureInfo.InvariantCulture),
+                Volume = (batchSize <= 0) ? boilSize : batchSize,
             };
 
             // <PRIMARY_AGE>
@@ -139,7 +142,9 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
             {
                 foreach (var misc in source.Miscs)
                 {
-                    var time = (int)double.Parse(misc.Time, CultureInfo.InvariantCulture);
+                    int time = 0;
+                    if(misc.Time.Any())
+                        time = (int)double.Parse(misc.Time, CultureInfo.InvariantCulture);
                     var othersStepDto = GetOthersStepDto(misc);
                     if (string.Equals(misc.Use, "Boil", StringComparison.OrdinalIgnoreCase))
                     {
@@ -193,8 +198,8 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 
         private void SetStepNumber(RecipeDto recipeDto)
         {
-            var stepNumber = 0;
-            foreach (var mashStep in recipeDto.MashSteps.OrderByDescending(m => m.Length))
+            var stepNumber = 1;
+            foreach (var mashStep in recipeDto.MashSteps)
             {
                 mashStep.StepNumber = stepNumber;
                 stepNumber++;
@@ -231,7 +236,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
         private static MashStepDto GetMashStepDto(MashStep mashStep)
         {
             var mashStepDto = new MashStepDto();
-            mashStepDto.Length = (mashStep.StepTime.Any()) ? int.Parse(mashStep.StepTime,CultureInfo.InvariantCulture) : 60;
+            mashStepDto.Length = (mashStep.StepTime.Any()) ? decimal.Parse(mashStep.StepTime,CultureInfo.InvariantCulture) : 0;
             //TODO: make double???
             mashStepDto.Temperature = (int)double.Parse(mashStep.StepTemp, CultureInfo.InvariantCulture);
             mashStepDto.Type = mashStep.Type;
@@ -244,7 +249,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 
         private static MashStepDto GetMashStepDto(RecipeDto recipeDto, int time)
         {
-            var mashStepDto = recipeDto.MashSteps.SingleOrDefault(m => m.Length == time);
+            var mashStepDto = recipeDto.MashSteps.FirstOrDefault(m => m.Length == time);
             if (mashStepDto != null) return mashStepDto;
             mashStepDto = new MashStepDto();
             mashStepDto.Length = time;

@@ -9,6 +9,7 @@ using System.Web.Configuration;
 using Elasticsearch.Net;
 using Elasticsearch.Net.Connection;
 using log4net;
+using Microbrewit.Model;
 using Microbrewit.Service.Elasticsearch.Interface;
 using Nest;
 
@@ -27,7 +28,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             _url = WebConfigurationManager.AppSettings["elasticsearch"];
             this._node = new Uri(_url);
-            this._settings = new ConnectionSettings(_node, defaultIndex: "mb");
+            this._settings = new ConnectionSettings(_node, defaultIndex: Setting.ElasticSearchIndex);
             this._client = new ElasticClient(_settings);
         }
 
@@ -36,7 +37,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             var client = new ElasticsearchClient(_settings);
             var queryString = "{\"from\" : " + from + ", \"size\" : " + size + ", \"query\":{\"match\": {\"name\": {\"query\": \" " + query + " \",\"operator\": \"and\"}}}}";
-            var res = await client.SearchAsync<string>("mb",queryString);
+            var res = await client.SearchAsync<string>(Setting.ElasticSearchIndex,queryString);
             return res.Response;
         }
 
@@ -45,7 +46,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
             var client = new ElasticsearchClient(_settings);
             
             var queryString = "{\"from\": " + from +", \"size\": " + size +", \"filter\": { \"or\": [{\"term\": { \"dataType\": \"hop\"}},{\"term\": {\"dataType\": \"fermentable\"}},{\"term\": {\"dataType\": \"yeast\"}},{\"term\": {\"dataType\": \"other\"}}]},\"query\": {\"match\": {\"name\": {\"query\": \"" + query +"\"}}}}";
-            var res = await client.SearchAsync<string>("mb", queryString);
+            var res = await client.SearchAsync<string>(Setting.ElasticSearchIndex, queryString);
             return res.Response;
         }
     }

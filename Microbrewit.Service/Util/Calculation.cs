@@ -18,12 +18,15 @@ namespace Microbrewit.Api.Service.Util
             var srm = new SRM{SrmId = recipe.RecipeId};
             foreach (var mashStep in recipe.MashSteps)
             {
+                var volume = recipe.Volume;
+                if (mashStep.Volume > 0)
+                    volume = mashStep.Volume;
                 foreach (var fermentable in mashStep.Fermentables)
                 {
-                    srm.Standard += Math.Round(Formulas.MaltColourUnits(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
-                    srm.Morey += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
-                    srm.Mosher += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
-                    srm.Daniels += Math.Round(Formulas.Daniels(fermentable.Amount, fermentable.Lovibond, mashStep.Volume), 0);
+                    srm.Standard += Math.Round(Formulas.MaltColourUnits(fermentable.Amount, fermentable.Lovibond, volume), 0);
+                    srm.Morey += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, volume), 0);
+                    srm.Mosher += Math.Round(Formulas.Morey(fermentable.Amount, fermentable.Lovibond, volume), 0);
+                    srm.Daniels += Math.Round(Formulas.Daniels(fermentable.Amount, fermentable.Lovibond, volume), 0);
                 }
             }
 
@@ -58,14 +61,18 @@ namespace Microbrewit.Api.Service.Util
         public static double CalculateOG(Recipe recipe)
         {
             var og = 0.0;
+
             foreach (var fermentable in recipe.MashSteps.SelectMany(mashStep => mashStep.Fermentables))
             {
-                if (fermentable.PPG <= 0)
-                {
+                var efficency = recipe.Efficiency;
+                //if (fermentable.PPG <= 0)
+                //{
                     var esFermentable = _fermentableElasticsearch.GetSingle(fermentable.FermentableId);
                     if (esFermentable != null && esFermentable.PPG > 0)
                     {
                         fermentable.PPG = esFermentable.PPG;
+                        if (esFermentable.Type.Contains("Extract") || esFermentable.Type.Contains("Sugar"))
+                            efficency = 100;
                         //og += Formulas.MaltOG(fermentable.Amount, esFermentable.PPG, recipe.Efficiency, recipe.Volume);
                     }
                     else
@@ -74,12 +81,14 @@ namespace Microbrewit.Api.Service.Util
                         if (efFermentable != null && efFermentable.PPG != null)
                         {
                             fermentable.PPG = (int)efFermentable.PPG;
+                            if (efFermentable.Type.Contains("Extract") || efFermentable.Type.Contains("Sugar"))
+                                efficency = 100;
                         }
                         //og += Formulas.MaltOG(fermentable.Amount, (int)efFermentable.PPG, recipe.Efficiency, recipe.Volume);
                     }
 
-                }
-                og += Formulas.MaltOG(fermentable.Amount, (int)fermentable.PPG, recipe.Efficiency, recipe.Volume);
+                //}
+                og += Formulas.MaltOG(fermentable.Amount, (int)fermentable.PPG, efficency, recipe.Volume);
             }
             return Math.Round(1 + og / 1000, 4);
         }

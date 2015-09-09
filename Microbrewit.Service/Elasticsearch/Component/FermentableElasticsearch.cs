@@ -27,7 +27,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
         {
             string url = WebConfigurationManager.AppSettings["elasticsearch"];
             this._node = new Uri(url);
-            this._settings = new ConnectionSettings(_node, defaultIndex: "mb");
+            this._settings = new ConnectionSettings(_node, defaultIndex: Setting.ElasticSearchIndex);
             this._client = new ElasticClient(_settings);
         }
 
@@ -47,14 +47,14 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public async Task<FermentableDto> GetSingleAsync(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "fermentable", id.ToString());
+            IGetRequest getRequest = new GetRequest(Setting.ElasticSearchIndex, "fermentable", id.ToString());
             var result = await _client.GetAsync<FermentableDto>(getRequest);
             return (FermentableDto)result.Source;
         }
 
         public async Task<IEnumerable<FermentableDto>> SearchAsync(string query, int from, int size)
         {
-            var fields = new List<string> { "name"};
+            var fields = new List<string> { "name" };
             var searchResults = await _client.SearchAsync<FermentableDto>(s => s
                                                 .From(from)
                                                 .Size(size)
@@ -77,7 +77,7 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public FermentableDto GetSingle(int id)
         {
-            IGetRequest getRequest = new GetRequest("mb", "fermentable", id.ToString());
+            IGetRequest getRequest = new GetRequest(Setting.ElasticSearchIndex, "fermentable", id.ToString());
             var result = _client.Get<FermentableDto>(getRequest);
             return (FermentableDto)result.Source;
         }
@@ -90,11 +90,12 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
         public IEnumerable<FermentableDto> Search(string query, int @from, int size)
         {
-            var fields = new List<string> { "name" };
-            var searchResults =  _client.Search<FermentableDto>(s => s
-                                                .From(from)
-                                                .Size(size)
-                                                .Query(q => q.MultiMatch(m => m.OnFields(fields).Query(query))));
+            //var fields = new List<string> { "name" };
+            var searchResults = _client.Search<FermentableDto>(s => s
+                .From(from)
+                .Size(size)
+                .Query(q => q.Match(m => m.OnField("name").Query(query))));
+
             return searchResults.Documents;
         }
     }

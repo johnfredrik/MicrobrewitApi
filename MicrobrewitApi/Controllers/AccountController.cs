@@ -33,7 +33,7 @@ namespace Microbrewit.Api.Controllers
             _repo = new AuthRepository();
         }
 
-        // POST api/Account/Register
+            // POST api/Account/Register
         /// <summary>
         /// Register user account to microbrew.it
         /// </summary>
@@ -43,6 +43,7 @@ namespace Microbrewit.Api.Controllers
         [Route("Register")]
         public async Task<IHttpActionResult> Register(UserPostDto userPostDto)
         {
+            if (userPostDto == null) return BadRequest("Missing data");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -53,7 +54,7 @@ namespace Microbrewit.Api.Controllers
             if (result.Succeeded)
             {
                 var dbUser = await _repo.FindUser(userModel.UserName, userModel.Password);
-                await _userService.UpdateAsync(Mapper.Map<User, UserDto>(user));
+                await _userService.AddAsync(user);
 
                 var code = await _repo.GenerateEmailConfirmationTokenAsync(dbUser.Id);
                 var callbackUrl = string.Format("{0}/account/confirm?userid={1}&code={2}", MailService, HttpUtility.UrlEncode(dbUser.Id),

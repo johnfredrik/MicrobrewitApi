@@ -97,6 +97,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dto => dto.Daniels, conf => conf.MapFrom(rec => rec.Daniels));
 
             Mapper.CreateMap<BeerDto,Beer>()
+                .ForMember(dto => dto.BeerId, conf => conf.MapFrom(rec => rec.Id))
                 .ForMember(dto => dto.Name, conf => conf.MapFrom(rec => rec.Name))
                 .ForMember(dto => dto.ABV, conf => conf.MapFrom(rec => rec.ABV))
                 .ForMember(dto => dto.BeerStyleId, conf => conf.MapFrom(rec => rec.BeerStyle.Id))

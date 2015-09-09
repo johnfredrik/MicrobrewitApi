@@ -58,7 +58,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<IEnumerable<BeerDto>> GetAllAsync(int from, int size)
         {
-            var beerDtos = await _beerElasticsearch.GetAllAsync();
+            var beerDtos = await _beerElasticsearch.GetAllAsync(from, size);
             if (beerDtos.Any()) return beerDtos;
             var beers = await _beerRepository.GetAllAsync(_include);
             return Mapper.Map<IEnumerable<Beer>, IEnumerable<BeerDto>>(beers);
@@ -100,7 +100,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<BeerDto> AddAsync(BeerDto beerDto, string username)
         {
-            if (beerDto.Brewers.All(b => b.Username != username))
+            if (beerDto.Brewers != null && beerDto.Brewers.All(b => b.Username != username))
             {
                 if (beerDto.Breweries.Any())
                 {
@@ -108,13 +108,14 @@ namespace Microbrewit.Service.Component
                     if (beerDto.Breweries.Any(brewery => breweryMemberships.Any(b => b.BreweryId != brewery.Id)))
                         return null;
                 }
-                else
-                {
-                    beerDto.Brewers.Add(new DTOUser { Username = username});   
-                }
-                
             }
-            var returnBeer  =await AddAsync(beerDto);
+            else
+            {
+                if(beerDto.Brewers == null) beerDto.Brewers = new List<DTOUser>();
+                if(beerDto.Brewers.Any(b => b.Username != username))
+                    beerDto.Brewers.Add(new DTOUser { Username = username });
+            }
+            var returnBeer  = await AddAsync(beerDto);
             await _userService.UpdateNotification(username, new NotificationDto {Id = returnBeer.Id,Type = "UserBeer",Value = true});
             return returnBeer;
         }
@@ -264,28 +265,15 @@ namespace Microbrewit.Service.Component
         private static void BeerCalculations(Beer beer)
         {
             if (beer.Recipe.FG <= 0) beer.Recipe.FG = 1.015;
+            if(beer.Recipe.Efficiency <= 0) beer.Recipe.Efficiency = 75;
 
             beer.Recipe.OG = Calculation.CalculateOG(beer.Recipe);
             var abv = Calculation.CalculateABV(beer.Recipe);
-            if (beer.ABV != null)
-            {
-                abv.AbvId = beer.ABV.AbvId;
-            }
             beer.ABV = abv;
             var srm = Calculation.CalculateSRM(beer.Recipe);
-            if (beer.SRM != null)
-            {
-                srm.SrmId = beer.SRM.SrmId;
-            }
             beer.SRM = srm;
             var ibu = Calculation.CalculateIBU(beer.Recipe);
-            if (beer.IBU != null)
-            {
-                ibu.IbuId = beer.IBU.IbuId;
-            }
             beer.IBU = ibu;
         }
-
-        
     }
 }

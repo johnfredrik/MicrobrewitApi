@@ -72,9 +72,9 @@ namespace Microbrewit.Service.Component
             return Mapper.Map<User, UserDto>(user);
         }
 
-        public async Task<UserDto> AddAsync(UserDto userDto)
+        public async Task<UserDto> AddAsync(User user)
         {
-            var user = Mapper.Map<UserDto, User>(userDto);
+            //var user = Mapper.Map<UserDto, User>(userDto);
             await _userRepository.AddAsync(user);
             var result = await _userRepository.GetSingleAsync(user.Username, _userInclude);
             var mappedResult = Mapper.Map<User, UserDto>(result);
