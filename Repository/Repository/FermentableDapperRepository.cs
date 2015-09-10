@@ -172,21 +172,23 @@ namespace Microbrewit.Repository.Repository
             }
         }
 
-        public async Task<IList<Fermentable>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Fermentable>> GetAllAsync(int from, int size, params string[] navigationProperties)
         {
             using (var context = DapperHelper.GetConnection())
             {
                 var fermentables = await context.QueryAsync<Fermentable, Supplier, Origin, Fermentable>(
                     "SELECT * FROM Fermentables f " +
                     "LEFT JOIN Suppliers s ON f.SupplierId = s.SupplierId " +
-                    "LEFT JOIN Origins o ON s.OriginId = o.OriginId;",
+                    "LEFT JOIN Origins o ON s.OriginId = o.OriginId " +
+                    "ORDER BY FermentableId " +
+                    "OFFSET @From ROWS FETCH NEXT @Size ROWS ONLY;",
                     (f, supplier, origin) =>
                     {
                         if (supplier != null)
                             supplier.Origin = origin;
                         f.Supplier = supplier;
                         return f;
-                    }, splitOn: "SuperFermentableId,SupplierId,OriginId");
+                    },new {From = from, Size = size} ,splitOn: "SuperFermentableId,SupplierId,OriginId");
 
                 foreach (var fermentable in fermentables)
                 {

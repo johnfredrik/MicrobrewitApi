@@ -33,9 +33,10 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<FermentablesCompleteDto> GetFermentables(string custom = "false")
+        public async Task<FermentablesCompleteDto> GetFermentables(int from, int size ,string custom = "false")
         {
-            var fermentables = await _fermentableService.GetAllAsync(custom);
+            if (size > 1000) size = 1000;
+            var fermentables = await _fermentableService.GetAllAsync(from,size,custom);
             return new FermentablesCompleteDto { Fermentables = fermentables.ToList() };
         }
 
@@ -125,6 +126,7 @@ namespace Microbrewit.Api.Controllers
             return Ok(fermentable);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ClaimsAuthorize("Reindex", "Fermentable")]
         [HttpGet]
         [Route("es")]

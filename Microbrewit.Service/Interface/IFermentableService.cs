@@ -9,7 +9,7 @@ namespace Microbrewit.Service.Interface
 {
     public interface IFermentableService
     {
-        Task<IEnumerable<FermentableDto>> GetAllAsync(string custom);
+        Task<IEnumerable<FermentableDto>> GetAllAsync(int from, int size,string custom);
         Task<FermentableDto> GetSingleAsync(int id);
         Task<FermentableDto> AddAsync(FermentableDto fermentableDto);
         Task<FermentableDto> DeleteAsync(int id);

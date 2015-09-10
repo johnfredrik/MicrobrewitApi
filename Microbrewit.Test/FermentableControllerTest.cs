@@ -49,7 +49,7 @@ namespace Microbrewit.Test
         [Test]
         public async Task GetFermentablesNotNullAndNotEmpty()
         {
-            var fermentables = await _controller.GetFermentables();
+            var fermentables = await _controller.GetFermentables(0,20);
             Assert.NotNull(fermentables);
             Assert.True(fermentables.Fermentables.Any());
         }

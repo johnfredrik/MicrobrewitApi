@@ -17,7 +17,7 @@ namespace Microbrewit.Repository
         void Remove(Fermentable fermentable);
 
         //Async methods
-        Task<IList<Fermentable>> GetAllAsync(params string[] navigationProperties);
+        Task<IList<Fermentable>> GetAllAsync(int from, int size,params string[] navigationProperties);
         Task<Fermentable> GetSingleAsync(int id, params string[] navigtionProperties);
         Task AddAsync(Fermentable fermentable);
         Task<int> UpdateAsync(Fermentable fermentable);

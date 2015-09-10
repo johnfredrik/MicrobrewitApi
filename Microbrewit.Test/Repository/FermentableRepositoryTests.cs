@@ -56,7 +56,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_Not_Null_Not_Empty()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync();
+            var fermentables = await _fermentableRepository.GetAllAsync(0,20);
             Assert.NotNull(fermentables);
             Assert.True(fermentables.Any());
         }
@@ -64,7 +64,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_Supplier_Included()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync();
+            var fermentables = await _fermentableRepository.GetAllAsync(0,20);
             Assert.True(fermentables.Any(f => f.SupplierId != null));
             Assert.True(fermentables.Any(f => f.Supplier != null));
         }
@@ -72,7 +72,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_SuperFermentable_Included()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync();
+            var fermentables = await _fermentableRepository.GetAllAsync(0,20);
             Assert.True(fermentables.Any(f => f.SuperFermentableId != null));
             Assert.True(fermentables.Any(f => f.SuperFermentable != null));
         }
@@ -80,7 +80,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public async Task GetAllAsync_SubFermentable_Included()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync();
+            var fermentables = await _fermentableRepository.GetAllAsync(0, 20);
             Assert.True(fermentables.Any(f => f.SubFermentables.Any()));
         }
 
@@ -164,7 +164,7 @@ namespace Microbrewit.Test.Repository
         {
             var newFermentable = new Fermentable { Name = "newFermentable" + DateTime.Now.Ticks, Type = "Grain", Custom = true };
             await _fermentableRepository.AddAsync(newFermentable);
-            var fermentables = await _fermentableRepository.GetAllAsync();
+            var fermentables = await _fermentableRepository.GetAllAsync(0, 20);
             Assert.True(fermentables.Any(o => o.Name == newFermentable.Name));
         }
 
@@ -217,7 +217,7 @@ namespace Microbrewit.Test.Repository
             var newFermentable = new Fermentable { Name = "newFermentable" + DateTime.Now.Ticks, Type = "Grain", Custom = true };
             await _fermentableRepository.AddAsync(newFermentable);
             await _fermentableRepository.RemoveAsync(newFermentable);
-            var fermentables = await _fermentableRepository.GetAllAsync();
+            var fermentables = await _fermentableRepository.GetAllAsync(0, 20);
             Assert.True(fermentables.All(o => o.FermentableId != newFermentable.FermentableId));
         }
     }

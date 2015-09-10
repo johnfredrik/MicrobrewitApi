@@ -23,11 +23,11 @@ namespace Microbrewit.Service.Component
             _fermentableElasticsearch = fermentableElasticsearch;
         }
 
-        public async Task<IEnumerable<FermentableDto>> GetAllAsync(string custom)
+        public async Task<IEnumerable<FermentableDto>> GetAllAsync(int from, int size, string custom)
         {
-            var fermentableDtos = await _fermentableElasticsearch.GetAllAsync(custom);
+            var fermentableDtos = await _fermentableElasticsearch.GetAllAsync(from,size,custom);
             if (fermentableDtos .Any()) return fermentableDtos ;
-            var yeasts = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
+            var yeasts = await _fermentableRepository.GetAllAsync(from,size,"Supplier.Origin", "SubFermentables");
             fermentableDtos = Mapper.Map<IEnumerable<Fermentable>, IEnumerable<FermentableDto>>(yeasts);
             return fermentableDtos;
         }
@@ -77,7 +77,7 @@ namespace Microbrewit.Service.Component
 
         public async Task ReIndexElasticsearch()
         {
-            var fermentables = await _fermentableRepository.GetAllAsync("Supplier.Origin", "SubFermentables");
+            var fermentables = await _fermentableRepository.GetAllAsync(0,int.MaxValue,"Supplier.Origin", "SubFermentables");
             var fermentableDtos = Mapper.Map<IEnumerable<Fermentable>, IEnumerable<FermentableDto>>(fermentables);
             await _fermentableElasticsearch.UpdateAllAsync(fermentableDtos);
         }
