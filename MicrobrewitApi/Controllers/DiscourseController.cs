@@ -7,11 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Description;
 using log4net;
 using Microbrewit.Service.Interface;
 
 namespace Microbrewit.Api.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [RoutePrefix("discourse")]
     public class DiscourseController : ApiController
     {
