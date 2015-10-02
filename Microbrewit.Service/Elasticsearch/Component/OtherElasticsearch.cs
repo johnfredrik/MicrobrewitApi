@@ -93,5 +93,12 @@ namespace Microbrewit.Service.Elasticsearch.Component
 
             return searchResults.Documents;
         }
+
+        public void Update(OtherDto otherDto)
+        {
+            // Adds an analayzer to the name property in FermentableDto object.
+             _client.Map<OtherDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+            _client.Index<OtherDto>(otherDto);
+        }
     }
 }

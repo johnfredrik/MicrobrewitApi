@@ -97,6 +97,75 @@ namespace Microbrewit.Test.Repository
         }
 
         [Test]
+        public async Task AddHop_Gets_Oils_Get_Added()
+        {
+            var newHop = new Hop
+            {
+                Name = "Test Hop",
+                AALow = 1,
+                AAHigh = 5,
+                Custom = true,
+                BetaLow = 1,
+                BetaHigh = 5,
+                Notes = "Notes",
+                OriginId = 1,
+                Purpose = "Test",
+                Aliases = "Test;test",
+                TotalOilHigh = 1,
+                BPineneHigh = 1,
+                LinaloolHigh = 1,
+                MyrceneHigh = 1,
+                CaryophylleneHigh = 1,
+                FarneseneHigh = 1,
+                HumuleneHigh = 1,
+                GeraniolHigh = 1,
+                OtherOilHigh = 1,
+                TotalOilLow = 1,
+                BPineneLow = 1,
+                LinaloolLow = 1,
+                MyrceneLow = 1,
+                CaryophylleneLow = 1,
+                FarneseneLow = 1,
+                HumuleneLow = 1,
+                GeraniolLow = 1,
+                OtherOilLow = 1,
+                AromaWheel = new List<HopFlavour>
+                {
+                    new HopFlavour {FlavourId = 1},
+                    new HopFlavour {FlavourId = 2}
+                },
+                Flavours = new List<HopFlavour>
+                {
+                    new HopFlavour {FlavourId = 1},
+                    new HopFlavour {FlavourId = 2}
+                }
+            };
+            await _hopRepository.AddAsync(newHop);
+            var hop = _hopRepository.GetSingleAsync(newHop.HopId).Result;
+            Assert.AreEqual(newHop.Purpose, hop.Purpose);
+            Assert.AreEqual(newHop.Aliases, hop.Aliases);
+            Assert.AreEqual(newHop.TotalOilHigh, hop.TotalOilHigh);
+            Assert.AreEqual(newHop.BPineneHigh, hop.BPineneHigh);
+            Assert.AreEqual(newHop.LinaloolHigh, hop.LinaloolHigh);
+            Assert.AreEqual(newHop.MyrceneHigh, hop.MyrceneHigh);
+            Assert.AreEqual(newHop.CaryophylleneHigh, hop.CaryophylleneHigh);
+            Assert.AreEqual(newHop.FarneseneHigh, hop.FarneseneHigh);
+            Assert.AreEqual(newHop.HumuleneHigh, hop.HumuleneHigh);
+            Assert.AreEqual(newHop.GeraniolHigh, hop.GeraniolHigh);
+            Assert.AreEqual(newHop.OtherOilHigh, hop.OtherOilHigh);
+            Assert.AreEqual(newHop.TotalOilLow, hop.TotalOilLow);
+            Assert.AreEqual(newHop.BPineneLow, hop.BPineneLow);
+            Assert.AreEqual(newHop.LinaloolLow, hop.LinaloolLow);
+            Assert.AreEqual(newHop.MyrceneLow, hop.MyrceneLow);
+            Assert.AreEqual(newHop.CaryophylleneLow, hop.CaryophylleneLow);
+            Assert.AreEqual(newHop.FarneseneLow, hop.FarneseneLow);
+            Assert.AreEqual(newHop.HumuleneLow, hop.HumuleneLow);
+            Assert.AreEqual(newHop.GeraniolLow, hop.GeraniolLow);
+            Assert.AreEqual(newHop.OtherOilLow, hop.OtherOilLow);
+            Assert.NotNull(hop);
+        }
+
+        [Test]
         public void AddHop_Hop_Flavour_Gets_Added()
         {
             var newHop = new Hop
@@ -153,6 +222,63 @@ namespace Microbrewit.Test.Repository
             hop.Name = "Updated " + DateTime.Now.Ticks;
             _hopRepository.Update(hop);
             
+        }
+
+        [Test]
+        public void UpdateHop_Oils_Get_Updated()
+        {
+            var hop = _hopRepository.GetSingleAsync(172).Result;
+            hop.Purpose = "Aroma";
+            hop.Aliases = "Test;test";
+            hop.TotalOilHigh = 2;
+            hop.BPineneHigh = 2;
+            hop.LinaloolHigh = 2;
+            hop.MyrceneHigh = 2;
+            hop.CaryophylleneHigh = 2;
+            hop.FarneseneHigh = 2;
+            hop.HumuleneHigh = 2;
+            hop.GeraniolHigh = 2;
+            hop.OtherOilHigh = 2;
+            hop.TotalOilLow = 2;
+            hop.BPineneLow = 2;
+            hop.LinaloolLow = 2;
+            hop.MyrceneLow = 2;
+            hop.CaryophylleneLow = 2;
+            hop.FarneseneLow = 2;
+            hop.HumuleneLow = 2;
+            hop.GeraniolLow = 2;
+            hop.OtherOilLow = 2;
+            hop.AromaWheel = new List<HopFlavour>
+            {
+                new HopFlavour {FlavourId = 1, HopId = hop.HopId},
+            };
+            hop.Flavours = new List<HopFlavour>
+            {
+                new HopFlavour {FlavourId = 2, HopId = hop.HopId}
+            };
+            var result =_hopRepository.UpdateAsync(hop).Result;
+            var updatedHop = _hopRepository.GetSingleAsync(172).Result;
+            Assert.AreEqual(hop.Purpose, updatedHop.Purpose);
+            Assert.AreEqual(hop.Aliases, updatedHop.Aliases);
+            Assert.AreEqual(hop.TotalOilHigh, updatedHop.TotalOilHigh);
+            Assert.AreEqual(hop.BPineneHigh, updatedHop.BPineneHigh);
+            Assert.AreEqual(hop.LinaloolHigh, updatedHop.LinaloolHigh);
+            Assert.AreEqual(hop.MyrceneHigh, updatedHop.MyrceneHigh);
+            Assert.AreEqual(hop.CaryophylleneHigh, updatedHop.CaryophylleneHigh);
+            Assert.AreEqual(hop.FarneseneHigh, updatedHop.FarneseneHigh);
+            Assert.AreEqual(hop.HumuleneHigh, updatedHop.HumuleneHigh);
+            Assert.AreEqual(hop.GeraniolHigh, updatedHop.GeraniolHigh);
+            Assert.AreEqual(hop.OtherOilHigh, updatedHop.OtherOilHigh);
+            Assert.AreEqual(hop.TotalOilLow, updatedHop.TotalOilLow);
+            Assert.AreEqual(hop.BPineneLow, updatedHop.BPineneLow);
+            Assert.AreEqual(hop.LinaloolLow, updatedHop.LinaloolLow);
+            Assert.AreEqual(hop.MyrceneLow, updatedHop.MyrceneLow);
+            Assert.AreEqual(hop.CaryophylleneLow, updatedHop.CaryophylleneLow);
+            Assert.AreEqual(hop.FarneseneLow, updatedHop.FarneseneLow);
+            Assert.AreEqual(hop.HumuleneLow, updatedHop.HumuleneLow);
+            Assert.AreEqual(hop.GeraniolLow, updatedHop.GeraniolLow);
+            Assert.AreEqual(hop.OtherOilLow, updatedHop.OtherOilLow);
+            Assert.NotNull(updatedHop);
         }
 
         [Test]

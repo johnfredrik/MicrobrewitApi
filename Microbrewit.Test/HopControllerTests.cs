@@ -96,13 +96,13 @@ namespace Microbrewit.Test
             var hopCompleteDto = await _controller.GetHop(first.Id) as OkNegotiatedContentResult<HopCompleteDto>;
             var hop = hopCompleteDto.Content.Hops[0];
             hop.Notes = "Something hoppy";
-            hop.BetaHigh = 99;
+            hop.Acids.BetaAcid.High = 99;
             var response = await _controller.PutHop(hop.Id, hop) as HttpResponseException;
             
             var result = await _controller.GetHop(first.Id) as OkNegotiatedContentResult<HopCompleteDto>;
             var updatedHop = result.Content.Hops[0];
             Assert.AreEqual(hop.Notes, updatedHop.Notes);
-            Assert.AreEqual(hop.BetaHigh, updatedHop.BetaHigh);
+            Assert.AreEqual(hop.Acids.BetaAcid.High, updatedHop.Acids.BetaAcid.High);
         }
 
         

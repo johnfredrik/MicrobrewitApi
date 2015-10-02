@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -12,6 +13,7 @@ using Microbrewit.Api.ErrorHandler;
 using Microbrewit.Model.BeerXml;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Service.Interface;
+using Microbrewit.Service.Util;
 using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Authorization;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -35,8 +37,9 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">It's all good!</response>
         /// <returns>Returns collection of all beers</returns>
         [Route("")]
-        public async Task<BeerCompleteDto> GetBeers(int from = 0, int size = 20)
+        public async Task<BeerCompleteDto> GetBeers(int from = 0, int size = 20) 
         {
+           
             if (size > 1000) size = 1000;
             var beers = await _beerService.GetAllAsync(from, size);
             var result = new BeerCompleteDto { Beers = beers.ToList() };
@@ -159,12 +162,14 @@ namespace Microbrewit.Api.Controllers
         /// Updates elasticsearch with data from the database.
         /// </summary>
         /// <returns>200 OK</returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ClaimsAuthorize("Reindex","Beer")]
         [Route("es")]
         [HttpGet]
-        public async Task<IHttpActionResult> UpdateBeersElasticSearch()
+        public async Task<IHttpActionResult> UpdateBeersElasticSearch(string index)
         {
-            await _beerService.ReIndexElasticSearch();
+            Log.Debug("Reindexing Beer.");
+            await _beerService.ReIndexElasticSearch(index);
             return Ok();
         }
         /// <summary>
@@ -205,10 +210,25 @@ namespace Microbrewit.Api.Controllers
         {
             if (value == null) return BadRequest();
             var beersDto = Mapper.Map<IList<Recipe>, IList<BeerDto>>(value.Recipes);
+            CalculateRecipes(beersDto);
             var context = HttpContext.Current;
         
             //return Ok(new BeerCompleteDto{Beers = beersDto});
             return Ok(beersDto.FirstOrDefault());
+        }
+
+        private void CalculateRecipes(IList<BeerDto> beersDto)
+        {
+            foreach (var beerDto in beersDto)
+            {
+                if (beerDto.Recipe.FG <= 0) beerDto.Recipe.FG = 1.015;
+                if (beerDto.Recipe.Efficiency <= 0) beerDto.Recipe.Efficiency = 75;
+
+                beerDto.Recipe.OG = Calculation.CalculateOGDto(beerDto.Recipe);
+                beerDto.ABV = Calculation.CalculateABVDto(beerDto.Recipe);
+                beerDto.SRM = Calculation.CalculateSRMDto(beerDto.Recipe);
+                beerDto.IBU = Calculation.CalculateIBUDto(beerDto.Recipe);
+            }
         }
     }
 }

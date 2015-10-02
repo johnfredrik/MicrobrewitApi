@@ -132,9 +132,14 @@
     <Compile Include="Automapper\CustomResolvers\FermentableFermentationStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\FermentableSupplierResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopAcidResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopPostAliasesResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopFlavoursResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopAromaWheelResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopOilResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopBoilStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopFermentationStepResolver.cs" />
-    <Compile Include="Automapper\CustomResolvers\HopFlavoursResolver.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopPostFlavoursResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopSpargeStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopMashStepResolver.cs" />
     <Compile Include="Automapper\CustomResolvers\HopPostOriginResolver.cs" />
@@ -161,6 +166,7 @@
     <Compile Include="Automapper\FermentableProfile.cs" />
     <Compile Include="Automapper\FermentationStepProfile.cs" />
     <Compile Include="Automapper\GlassProfile.cs" />
+    <Compile Include="Automapper\CustomResolvers\HopAliasesResolver.cs" />
     <Compile Include="Automapper\HopProfile.cs" />
     <Compile Include="Automapper\SpargeStepProfile.cs" />
     <Compile Include="Automapper\MashStepProfile.cs" />

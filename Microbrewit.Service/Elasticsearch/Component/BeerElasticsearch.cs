@@ -72,6 +72,16 @@ namespace Microbrewit.Service.Elasticsearch.Component
             return await _client.IndexManyAsync(beers);
         }
 
+        public async Task<IBulkResponse> ReIndexBulk(IEnumerable<BeerDto> beers, string index)
+        {
+            //string url = WebConfigurationManager.AppSettings["elasticsearch"];
+            //var node = new Uri(url);
+            var settings = new ConnectionSettings(_node, defaultIndex: index);
+            var client = new ElasticClient(settings);
+            await client.MapAsync<BeerDto>(d => d.Properties(p => p.String(s => s.Name(n => n.Name).Analyzer("autocomplete"))));
+            return await client.IndexManyAsync(beers);
+        }
+
         public Task<IDeleteResponse> DeleteAsync(int id)
         {
             return _client.DeleteAsync<BeerDto>(id);

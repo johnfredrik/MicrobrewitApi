@@ -24,7 +24,7 @@ namespace Microbrewit.Test.Repository
         [Test]
         public void GetAll_Return_Result()
         {
-            var beers = _beerRepository.GetAll();
+            var beers = _beerRepository.GetAll(0,20);
             Assert.NotNull(beers);
             Assert.True(beers.Any());
         }

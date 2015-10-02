@@ -19,6 +19,7 @@ namespace Microbrewit.Service.Automapper
                 .ForMember(dest => dest.Gravatar, conf => conf.MapFrom(src => src.Gravatar))
                 .ForMember(dest => dest.Breweries, conf => conf.MapFrom(src => src.Breweries))
                 .ForMember(dest => dest.Beers, conf => conf.MapFrom(src => src.Beers))
+                .ForMember(dest => dest.Roles, conf => conf.MapFrom(src => src.Roles))
                 .ForMember(dest => dest.Avatar, conf => conf.MapFrom(src => (src.Avatar != null && src.Avatar.Any()) ? _imagePath + "avatar/" + src.Avatar : null))
                 .ForMember(dest => dest.HeaderImage, conf => conf.MapFrom(src => (src.HeaderImage != null && src.HeaderImage.Any()) ? _imagePath + "header/" + src.HeaderImage : null))
                 .ForMember(dest => dest.GeoLocation, conf => conf.ResolveUsing<UserGeoLocationResolver>())

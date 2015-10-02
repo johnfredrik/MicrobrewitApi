@@ -33,7 +33,7 @@ namespace Microbrewit.Api.Controllers
         /// <response code="200">OK</response>
         /// <returns></returns>
         [Route("")]
-        public async Task<FermentablesCompleteDto> GetFermentables(int from, int size ,string custom = "false")
+        public async Task<FermentablesCompleteDto> GetFermentables(int from = 0, int size = 20 ,string custom = "false")
         {
             if (size > 1000) size = 1000;
             var fermentables = await _fermentableService.GetAllAsync(from,size,custom);

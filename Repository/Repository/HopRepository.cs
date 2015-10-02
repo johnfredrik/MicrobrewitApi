@@ -176,5 +176,10 @@ namespace Microbrewit.Repository
                 return context.HopForms.ToList();
             }
         }
+
+        public IList<Flavour> GetFlavours()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

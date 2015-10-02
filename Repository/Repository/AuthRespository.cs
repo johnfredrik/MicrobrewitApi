@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Security;
+using log4net.Util;
 using Microbrewit.Model;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microbrewit.Repository.Interface;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.DataProtection;
+using Roles = Microbrewit.Model.Roles;
 
 namespace Microbrewit.Repository.Repository
 {
@@ -65,6 +69,12 @@ namespace Microbrewit.Repository.Repository
             return user;
         }
 
+        public async Task<IdentityUser> FindUser(string username)
+        {
+
+            return await _userManager.FindByNameAsync(username);
+
+        }
 
         public Client FindClient(string clientId)
         {

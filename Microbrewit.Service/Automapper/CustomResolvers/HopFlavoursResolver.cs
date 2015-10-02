@@ -1,50 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Service.Elasticsearch;
+using Microbrewit.Service.Elasticsearch.Component;
+using Microbrewit.Service.Elasticsearch.Interface;
 
 namespace Microbrewit.Service.Automapper.CustomResolvers
 {
-    public class HopFlavoursResolver : ValueResolver<HopDto, IList<HopFlavour>>
+    public class HopFlavoursResolver : ValueResolver<Hop, IList<string>>
     {
-        private IHopRepository repository = new HopDapperRepository();
-
-        protected override IList<HopFlavour> ResolveCore(HopDto dto)
+        protected override IList<string> ResolveCore(Hop hop)
         {
-
-            using (var context = new MicrobrewitContext())
-            {
-                var flavours = new List<HopFlavour>();
-                if (dto.Flavours != null)
-                {
-                    foreach (var item in dto.Flavours)
-                    {
-                        var hopFlavor = new HopFlavour();
-                        if (item.Id > 0)
-                        {
-                            hopFlavor.FlavourId = item.Id;
-                            hopFlavor.HopId = dto.Id;
-                            flavours.Add(hopFlavor);
-                        }
-                        else
-                        {
-                            var flavour = repository.AddFlavour(item.Name);
-                            if (flavour == null)
-                            {
-                                flavour = 
-                                context.Flavours.Add(flavour);
-                                context.SaveChanges();
-                            }
-                            hopFlavor.FlavourId = flavour.FlavourId;
-                            flavours.Add(hopFlavor);
-                        }
-                    
-                    }
-                }
-                return flavours;
-            }
-
+            return (from hopFlavour in hop.Flavours where hopFlavour.Flavour != null select hopFlavour.Flavour.Name).ToList();
         }
     }
 }

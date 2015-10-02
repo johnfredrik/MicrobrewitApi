@@ -10,14 +10,14 @@ namespace Microbrewit.Repository
 {
     public interface IBeerRepository
     {
-        IList<Beer> GetAll(params string[] navigationProperties);
+        IList<Beer> GetAll(int from, int size,params string[] navigationProperties);
         Beer GetSingle(int id, params string[] navigationProperties);
         void Add(Beer beer);
         void Update(Beer beer);
         void Remove(Beer beer);
 
         //Async methods
-        Task<IList<Beer>> GetAllAsync(params string[] navigationProperties);
+        Task<IList<Beer>> GetAllAsync(int from,int size,params string[] navigationProperties);
         Task<Beer> GetSingleAsync(int id, params string[] navigtionProperties);
         Task AddAsync(Beer beer);
         Task<int> UpdateAsync(Beer beer);

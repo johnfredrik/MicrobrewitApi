@@ -20,22 +20,26 @@ using Recipe = Microbrewit.Model.Recipe;
 using SpargeStep = Microbrewit.Model.SpargeStep;
 using Yeast = Microbrewit.Model.Yeast;
 
-namespace Microbrewit.Repository.Repository
+namespace Microbrewit.Repository
 {
     public class BeerDapperRepository : IBeerRepository
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public IList<Beer> GetAll(params string[] navigationProperties)
+
+        public IList<Beer> GetAll(int from, int size, params string[] navigationProperties)
         {
             using (var context = DapperHelper.GetOpenConnection())
             {
                 var beers = context.Query<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
-                    "SELECT * FROM Beers b " +
+                    //"SELECT Top " + size + " * FROM Beers b " +
+                    "SELECT Top " + size +
+                    " * FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY BeerId) as ROW_NUM FROM Beers) AS b " +
                     "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
                     "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
                     "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
                     "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
-                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId "
+                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                    "WHERE ROW_NUM >= @From"
                     , (beer, beerStyle, recipe, srm, abv, ibu) =>
                     {
                         if (beerStyle != null)
@@ -49,9 +53,9 @@ namespace Microbrewit.Repository.Repository
                         if (ibu != null)
                             beer.IBU = ibu;
                         return beer;
-                    },
+                    }, new {From = from, To = size},
                     splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId"
-                    );
+                    ).ToList();
 
                 foreach (var beer in beers)
                 {
@@ -65,7 +69,7 @@ namespace Microbrewit.Repository.Repository
                     }
                 }
 
-                return beers.ToList();
+                return beers;
             }
         }
 
@@ -201,17 +205,19 @@ namespace Microbrewit.Repository.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Beer>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Beer>> GetAllAsync(int from, int size, params string[] navigationProperties)
         {
             using (var context = DapperHelper.GetOpenConnection())
             {
                 var beers = await context.QueryAsync<Beer, BeerStyle, Recipe, SRM, ABV, IBU, Beer>(
-                    "SELECT * FROM Beers b " +
+                    //"SELECT Top " + size + " * FROM Beers b " +
+                    "SELECT Top " + size + " * FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY BeerId) as ROW_NUM FROM Beers) AS b " +
                     "LEFT JOIN BeerStyles bs ON bs.BeerStyleId = b.BeerStyleId " +
                     "LEFT JOIN Recipes r ON r.RecipeId = b.BeerId " +
                     "LEFT JOIN SRMs s ON s.SrmId = b.BeerId " +
                     "LEFT JOIN ABVs a ON a.AbvId = b.BeerId " +
-                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId "
+                    "LEFT JOIN IBUs i ON i.IbuId = b.BeerId " +
+                    "WHERE ROW_NUM >= @From"
                     , (beer, beerStyle, recipe, srm, abv, ibu) =>
                     {
                         if (beerStyle != null)
@@ -225,7 +231,7 @@ namespace Microbrewit.Repository.Repository
                         if (ibu != null)
                             beer.IBU = ibu;
                         return beer;
-                    },
+                    }, new { From = from, To = size },
                     splitOn: "BeerStyleId,RecipeId,SrmId,AbvId,IbuId"
                     );
 

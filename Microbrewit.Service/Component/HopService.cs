@@ -34,6 +34,7 @@ namespace Microbrewit.Service.Component
 
         public async Task<HopDto> GetSingleAsync(int id)
         {
+            
             var hopDto = await _hopElasticsearch.GetSingleAsync(id);
             if (hopDto != null) return hopDto;
             var hop = await _hopRepository.GetSingleAsync(id, "Flavours.Flavour", "Origin", "Substituts");

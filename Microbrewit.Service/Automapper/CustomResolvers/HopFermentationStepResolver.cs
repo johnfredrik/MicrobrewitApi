@@ -35,8 +35,8 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                     }
                     hopStepDto.Name = hop.Name;
                     hopStepDto.Origin = hop.Origin;
-                    hopStepDto.Flavours = hop.Flavours;
-                    hopStepDto.FlavourDescription = hop.FlavourDescription;
+                    //hopStepDto.Flavours = hop.Flavours;
+                    //hopStepDto.FlavourDescription = hop.FlavourDescription;
                     hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(item.HopFormId));
                     hopStepDtoList.Add(hopStepDto);
                 }

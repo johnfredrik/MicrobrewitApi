@@ -16,7 +16,7 @@ namespace Microbrewit.Repository
     public class BeerRepository : IBeerRepository
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public IList<Beer> GetAll(params string[] navigationProperties)
+        public IList<Beer> GetAll(int from, int size,params string[] navigationProperties)
         {
             List<Beer> list;
             using (var context = new MicrobrewitContext())
@@ -340,7 +340,7 @@ namespace Microbrewit.Repository
             }
         }
 
-        public async Task<IList<Beer>> GetAllAsync(params string[] navigationProperties)
+        public async Task<IList<Beer>> GetAllAsync(int from, int size,params string[] navigationProperties)
         {
             using (var context = new MicrobrewitContext())
             {

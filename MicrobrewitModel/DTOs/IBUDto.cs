@@ -13,7 +13,7 @@ namespace Microbrewit.Model.DTOs
         [JsonProperty(PropertyName = "ibuId")]
         public int IbuId { get; set; }
         [JsonProperty(PropertyName = "standard")]
-        public int Standard { get; set; }
+        public double Standard { get; set; }
         [JsonProperty(PropertyName = "tinseth")]
         public double Tinseth { get; set; }
         [JsonProperty(PropertyName = "rager")]

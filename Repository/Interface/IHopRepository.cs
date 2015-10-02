@@ -27,5 +27,6 @@ namespace Microbrewit.Repository
         HopForm GetForm(int id);
         Task<IList<HopForm>> GetHopFormsAsync();
         IList<HopForm> GetHopForms();
+        IList<Flavour> GetFlavours();
     }
 }

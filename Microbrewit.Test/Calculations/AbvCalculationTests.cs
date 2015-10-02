@@ -1,4 +1,5 @@
 ﻿using System;
+using Microbrewit.Api.Service.Util;
 using Microbrewit.Api.Util;
 using NUnit.Framework;
 

@@ -28,15 +28,15 @@ namespace Microbrewit.Service.Automapper
                .ForMember(dest => dest.Temperature, conf => conf.MapFrom(src => src.Temperature));
 
             Mapper.CreateMap<SpargeStepHop, HopStepDto>()
-               .ForMember(dest => dest.HopId, conf => conf.MapFrom(src => src.HopId))
-               .ForMember(dest => dest.StepNumber, conf => conf.MapFrom(src => src.StepNumber))
-               .ForMember(dest => dest.RecipeId, conf => conf.MapFrom(src => src.RecipeId))
-               .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Hop.Name))
-               .ForMember(dest => dest.Origin, conf => conf.MapFrom(src => src.Hop.Origin.Name))
-               .ForMember(dest => dest.Amount, conf => conf.MapFrom(src => src.AaAmount))
-               .ForMember(dest => dest.AAValue, conf => conf.MapFrom(src => src.AaValue))
-               .ForMember(dest => dest.Flavours, conf => conf.MapFrom(src => src.Hop.Flavours))
-               .ForMember(dest => dest.FlavourDescription, conf => conf.MapFrom(src => src.Hop.FlavourDescription));
+                .ForMember(dest => dest.HopId, conf => conf.MapFrom(src => src.HopId))
+                .ForMember(dest => dest.StepNumber, conf => conf.MapFrom(src => src.StepNumber))
+                .ForMember(dest => dest.RecipeId, conf => conf.MapFrom(src => src.RecipeId))
+                .ForMember(dest => dest.Name, conf => conf.MapFrom(src => src.Hop.Name))
+                .ForMember(dest => dest.Origin, conf => conf.MapFrom(src => src.Hop.Origin.Name))
+                .ForMember(dest => dest.Amount, conf => conf.MapFrom(src => src.AaAmount))
+                .ForMember(dest => dest.AAValue, conf => conf.MapFrom(src => src.AaValue));
+               //.ForMember(dest => dest.Flavours, conf => conf.MapFrom(src => src.Hop.Flavours))
+               //.ForMember(dest => dest.FlavourDescription, conf => conf.MapFrom(src => src.Hop.FlavourDescription));
 
             Mapper.CreateMap<HopStepDto, SpargeStepHop>()
               .ForMember(dto => dto.HopId, conf => conf.MapFrom(rec => rec.HopId))

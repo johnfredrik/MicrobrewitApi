@@ -80,5 +80,17 @@ namespace Microbrewit.Service.Component
             var otherDtos = Mapper.Map<IList<Other>, IList<OtherDto>>(others);
             await _otherElasticsearch.UpdateAllAsync(otherDtos);
         }
+
+
+        //Not async
+        public OtherDto Add(OtherDto otherDto)
+        {
+            var other = Mapper.Map<OtherDto, Other>(otherDto);
+             _otherRepository.Add(other);
+            var result = _otherRepository.GetSingle(other.OtherId);
+            var mappedResult = Mapper.Map<Other, OtherDto>(result);
+            _otherElasticsearch.Update(mappedResult);
+            return mappedResult;
+        }
     }
 }

@@ -20,5 +20,6 @@ namespace Microbrewit.Service.Elasticsearch.Interface
         Task<IDeleteResponse> DeleteAsync(int id);
         OtherDto GetSingle(int id);
         IEnumerable<OtherDto> Search(string query, int from, int size);
+        void Update(OtherDto otherDto);
     }
 }

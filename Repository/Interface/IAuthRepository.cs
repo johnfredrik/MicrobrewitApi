@@ -13,6 +13,7 @@ namespace Microbrewit.Repository.Interface
     {
         Task<IdentityResult> RegisterUser(UserModel userModel);
         Task<IdentityUser> FindUser(string username, string password);
+        Task<IdentityUser> FindUser(string username);
         Client FindClient(string clientId);
         Task<bool> AddRefreshToken(RefreshToken token);
         Task<bool> RemoveRefreshToken(string refreshTokenId);

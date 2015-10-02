@@ -32,6 +32,8 @@ namespace Microbrewit.Model.DTOs
         public string HeaderImage { get; set; }
         [JsonProperty(PropertyName = "avatar")]
         public string Avatar { get; set; }
+        [JsonProperty(PropertyName =  "roles")]
+        public IEnumerable<string> Roles { get; set; }
         [JsonProperty(PropertyName = "socials")]
         public Dictionary<string, string> Socials { get; set; }
     }

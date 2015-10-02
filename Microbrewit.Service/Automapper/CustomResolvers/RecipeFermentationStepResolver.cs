@@ -63,6 +63,7 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
 
                     foreach (var yeastDto in fermentationStepDto.Yeasts)
                     {
+                        if (yeastDto == null) continue;
                         var yeast = Mapper.Map<YeastStepDto, FermentationStepYeast>(yeastDto);
                         yeast.StepNumber = fermentationStep.StepNumber;
                         fermentationStep.Yeasts.Add(yeast);

@@ -32,10 +32,10 @@ namespace Microbrewit.Model.DTOs
         [Required]
         [JsonProperty(PropertyName = "hopForm")]
         public DTO HopForm { get; set; }
-        [JsonProperty(PropertyName = "flavourDescription")]
-        public string FlavourDescription { get; set; }
-        [JsonProperty(PropertyName = "flavours")]
-        public IList<DTO> Flavours { get; set; }
+        //[JsonProperty(PropertyName = "flavourDescription")]
+        //public string FlavourDescription { get; set; }
+        //[JsonProperty(PropertyName = "flavours")]
+        //public IList<string> Flavours { get; set; }
 
 
     }

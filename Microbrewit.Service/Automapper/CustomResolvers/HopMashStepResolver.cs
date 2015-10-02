@@ -30,8 +30,8 @@ namespace Microbrewit.Service.Automapper.CustomResolvers
                 var hop = _hopElasticsearch.GetSingle(item.HopId) ?? Mapper.Map<Hop, HopDto>(_hopRepository.GetSingle(item.HopId));
                 hopStepDto.Name = hop.Name;
                 hopStepDto.Origin = hop.Origin;
-                hopStepDto.Flavours = hop.Flavours;
-                hopStepDto.FlavourDescription = hop.FlavourDescription;
+                //hopStepDto.Flavours = hop.Flavours;
+                //hopStepDto.FlavourDescription = hop.FlavourDescription;
                 //TODO: Add elasticsearch on hop form.
                 hopStepDto.HopForm = Mapper.Map<HopForm, DTO>(_hopRepository.GetForm(item.HopFormId));
                 hopStepDtoList.Add(hopStepDto);

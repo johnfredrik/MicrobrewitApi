@@ -5,6 +5,7 @@ using AutoMapper;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
 using Microbrewit.Repository;
+using Microbrewit.Repository.Interface;
 using Microbrewit.Service.Elasticsearch.Interface;
 using Microbrewit.Service.Interface;
 
@@ -61,6 +62,7 @@ namespace Microbrewit.Service.Component
             var userDtos = await _userElasticsearch.GetAllAsync(from, size);
             if (userDtos.Any()) return userDtos;
             var users = await _userRepository.GetAllAsync(_userInclude);
+            
             return Mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
         }
 

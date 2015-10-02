@@ -9,12 +9,14 @@ using Dapper;
 using log4net;
 using Microbrewit.Model;
 using Microbrewit.Model.DTOs;
+using Microbrewit.Repository.Interface;
 
 namespace Microbrewit.Repository.Repository
 {
     public class UserDapperRepository : IUserRepository
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IAuthRepository _authRepository = new AuthRepository();
 
         public IEnumerable<UserSocial> GetUserSocials(string username)
         {
@@ -166,8 +168,14 @@ namespace Microbrewit.Repository.Repository
                         }, new { user.Username }, splitOn: "BeerId,SrmId,AbvId,IbuId,BeerStyleId");
                     user.Beers = userBeers.ToList();
                 }
+               
+                //foreach (var user in users)
+                //{
+                //    var account = await _authRepository.FindUser(user.Username);
+                //    if (account == null || !account.Roles.Any()) continue;
+                //        user.Roles = account.Roles.Select(r => r.RoleId);
+                //}
                 return users.ToList();
-
             }
         }
 
@@ -353,6 +361,17 @@ namespace Microbrewit.Repository.Repository
                         }, new { user.Username }, splitOn: "BeerId,SrmId,AbvId,IbuId,BeerStyleId");
                     user.Beers = userBeers.ToList();
                 }
+                foreach (var user in users)
+                {
+                    user.Roles = new List<string>();
+                    var identityUser = await _authRepository.FindUser(user.Username);
+                    if (identityUser != null && identityUser.Roles.Any())
+                    {
+                        if(identityUser.Roles.Any(r => r.RoleId == "1"))
+                            user.Roles.Add("Admin");
+                    }
+                }
+
                 return users.ToList();
 
             }
@@ -405,6 +424,13 @@ namespace Microbrewit.Repository.Repository
                         return userBeer;
                     }, new { user.Username }, splitOn: "BeerId,SrmId,AbvId,IbuId,BeerStyleId");
                 user.Beers = userBeers.ToList();
+                user.Roles = new List<string>();
+                var identityUser = await _authRepository.FindUser(user.Username);
+                if (identityUser != null && identityUser.Roles.Any())
+                {
+                    if (identityUser.Roles.Any(r => r.RoleId == "1"))
+                        user.Roles.Add("Admin");
+                }
                 return user;
             }
         }
